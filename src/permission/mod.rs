@@ -22,6 +22,7 @@ struct PermissionWrapper {
 
 // ─── Handler ──────────────────────────────────────────────────────────────────
 
+/// Handler for permission operations.
 pub struct PermissionHandler<'a> {
     client: &'a Client,
 }
@@ -32,12 +33,20 @@ impl<'a> PermissionHandler<'a> {
     }
 
     /// Returns a list of all permissions for the current account.
+    ///
+    /// `GET /1.3/permission`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/18-permissions/#get-permissions)
     pub async fn list(&self) -> Result<Vec<Permission>, Error> {
         let resp: PermissionListResponse = self.client.get("/1.3/permission").await?;
         Ok(resp.permissions.permission)
     }
 
     /// Grants a permission to a subaccount.
+    ///
+    /// `POST /1.3/permission/grant`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/18-permissions/#grant-permission)
     pub async fn grant(&self, req: GrantRequest) -> Result<(), Error> {
         #[derive(Serialize)]
         struct Body {
@@ -49,6 +58,10 @@ impl<'a> PermissionHandler<'a> {
     }
 
     /// Revokes a permission from a subaccount.
+    ///
+    /// `POST /1.3/permission/revoke`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/18-permissions/#revoke-permission)
     pub async fn revoke(&self, req: RevokeRequest) -> Result<(), Error> {
         #[derive(Serialize)]
         struct Body {

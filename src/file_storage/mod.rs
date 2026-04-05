@@ -19,6 +19,10 @@ impl<'a> FileStorageHandler<'a> {
     }
 
     /// Returns a list of available file storage plans.
+    ///
+    /// `GET /1.3/file-storage/plans`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/)
     pub async fn list_plans(&self) -> Result<Vec<Plan>, Error> {
         self.client.get("/1.3/file-storage/plans").await
     }
@@ -26,6 +30,10 @@ impl<'a> FileStorageHandler<'a> {
     // ─── Services ─────────────────────────────────────────────────────────────
 
     /// Returns a list of all file storage services.
+    ///
+    /// `GET /1.3/file-storage`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#list-services)
     pub async fn list(&self, params: PageParams) -> Result<Vec<Service>, Error> {
         self.client
             .get_with_query("/1.3/file-storage", &params)
@@ -33,6 +41,10 @@ impl<'a> FileStorageHandler<'a> {
     }
 
     /// Returns details for a specific file storage service.
+    ///
+    /// `GET /1.3/file-storage/{uuid}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#get-service-details)
     pub async fn get(&self, uuid: &str) -> Result<Service, Error> {
         self.client
             .get(&format!("/1.3/file-storage/{uuid}"))
@@ -40,11 +52,19 @@ impl<'a> FileStorageHandler<'a> {
     }
 
     /// Creates a new file storage service.
+    ///
+    /// `POST /1.3/file-storage`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#create-service)
     pub async fn create(&self, req: CreateRequest) -> Result<Service, Error> {
         self.client.post("/1.3/file-storage", &req).await
     }
 
     /// Modifies an existing file storage service.
+    ///
+    /// `PATCH /1.3/file-storage/{uuid}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#modify-service)
     pub async fn modify(
         &self,
         uuid: &str,
@@ -56,6 +76,10 @@ impl<'a> FileStorageHandler<'a> {
     }
 
     /// Deletes a file storage service.
+    ///
+    /// `DELETE /1.3/file-storage/{uuid}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#delete-service)
     pub async fn delete(&self, uuid: &str) -> Result<(), Error> {
         self.client
             .delete(&format!("/1.3/file-storage/{uuid}"))
@@ -65,6 +89,10 @@ impl<'a> FileStorageHandler<'a> {
     // ─── Shares ───────────────────────────────────────────────────────────────
 
     /// Returns a list of NFS shares for a file storage service.
+    ///
+    /// `GET /1.3/file-storage/{uuid}/shares`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#list-shares)
     pub async fn list_shares(&self, uuid: &str) -> Result<Vec<Share>, Error> {
         self.client
             .get(&format!("/1.3/file-storage/{uuid}/shares"))
@@ -72,6 +100,10 @@ impl<'a> FileStorageHandler<'a> {
     }
 
     /// Returns details for a specific share.
+    ///
+    /// `GET /1.3/file-storage/{uuid}/shares/{share_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#get-share-details)
     pub async fn get_share(
         &self,
         uuid: &str,
@@ -83,6 +115,10 @@ impl<'a> FileStorageHandler<'a> {
     }
 
     /// Creates an NFS share for a file storage service.
+    ///
+    /// `POST /1.3/file-storage/{uuid}/shares`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#create-share)
     pub async fn create_share(
         &self,
         uuid: &str,
@@ -94,6 +130,10 @@ impl<'a> FileStorageHandler<'a> {
     }
 
     /// Modifies an NFS share.
+    ///
+    /// `PATCH /1.3/file-storage/{uuid}/shares/{share_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#modify-share)
     pub async fn modify_share(
         &self,
         uuid: &str,
@@ -109,6 +149,10 @@ impl<'a> FileStorageHandler<'a> {
     }
 
     /// Deletes an NFS share.
+    ///
+    /// `DELETE /1.3/file-storage/{uuid}/shares/{share_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#delete-share)
     pub async fn delete_share(
         &self,
         uuid: &str,
@@ -122,6 +166,10 @@ impl<'a> FileStorageHandler<'a> {
     // ─── Networks ─────────────────────────────────────────────────────────────
 
     /// Returns a list of networks attached to a file storage service.
+    ///
+    /// `GET /1.3/file-storage/{uuid}/networks`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#list-networks)
     pub async fn list_networks(
         &self,
         uuid: &str,
@@ -132,6 +180,10 @@ impl<'a> FileStorageHandler<'a> {
     }
 
     /// Attaches a network to a file storage service.
+    ///
+    /// `POST /1.3/file-storage/{uuid}/networks`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#create-network)
     pub async fn create_network(
         &self,
         uuid: &str,
@@ -143,6 +195,10 @@ impl<'a> FileStorageHandler<'a> {
     }
 
     /// Detaches a network from a file storage service.
+    ///
+    /// `DELETE /1.3/file-storage/{uuid}/networks/{network_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#delete-network)
     pub async fn delete_network(
         &self,
         uuid: &str,

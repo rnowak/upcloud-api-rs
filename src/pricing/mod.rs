@@ -20,6 +20,10 @@ impl<'a> PricingHandler<'a> {
     }
 
     /// Returns pricing information for all zones.
+    ///
+    /// `GET /1.3/price`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/4-pricing/#list-prices)
     pub async fn list_zones(&self) -> Result<Vec<PriceZone>, Error> {
         let resp: PriceListResponse = self.client.get("/1.3/price").await?;
         Ok(resp.prices.zone)

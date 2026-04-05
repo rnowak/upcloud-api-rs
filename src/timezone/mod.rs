@@ -16,6 +16,10 @@ impl<'a> TimezoneHandler<'a> {
     }
 
     /// Returns a list of all available timezone identifiers.
+    ///
+    /// `GET /1.3/timezone`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/6-timezones/#list-timezones)
     pub async fn list(&self) -> Result<Vec<String>, Error> {
         let resp: TimezoneListResponse = self.client.get("/1.3/timezone").await?;
         Ok(resp.timezones.timezone)

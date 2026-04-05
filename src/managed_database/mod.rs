@@ -8,6 +8,7 @@ use crate::error::Error;
 
 // ─── Handler ──────────────────────────────────────────────────────────────────
 
+/// Handler for managed database operations.
 pub struct DatabaseHandler<'a> {
     client: &'a Client,
 }
@@ -20,11 +21,19 @@ impl<'a> DatabaseHandler<'a> {
     // ─── Service types ─────────────────────────────────────────────────────────
 
     /// Returns a list of available managed database service types.
+    ///
+    /// `GET /1.3/database/service-types`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-service-types)
     pub async fn list_types(&self) -> Result<Vec<DatabaseType>, Error> {
         self.client.get("/1.3/database/service-types").await
     }
 
     /// Returns available PostgreSQL extensions (global list).
+    ///
+    /// `GET /1.3/database/pg/available-extensions`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-service-types)
     pub async fn list_pg_extensions(&self) -> Result<Vec<Extension>, Error> {
         self.client
             .get("/1.3/database/pg/available-extensions")
@@ -32,6 +41,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Returns a list of available database plans.
+    ///
+    /// `GET /1.3/database/plans`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-plans)
     pub async fn list_plans(&self) -> Result<Vec<ServicePlan>, Error> {
         self.client.get("/1.3/database/plans").await
     }
@@ -39,11 +52,19 @@ impl<'a> DatabaseHandler<'a> {
     // ─── Services ──────────────────────────────────────────────────────────────
 
     /// Returns a list of all managed database services.
+    ///
+    /// `GET /1.3/database`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#list-managed-databases)
     pub async fn list(&self) -> Result<Vec<Database>, Error> {
         self.client.get("/1.3/database").await
     }
 
     /// Returns details for a specific managed database.
+    ///
+    /// `GET /1.3/database/{uuid}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-details)
     pub async fn get(&self, uuid: &str) -> Result<Database, Error> {
         self.client
             .get(&format!("/1.3/database/{uuid}"))
@@ -51,11 +72,19 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Creates a new managed database.
+    ///
+    /// `POST /1.3/database`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#create-managed-database)
     pub async fn create(&self, req: CreateRequest) -> Result<Database, Error> {
         self.client.post("/1.3/database", &req).await
     }
 
     /// Modifies an existing managed database.
+    ///
+    /// `PATCH /1.3/database/{uuid}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#modify-managed-database)
     pub async fn modify(
         &self,
         uuid: &str,
@@ -67,6 +96,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Deletes a managed database.
+    ///
+    /// `DELETE /1.3/database/{uuid}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#delete-managed-database)
     pub async fn delete(&self, uuid: &str) -> Result<(), Error> {
         self.client
             .delete(&format!("/1.3/database/{uuid}"))
@@ -74,6 +107,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Starts a managed database.
+    ///
+    /// `POST /1.3/database/{uuid}/start`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#start-managed-database)
     pub async fn start(&self, uuid: &str) -> Result<Database, Error> {
         self.client
             .post_empty(&format!("/1.3/database/{uuid}/start"))
@@ -81,6 +118,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Shuts down a managed database.
+    ///
+    /// `POST /1.3/database/{uuid}/shutdown`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#shutdown-managed-database)
     pub async fn shutdown(&self, uuid: &str) -> Result<Database, Error> {
         self.client
             .post_empty(&format!("/1.3/database/{uuid}/shutdown"))
@@ -88,6 +129,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Returns logs for a managed database.
+    ///
+    /// `GET /1.3/database/{uuid}/logs`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-logs)
     pub async fn get_logs(
         &self,
         uuid: &str,
@@ -99,6 +144,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Returns metrics for a managed database.
+    ///
+    /// `GET /1.3/database/{uuid}/metrics`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-metrics)
     pub async fn get_metrics(
         &self,
         uuid: &str,
@@ -109,6 +158,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Returns active sessions for a managed database.
+    ///
+    /// `GET /1.3/database/{uuid}/sessions`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-sessions)
     pub async fn list_sessions(
         &self,
         uuid: &str,
@@ -120,6 +173,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Returns query statistics for a managed database.
+    ///
+    /// `GET /1.3/database/{uuid}/query-statistics`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-query-statistics)
     pub async fn get_query_statistics(
         &self,
         uuid: &str,
@@ -130,6 +187,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Returns current running queries.
+    ///
+    /// `GET /1.3/database/{uuid}/current-queries`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-current-queries)
     pub async fn get_current_queries(
         &self,
         uuid: &str,
@@ -140,6 +201,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Terminates current running queries.
+    ///
+    /// `DELETE /1.3/database/{uuid}/current-queries`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#cancel-managed-database-current-queries)
     pub async fn terminate_queries(
         &self,
         uuid: &str,
@@ -151,6 +216,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Returns available PostgreSQL extensions for a specific database instance.
+    ///
+    /// `GET /1.3/database/{uuid}/available-extensions`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-service-types)
     pub async fn list_available_extensions(
         &self,
         uuid: &str,
@@ -163,6 +232,10 @@ impl<'a> DatabaseHandler<'a> {
     // ─── Users ────────────────────────────────────────────────────────────────
 
     /// Returns a list of users for a managed database.
+    ///
+    /// `GET /1.3/database/{uuid}/users`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#list-users)
     pub async fn list_users(&self, uuid: &str) -> Result<Vec<User>, Error> {
         self.client
             .get(&format!("/1.3/database/{uuid}/users"))
@@ -170,6 +243,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Returns details for a specific database user.
+    ///
+    /// `GET /1.3/database/{uuid}/users/{username}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-user-details)
     pub async fn get_user(&self, uuid: &str, username: &str) -> Result<User, Error> {
         self.client
             .get(&format!("/1.3/database/{uuid}/users/{username}"))
@@ -177,6 +254,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Creates a new database user.
+    ///
+    /// `POST /1.3/database/{uuid}/users`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#create-user)
     pub async fn create_user(
         &self,
         uuid: &str,
@@ -188,6 +269,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Modifies a database user.
+    ///
+    /// `PATCH /1.3/database/{uuid}/users/{username}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#modify-user)
     pub async fn modify_user(
         &self,
         uuid: &str,
@@ -200,6 +285,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Deletes a database user.
+    ///
+    /// `DELETE /1.3/database/{uuid}/users/{username}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#delete-user)
     pub async fn delete_user(&self, uuid: &str, username: &str) -> Result<(), Error> {
         self.client
             .delete(&format!("/1.3/database/{uuid}/users/{username}"))
@@ -207,6 +296,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Resets a database user's password.
+    ///
+    /// `PATCH /1.3/database/{uuid}/users/{username}/access-control`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#modify-user)
     pub async fn reset_user_password(
         &self,
         uuid: &str,
@@ -224,6 +317,10 @@ impl<'a> DatabaseHandler<'a> {
     // ─── Logical Databases ────────────────────────────────────────────────────
 
     /// Returns a list of logical databases within a managed database service.
+    ///
+    /// `GET /1.3/database/{uuid}/databases`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#list-logical-databases)
     pub async fn list_logical_databases(
         &self,
         uuid: &str,
@@ -234,6 +331,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Returns details for a specific logical database.
+    ///
+    /// `GET /1.3/database/{uuid}/databases/{dbname}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-logical-database-details)
     pub async fn get_logical_database(
         &self,
         uuid: &str,
@@ -245,6 +346,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Creates a new logical database.
+    ///
+    /// `POST /1.3/database/{uuid}/databases`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#create-logical-database-mysql-postgresql)
     pub async fn create_logical_database(
         &self,
         uuid: &str,
@@ -256,6 +361,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Deletes a logical database.
+    ///
+    /// `DELETE /1.3/database/{uuid}/databases/{dbname}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#delete-logical-database-mysql-postgresql)
     pub async fn delete_logical_database(
         &self,
         uuid: &str,
@@ -267,6 +376,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Clones a managed database from a backup or point-in-time.
+    ///
+    /// `POST /1.3/database/{uuid}/clone`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#clone-managed-database)
     pub async fn clone_database(
         &self,
         uuid: &str,
@@ -278,6 +391,10 @@ impl<'a> DatabaseHandler<'a> {
     }
 
     /// Upgrades the version of a managed database.
+    ///
+    /// `POST /1.3/database/{uuid}/upgrade`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-versions)
     pub async fn upgrade_version(
         &self,
         uuid: &str,

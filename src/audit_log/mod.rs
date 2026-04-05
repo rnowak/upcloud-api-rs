@@ -22,6 +22,10 @@ impl<'a> AuditLogHandler<'a> {
     /// Returns a paginated list of audit events.
     ///
     /// The response includes a `total_count` from the `Upcloud-Total-Count` header.
+    ///
+    /// `GET /1.3/audit-logs`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/22-audit-logs/#list-audit-logs)
     pub async fn list(&self, params: AuditListParams) -> Result<AuditEventPage, Error> {
         let req = self
             .client
@@ -58,6 +62,10 @@ impl<'a> AuditLogHandler<'a> {
     }
 
     /// Returns the available filter option values for audit events.
+    ///
+    /// `GET /1.3/audit-logs/filter-options`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/22-audit-logs/#list-options-to-filter-by)
     pub async fn get_filter_options(&self) -> Result<AuditFilterOptions, Error> {
         self.client.get("/1.3/audit-logs/filter-options").await
     }

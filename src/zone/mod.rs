@@ -18,6 +18,10 @@ impl<'a> ZoneHandler<'a> {
     }
 
     /// Returns a list of all available zones.
+    ///
+    /// `GET /1.3/zone`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/5-zones/#list-available-zones)
     pub async fn list(&self) -> Result<Vec<Zone>, Error> {
         let resp: ZoneListResponse = self.client.get("/1.3/zone").await?;
         Ok(resp.zones.zone)

@@ -9,6 +9,7 @@ use crate::types::common::PageParams;
 
 // ─── Handler ──────────────────────────────────────────────────────────────────
 
+/// Handler for network gateway operations.
 pub struct GatewayHandler<'a> {
     client: &'a Client,
 }
@@ -21,11 +22,19 @@ impl<'a> GatewayHandler<'a> {
     // ─── Plans ────────────────────────────────────────────────────────────────
 
     /// Returns a list of available gateway plans.
+    ///
+    /// `GET /1.3/gateway/plans`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#list-plans)
     pub async fn list_plans(&self) -> Result<Vec<Plan>, Error> {
         self.client.get("/1.3/gateway/plans").await
     }
 
     /// Returns details for a specific gateway plan.
+    ///
+    /// `GET /1.3/gateway/plans/{name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#get-plan-details)
     pub async fn get_plan(&self, name: &str) -> Result<Plan, Error> {
         self.client
             .get(&format!("/1.3/gateway/plans/{name}"))
@@ -35,6 +44,10 @@ impl<'a> GatewayHandler<'a> {
     // ─── Gateways ─────────────────────────────────────────────────────────────
 
     /// Returns a list of all gateways.
+    ///
+    /// `GET /1.3/gateway`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#list-services)
     pub async fn list(&self, params: PageParams) -> Result<Vec<Gateway>, Error> {
         self.client
             .get_with_query("/1.3/gateway", &params)
@@ -42,16 +55,28 @@ impl<'a> GatewayHandler<'a> {
     }
 
     /// Returns details for a specific gateway.
+    ///
+    /// `GET /1.3/gateway/{uuid}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#get-service-details)
     pub async fn get(&self, uuid: &str) -> Result<Gateway, Error> {
         self.client.get(&format!("/1.3/gateway/{uuid}")).await
     }
 
     /// Creates a new gateway.
+    ///
+    /// `POST /1.3/gateway`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#create-service)
     pub async fn create(&self, req: CreateRequest) -> Result<Gateway, Error> {
         self.client.post("/1.3/gateway", &req).await
     }
 
     /// Modifies an existing gateway.
+    ///
+    /// `PATCH /1.3/gateway/{uuid}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#modify-service)
     pub async fn modify(
         &self,
         uuid: &str,
@@ -63,6 +88,10 @@ impl<'a> GatewayHandler<'a> {
     }
 
     /// Deletes a gateway.
+    ///
+    /// `DELETE /1.3/gateway/{uuid}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#delete-service)
     pub async fn delete(&self, uuid: &str) -> Result<(), Error> {
         self.client.delete(&format!("/1.3/gateway/{uuid}")).await
     }
@@ -70,6 +99,10 @@ impl<'a> GatewayHandler<'a> {
     // ─── Connections ──────────────────────────────────────────────────────────
 
     /// Returns a list of connections for a gateway.
+    ///
+    /// `GET /1.3/gateway/{gateway_uuid}/connections`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#list-connections)
     pub async fn list_connections(
         &self,
         gateway_uuid: &str,
@@ -80,6 +113,10 @@ impl<'a> GatewayHandler<'a> {
     }
 
     /// Returns details for a specific connection.
+    ///
+    /// `GET /1.3/gateway/{gateway_uuid}/connections/{name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#get-connection-details)
     pub async fn get_connection(
         &self,
         gateway_uuid: &str,
@@ -93,6 +130,10 @@ impl<'a> GatewayHandler<'a> {
     }
 
     /// Creates a connection for a gateway.
+    ///
+    /// `POST /1.3/gateway/{gateway_uuid}/connections`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#create-connection)
     pub async fn create_connection(
         &self,
         gateway_uuid: &str,
@@ -107,6 +148,10 @@ impl<'a> GatewayHandler<'a> {
     }
 
     /// Deletes a connection.
+    ///
+    /// `DELETE /1.3/gateway/{gateway_uuid}/connections/{name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#delete-connection)
     pub async fn delete_connection(
         &self,
         gateway_uuid: &str,
@@ -122,6 +167,10 @@ impl<'a> GatewayHandler<'a> {
     // ─── Tunnels ──────────────────────────────────────────────────────────────
 
     /// Returns a list of tunnels for a connection.
+    ///
+    /// `GET /1.3/gateway/{gateway_uuid}/connections/{connection_name}/tunnels`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#list-tunnels)
     pub async fn list_tunnels(
         &self,
         gateway_uuid: &str,
@@ -135,6 +184,10 @@ impl<'a> GatewayHandler<'a> {
     }
 
     /// Creates a tunnel for a connection.
+    ///
+    /// `POST /1.3/gateway/{gateway_uuid}/connections/{connection_name}/tunnels`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#create-tunnel)
     pub async fn create_tunnel(
         &self,
         gateway_uuid: &str,
@@ -152,6 +205,10 @@ impl<'a> GatewayHandler<'a> {
     }
 
     /// Deletes a tunnel.
+    ///
+    /// `DELETE /1.3/gateway/{gateway_uuid}/connections/{connection_name}/tunnels/{tunnel_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#delete-tunnel)
     pub async fn delete_tunnel(
         &self,
         gateway_uuid: &str,
@@ -168,6 +225,10 @@ impl<'a> GatewayHandler<'a> {
     // ─── Routes ───────────────────────────────────────────────────────────────
 
     /// Returns a list of routes for a gateway.
+    ///
+    /// `GET /1.3/gateway/{gateway_uuid}/routes`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/)
     pub async fn list_routes(
         &self,
         gateway_uuid: &str,
@@ -178,6 +239,10 @@ impl<'a> GatewayHandler<'a> {
     }
 
     /// Creates a route for a gateway.
+    ///
+    /// `POST /1.3/gateway/{gateway_uuid}/routes`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/)
     pub async fn create_route(
         &self,
         gateway_uuid: &str,
@@ -189,6 +254,10 @@ impl<'a> GatewayHandler<'a> {
     }
 
     /// Deletes a route from a gateway.
+    ///
+    /// `DELETE /1.3/gateway/{gateway_uuid}/routes/{route_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/)
     pub async fn delete_route(
         &self,
         gateway_uuid: &str,
@@ -204,6 +273,10 @@ impl<'a> GatewayHandler<'a> {
     // ─── Labels ───────────────────────────────────────────────────────────────
 
     /// Returns a list of labels for a gateway.
+    ///
+    /// `GET /1.3/gateway/{gateway_uuid}/labels`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/)
     pub async fn list_labels(
         &self,
         gateway_uuid: &str,
@@ -214,6 +287,10 @@ impl<'a> GatewayHandler<'a> {
     }
 
     /// Creates a label on a gateway.
+    ///
+    /// `POST /1.3/gateway/{gateway_uuid}/labels`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/)
     pub async fn create_label(
         &self,
         gateway_uuid: &str,
@@ -228,6 +305,10 @@ impl<'a> GatewayHandler<'a> {
     }
 
     /// Modifies a label on a gateway.
+    ///
+    /// `PATCH /1.3/gateway/{gateway_uuid}/labels/{key}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/)
     pub async fn modify_label(
         &self,
         gateway_uuid: &str,
@@ -243,6 +324,10 @@ impl<'a> GatewayHandler<'a> {
     }
 
     /// Deletes a label from a gateway.
+    ///
+    /// `DELETE /1.3/gateway/{gateway_uuid}/labels/{key}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/)
     pub async fn delete_label(
         &self,
         gateway_uuid: &str,

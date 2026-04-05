@@ -32,6 +32,10 @@ impl<'a> ServerHandler<'a> {
     /// Returns a list of all servers, optionally filtered, ordered, and paginated.
     ///
     /// Pass `ListParams::default()` to list all servers without filtering.
+    ///
+    /// `GET /1.3/server`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#list-servers)
     pub async fn list(&self, params: &ListParams) -> Result<Vec<Server>, Error> {
         let pairs = params.to_query_pairs();
         let resp: ServerListResponse = if pairs.is_empty() {
@@ -45,12 +49,20 @@ impl<'a> ServerHandler<'a> {
     }
 
     /// Returns details for a specific server.
+    ///
+    /// `GET /1.3/server/{uuid}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#get-server-details)
     pub async fn get(&self, uuid: &str) -> Result<ServerDetails, Error> {
         let resp: ServerResponse = self.client.get(&format!("/1.3/server/{uuid}")).await?;
         Ok(resp.server)
     }
 
     /// Creates a new server.
+    ///
+    /// `POST /1.3/server`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#create-server)
     pub async fn create(&self, req: CreateRequest) -> Result<ServerDetails, Error> {
         #[derive(Serialize)]
         struct Body {
@@ -64,6 +76,10 @@ impl<'a> ServerHandler<'a> {
     }
 
     /// Modifies an existing server.
+    ///
+    /// `PUT /1.3/server/{uuid}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#modify-server)
     pub async fn modify(
         &self,
         uuid: &str,
@@ -81,11 +97,19 @@ impl<'a> ServerHandler<'a> {
     }
 
     /// Deletes a server.
+    ///
+    /// `DELETE /1.3/server/{uuid}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#delete-server)
     pub async fn delete(&self, uuid: &str) -> Result<(), Error> {
         self.client.delete(&format!("/1.3/server/{uuid}")).await
     }
 
     /// Deletes a server and its attached storage devices.
+    ///
+    /// `DELETE /1.3/server/{uuid}?storages=1`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#delete-server)
     pub async fn delete_with_storages(
         &self,
         uuid: &str,
@@ -104,6 +128,10 @@ impl<'a> ServerHandler<'a> {
     // ─── Actions ──────────────────────────────────────────────────────────────
 
     /// Starts a stopped server.
+    ///
+    /// `POST /1.3/server/{uuid}/start`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#start-server)
     pub async fn start(&self, uuid: &str) -> Result<ServerDetails, Error> {
         let resp: ServerResponse = self
             .client
@@ -113,6 +141,10 @@ impl<'a> ServerHandler<'a> {
     }
 
     /// Relocates a server to a different zone.
+    ///
+    /// `POST /1.3/server/{uuid}/relocate`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#relocate-server)
     pub async fn relocate(
         &self,
         uuid: &str,
@@ -126,6 +158,10 @@ impl<'a> ServerHandler<'a> {
     }
 
     /// Stops a running server.
+    ///
+    /// `POST /1.3/server/{uuid}/stop`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#stop-server)
     pub async fn stop(&self, uuid: &str, req: StopRequest) -> Result<ServerDetails, Error> {
         #[derive(Serialize)]
         struct Body {
@@ -142,6 +178,10 @@ impl<'a> ServerHandler<'a> {
     }
 
     /// Restarts a running server.
+    ///
+    /// `POST /1.3/server/{uuid}/restart`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#restart-server)
     pub async fn restart(
         &self,
         uuid: &str,
@@ -164,6 +204,10 @@ impl<'a> ServerHandler<'a> {
     }
 
     /// Cancels an ongoing operation on a server.
+    ///
+    /// `POST /1.3/server/{uuid}/cancel`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#cancel-server-operation)
     pub async fn cancel_operation(&self, uuid: &str) -> Result<(), Error> {
         self.client
             .post_no_response_empty(&format!("/1.3/server/{uuid}/cancel"))
@@ -171,6 +215,10 @@ impl<'a> ServerHandler<'a> {
     }
 
     /// Rebuilds a server from a template (re-installs the OS).
+    ///
+    /// `POST /1.3/server/{uuid}/rebuild`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#rebuild-server)
     pub async fn rebuild(
         &self,
         uuid: &str,
@@ -195,6 +243,10 @@ impl<'a> ServerHandler<'a> {
     // ─── Storage devices ──────────────────────────────────────────────────────
 
     /// Attaches a storage device to a server.
+    ///
+    /// `POST /1.3/server/{uuid}/storage/attach`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/9-storages/#attach-storage)
     pub async fn attach_storage(
         &self,
         server_uuid: &str,
@@ -217,6 +269,10 @@ impl<'a> ServerHandler<'a> {
     }
 
     /// Detaches a storage device from a server.
+    ///
+    /// `POST /1.3/server/{uuid}/storage/detach`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/9-storages/#detach-storage)
     pub async fn detach_storage(
         &self,
         server_uuid: &str,
@@ -239,6 +295,10 @@ impl<'a> ServerHandler<'a> {
     }
 
     /// Loads a CDROM into the server's virtual optical drive.
+    ///
+    /// `POST /1.3/server/{uuid}/cdrom/load`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/9-storages/#load-cd-rom)
     pub async fn load_cdrom(
         &self,
         server_uuid: &str,
@@ -261,6 +321,10 @@ impl<'a> ServerHandler<'a> {
     }
 
     /// Ejects the CDROM from the server's virtual optical drive.
+    ///
+    /// `POST /1.3/server/{uuid}/cdrom/eject`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/9-storages/#eject-cd-rom)
     pub async fn eject_cdrom(&self, server_uuid: &str) -> Result<ServerDetails, Error> {
         let resp: ServerResponse = self
             .client
@@ -272,6 +336,10 @@ impl<'a> ServerHandler<'a> {
     // ─── GPUs ─────────────────────────────────────────────────────────────────
 
     /// Returns GPU information for a server.
+    ///
+    /// `GET /1.3/server/{uuid}/gpus`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#get-server-gpus)
     pub async fn list_gpus(&self, server_uuid: &str) -> Result<Vec<GpuInfo>, Error> {
         self.client
             .get(&format!("/1.3/server/{server_uuid}/gpus"))
@@ -281,6 +349,10 @@ impl<'a> ServerHandler<'a> {
     // ─── Firewall rules ───────────────────────────────────────────────────────
 
     /// Returns all firewall rules for a server.
+    ///
+    /// `GET /1.3/server/{uuid}/firewall_rule`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/11-firewall/#list-firewall-rules)
     pub async fn list_firewall_rules(
         &self,
         server_uuid: &str,
@@ -293,6 +365,10 @@ impl<'a> ServerHandler<'a> {
     }
 
     /// Creates a firewall rule for a server.
+    ///
+    /// `POST /1.3/server/{uuid}/firewall_rule`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/11-firewall/#create-firewall-rule)
     pub async fn create_firewall_rule(
         &self,
         server_uuid: &str,
@@ -313,6 +389,10 @@ impl<'a> ServerHandler<'a> {
     }
 
     /// Returns details for a specific firewall rule.
+    ///
+    /// `GET /1.3/server/{uuid}/firewall_rule/{position}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/11-firewall/#get-firewall-rule-details)
     pub async fn get_firewall_rule(
         &self,
         server_uuid: &str,
@@ -328,6 +408,10 @@ impl<'a> ServerHandler<'a> {
     }
 
     /// Deletes a firewall rule from a server.
+    ///
+    /// `DELETE /1.3/server/{uuid}/firewall_rule/{position}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/11-firewall/#remove-firewall-rule)
     pub async fn delete_firewall_rule(
         &self,
         server_uuid: &str,
@@ -341,6 +425,10 @@ impl<'a> ServerHandler<'a> {
     }
 
     /// Replaces all firewall rules for a server.
+    ///
+    /// `PUT /1.3/server/{uuid}/firewall_rule`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/11-firewall/#create-multiple-firewall-rules)
     pub async fn create_firewall_rules(
         &self,
         server_uuid: &str,
@@ -371,12 +459,20 @@ impl<'a> ServerHandler<'a> {
     // ─── Server Groups ────────────────────────────────────────────────────────
 
     /// Returns a list of all server groups.
+    ///
+    /// `GET /1.3/server-group`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#list-all-server-groups)
     pub async fn list_groups(&self) -> Result<Vec<Group>, Error> {
         let resp: ServerGroupListResponse = self.client.get("/1.3/server-group").await?;
         Ok(resp.server_groups.server_group)
     }
 
     /// Returns details for a specific server group.
+    ///
+    /// `GET /1.3/server-group/{uuid}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#show-server-group-details)
     pub async fn get_group(&self, uuid: &str) -> Result<Group, Error> {
         let resp: ServerGroupResponse = self
             .client
@@ -386,6 +482,10 @@ impl<'a> ServerHandler<'a> {
     }
 
     /// Creates a new server group.
+    ///
+    /// `POST /1.3/server-group`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#create-a-new-server-group)
     pub async fn create_group(
         &self,
         req: CreateGroupRequest,
@@ -402,6 +502,10 @@ impl<'a> ServerHandler<'a> {
     }
 
     /// Modifies an existing server group.
+    ///
+    /// `PUT /1.3/server-group/{uuid}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#modify-server-group)
     pub async fn modify_group(
         &self,
         uuid: &str,
@@ -422,6 +526,10 @@ impl<'a> ServerHandler<'a> {
     }
 
     /// Deletes a server group.
+    ///
+    /// `DELETE /1.3/server-group/{uuid}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#delete-server-group)
     pub async fn delete_group(&self, uuid: &str) -> Result<(), Error> {
         self.client
             .delete(&format!("/1.3/server-group/{uuid}"))

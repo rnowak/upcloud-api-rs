@@ -27,6 +27,7 @@ struct TagResponse {
 
 // ─── Handler ──────────────────────────────────────────────────────────────────
 
+/// Handler for tag operations.
 pub struct TagHandler<'a> {
     client: &'a Client,
 }
@@ -37,12 +38,20 @@ impl<'a> TagHandler<'a> {
     }
 
     /// Returns a list of all tags.
+    ///
+    /// `GET /1.3/tag`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/12-tags/#list-existing-tags)
     pub async fn list(&self) -> Result<Vec<Tag>, Error> {
         let resp: TagListResponse = self.client.get("/1.3/tag").await?;
         Ok(resp.tags.tag)
     }
 
     /// Creates a new tag.
+    ///
+    /// `POST /1.3/tag`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/12-tags/#create-a-new-tag)
     pub async fn create(&self, req: CreateTagRequest) -> Result<Tag, Error> {
         #[derive(Serialize)]
         struct Body {
@@ -53,6 +62,10 @@ impl<'a> TagHandler<'a> {
     }
 
     /// Modifies an existing tag.
+    ///
+    /// `PUT /1.3/tag/{name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/12-tags/#modify-existing-tag)
     pub async fn modify(&self, name: &str, req: ModifyTagRequest) -> Result<Tag, Error> {
         #[derive(Serialize)]
         struct Body {
@@ -66,6 +79,10 @@ impl<'a> TagHandler<'a> {
     }
 
     /// Deletes a tag.
+    ///
+    /// `DELETE /1.3/tag/{name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/12-tags/#delete-tag)
     pub async fn delete(&self, name: &str) -> Result<(), Error> {
         self.client.delete(&format!("/1.3/tag/{name}")).await
     }
@@ -73,6 +90,10 @@ impl<'a> TagHandler<'a> {
     /// Adds one or more tags to a server.
     ///
     /// `tags` is a comma-separated list of tag names, e.g. `"prod,web"`.
+    ///
+    /// `POST /1.3/server/{uuid}/tag/{tags}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/12-tags/#assign-tag-to-a-server)
     pub async fn tag_server(&self, server_uuid: &str, tags: &str) -> Result<(), Error> {
         self.client
             .post_no_response_empty(&format!("/1.3/server/{server_uuid}/tag/{tags}"))
@@ -82,6 +103,10 @@ impl<'a> TagHandler<'a> {
     /// Removes one or more tags from a server.
     ///
     /// `tags` is a comma-separated list of tag names, e.g. `"prod,web"`.
+    ///
+    /// `POST /1.3/server/{uuid}/untag/{tags}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/12-tags/#remove-tag-from-server)
     pub async fn untag_server(&self, server_uuid: &str, tags: &str) -> Result<(), Error> {
         self.client
             .post_no_response_empty(&format!("/1.3/server/{server_uuid}/untag/{tags}"))
