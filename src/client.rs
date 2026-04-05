@@ -41,6 +41,88 @@ impl Client {
             .build()
     }
 
+    // ─── Domain handlers ───────────────────────────────────────────────────
+
+    pub fn account(&self) -> crate::account::AccountHandler<'_> {
+        crate::account::AccountHandler::new(self)
+    }
+
+    pub fn audit_log(&self) -> crate::audit_log::AuditLogHandler<'_> {
+        crate::audit_log::AuditLogHandler::new(self)
+    }
+
+    pub fn file_storage(&self) -> crate::file_storage::FileStorageHandler<'_> {
+        crate::file_storage::FileStorageHandler::new(self)
+    }
+
+    pub fn gateway(&self) -> crate::gateway::GatewayHandler<'_> {
+        crate::gateway::GatewayHandler::new(self)
+    }
+
+    pub fn hosts(&self) -> crate::host::HostHandler<'_> {
+        crate::host::HostHandler::new(self)
+    }
+
+    pub fn ip_addresses(&self) -> crate::ip_address::IpAddressHandler<'_> {
+        crate::ip_address::IpAddressHandler::new(self)
+    }
+
+    pub fn kubernetes(&self) -> crate::kubernetes::KubernetesHandler<'_> {
+        crate::kubernetes::KubernetesHandler::new(self)
+    }
+
+    pub fn load_balancer(&self) -> crate::load_balancer::LoadBalancerHandler<'_> {
+        crate::load_balancer::LoadBalancerHandler::new(self)
+    }
+
+    pub fn managed_database(&self) -> crate::managed_database::DatabaseHandler<'_> {
+        crate::managed_database::DatabaseHandler::new(self)
+    }
+
+    pub fn networks(&self) -> crate::network::NetworkHandler<'_> {
+        crate::network::NetworkHandler::new(self)
+    }
+
+    pub fn object_storage(&self) -> crate::object_storage::ObjectStorageHandler<'_> {
+        crate::object_storage::ObjectStorageHandler::new(self)
+    }
+
+    pub fn partners(&self) -> crate::partner::PartnerHandler<'_> {
+        crate::partner::PartnerHandler::new(self)
+    }
+
+    pub fn permissions(&self) -> crate::permission::PermissionHandler<'_> {
+        crate::permission::PermissionHandler::new(self)
+    }
+
+    pub fn plans(&self) -> crate::plan::PlanHandler<'_> {
+        crate::plan::PlanHandler::new(self)
+    }
+
+    pub fn pricing(&self) -> crate::pricing::PricingHandler<'_> {
+        crate::pricing::PricingHandler::new(self)
+    }
+
+    pub fn servers(&self) -> crate::server::ServerHandler<'_> {
+        crate::server::ServerHandler::new(self)
+    }
+
+    pub fn storages(&self) -> crate::storage::StorageHandler<'_> {
+        crate::storage::StorageHandler::new(self)
+    }
+
+    pub fn tags(&self) -> crate::tag::TagHandler<'_> {
+        crate::tag::TagHandler::new(self)
+    }
+
+    pub fn timezones(&self) -> crate::timezone::TimezoneHandler<'_> {
+        crate::timezone::TimezoneHandler::new(self)
+    }
+
+    pub fn zones(&self) -> crate::zone::ZoneHandler<'_> {
+        crate::zone::ZoneHandler::new(self)
+    }
+
     // ─── Low-level HTTP helpers ──────────────────────────────────────────────
 
     pub(crate) fn url(&self, path: &str) -> String {

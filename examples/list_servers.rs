@@ -12,7 +12,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let client = Client::with_bearer_token(token)?;
 
-    let servers = client.list_servers().await?;
+    let servers = client.servers().list().await?;
 
     if servers.is_empty() {
         println!("No servers found.");
