@@ -1,7 +1,10 @@
 //! Storages — `GET/POST/PUT/DELETE /1.3/storage` + operations.
 
+use std::time::{Duration, Instant};
+
 use serde::{Deserialize, Serialize};
 use serde_with::{DisplayFromStr, PickFirst, serde_as};
+use tokio::time::sleep;
 
 use crate::{client::Client, error::Error, types::common::YesNo};
 
@@ -23,13 +26,14 @@ pub enum StorageState {
 pub enum StorageTier {
     Hdd,
     Maxiops,
-    Archive,
+    Standard,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum StorageType {
     Normal,
+    Disk,
     Backup,
     Cdrom,
     Template,
@@ -72,6 +76,19 @@ pub struct Storage {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub license: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub labels: Option<Vec<crate::types::common::Label>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub template_type: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub progress: Option<String>,
+}
+
+#[serde_as]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StorageDetails {
+    #[serde(flatten)]
+    pub storage: Storage,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub servers: Option<StorageServers>,
     #[serde(
         default,
@@ -81,12 +98,13 @@ pub struct Storage {
     pub backup_rule: Option<BackupRule>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub backups: Option<StorageBackups>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::common::Label>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub template_type: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub progress: Option<String>,
+}
+
+impl std::ops::Deref for StorageDetails {
+    type Target = Storage;
+    fn deref(&self) -> &Storage {
+        &self.storage
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -110,7 +128,7 @@ pub struct BackupRule {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct StorageImport {
+pub struct StorageImportDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub completed_at: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -217,12 +235,36 @@ struct StorageWrapper {
 
 #[derive(Debug, Deserialize)]
 struct StorageResponse {
-    storage: Storage,
+    storage: StorageDetails,
 }
 
 #[derive(Debug, Deserialize)]
 struct StorageImportResponse {
-    storage_import: StorageImport,
+    storage_import: StorageImportDetails,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ResizeStorageFilesystemBackup {
+    pub uuid: String,
+    pub title: String,
+    #[serde(rename = "type")]
+    pub storage_type: String,
+    pub state: String,
+    pub size: u64,
+    pub zone: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub access: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub origin: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub license: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ResizeBackupResponse {
+    storage: ResizeStorageFilesystemBackup,
 }
 
 // ─── Client methods ───────────────────────────────────────────────────────────
@@ -277,13 +319,13 @@ impl Client {
     }
 
     /// Returns details for a specific storage.
-    pub async fn get_storage(&self, uuid: &str) -> Result<Storage, Error> {
+    pub async fn get_storage(&self, uuid: &str) -> Result<StorageDetails, Error> {
         let resp: StorageResponse = self.get(&format!("/1.3/storage/{uuid}")).await?;
         Ok(resp.storage)
     }
 
     /// Creates a new storage.
-    pub async fn create_storage(&self, req: CreateStorageRequest) -> Result<Storage, Error> {
+    pub async fn create_storage(&self, req: CreateStorageRequest) -> Result<StorageDetails, Error> {
         #[derive(Serialize)]
         struct Body {
             storage: CreateStorageRequest,
@@ -297,7 +339,7 @@ impl Client {
         &self,
         uuid: &str,
         req: ModifyStorageRequest,
-    ) -> Result<Storage, Error> {
+    ) -> Result<StorageDetails, Error> {
         #[derive(Serialize)]
         struct Body {
             storage: ModifyStorageRequest,
@@ -318,7 +360,7 @@ impl Client {
         &self,
         uuid: &str,
         req: CloneStorageRequest,
-    ) -> Result<Storage, Error> {
+    ) -> Result<StorageDetails, Error> {
         #[derive(Serialize)]
         struct Body {
             storage: CloneStorageRequest,
@@ -337,7 +379,7 @@ impl Client {
         &self,
         uuid: &str,
         req: TemplatizeStorageRequest,
-    ) -> Result<Storage, Error> {
+    ) -> Result<StorageDetails, Error> {
         #[derive(Serialize)]
         struct Body {
             storage: TemplatizeStorageRequest,
@@ -356,7 +398,7 @@ impl Client {
         &self,
         uuid: &str,
         req: CreateBackupRequest,
-    ) -> Result<Storage, Error> {
+    ) -> Result<StorageDetails, Error> {
         #[derive(Serialize)]
         struct Body {
             storage: CreateBackupRequest,
@@ -392,7 +434,7 @@ impl Client {
         &self,
         uuid: &str,
         req: CreateStorageImportRequest,
-    ) -> Result<StorageImport, Error> {
+    ) -> Result<StorageImportDetails, Error> {
         #[derive(Serialize)]
         struct Body {
             storage_import: CreateStorageImportRequest,
@@ -409,7 +451,7 @@ impl Client {
     }
 
     /// Returns the status of a storage import.
-    pub async fn get_storage_import_details(&self, uuid: &str) -> Result<StorageImport, Error> {
+    pub async fn get_storage_import_details(&self, uuid: &str) -> Result<StorageImportDetails, Error> {
         let resp: StorageImportResponse = self.get(&format!("/1.3/storage/{uuid}/import")).await?;
         Ok(resp.storage_import)
     }
@@ -417,6 +459,42 @@ impl Client {
     /// Cancels an in-progress storage import.
     pub async fn cancel_storage_import(&self, uuid: &str) -> Result<(), Error> {
         self.delete(&format!("/1.3/storage/{uuid}/import")).await
+    }
+
+    /// Resizes the filesystem of a storage device.
+    pub async fn resize_storage_filesystem(
+        &self,
+        uuid: &str,
+    ) -> Result<ResizeStorageFilesystemBackup, Error> {
+        let resp: ResizeBackupResponse = self
+            .post_empty(&format!("/1.3/storage/{uuid}/resize"))
+            .await?;
+        Ok(resp.storage)
+    }
+
+    // ─── Polling helpers ──────────────────────────────────────────────────────
+
+    /// Polls until a storage reaches the desired state or the timeout expires.
+    pub async fn wait_for_storage_state(
+        &self,
+        uuid: &str,
+        desired_state: StorageState,
+        timeout: Duration,
+    ) -> Result<StorageDetails, Error> {
+        let start = Instant::now();
+        loop {
+            let storage = self.get_storage(uuid).await?;
+            if storage.state == desired_state {
+                return Ok(storage);
+            }
+            if start.elapsed() >= timeout {
+                return Err(Error::InvalidConfig(format!(
+                    "timeout waiting for storage {} to reach state {:?}",
+                    uuid, desired_state
+                )));
+            }
+            sleep(Duration::from_secs(5)).await;
+        }
     }
 }
 
@@ -567,9 +645,6 @@ mod tests {
         assert!(storages[0].origin.is_none());
         assert!(storages[0].part_of_plan.is_none());
         assert!(storages[0].created.is_none());
-        assert!(storages[0].servers.is_none());
-        assert!(storages[0].backup_rule.is_none());
-        assert!(storages[0].backups.is_none());
         assert!(storages[0].template_type.is_none());
         assert!(storages[0].progress.is_none());
 
@@ -594,9 +669,6 @@ mod tests {
         );
         assert!(storages[1].tier.is_none());
         assert!(storages[1].part_of_plan.is_none());
-        assert!(storages[1].servers.is_none());
-        assert!(storages[1].backup_rule.is_none());
-        assert!(storages[1].backups.is_none());
         assert!(storages[1].template_type.is_none());
         assert!(storages[1].progress.is_none());
 
@@ -615,9 +687,6 @@ mod tests {
         assert_eq!(storages[2].zone.as_deref(), Some("fi-hel1"));
         assert!(storages[2].origin.is_none());
         assert!(storages[2].created.is_none());
-        assert!(storages[2].servers.is_none());
-        assert!(storages[2].backup_rule.is_none());
-        assert!(storages[2].backups.is_none());
         assert!(storages[2].template_type.is_none());
         assert!(storages[2].progress.is_none());
 
@@ -640,9 +709,6 @@ mod tests {
         assert!(storages[3].origin.is_none());
         assert!(storages[3].part_of_plan.is_none());
         assert!(storages[3].created.is_none());
-        assert!(storages[3].servers.is_none());
-        assert!(storages[3].backup_rule.is_none());
-        assert!(storages[3].backups.is_none());
         assert!(storages[3].progress.is_none());
     }
 
@@ -702,7 +768,7 @@ mod tests {
 
     #[derive(Debug, Deserialize)]
     struct ResizeBackupResponse {
-        resize_backup: Storage,
+        resize_backup: StorageDetails,
     }
 
     // ── Create storage (docs: POST /1.3/storage) ──

@@ -54,20 +54,22 @@ pub mod prelude {
 
     // Pricing / zones / plans
     pub use crate::api::pricing::PriceZone;
-    pub use crate::api::plans::{Plan, ServerSize};
+    pub use crate::api::plans::{Plan, ServerConfiguration};
     pub use crate::api::zones::Zone;
 
     // Servers
     pub use crate::api::servers::{
-        CreateServerGroupRequest, CreateServerRequest, ModifyServerGroupRequest,
-        ModifyServerRequest, RebuildServerRequest, RestartServerRequest, Server, ServerGroup,
-        StopServerRequest,
+        CreateServerGroupRequest, CreateServerRequest, DeleteStorageBackupsMode,
+        ModifyServerGroupRequest, ModifyServerRequest, RebuildServerRequest,
+        RelocateServerRequest, RestartServerRequest, Server, ServerDetails, ServerGroup,
+        ServerState, StopServerRequest,
     };
 
     // Storages
     pub use crate::api::storages::{
         BackupRule, CloneStorageRequest, CreateBackupRequest, CreateStorageRequest,
-        ModifyStorageRequest, Storage,
+        ModifyStorageRequest, ResizeStorageFilesystemBackup, Storage, StorageDetails,
+        StorageState,
     };
 
     // IP addresses
@@ -95,25 +97,29 @@ pub mod prelude {
 
     // Managed databases
     pub use crate::api::managed_database::{
-        CreateDbUserRequest, CreateLogicalDatabaseRequest, CreateManagedDatabaseRequest,
-        DbLogicalDatabase, DbPlan, DbUser, ManagedDatabase, ModifyManagedDatabaseRequest,
+        CloneManagedDatabaseRequest, CreateManagedDatabaseLogicalDatabaseRequest,
+        CreateManagedDatabaseRequest, CreateManagedDatabaseUserRequest, ManagedDatabase,
+        ManagedDatabaseLogicalDatabase, ManagedDatabaseServicePlan, ManagedDatabaseUser,
+        ModifyManagedDatabaseRequest, UpgradeManagedDatabaseVersionRequest,
     };
 
     // Load balancer
     pub use crate::api::load_balancer::{
-        CreateLoadBalancerRequest, LbBackend, LbFrontend, LbPlan, LoadBalancer,
-        ModifyLoadBalancerRequest,
+        CreateLoadBalancerRequest, LoadBalancer, LoadBalancerBackend, LoadBalancerFrontend,
+        LoadBalancerPlan, ModifyLoadBalancerRequest,
     };
 
     // Kubernetes
     pub use crate::api::kubernetes::{
-        CreateClusterRequest, CreateNodeGroupRequest, K8sPlan, KubernetesCluster, NodeGroup,
+        CreateKubernetesClusterRequest, CreateKubernetesNodeGroupRequest, KubernetesCluster,
+        KubernetesNodeGroup, KubernetesPlan,
     };
 
     // Managed object storage
     pub use crate::api::managed_object_storage::{
-        CreateMosServiceRequest, ManagedObjectStorage, MosCredential, MosPolicy, MosRegion,
-        MosUser,
+        CreateManagedObjectStorageRequest, ManagedObjectStorage,
+        ManagedObjectStoragePolicy, ManagedObjectStorageRegion,
+        ManagedObjectStorageUser, ManagedObjectStorageUserAccessKey,
     };
 
     // Gateway

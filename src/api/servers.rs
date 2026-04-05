@@ -3,8 +3,11 @@
 //! Servers: `GET/POST/PUT/DELETE /1.3/server` + actions.
 //! Server Groups: `GET/POST/PUT/DELETE /1.3/server-group`.
 
+use std::time::{Duration, Instant};
+
 use serde::{Deserialize, Serialize};
 use serde_with::{DisplayFromStr, PickFirst, serde_as};
+use tokio::time::sleep;
 
 use crate::{
     api::firewall::{CreateFirewallRuleRequest, FirewallRule},
@@ -30,6 +33,24 @@ pub enum StopType {
     #[default]
     Soft,
     Hard,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum DeleteStorageBackupsMode {
+    Keep,
+    KeepLatest,
+    Delete,
+}
+
+impl std::fmt::Display for DeleteStorageBackupsMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Keep => write!(f, "keep"),
+            Self::KeepLatest => write!(f, "keep_latest"),
+            Self::Delete => write!(f, "delete"),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -199,7 +220,7 @@ pub struct ServerDeviceMetadata {
     pub memory: Option<u64>,
 }
 
-// ─── Server struct ────────────────────────────────────────────────────────────
+// ─── Server struct (basic fields returned by list) ────────────────────────────
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -209,11 +230,27 @@ pub struct Server {
     pub title: String,
     pub state: ServerState,
     pub zone: String,
-    #[serde_as(as = "DisplayFromStr")]
+    #[serde_as(as = "PickFirst<(DisplayFromStr, _)>")]
     pub core_number: u32,
-    #[serde_as(as = "DisplayFromStr")]
+    #[serde_as(as = "PickFirst<(DisplayFromStr, _)>")]
     pub memory_amount: u64,
     pub plan: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub license: Option<f64>,
+    #[serde_as(as = "Option<PickFirst<(DisplayFromStr, _)>>")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub progress: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tags: Option<ServerTags>,
+}
+
+// ─── ServerDetails struct (full detail returned by get/create/modify/actions) ─
+
+#[serde_as]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ServerDetails {
+    #[serde(flatten)]
+    pub server: Server,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub firewall: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -233,13 +270,9 @@ pub struct Server {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub storage_devices: Option<ServerStorageDevices>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tags: Option<ServerTags>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub networking: Option<ServerNetworking>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<crate::types::common::Labels>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub license: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -264,6 +297,13 @@ pub struct Server {
     pub devices: Option<ServerDevices>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
+}
+
+impl std::ops::Deref for ServerDetails {
+    type Target = Server;
+    fn deref(&self) -> &Server {
+        &self.server
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -296,6 +336,11 @@ pub struct ServerInterfaces {
 }
 
 // ─── Request types ────────────────────────────────────────────────────────────
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RelocateServerRequest {
+    pub zone: String,
+}
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -568,7 +613,7 @@ struct ServerListWrapper {
 
 #[derive(Debug, Deserialize)]
 struct ServerResponse {
-    server: Server,
+    server: ServerDetails,
 }
 
 #[derive(Debug, Deserialize)]
@@ -611,13 +656,13 @@ impl Client {
     }
 
     /// Returns details for a specific server.
-    pub async fn get_server(&self, uuid: &str) -> Result<Server, Error> {
+    pub async fn get_server(&self, uuid: &str) -> Result<ServerDetails, Error> {
         let resp: ServerResponse = self.get(&format!("/1.3/server/{uuid}")).await?;
         Ok(resp.server)
     }
 
     /// Creates a new server.
-    pub async fn create_server(&self, req: CreateServerRequest) -> Result<Server, Error> {
+    pub async fn create_server(&self, req: CreateServerRequest) -> Result<ServerDetails, Error> {
         #[derive(Serialize)]
         struct Body {
             server: CreateServerRequest,
@@ -631,7 +676,7 @@ impl Client {
         &self,
         uuid: &str,
         req: ModifyServerRequest,
-    ) -> Result<Server, Error> {
+    ) -> Result<ServerDetails, Error> {
         #[derive(Serialize)]
         struct Body {
             server: ModifyServerRequest,
@@ -647,18 +692,45 @@ impl Client {
         self.delete(&format!("/1.3/server/{uuid}")).await
     }
 
+    /// Deletes a server and its attached storage devices.
+    pub async fn delete_server_and_storages(
+        &self,
+        uuid: &str,
+        backups: DeleteStorageBackupsMode,
+    ) -> Result<(), Error> {
+        let req = self
+            .request(
+                reqwest::Method::DELETE,
+                &format!("/1.3/server/{uuid}"),
+            )
+            .query(&[("storages", "1"), ("backups", &backups.to_string())]);
+        self.send_empty(req).await
+    }
+
     // ─── Actions ──────────────────────────────────────────────────────────────
 
     /// Starts a stopped server.
-    pub async fn start_server(&self, uuid: &str) -> Result<Server, Error> {
+    pub async fn start_server(&self, uuid: &str) -> Result<ServerDetails, Error> {
         let resp: ServerResponse = self
             .post_empty(&format!("/1.3/server/{uuid}/start"))
             .await?;
         Ok(resp.server)
     }
 
+    /// Relocates a server to a different zone.
+    pub async fn relocate_server(
+        &self,
+        uuid: &str,
+        req: &RelocateServerRequest,
+    ) -> Result<ServerDetails, Error> {
+        let resp: ServerResponse = self
+            .post(&format!("/1.3/server/{uuid}/relocate"), req)
+            .await?;
+        Ok(resp.server)
+    }
+
     /// Stops a running server.
-    pub async fn stop_server(&self, uuid: &str, req: StopServerRequest) -> Result<Server, Error> {
+    pub async fn stop_server(&self, uuid: &str, req: StopServerRequest) -> Result<ServerDetails, Error> {
         #[derive(Serialize)]
         struct Body {
             stop_server: StopServerRequest,
@@ -677,7 +749,7 @@ impl Client {
         &self,
         uuid: &str,
         req: RestartServerRequest,
-    ) -> Result<Server, Error> {
+    ) -> Result<ServerDetails, Error> {
         #[derive(Serialize)]
         struct Body {
             restart_server: RestartServerRequest,
@@ -704,7 +776,7 @@ impl Client {
         &self,
         uuid: &str,
         req: RebuildServerRequest,
-    ) -> Result<Server, Error> {
+    ) -> Result<ServerDetails, Error> {
         #[derive(Serialize)]
         struct Body {
             server_rebuild: RebuildServerRequest,
@@ -727,7 +799,7 @@ impl Client {
         &self,
         server_uuid: &str,
         req: AttachStorageRequest,
-    ) -> Result<Server, Error> {
+    ) -> Result<ServerDetails, Error> {
         #[derive(Serialize)]
         struct Body {
             storage_device: AttachStorageRequest,
@@ -748,7 +820,7 @@ impl Client {
         &self,
         server_uuid: &str,
         req: DetachStorageRequest,
-    ) -> Result<Server, Error> {
+    ) -> Result<ServerDetails, Error> {
         #[derive(Serialize)]
         struct Body {
             storage_device: DetachStorageRequest,
@@ -769,7 +841,7 @@ impl Client {
         &self,
         server_uuid: &str,
         req: LoadCdromRequest,
-    ) -> Result<Server, Error> {
+    ) -> Result<ServerDetails, Error> {
         #[derive(Serialize)]
         struct Body {
             storage_device: LoadCdromRequest,
@@ -786,7 +858,7 @@ impl Client {
     }
 
     /// Ejects the CDROM from the server's virtual optical drive.
-    pub async fn eject_cdrom(&self, server_uuid: &str) -> Result<Server, Error> {
+    pub async fn eject_cdrom(&self, server_uuid: &str) -> Result<ServerDetails, Error> {
         let resp: ServerResponse = self
             .post_empty(&format!("/1.3/server/{server_uuid}/cdrom/eject"))
             .await?;
@@ -803,7 +875,7 @@ impl Client {
     // ─── Firewall rules ───────────────────────────────────────────────────────
 
     /// Returns all firewall rules for a server.
-    pub async fn list_server_firewall_rules(
+    pub async fn get_server_firewall_rules(
         &self,
         server_uuid: &str,
     ) -> Result<Vec<FirewallRule>, Error> {
@@ -858,6 +930,33 @@ impl Client {
         .await
     }
 
+    /// Replaces all firewall rules for a server.
+    pub async fn create_server_firewall_rules(
+        &self,
+        server_uuid: &str,
+        rules: &[CreateFirewallRuleRequest],
+    ) -> Result<Vec<FirewallRule>, Error> {
+        #[derive(Serialize)]
+        struct Inner<'a> {
+            firewall_rule: &'a [CreateFirewallRuleRequest],
+        }
+        #[derive(Serialize)]
+        struct Body<'a> {
+            firewall_rules: Inner<'a>,
+        }
+        let resp: FirewallRuleListResponse = self
+            .put(
+                &format!("/1.3/server/{server_uuid}/firewall_rule"),
+                &Body {
+                    firewall_rules: Inner {
+                        firewall_rule: rules,
+                    },
+                },
+            )
+            .await?;
+        Ok(resp.firewall_rules.firewall_rule)
+    }
+
     // ─── Server Groups ────────────────────────────────────────────────────────
 
     /// Returns a list of all server groups.
@@ -909,6 +1008,31 @@ impl Client {
     /// Deletes a server group.
     pub async fn delete_server_group(&self, uuid: &str) -> Result<(), Error> {
         self.delete(&format!("/1.3/server-group/{uuid}")).await
+    }
+
+    // ─── Polling helpers ──────────────────────────────────────────────────────
+
+    /// Polls until a server reaches the desired state or the timeout expires.
+    pub async fn wait_for_server_state(
+        &self,
+        uuid: &str,
+        desired_state: ServerState,
+        timeout: Duration,
+    ) -> Result<ServerDetails, Error> {
+        let start = Instant::now();
+        loop {
+            let details = self.get_server(uuid).await?;
+            if details.server.state == desired_state {
+                return Ok(details);
+            }
+            if start.elapsed() >= timeout {
+                return Err(Error::InvalidConfig(format!(
+                    "timeout waiting for server {} to reach state {:?}",
+                    uuid, desired_state
+                )));
+            }
+            sleep(Duration::from_secs(5)).await;
+        }
     }
 }
 
@@ -1172,16 +1296,10 @@ mod tests {
         assert_eq!(s0.core_number, 1);
         assert_eq!(s0.memory_amount, 2048);
         assert_eq!(s0.license, Some(0.0));
-        assert_eq!(s0.plan_ipv4_bytes.as_deref(), Some("34253332"));
-        assert_eq!(s0.plan_ipv6_bytes.as_deref(), Some("0"));
         let tags0 = &s0.tags.as_ref().unwrap().tag;
         assert_eq!(tags0.len(), 2);
         assert_eq!(tags0[0], "PROD");
         assert_eq!(tags0[1], "CentOS");
-        let labels0 = &s0.labels.as_ref().unwrap().label;
-        assert_eq!(labels0.len(), 1);
-        assert_eq!(labels0[0].key, "env");
-        assert_eq!(labels0[0].value, "prod");
         // Server 1
         let s1 = &resp.servers.server[1];
         assert_eq!(s1.uuid, "009d64ef-31d1-4684-a26b-c86c955cbf46");
@@ -1193,13 +1311,10 @@ mod tests {
         assert_eq!(s1.core_number, 1);
         assert_eq!(s1.memory_amount, 512);
         assert_eq!(s1.license, Some(0.0));
-        assert!(s1.plan_ipv4_bytes.is_none());
-        assert!(s1.plan_ipv6_bytes.is_none());
         let tags1 = &s1.tags.as_ref().unwrap().tag;
         assert_eq!(tags1.len(), 2);
         assert_eq!(tags1[0], "DEV");
         assert_eq!(tags1[1], "Ubuntu");
-        assert!(s1.labels.as_ref().unwrap().label.is_empty());
     }
 
     /// Minimal server (only required fields) still deserializes.

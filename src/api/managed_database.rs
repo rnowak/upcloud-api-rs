@@ -7,7 +7,7 @@ use crate::{client::Client, error::Error};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
-pub enum DbState {
+pub enum ManagedDatabaseState {
     Running,
     Rebuilding,
     Rebalancing,
@@ -23,7 +23,7 @@ pub enum DbState {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
-pub enum DbUserType {
+pub enum ManagedDatabaseUserType {
     Primary,
     Normal,
     Readonly,
@@ -40,7 +40,7 @@ pub struct ManagedDatabase {
     pub zone: String,
     #[serde(rename = "type")]
     pub db_type: String,
-    pub state: DbState,
+    pub state: ManagedDatabaseState,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub primary_database: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -54,9 +54,9 @@ pub struct ManagedDatabase {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub service_uri_params: Option<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub components: Option<Vec<DbComponent>>,
+    pub components: Option<Vec<ManagedDatabaseComponent>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub node_states: Option<Vec<DbNodeState>>,
+    pub node_states: Option<Vec<ManagedDatabaseNodeState>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub properties: Option<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -66,13 +66,13 @@ pub struct ManagedDatabase {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub networks: Option<Vec<DbNetwork>>,
+    pub networks: Option<Vec<ManagedDatabaseNetwork>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct DbComponent {
+pub struct ManagedDatabaseComponent {
     pub component: String,
     pub host: String,
     pub port: u16,
@@ -81,14 +81,14 @@ pub struct DbComponent {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct DbNodeState {
+pub struct ManagedDatabaseNodeState {
     pub name: String,
     pub role: String,
     pub state: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct DbNetwork {
+pub struct ManagedDatabaseNetwork {
     pub family: String,
     pub name: String,
     #[serde(rename = "type")]
@@ -97,7 +97,7 @@ pub struct DbNetwork {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct DbPlan {
+pub struct ManagedDatabaseServicePlan {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub node_count: Option<u32>,
@@ -112,10 +112,10 @@ pub struct DbPlan {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct DbUser {
+pub struct ManagedDatabaseUser {
     pub username: String,
     #[serde(rename = "type")]
-    pub user_type: DbUserType,
+    pub user_type: ManagedDatabaseUserType,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -125,7 +125,7 @@ pub struct DbUser {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct DbLogicalDatabase {
+pub struct ManagedDatabaseLogicalDatabase {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lc_collate: Option<String>,
@@ -134,7 +134,7 @@ pub struct DbLogicalDatabase {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct DbSession {
+pub struct ManagedDatabaseSession {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pid: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -152,14 +152,14 @@ pub struct DbSession {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct DbExtension {
+pub struct ManagedDatabaseExtension {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct DbServiceType {
+pub struct ManagedDatabaseType {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
@@ -186,13 +186,13 @@ pub struct CreateManagedDatabaseRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub properties: Option<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub networks: Option<Vec<DbNetworkInput>>,
+    pub networks: Option<Vec<ManagedDatabaseNetworkInput>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct DbNetworkInput {
+pub struct ManagedDatabaseNetworkInput {
     pub family: String,
     pub name: String,
     #[serde(rename = "type")]
@@ -215,11 +215,11 @@ pub struct ModifyManagedDatabaseRequest {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CreateDbUserRequest {
+pub struct CreateManagedDatabaseUserRequest {
     pub username: String,
     pub password: String,
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub user_type: Option<DbUserType>,
+    pub user_type: Option<ManagedDatabaseUserType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pg_allow_replication: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -227,7 +227,7 @@ pub struct CreateDbUserRequest {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct ModifyDbUserRequest {
+pub struct ModifyManagedDatabaseUserRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -237,12 +237,12 @@ pub struct ModifyDbUserRequest {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ResetDbUserPasswordRequest {
+pub struct ResetManagedDatabaseUserPasswordRequest {
     pub password: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CreateLogicalDatabaseRequest {
+pub struct CreateManagedDatabaseLogicalDatabaseRequest {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lc_collate: Option<String>,
@@ -251,7 +251,7 @@ pub struct CreateLogicalDatabaseRequest {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct DbLogsParams {
+pub struct GetManagedDatabaseLogsRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub offset: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -261,7 +261,7 @@ pub struct DbLogsParams {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct DbSessionsParams {
+pub struct GetManagedDatabaseSessionsRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -271,9 +271,29 @@ pub struct DbSessionsParams {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TerminateQueriesRequest {
+pub struct TerminateManagedDatabaseQueriesRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub terminate_after: Option<u32>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CloneManagedDatabaseRequest {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub clone_time: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub backup_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hostname_prefix: Option<String>,
+    pub plan: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub title: Option<String>,
+    pub zone: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct UpgradeManagedDatabaseVersionRequest {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub target_version: Option<String>,
 }
 
 // ─── Client methods ───────────────────────────────────────────────────────────
@@ -282,34 +302,34 @@ impl Client {
     // ─── Service types ─────────────────────────────────────────────────────────
 
     /// Returns a list of available managed database service types.
-    pub async fn list_database_types(&self) -> Result<Vec<DbServiceType>, Error> {
+    pub async fn list_managed_database_types(&self) -> Result<Vec<ManagedDatabaseType>, Error> {
         self.get("/1.3/database/service-types").await
     }
 
     /// Returns available PostgreSQL extensions (global list).
-    pub async fn list_pg_available_extensions(&self) -> Result<Vec<DbExtension>, Error> {
+    pub async fn list_managed_database_pg_extensions(&self) -> Result<Vec<ManagedDatabaseExtension>, Error> {
         self.get("/1.3/database/pg/available-extensions").await
     }
 
     /// Returns a list of available database plans.
-    pub async fn list_database_plans(&self) -> Result<Vec<DbPlan>, Error> {
+    pub async fn list_managed_database_plans(&self) -> Result<Vec<ManagedDatabaseServicePlan>, Error> {
         self.get("/1.3/database/plans").await
     }
 
     // ─── Services ──────────────────────────────────────────────────────────────
 
     /// Returns a list of all managed database services.
-    pub async fn list_databases(&self) -> Result<Vec<ManagedDatabase>, Error> {
+    pub async fn list_managed_databases(&self) -> Result<Vec<ManagedDatabase>, Error> {
         self.get("/1.3/database").await
     }
 
     /// Returns details for a specific managed database.
-    pub async fn get_database(&self, uuid: &str) -> Result<ManagedDatabase, Error> {
+    pub async fn get_managed_database(&self, uuid: &str) -> Result<ManagedDatabase, Error> {
         self.get(&format!("/1.3/database/{uuid}")).await
     }
 
     /// Creates a new managed database.
-    pub async fn create_database(
+    pub async fn create_managed_database(
         &self,
         req: CreateManagedDatabaseRequest,
     ) -> Result<ManagedDatabase, Error> {
@@ -317,7 +337,7 @@ impl Client {
     }
 
     /// Modifies an existing managed database.
-    pub async fn modify_database(
+    pub async fn modify_managed_database(
         &self,
         uuid: &str,
         req: ModifyManagedDatabaseRequest,
@@ -326,33 +346,33 @@ impl Client {
     }
 
     /// Deletes a managed database.
-    pub async fn delete_database(&self, uuid: &str) -> Result<(), Error> {
+    pub async fn delete_managed_database(&self, uuid: &str) -> Result<(), Error> {
         self.delete(&format!("/1.3/database/{uuid}")).await
     }
 
     /// Starts a managed database.
-    pub async fn start_database(&self, uuid: &str) -> Result<ManagedDatabase, Error> {
+    pub async fn start_managed_database(&self, uuid: &str) -> Result<ManagedDatabase, Error> {
         self.post_empty(&format!("/1.3/database/{uuid}/start")).await
     }
 
     /// Shuts down a managed database.
-    pub async fn shutdown_database(&self, uuid: &str) -> Result<ManagedDatabase, Error> {
+    pub async fn shutdown_managed_database(&self, uuid: &str) -> Result<ManagedDatabase, Error> {
         self.post_empty(&format!("/1.3/database/{uuid}/shutdown"))
             .await
     }
 
     /// Returns logs for a managed database.
-    pub async fn get_database_logs(
+    pub async fn get_managed_database_logs(
         &self,
         uuid: &str,
-        params: DbLogsParams,
+        params: GetManagedDatabaseLogsRequest,
     ) -> Result<serde_json::Value, Error> {
         self.get_with_query(&format!("/1.3/database/{uuid}/logs"), &params)
             .await
     }
 
     /// Returns metrics for a managed database.
-    pub async fn get_database_metrics(
+    pub async fn get_managed_database_metrics(
         &self,
         uuid: &str,
     ) -> Result<serde_json::Value, Error> {
@@ -360,17 +380,17 @@ impl Client {
     }
 
     /// Returns active sessions for a managed database.
-    pub async fn list_database_sessions(
+    pub async fn list_managed_database_sessions(
         &self,
         uuid: &str,
-        params: DbSessionsParams,
-    ) -> Result<Vec<DbSession>, Error> {
+        params: GetManagedDatabaseSessionsRequest,
+    ) -> Result<Vec<ManagedDatabaseSession>, Error> {
         self.get_with_query(&format!("/1.3/database/{uuid}/sessions"), &params)
             .await
     }
 
     /// Returns query statistics for a managed database.
-    pub async fn get_database_query_statistics(
+    pub async fn get_managed_database_query_statistics(
         &self,
         uuid: &str,
     ) -> Result<serde_json::Value, Error> {
@@ -379,7 +399,7 @@ impl Client {
     }
 
     /// Returns current running queries.
-    pub async fn get_database_current_queries(
+    pub async fn get_managed_database_current_queries(
         &self,
         uuid: &str,
     ) -> Result<serde_json::Value, Error> {
@@ -388,20 +408,20 @@ impl Client {
     }
 
     /// Terminates current running queries.
-    pub async fn terminate_database_queries(
+    pub async fn terminate_managed_database_queries(
         &self,
         uuid: &str,
-        req: TerminateQueriesRequest,
+        req: TerminateManagedDatabaseQueriesRequest,
     ) -> Result<(), Error> {
         self.delete_with_body(&format!("/1.3/database/{uuid}/current-queries"), &req)
             .await
     }
 
     /// Returns available PostgreSQL extensions for a specific database instance.
-    pub async fn list_database_available_extensions(
+    pub async fn list_managed_database_available_extensions(
         &self,
         uuid: &str,
-    ) -> Result<Vec<DbExtension>, Error> {
+    ) -> Result<Vec<ManagedDatabaseExtension>, Error> {
         self.get(&format!("/1.3/database/{uuid}/available-extensions"))
             .await
     }
@@ -409,49 +429,49 @@ impl Client {
     // ─── Users ────────────────────────────────────────────────────────────────
 
     /// Returns a list of users for a managed database.
-    pub async fn list_database_users(&self, uuid: &str) -> Result<Vec<DbUser>, Error> {
+    pub async fn list_managed_database_users(&self, uuid: &str) -> Result<Vec<ManagedDatabaseUser>, Error> {
         self.get(&format!("/1.3/database/{uuid}/users")).await
     }
 
     /// Returns details for a specific database user.
-    pub async fn get_database_user(&self, uuid: &str, username: &str) -> Result<DbUser, Error> {
+    pub async fn get_managed_database_user(&self, uuid: &str, username: &str) -> Result<ManagedDatabaseUser, Error> {
         self.get(&format!("/1.3/database/{uuid}/users/{username}"))
             .await
     }
 
     /// Creates a new database user.
-    pub async fn create_database_user(
+    pub async fn create_managed_database_user(
         &self,
         uuid: &str,
-        req: CreateDbUserRequest,
-    ) -> Result<DbUser, Error> {
+        req: CreateManagedDatabaseUserRequest,
+    ) -> Result<ManagedDatabaseUser, Error> {
         self.post(&format!("/1.3/database/{uuid}/users"), &req).await
     }
 
     /// Modifies a database user.
-    pub async fn modify_database_user(
+    pub async fn modify_managed_database_user(
         &self,
         uuid: &str,
         username: &str,
-        req: ModifyDbUserRequest,
-    ) -> Result<DbUser, Error> {
+        req: ModifyManagedDatabaseUserRequest,
+    ) -> Result<ManagedDatabaseUser, Error> {
         self.patch(&format!("/1.3/database/{uuid}/users/{username}"), &req)
             .await
     }
 
     /// Deletes a database user.
-    pub async fn delete_database_user(&self, uuid: &str, username: &str) -> Result<(), Error> {
+    pub async fn delete_managed_database_user(&self, uuid: &str, username: &str) -> Result<(), Error> {
         self.delete(&format!("/1.3/database/{uuid}/users/{username}"))
             .await
     }
 
     /// Resets a database user's password.
-    pub async fn reset_database_user_password(
+    pub async fn reset_managed_database_user_password(
         &self,
         uuid: &str,
         username: &str,
-        req: ResetDbUserPasswordRequest,
-    ) -> Result<DbUser, Error> {
+        req: ResetManagedDatabaseUserPasswordRequest,
+    ) -> Result<ManagedDatabaseUser, Error> {
         self.patch(
             &format!("/1.3/database/{uuid}/users/{username}/access-control"),
             &req,
@@ -462,32 +482,50 @@ impl Client {
     // ─── Logical Databases ────────────────────────────────────────────────────
 
     /// Returns a list of logical databases within a managed database service.
-    pub async fn list_logical_databases(&self, uuid: &str) -> Result<Vec<DbLogicalDatabase>, Error> {
+    pub async fn list_managed_database_logical_databases(&self, uuid: &str) -> Result<Vec<ManagedDatabaseLogicalDatabase>, Error> {
         self.get(&format!("/1.3/database/{uuid}/databases")).await
     }
 
     /// Returns details for a specific logical database.
-    pub async fn get_logical_database(
+    pub async fn get_managed_database_logical_database(
         &self,
         uuid: &str,
         dbname: &str,
-    ) -> Result<DbLogicalDatabase, Error> {
+    ) -> Result<ManagedDatabaseLogicalDatabase, Error> {
         self.get(&format!("/1.3/database/{uuid}/databases/{dbname}")).await
     }
 
     /// Creates a new logical database.
-    pub async fn create_logical_database(
+    pub async fn create_managed_database_logical_database(
         &self,
         uuid: &str,
-        req: CreateLogicalDatabaseRequest,
-    ) -> Result<DbLogicalDatabase, Error> {
+        req: CreateManagedDatabaseLogicalDatabaseRequest,
+    ) -> Result<ManagedDatabaseLogicalDatabase, Error> {
         self.post(&format!("/1.3/database/{uuid}/databases"), &req).await
     }
 
     /// Deletes a logical database.
-    pub async fn delete_logical_database(&self, uuid: &str, dbname: &str) -> Result<(), Error> {
+    pub async fn delete_managed_database_logical_database(&self, uuid: &str, dbname: &str) -> Result<(), Error> {
         self.delete(&format!("/1.3/database/{uuid}/databases/{dbname}"))
             .await
+    }
+
+    /// Clones a managed database from a backup or point-in-time.
+    pub async fn clone_managed_database(
+        &self,
+        uuid: &str,
+        req: &CloneManagedDatabaseRequest,
+    ) -> Result<ManagedDatabase, Error> {
+        self.post(&format!("/1.3/database/{uuid}/clone"), req).await
+    }
+
+    /// Upgrades the version of a managed database.
+    pub async fn upgrade_managed_database_version(
+        &self,
+        uuid: &str,
+        req: &UpgradeManagedDatabaseVersionRequest,
+    ) -> Result<ManagedDatabase, Error> {
+        self.post(&format!("/1.3/database/{uuid}/upgrade"), req).await
     }
 }
 
@@ -601,7 +639,7 @@ mod tests {
         assert_eq!(db.title, "pg-2x2xcpu-4gb-50gb-de-fra1");
         assert_eq!(db.plan, "2x2xCPU-4GB-50GB");
         assert_eq!(db.db_type, "pg");
-        assert_eq!(db.state, DbState::Running);
+        assert_eq!(db.state, ManagedDatabaseState::Running);
         assert_eq!(db.zone, "de-fra1");
         assert_eq!(db.powered, Some(true));
         assert!(db.primary_database.is_none());
@@ -656,15 +694,15 @@ mod tests {
 
     #[test]
     fn deserialize_db_user_list() {
-        let users: Vec<DbUser> = serde_json::from_str(DB_USER_LIST_JSON).unwrap();
+        let users: Vec<ManagedDatabaseUser> = serde_json::from_str(DB_USER_LIST_JSON).unwrap();
         assert_eq!(users.len(), 2);
         assert_eq!(users[0].username, "upadmin");
-        assert_eq!(users[0].user_type, DbUserType::Primary);
+        assert_eq!(users[0].user_type, ManagedDatabaseUserType::Primary);
         assert!(users[0].password.is_none());
         assert!(users[0].pg_allow_replication.is_none());
         assert!(users[0].authentication.is_none());
         assert_eq!(users[1].username, "reader");
-        assert_eq!(users[1].user_type, DbUserType::Readonly);
+        assert_eq!(users[1].user_type, ManagedDatabaseUserType::Readonly);
         assert_eq!(users[1].pg_allow_replication, Some(false));
         assert!(users[1].password.is_none());
         assert!(users[1].authentication.is_none());
@@ -672,7 +710,7 @@ mod tests {
 
     #[test]
     fn deserialize_db_logical_database_list() {
-        let dbs: Vec<DbLogicalDatabase> =
+        let dbs: Vec<ManagedDatabaseLogicalDatabase> =
             serde_json::from_str(DB_LOGICAL_DB_LIST_JSON).unwrap();
         assert_eq!(dbs.len(), 2);
         assert_eq!(dbs[0].name, "defaultdb");
@@ -685,7 +723,7 @@ mod tests {
 
     #[test]
     fn deserialize_db_plan_list() {
-        let plans: Vec<DbPlan> = serde_json::from_str(DB_PLAN_JSON).unwrap();
+        let plans: Vec<ManagedDatabaseServicePlan> = serde_json::from_str(DB_PLAN_JSON).unwrap();
         assert_eq!(plans.len(), 2);
         assert_eq!(plans[0].name, "1x1xCPU-2GB-25GB");
         assert_eq!(plans[0].node_count, Some(1));
@@ -703,7 +741,7 @@ mod tests {
 
     #[test]
     fn deserialize_db_session_list() {
-        let sessions: Vec<DbSession> = serde_json::from_str(DB_SESSION_JSON).unwrap();
+        let sessions: Vec<ManagedDatabaseSession> = serde_json::from_str(DB_SESSION_JSON).unwrap();
         assert_eq!(sessions.len(), 1);
         assert_eq!(sessions[0].pid, Some(12345));
         assert_eq!(sessions[0].query.as_deref(), Some("SELECT 1"));
@@ -942,7 +980,7 @@ mod tests {
         assert_eq!(db.plan, "2x2xCPU-4GB-50GB");
         assert_eq!(db.zone, "de-fra1");
         assert_eq!(db.db_type, "pg");
-        assert_eq!(db.state, DbState::Running);
+        assert_eq!(db.state, ManagedDatabaseState::Running);
         assert_eq!(db.powered, Some(true));
         assert!(db.primary_database.is_none());
         assert!(db.access_control.is_none());
@@ -1001,7 +1039,7 @@ mod tests {
     #[test]
     fn deserialize_create_db_user_mysql() {
         let json = r#"{"username": "api-doc-user", "authentication": "caching_sha2_password", "password": "new-password"}"#;
-        let req: CreateDbUserRequest = serde_json::from_str(json).unwrap();
+        let req: CreateManagedDatabaseUserRequest = serde_json::from_str(json).unwrap();
         assert_eq!(req.username, "api-doc-user");
         assert_eq!(req.password, "new-password");
         assert_eq!(req.authentication.as_deref(), Some("caching_sha2_password"));
@@ -1012,21 +1050,21 @@ mod tests {
     #[test]
     fn deserialize_db_user_detail_mysql() {
         let json = r#"{"username": "api-doc-user", "password": "my-password", "authentication": "caching_sha2_password", "type": "normal"}"#;
-        let user: DbUser = serde_json::from_str(json).unwrap();
+        let user: ManagedDatabaseUser = serde_json::from_str(json).unwrap();
         assert_eq!(user.username, "api-doc-user");
         assert_eq!(user.password.as_deref(), Some("my-password"));
         assert_eq!(
             user.authentication.as_deref(),
             Some("caching_sha2_password")
         );
-        assert_eq!(user.user_type, DbUserType::Normal);
+        assert_eq!(user.user_type, ManagedDatabaseUserType::Normal);
         assert!(user.pg_allow_replication.is_none());
     }
 
     #[test]
     fn deserialize_db_user_detail_pg() {
         let json = r#"{"username": "api-doc-user", "password": "new-password", "type": "normal", "pg_access_control": {"allow_replication": true}}"#;
-        // pg_access_control is not in DbUser; parse as Value
+        // pg_access_control is not in ManagedDatabaseUser; parse as Value
         let val: serde_json::Value = serde_json::from_str(json).unwrap();
         assert_eq!(val["username"], "api-doc-user");
         assert_eq!(val["password"], "new-password");
@@ -1038,7 +1076,7 @@ mod tests {
     fn deserialize_modify_db_user_request() {
         let json =
             r#"{"authentication": "caching_sha2_password", "password": "new-password"}"#;
-        let req: ModifyDbUserRequest = serde_json::from_str(json).unwrap();
+        let req: ModifyManagedDatabaseUserRequest = serde_json::from_str(json).unwrap();
         assert_eq!(req.password.as_deref(), Some("new-password"));
         assert_eq!(
             req.authentication.as_deref(),
@@ -1051,7 +1089,7 @@ mod tests {
     fn deserialize_create_logical_db() {
         let json =
             r#"{"name": "database-doc-api", "lc_collate": "en_US.UTF8", "lc_ctype": "en_US.UTF8"}"#;
-        let req: CreateLogicalDatabaseRequest = serde_json::from_str(json).unwrap();
+        let req: CreateManagedDatabaseLogicalDatabaseRequest = serde_json::from_str(json).unwrap();
         assert_eq!(req.name, "database-doc-api");
         assert_eq!(req.lc_collate.as_deref(), Some("en_US.UTF8"));
         assert_eq!(req.lc_ctype.as_deref(), Some("en_US.UTF8"));
@@ -1211,7 +1249,7 @@ mod tests {
         let json = r#"[
   {"uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4", "name": "example-private-network", "family": "IPv4", "type": "private"}
 ]"#;
-        let nets: Vec<DbNetwork> = serde_json::from_str(json).unwrap();
+        let nets: Vec<ManagedDatabaseNetwork> = serde_json::from_str(json).unwrap();
         assert_eq!(nets.len(), 1);
         assert_eq!(nets[0].uuid, "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4");
         assert_eq!(nets[0].name, "example-private-network");

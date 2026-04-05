@@ -182,14 +182,14 @@ pub struct StaticRoute {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct RouterAttachedNetwork {
+pub struct RouterNetwork {
     pub uuid: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct RouterAttachedNetworks {
+pub struct RouterNetworkSlice {
     #[serde(default)]
-    pub network: Vec<RouterAttachedNetwork>,
+    pub network: Vec<RouterNetwork>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -199,7 +199,7 @@ pub struct Router {
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
     pub router_type: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub attached_networks: Option<RouterAttachedNetworks>,
+    pub attached_networks: Option<RouterNetworkSlice>,
     #[serde(default)]
     pub static_routes: Vec<StaticRoute>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -341,6 +341,14 @@ impl Client {
         Ok(resp.networks.network)
     }
 
+    /// Returns a list of networks in a specific zone.
+    pub async fn list_networks_in_zone(&self, zone: &str) -> Result<Vec<Network>, Error> {
+        let resp: NetworkListResponse = self
+            .get_with_query("/1.3/network", &[("zone", zone)])
+            .await?;
+        Ok(resp.networks.network)
+    }
+
     /// Returns details for a specific network.
     pub async fn get_network(&self, uuid: &str) -> Result<Network, Error> {
         let resp: NetworkResponse = self.get(&format!("/1.3/network/{uuid}")).await?;
@@ -377,6 +385,34 @@ impl Client {
     /// Deletes a network.
     pub async fn delete_network(&self, uuid: &str) -> Result<(), Error> {
         self.delete(&format!("/1.3/network/{uuid}")).await
+    }
+
+    /// Attaches a router to a network.
+    pub async fn attach_network_router(
+        &self,
+        network_uuid: &str,
+        router_uuid: &str,
+    ) -> Result<Network, Error> {
+        #[derive(Serialize)]
+        struct Body<'a> {
+            router: &'a str,
+        }
+        let resp: NetworkResponse = self
+            .put(
+                &format!("/1.3/network/{network_uuid}/router"),
+                &Body { router: router_uuid },
+            )
+            .await?;
+        Ok(resp.network)
+    }
+
+    /// Detaches the router from a network.
+    pub async fn detach_network_router(
+        &self,
+        network_uuid: &str,
+    ) -> Result<(), Error> {
+        self.delete(&format!("/1.3/network/{network_uuid}/router"))
+            .await
     }
 
     /// Returns the networking configuration for a server.
