@@ -60,6 +60,10 @@ pub use client::{Client, ClientBuilder};
 pub use config::{AuthMode, ClientConfig};
 pub use error::{ApiError, Error};
 
+/// Re-export of [`reqwest`] to guarantee version compatibility when using
+/// [`ClientBuilder::http_client()`] with a custom `reqwest::Client`.
+pub use reqwest;
+
 /// Convenience re-exports of the most commonly used types.
 pub mod prelude {
     pub use crate::client::{Client, ClientBuilder};

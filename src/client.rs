@@ -342,7 +342,7 @@ impl ClientBuilder {
     /// use std::time::Duration;
     /// use upcloud_api_rs::Client;
     ///
-    /// let http = reqwest::Client::builder()
+    /// let http = upcloud_api_rs::reqwest::Client::builder()
     ///     .timeout(Duration::from_secs(120))
     ///     .build()
     ///     .unwrap();
