@@ -8,19 +8,15 @@ use crate::{client::Client, error::Error, types::common::PageParams};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
-pub enum FileStorageState {
+pub enum FileStorageConfiguredStatus {
     Started,
     Stopped,
-    Running,
-    Pending,
-    Deleting,
-    Error,
 }
 
 /// Access permission for a file storage share ACL entry.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
-pub enum SharePermission {
+pub enum FileStorageShareACLPermission {
     Ro,
     Rw,
 }
@@ -44,7 +40,7 @@ pub struct FileStorageAcl {
     pub name: String,
     /// The IP address or CIDR block allowed to access this share.
     pub target: String,
-    pub permission: SharePermission,
+    pub permission: FileStorageShareACLPermission,
 }
 
 /// An NFS export share within a file storage service.
@@ -79,9 +75,9 @@ pub struct FileStorage {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub configured_status: Option<String>,
-    #[serde(alias = "operational_state")]
-    pub state: FileStorageState,
+    pub configured_status: Option<FileStorageConfiguredStatus>,
+    #[serde(alias = "state")]
+    pub operational_state: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub size_gib: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -157,7 +153,7 @@ pub struct CreateShareRequest {
 pub struct CreateShareAcl {
     pub name: String,
     pub target: String,
-    pub permission: SharePermission,
+    pub permission: FileStorageShareACLPermission,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -403,10 +399,10 @@ mod tests {
         assert_eq!(fs.uuid, "17871d62-6964-4336-b68d-4a85a8ee10fe");
         assert_eq!(fs.name, "test2");
         assert_eq!(fs.zone, "fi-hel2");
-        assert_eq!(fs.state, FileStorageState::Running);
+        assert_eq!(fs.operational_state.as_deref(), Some("running"));
         assert_eq!(fs.size_gib, Some(250));
         assert_eq!(fs.encrypted, Some(false));
-        assert_eq!(fs.configured_status.as_deref(), Some("started"));
+        assert_eq!(fs.configured_status, Some(FileStorageConfiguredStatus::Started));
 
         assert!(fs.plan.is_none());
         assert_eq!(fs.created_at.as_deref(), Some("2025-08-01T10:40:04.140473Z"));
@@ -429,14 +425,14 @@ mod tests {
         assert_eq!(fs.shares[0].acl.len(), 1);
         assert_eq!(fs.shares[0].acl[0].name, "read");
         assert_eq!(fs.shares[0].acl[0].target, "*");
-        assert_eq!(fs.shares[0].acl[0].permission, SharePermission::Ro);
+        assert_eq!(fs.shares[0].acl[0].permission, FileStorageShareACLPermission::Ro);
         assert!(fs.shares[0].deleting.is_none());
         assert_eq!(fs.shares[1].name, "proj");
         assert_eq!(fs.shares[1].path, "/project/data");
         assert_eq!(fs.shares[1].acl.len(), 1);
         assert_eq!(fs.shares[1].acl[0].name, "write");
         assert_eq!(fs.shares[1].acl[0].target, "10.10.10.0/24");
-        assert_eq!(fs.shares[1].acl[0].permission, SharePermission::Rw);
+        assert_eq!(fs.shares[1].acl[0].permission, FileStorageShareACLPermission::Rw);
         assert!(fs.shares[1].deleting.is_none());
 
         // Labels
@@ -453,8 +449,8 @@ mod tests {
         assert_eq!(fs.name, "test2");
         assert_eq!(fs.zone, "fi-hel2");
         assert!(fs.plan.is_none());
-        assert_eq!(fs.configured_status.as_deref(), Some("started"));
-        assert_eq!(fs.state, FileStorageState::Running);
+        assert_eq!(fs.configured_status, Some(FileStorageConfiguredStatus::Started));
+        assert_eq!(fs.operational_state.as_deref(), Some("running"));
         assert_eq!(fs.size_gib, Some(250));
         assert_eq!(fs.encrypted, Some(false));
         assert_eq!(fs.created_at.as_deref(), Some("2025-08-01T10:40:04.140473Z"));
@@ -477,7 +473,7 @@ mod tests {
         assert_eq!(fs.shares[0].acl.len(), 1);
         assert_eq!(fs.shares[0].acl[0].name, "read");
         assert_eq!(fs.shares[0].acl[0].target, "*");
-        assert_eq!(fs.shares[0].acl[0].permission, SharePermission::Ro);
+        assert_eq!(fs.shares[0].acl[0].permission, FileStorageShareACLPermission::Ro);
         assert!(fs.shares[0].deleting.is_none());
 
         // Labels
@@ -510,7 +506,7 @@ mod tests {
         assert_eq!(shares[0].acl.len(), 1);
         assert_eq!(shares[0].acl[0].name, "write-all");
         assert_eq!(shares[0].acl[0].target, "*");
-        assert_eq!(shares[0].acl[0].permission, SharePermission::Rw);
+        assert_eq!(shares[0].acl[0].permission, FileStorageShareACLPermission::Rw);
         assert!(shares[0].deleting.is_none());
 
         assert_eq!(shares[1].name, "share2");
@@ -518,7 +514,7 @@ mod tests {
         assert_eq!(shares[1].acl.len(), 1);
         assert_eq!(shares[1].acl[0].name, "read-only-all");
         assert_eq!(shares[1].acl[0].target, "*");
-        assert_eq!(shares[1].acl[0].permission, SharePermission::Ro);
+        assert_eq!(shares[1].acl[0].permission, FileStorageShareACLPermission::Ro);
         assert!(shares[1].deleting.is_none());
     }
 
@@ -812,13 +808,13 @@ mod tests {
         assert_eq!(req.shares[0].acl.len(), 1);
         assert_eq!(req.shares[0].acl[0].name, "read");
         assert_eq!(req.shares[0].acl[0].target, "*");
-        assert_eq!(req.shares[0].acl[0].permission, SharePermission::Ro);
+        assert_eq!(req.shares[0].acl[0].permission, FileStorageShareACLPermission::Ro);
         assert_eq!(req.shares[1].name, "proj");
         assert_eq!(req.shares[1].path, "/project/data");
         assert_eq!(req.shares[1].acl.len(), 1);
         assert_eq!(req.shares[1].acl[0].name, "write");
         assert_eq!(req.shares[1].acl[0].target, "192.168.147.0/24");
-        assert_eq!(req.shares[1].acl[0].permission, SharePermission::Rw);
+        assert_eq!(req.shares[1].acl[0].permission, FileStorageShareACLPermission::Rw);
         let labels = req.labels.as_ref().unwrap();
         assert_eq!(labels.len(), 1);
         assert_eq!(labels[0].key, "environment");
@@ -897,14 +893,14 @@ mod tests {
         assert_eq!(shares[0].acl.len(), 1);
         assert_eq!(shares[0].acl[0].name, "write-all");
         assert_eq!(shares[0].acl[0].target, "*");
-        assert_eq!(shares[0].acl[0].permission, SharePermission::Rw);
+        assert_eq!(shares[0].acl[0].permission, FileStorageShareACLPermission::Rw);
         assert!(shares[0].deleting.is_none());
         assert_eq!(shares[1].name, "share2");
         assert_eq!(shares[1].path, "/share-1/share-2");
         assert_eq!(shares[1].acl.len(), 1);
         assert_eq!(shares[1].acl[0].name, "read-only-all");
         assert_eq!(shares[1].acl[0].target, "*");
-        assert_eq!(shares[1].acl[0].permission, SharePermission::Ro);
+        assert_eq!(shares[1].acl[0].permission, FileStorageShareACLPermission::Ro);
         assert!(shares[1].deleting.is_none());
     }
 
@@ -920,14 +916,14 @@ mod tests {
         assert_eq!(shares[0].acl.len(), 1);
         assert_eq!(shares[0].acl[0].name, "acl1");
         assert_eq!(shares[0].acl[0].target, "192.168.147.2");
-        assert_eq!(shares[0].acl[0].permission, SharePermission::Rw);
+        assert_eq!(shares[0].acl[0].permission, FileStorageShareACLPermission::Rw);
         assert!(shares[0].deleting.is_none());
         assert_eq!(shares[1].name, "share2");
         assert_eq!(shares[1].path, "/share-1/share-2");
         assert_eq!(shares[1].acl.len(), 1);
         assert_eq!(shares[1].acl[0].name, "acl1");
         assert_eq!(shares[1].acl[0].target, "*");
-        assert_eq!(shares[1].acl[0].permission, SharePermission::Ro);
+        assert_eq!(shares[1].acl[0].permission, FileStorageShareACLPermission::Ro);
         assert!(shares[1].deleting.is_none());
     }
 
@@ -947,7 +943,7 @@ mod tests {
         assert_eq!(shares[1].acl.len(), 1);
         assert_eq!(shares[1].acl[0].name, "acl1");
         assert_eq!(shares[1].acl[0].target, "*");
-        assert_eq!(shares[1].acl[0].permission, SharePermission::Rw);
+        assert_eq!(shares[1].acl[0].permission, FileStorageShareACLPermission::Rw);
         assert!(shares[1].deleting.is_none());
     }
 
@@ -962,7 +958,7 @@ mod tests {
         assert_eq!(req.acl.len(), 1);
         assert_eq!(req.acl[0].name, "read");
         assert_eq!(req.acl[0].target, "192.168.147.0/24");
-        assert_eq!(req.acl[0].permission, SharePermission::Ro);
+        assert_eq!(req.acl[0].permission, FileStorageShareACLPermission::Ro);
     }
 
     // ─── Test: Share list with deleting flag (#11) ──────────────────────────
@@ -977,7 +973,7 @@ mod tests {
         assert_eq!(shares[0].acl.len(), 1);
         assert_eq!(shares[0].acl[0].name, "write");
         assert_eq!(shares[0].acl[0].target, "*");
-        assert_eq!(shares[0].acl[0].permission, SharePermission::Rw);
+        assert_eq!(shares[0].acl[0].permission, FileStorageShareACLPermission::Rw);
         assert!(shares[0].deleting.is_none());
         assert_eq!(shares[1].name, "logs");
         assert_eq!(shares[1].path, "/project/logs");
@@ -985,7 +981,7 @@ mod tests {
         assert_eq!(shares[1].acl.len(), 1);
         assert_eq!(shares[1].acl[0].name, "read");
         assert_eq!(shares[1].acl[0].target, "192.168.147.0/24");
-        assert_eq!(shares[1].acl[0].permission, SharePermission::Ro);
+        assert_eq!(shares[1].acl[0].permission, FileStorageShareACLPermission::Ro);
     }
 
     // ─── Test: Share detail (#12) ────────────────────────────────────────────
@@ -999,7 +995,7 @@ mod tests {
         assert_eq!(share.acl.len(), 1);
         assert_eq!(share.acl[0].name, "write");
         assert_eq!(share.acl[0].target, "*");
-        assert_eq!(share.acl[0].permission, SharePermission::Rw);
+        assert_eq!(share.acl[0].permission, FileStorageShareACLPermission::Rw);
         assert!(share.deleting.is_none());
     }
 
@@ -1014,7 +1010,7 @@ mod tests {
         assert_eq!(acl.len(), 1);
         assert_eq!(acl[0].name, "read-only");
         assert_eq!(acl[0].target, "192.168.25.0/24");
-        assert_eq!(acl[0].permission, SharePermission::Ro);
+        assert_eq!(acl[0].permission, FileStorageShareACLPermission::Ro);
     }
 
     // ─── Test: ACL list (#14) ────────────────────────────────────────────────
@@ -1026,10 +1022,10 @@ mod tests {
         assert_eq!(acls.len(), 2);
         assert_eq!(acls[0].name, "read-only");
         assert_eq!(acls[0].target, "192.168.147.0/24");
-        assert_eq!(acls[0].permission, SharePermission::Rw);
+        assert_eq!(acls[0].permission, FileStorageShareACLPermission::Rw);
         assert_eq!(acls[1].name, "guest");
         assert_eq!(acls[1].target, "192.168.150.0/24");
-        assert_eq!(acls[1].permission, SharePermission::Ro);
+        assert_eq!(acls[1].permission, FileStorageShareACLPermission::Ro);
     }
 
     // ─── Test: ACL detail (#15) ──────────────────────────────────────────────
@@ -1040,7 +1036,7 @@ mod tests {
             serde_json::from_str(ACL_DETAIL_JSON).unwrap();
         assert_eq!(acl.name, "read-only");
         assert_eq!(acl.target, "*");
-        assert_eq!(acl.permission, SharePermission::Rw);
+        assert_eq!(acl.permission, FileStorageShareACLPermission::Rw);
     }
 
     // ─── Test: Create/modify ACL (#16) ───────────────────────────────────────
@@ -1051,7 +1047,7 @@ mod tests {
             serde_json::from_str(CREATE_ACL_JSON).unwrap();
         assert_eq!(acl.name, "read-only");
         assert_eq!(acl.target, "192.168.25.0/24");
-        assert_eq!(acl.permission, SharePermission::Ro);
+        assert_eq!(acl.permission, FileStorageShareACLPermission::Ro);
     }
 
     // ─── Test: Label list (#17) ──────────────────────────────────────────────
@@ -1086,8 +1082,8 @@ mod tests {
         assert_eq!(fs.name, "test2");
         assert_eq!(fs.zone, "fi-hel2");
         assert!(fs.plan.is_none());
-        assert_eq!(fs.configured_status.as_deref(), Some("started"));
-        assert_eq!(fs.state, FileStorageState::Running);
+        assert_eq!(fs.configured_status, Some(FileStorageConfiguredStatus::Started));
+        assert_eq!(fs.operational_state.as_deref(), Some("running"));
         assert_eq!(fs.size_gib, Some(250));
         assert_eq!(fs.encrypted, Some(false));
         assert_eq!(fs.created_at.as_deref(), Some("2025-08-01T10:40:04.140473Z"));

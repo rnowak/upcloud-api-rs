@@ -3,7 +3,7 @@
 //! Usage:
 //!   UPCLOUD_TOKEN=ucat_... cargo run --example list_object_storages
 
-use upcloud_sdk::{Client, types::common::PageParams};
+use upcloud_api_rs::{Client, types::common::PageParams};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -12,7 +12,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let client = Client::with_bearer_token(token)?;
 
-    let services = client.list_mos_services(PageParams::new()).await?;
+    let services = client.list_managed_object_storages(PageParams::new()).await?;
 
     if services.is_empty() {
         println!("No managed object storage services found.");
@@ -31,7 +31,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("│  State:    {}", state);
         println!("│  Endpoint: {}", endpoint);
 
-        match client.list_mos_buckets(&svc.uuid).await {
+        match client.list_managed_object_storage_buckets(&svc.uuid).await {
             Ok(buckets) if buckets.is_empty() => {
                 println!("│  Buckets:  (none)");
             }

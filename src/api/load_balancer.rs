@@ -7,18 +7,26 @@ use crate::{client::Client, error::Error, types::common::PageParams};
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum LbState {
-    Running,
-    Error,
+#[serde(rename_all = "kebab-case")]
+pub enum LoadBalancerOperationalState {
     Pending,
-    Deleting,
+    SetupAgent,
+    SetupServer,
+    SetupNetwork,
+    SetupLb,
+    SetupDns,
+    Checkup,
+    Running,
+    DeleteDns,
+    DeleteNetwork,
+    DeleteServer,
+    DeleteService,
 }
 
 // ─── Plan ─────────────────────────────────────────────────────────────────────
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LbPlan {
+pub struct LoadBalancerPlan {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub per_month_price_eur: Option<f64>,
@@ -41,14 +49,14 @@ pub struct LbPlan {
 // ─── Load Balancer ────────────────────────────────────────────────────────────
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LbIpAddress {
+pub struct LoadBalancerIPAddress {
     pub address: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub listen_only: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LbNetwork {
+pub struct LoadBalancerNetwork {
     pub name: String,
     #[serde(rename = "type")]
     pub network_type: String,
@@ -67,15 +75,15 @@ pub struct LoadBalancer {
     pub plan: String,
     pub zone: String,
     #[serde(alias = "operational_state")]
-    pub state: LbState,
+    pub state: LoadBalancerOperationalState,
     #[serde(default)]
-    pub backends: Vec<LbBackend>,
+    pub backends: Vec<LoadBalancerBackend>,
     #[serde(default)]
-    pub frontends: Vec<LbFrontend>,
+    pub frontends: Vec<LoadBalancerFrontend>,
     #[serde(default)]
-    pub resolvers: Vec<LbResolver>,
+    pub resolvers: Vec<LoadBalancerResolver>,
     #[serde(default)]
-    pub networks: Vec<LbNetwork>,
+    pub networks: Vec<LoadBalancerNetwork>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -99,7 +107,7 @@ pub struct LoadBalancer {
 // ─── Backend ─────────────────────────────────────────────────────────────────
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LbHealthCheck {
+pub struct LoadBalancerHealthCheck {
     pub interval: u32,
     #[serde(rename = "type")]
     pub check_type: String,
@@ -113,7 +121,7 @@ pub struct LbHealthCheck {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LbBackendMember {
+pub struct LoadBalancerBackendMember {
     pub name: String,
     pub enabled: bool,
     pub ip: String,
@@ -131,7 +139,7 @@ pub struct LbBackendMember {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LbTlsConfig {
+pub struct LoadBalancerTLSConfig {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub certificate_chain: Option<String>,
@@ -146,7 +154,7 @@ pub struct LbTlsConfig {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LbBackend {
+pub struct LoadBalancerBackend {
     pub name: String,
     pub resolver: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -156,11 +164,11 @@ pub struct LbBackend {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub outbound_proxy_protocol: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub health_check: Option<LbHealthCheck>,
+    pub health_check: Option<LoadBalancerHealthCheck>,
     #[serde(default)]
-    pub members: Vec<LbBackendMember>,
+    pub members: Vec<LoadBalancerBackendMember>,
     #[serde(default)]
-    pub tls_configs: Vec<LbTlsConfig>,
+    pub tls_configs: Vec<LoadBalancerTLSConfig>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub properties: Option<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -172,12 +180,12 @@ pub struct LbBackend {
 // ─── Frontend ─────────────────────────────────────────────────────────────────
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LbFrontendNetwork {
+pub struct LoadBalancerFrontendNetwork {
     pub name: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LbFrontendRule {
+pub struct LoadBalancerFrontendRule {
     pub name: String,
     pub priority: u32,
     #[serde(default)]
@@ -193,19 +201,19 @@ pub struct LbFrontendRule {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LbFrontend {
+pub struct LoadBalancerFrontend {
     pub name: String,
     pub port: u16,
     pub mode: String,
     pub default_backend: String,
     #[serde(default)]
-    pub rules: Vec<LbFrontendRule>,
+    pub rules: Vec<LoadBalancerFrontendRule>,
     #[serde(default)]
-    pub tls_configs: Vec<LbTlsConfig>,
+    pub tls_configs: Vec<LoadBalancerTLSConfig>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub properties: Option<serde_json::Value>,
     #[serde(default)]
-    pub networks: Vec<LbFrontendNetwork>,
+    pub networks: Vec<LoadBalancerFrontendNetwork>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -215,7 +223,7 @@ pub struct LbFrontend {
 // ─── Resolver ─────────────────────────────────────────────────────────────────
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LbResolver {
+pub struct LoadBalancerResolver {
     pub name: String,
     #[serde(default)]
     pub nameservers: Vec<String>,
@@ -238,7 +246,7 @@ pub struct CreateLoadBalancerRequest {
     pub plan: String,
     pub zone: String,
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
-    pub networks: Vec<LbNetworkInput>,
+    pub networks: Vec<LoadBalancerNetworkInput>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configured_status: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -246,7 +254,7 @@ pub struct CreateLoadBalancerRequest {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LbNetworkInput {
+pub struct LoadBalancerNetworkInput {
     pub name: String,
     #[serde(rename = "type")]
     pub network_type: String,
@@ -269,20 +277,20 @@ pub struct ModifyLoadBalancerRequest {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CreateBackendRequest {
+pub struct CreateLoadBalancerBackendRequest {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub resolver: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mode: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub health_check: Option<LbHealthCheck>,
+    pub health_check: Option<LoadBalancerHealthCheck>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub properties: Option<serde_json::Value>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CreateBackendMemberRequest {
+pub struct CreateLoadBalancerBackendMemberRequest {
     pub name: String,
     pub ip: String,
     pub port: u16,
@@ -297,19 +305,19 @@ pub struct CreateBackendMemberRequest {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CreateFrontendRequest {
+pub struct CreateLoadBalancerFrontendRequest {
     pub name: String,
     pub port: u16,
     pub mode: String,
     pub default_backend: String,
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
-    pub networks: Vec<LbFrontendNetwork>,
+    pub networks: Vec<LoadBalancerFrontendNetwork>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub properties: Option<serde_json::Value>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CreateFrontendRuleRequest {
+pub struct CreateLoadBalancerFrontendRuleRequest {
     pub name: String,
     pub priority: u32,
     #[serde(default)]
@@ -319,7 +327,7 @@ pub struct CreateFrontendRuleRequest {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CreateResolverRequest {
+pub struct CreateLoadBalancerResolverRequest {
     pub name: String,
     pub nameservers: Vec<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -335,7 +343,7 @@ pub struct CreateResolverRequest {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CreateTlsConfigRequest {
+pub struct CreateLoadBalancerTLSConfigRequest {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub certificate_chain: Option<String>,
@@ -351,13 +359,13 @@ impl Client {
     // ─── Plans ────────────────────────────────────────────────────────────────
 
     /// Returns a list of available load balancer plans.
-    pub async fn list_lb_plans(&self, params: PageParams) -> Result<Vec<LbPlan>, Error> {
+    pub async fn list_load_balancer_plans(&self, params: PageParams) -> Result<Vec<LoadBalancerPlan>, Error> {
         self.get_with_query("/1.3/load-balancer/plans", &params)
             .await
     }
 
     /// Returns details for a specific load balancer plan.
-    pub async fn get_lb_plan(&self, name: &str) -> Result<LbPlan, Error> {
+    pub async fn get_load_balancer_plan(&self, name: &str) -> Result<LoadBalancerPlan, Error> {
         self.get(&format!("/1.3/load-balancer/plans/{name}")).await
     }
 
@@ -398,34 +406,34 @@ impl Client {
     // ─── Backends ─────────────────────────────────────────────────────────────
 
     /// Returns a list of backends for a load balancer.
-    pub async fn list_lb_backends(&self, lb_uuid: &str) -> Result<Vec<LbBackend>, Error> {
+    pub async fn list_load_balancer_backends(&self, lb_uuid: &str) -> Result<Vec<LoadBalancerBackend>, Error> {
         self.get(&format!("/1.3/load-balancer/{lb_uuid}/backends"))
             .await
     }
 
     /// Returns details for a specific backend.
-    pub async fn get_lb_backend(&self, lb_uuid: &str, name: &str) -> Result<LbBackend, Error> {
+    pub async fn get_load_balancer_backend(&self, lb_uuid: &str, name: &str) -> Result<LoadBalancerBackend, Error> {
         self.get(&format!("/1.3/load-balancer/{lb_uuid}/backends/{name}"))
             .await
     }
 
     /// Creates a backend for a load balancer.
-    pub async fn create_lb_backend(
+    pub async fn create_load_balancer_backend(
         &self,
         lb_uuid: &str,
-        req: CreateBackendRequest,
-    ) -> Result<LbBackend, Error> {
+        req: CreateLoadBalancerBackendRequest,
+    ) -> Result<LoadBalancerBackend, Error> {
         self.post(&format!("/1.3/load-balancer/{lb_uuid}/backends"), &req)
             .await
     }
 
     /// Modifies a backend.
-    pub async fn modify_lb_backend(
+    pub async fn modify_load_balancer_backend(
         &self,
         lb_uuid: &str,
         name: &str,
         req: serde_json::Value,
-    ) -> Result<LbBackend, Error> {
+    ) -> Result<LoadBalancerBackend, Error> {
         self.patch(
             &format!("/1.3/load-balancer/{lb_uuid}/backends/{name}"),
             &req,
@@ -434,7 +442,7 @@ impl Client {
     }
 
     /// Deletes a backend.
-    pub async fn delete_lb_backend(&self, lb_uuid: &str, name: &str) -> Result<(), Error> {
+    pub async fn delete_load_balancer_backend(&self, lb_uuid: &str, name: &str) -> Result<(), Error> {
         self.delete(&format!("/1.3/load-balancer/{lb_uuid}/backends/{name}"))
             .await
     }
@@ -442,11 +450,11 @@ impl Client {
     // ─── Backend members ──────────────────────────────────────────────────────
 
     /// Returns a list of members for a backend.
-    pub async fn list_lb_backend_members(
+    pub async fn list_load_balancer_backend_members(
         &self,
         lb_uuid: &str,
         backend_name: &str,
-    ) -> Result<Vec<LbBackendMember>, Error> {
+    ) -> Result<Vec<LoadBalancerBackendMember>, Error> {
         self.get(&format!(
             "/1.3/load-balancer/{lb_uuid}/backends/{backend_name}/members"
         ))
@@ -454,12 +462,12 @@ impl Client {
     }
 
     /// Creates a member in a backend.
-    pub async fn create_lb_backend_member(
+    pub async fn create_load_balancer_backend_member(
         &self,
         lb_uuid: &str,
         backend_name: &str,
-        req: CreateBackendMemberRequest,
-    ) -> Result<LbBackendMember, Error> {
+        req: CreateLoadBalancerBackendMemberRequest,
+    ) -> Result<LoadBalancerBackendMember, Error> {
         self.post(
             &format!("/1.3/load-balancer/{lb_uuid}/backends/{backend_name}/members"),
             &req,
@@ -468,7 +476,7 @@ impl Client {
     }
 
     /// Deletes a member from a backend.
-    pub async fn delete_lb_backend_member(
+    pub async fn delete_load_balancer_backend_member(
         &self,
         lb_uuid: &str,
         backend_name: &str,
@@ -483,23 +491,23 @@ impl Client {
     // ─── Frontends ────────────────────────────────────────────────────────────
 
     /// Returns a list of frontends for a load balancer.
-    pub async fn list_lb_frontends(&self, lb_uuid: &str) -> Result<Vec<LbFrontend>, Error> {
+    pub async fn list_load_balancer_frontends(&self, lb_uuid: &str) -> Result<Vec<LoadBalancerFrontend>, Error> {
         self.get(&format!("/1.3/load-balancer/{lb_uuid}/frontends"))
             .await
     }
 
     /// Creates a frontend for a load balancer.
-    pub async fn create_lb_frontend(
+    pub async fn create_load_balancer_frontend(
         &self,
         lb_uuid: &str,
-        req: CreateFrontendRequest,
-    ) -> Result<LbFrontend, Error> {
+        req: CreateLoadBalancerFrontendRequest,
+    ) -> Result<LoadBalancerFrontend, Error> {
         self.post(&format!("/1.3/load-balancer/{lb_uuid}/frontends"), &req)
             .await
     }
 
     /// Deletes a frontend.
-    pub async fn delete_lb_frontend(&self, lb_uuid: &str, name: &str) -> Result<(), Error> {
+    pub async fn delete_load_balancer_frontend(&self, lb_uuid: &str, name: &str) -> Result<(), Error> {
         self.delete(&format!("/1.3/load-balancer/{lb_uuid}/frontends/{name}"))
             .await
     }
@@ -507,12 +515,12 @@ impl Client {
     // ─── Frontend rules ───────────────────────────────────────────────────────
 
     /// Creates a rule for a frontend.
-    pub async fn create_lb_frontend_rule(
+    pub async fn create_load_balancer_frontend_rule(
         &self,
         lb_uuid: &str,
         frontend_name: &str,
-        req: CreateFrontendRuleRequest,
-    ) -> Result<LbFrontendRule, Error> {
+        req: CreateLoadBalancerFrontendRuleRequest,
+    ) -> Result<LoadBalancerFrontendRule, Error> {
         self.post(
             &format!("/1.3/load-balancer/{lb_uuid}/frontends/{frontend_name}/rules"),
             &req,
@@ -521,7 +529,7 @@ impl Client {
     }
 
     /// Deletes a frontend rule.
-    pub async fn delete_lb_frontend_rule(
+    pub async fn delete_load_balancer_frontend_rule(
         &self,
         lb_uuid: &str,
         frontend_name: &str,
@@ -536,23 +544,23 @@ impl Client {
     // ─── Resolvers ────────────────────────────────────────────────────────────
 
     /// Returns a list of resolvers for a load balancer.
-    pub async fn list_lb_resolvers(&self, lb_uuid: &str) -> Result<Vec<LbResolver>, Error> {
+    pub async fn list_load_balancer_resolvers(&self, lb_uuid: &str) -> Result<Vec<LoadBalancerResolver>, Error> {
         self.get(&format!("/1.3/load-balancer/{lb_uuid}/resolvers"))
             .await
     }
 
     /// Creates a resolver.
-    pub async fn create_lb_resolver(
+    pub async fn create_load_balancer_resolver(
         &self,
         lb_uuid: &str,
-        req: CreateResolverRequest,
-    ) -> Result<LbResolver, Error> {
+        req: CreateLoadBalancerResolverRequest,
+    ) -> Result<LoadBalancerResolver, Error> {
         self.post(&format!("/1.3/load-balancer/{lb_uuid}/resolvers"), &req)
             .await
     }
 
     /// Deletes a resolver.
-    pub async fn delete_lb_resolver(&self, lb_uuid: &str, name: &str) -> Result<(), Error> {
+    pub async fn delete_load_balancer_resolver(&self, lb_uuid: &str, name: &str) -> Result<(), Error> {
         self.delete(&format!("/1.3/load-balancer/{lb_uuid}/resolvers/{name}"))
             .await
     }
@@ -560,12 +568,12 @@ impl Client {
     // ─── TLS configs ─────────────────────────────────────────────────────────
 
     /// Creates a TLS config for a backend.
-    pub async fn create_lb_backend_tls_config(
+    pub async fn create_load_balancer_backend_tls_config(
         &self,
         lb_uuid: &str,
         backend_name: &str,
-        req: CreateTlsConfigRequest,
-    ) -> Result<LbTlsConfig, Error> {
+        req: CreateLoadBalancerTLSConfigRequest,
+    ) -> Result<LoadBalancerTLSConfig, Error> {
         self.post(
             &format!("/1.3/load-balancer/{lb_uuid}/backends/{backend_name}/tls-configs"),
             &req,
@@ -574,12 +582,12 @@ impl Client {
     }
 
     /// Creates a TLS config for a frontend.
-    pub async fn create_lb_frontend_tls_config(
+    pub async fn create_load_balancer_frontend_tls_config(
         &self,
         lb_uuid: &str,
         frontend_name: &str,
-        req: CreateTlsConfigRequest,
-    ) -> Result<LbTlsConfig, Error> {
+        req: CreateLoadBalancerTLSConfigRequest,
+    ) -> Result<LoadBalancerTLSConfig, Error> {
         self.post(
             &format!("/1.3/load-balancer/{lb_uuid}/frontends/{frontend_name}/tls-configs"),
             &req,
@@ -728,7 +736,7 @@ mod tests {
 
     #[test]
     fn deserialize_lb_plan_list() {
-        let plans: Vec<LbPlan> = serde_json::from_str(LB_PLAN_LIST_JSON).unwrap();
+        let plans: Vec<LoadBalancerPlan> = serde_json::from_str(LB_PLAN_LIST_JSON).unwrap();
         assert_eq!(plans.len(), 2);
         assert_eq!(plans[0].name, "development");
         assert_eq!(plans[0].per_server_max_sessions, Some(10000));
@@ -759,7 +767,7 @@ mod tests {
         assert_eq!(lb.name, "example-service");
         assert_eq!(lb.plan, "development");
         assert_eq!(lb.zone, "fi-hel1");
-        assert_eq!(lb.state, LbState::Pending);
+        assert_eq!(lb.state, LoadBalancerOperationalState::Pending);
         assert_eq!(lb.configured_status.as_deref(), Some("started"));
         assert_eq!(lb.created_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
         assert_eq!(lb.updated_at.as_deref(), Some("2022-10-04T16:36:09.933249Z"));
@@ -894,7 +902,7 @@ mod tests {
     #[test]
     fn deserialize_lb_plan_detail() {
         let json = r#"{"name": "development", "per_server_max_sessions": 10000, "server_number": 1}"#;
-        let plan: LbPlan = serde_json::from_str(json).unwrap();
+        let plan: LoadBalancerPlan = serde_json::from_str(json).unwrap();
         assert_eq!(plan.name, "development");
         assert_eq!(plan.per_server_max_sessions, Some(10000));
         assert_eq!(plan.server_number, Some(1));
@@ -1017,7 +1025,7 @@ mod tests {
         assert_eq!(lb.name, "example-service");
         assert_eq!(lb.plan, "development");
         assert_eq!(lb.zone, "fi-hel1");
-        assert_eq!(lb.state, LbState::Pending);
+        assert_eq!(lb.state, LoadBalancerOperationalState::Pending);
         assert_eq!(lb.configured_status.as_deref(), Some("started"));
         assert_eq!(lb.dns_name.as_deref(), Some("lb-0a498284629e4629a55d0415a6e89dda-1.upcloudlb.com"));
         assert_eq!(lb.created_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
@@ -1163,7 +1171,7 @@ mod tests {
                 "updated_at": "2022-02-11T17:33:08.490581Z"
             }
         ]"#;
-        let backends: Vec<LbBackend> = serde_json::from_str(json).unwrap();
+        let backends: Vec<LoadBalancerBackend> = serde_json::from_str(json).unwrap();
         assert_eq!(backends.len(), 1);
         let be = &backends[0];
         assert_eq!(be.name, "example-backend-2");
@@ -1208,7 +1216,7 @@ mod tests {
             ],
             "updated_at": "2022-02-11T17:33:08.490581Z"
         }"#;
-        let be: LbBackend = serde_json::from_str(json).unwrap();
+        let be: LoadBalancerBackend = serde_json::from_str(json).unwrap();
         assert_eq!(be.name, "example-backend-1");
         assert_eq!(be.resolver.as_deref(), Some("dns"));
         assert_eq!(be.created_at.as_deref(), Some("2021-12-07T13:58:30.817272Z"));
@@ -1256,7 +1264,7 @@ mod tests {
             {"backup": false, "created_at": "2022-02-11T16:39:55.321306Z", "enabled": true, "ip": "", "max_sessions": 1000, "name": "member.example.com", "port": 8000, "type": "dynamic", "updated_at": "2022-02-11T17:33:08.490581Z", "weight": 100},
             {"backup": false, "created_at": "2021-12-07T13:58:30.817272Z", "enabled": true, "ip": "172.16.1.4", "max_sessions": 1000, "name": "example-member-1", "port": 8000, "type": "static", "updated_at": "2022-02-11T17:33:08.490581Z", "weight": 100}
         ]"#;
-        let members: Vec<LbBackendMember> = serde_json::from_str(json).unwrap();
+        let members: Vec<LoadBalancerBackendMember> = serde_json::from_str(json).unwrap();
         assert_eq!(members.len(), 2);
         assert_eq!(members[0].name, "member.example.com");
         assert_eq!(members[0].member_type, "dynamic");
@@ -1285,7 +1293,7 @@ mod tests {
     #[test]
     fn deserialize_lb_member_detail() {
         let json = r#"{"backup": false, "created_at": "2021-12-07T13:58:30.817272Z", "enabled": true, "ip": "172.16.1.4", "max_sessions": 1000, "name": "example-member-1", "port": 8000, "type": "static", "updated_at": "2022-02-11T17:33:08.490581Z", "weight": 100}"#;
-        let m: LbBackendMember = serde_json::from_str(json).unwrap();
+        let m: LoadBalancerBackendMember = serde_json::from_str(json).unwrap();
         assert_eq!(m.name, "example-member-1");
         assert!(m.enabled);
         assert_eq!(m.ip, "172.16.1.4");
@@ -1328,7 +1336,7 @@ mod tests {
                 "updated_at": "2022-02-11T17:33:08.490581Z"
             }
         ]"#;
-        let frontends: Vec<LbFrontend> = serde_json::from_str(json).unwrap();
+        let frontends: Vec<LoadBalancerFrontend> = serde_json::from_str(json).unwrap();
         assert_eq!(frontends.len(), 1);
         let fe = &frontends[0];
         assert_eq!(fe.name, "example-frontend");
@@ -1395,7 +1403,7 @@ mod tests {
             ],
             "updated_at": "2022-02-11T17:33:08.490581Z"
         }"#;
-        let fe: LbFrontend = serde_json::from_str(json).unwrap();
+        let fe: LoadBalancerFrontend = serde_json::from_str(json).unwrap();
         assert_eq!(fe.name, "example-frontend");
         assert_eq!(fe.port, 443);
         assert_eq!(fe.mode, "http");
@@ -1436,7 +1444,7 @@ mod tests {
             {"certificate_bundle_uuid": "0aded5c1-c7a3-498a-b9c8-a871611c47a2", "created_at": "2022-02-11T17:33:08.490581Z", "name": "example-tls-config-1", "updated_at": "2022-02-11T17:33:08.490581Z"},
             {"certificate_bundle_uuid": "c136c429-d18f-4192-b55e-e7b5079dee40", "created_at": "2021-11-11T11:21:51.121789Z", "name": "example-tls-config-2", "updated_at": "2021-11-11T11:21:51.121789Z"}
         ]"#;
-        let configs: Vec<LbTlsConfig> = serde_json::from_str(json).unwrap();
+        let configs: Vec<LoadBalancerTLSConfig> = serde_json::from_str(json).unwrap();
         assert_eq!(configs.len(), 2);
         assert_eq!(configs[0].name, "example-tls-config-1");
         assert_eq!(configs[0].certificate_bundle_uuid.as_deref(), Some("0aded5c1-c7a3-498a-b9c8-a871611c47a2"));
@@ -1457,7 +1465,7 @@ mod tests {
     #[test]
     fn deserialize_lb_frontend_tls_config_detail() {
         let json = r#"{"certificate_bundle_uuid": "0aded5c1-c7a3-498a-b9c8-a871611c47a2", "created_at": "2022-02-11T17:33:08.490581Z", "name": "example-tls-config", "updated_at": "2022-02-11T17:33:08.490581Z"}"#;
-        let config: LbTlsConfig = serde_json::from_str(json).unwrap();
+        let config: LoadBalancerTLSConfig = serde_json::from_str(json).unwrap();
         assert_eq!(config.name, "example-tls-config");
         assert_eq!(config.certificate_bundle_uuid.as_deref(), Some("0aded5c1-c7a3-498a-b9c8-a871611c47a2"));
         assert_eq!(config.created_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
@@ -1481,7 +1489,7 @@ mod tests {
                 "updated_at": "2022-02-11T17:33:08.490581Z"
             }
         ]"#;
-        let rules: Vec<LbFrontendRule> = serde_json::from_str(json).unwrap();
+        let rules: Vec<LoadBalancerFrontendRule> = serde_json::from_str(json).unwrap();
         assert_eq!(rules.len(), 1);
         assert_eq!(rules[0].name, "example-rule-1");
         assert_eq!(rules[0].priority, 100);
@@ -1510,7 +1518,7 @@ mod tests {
             "priority": 100,
             "updated_at": "2022-02-11T17:33:08.490581Z"
         }"#;
-        let rule: LbFrontendRule = serde_json::from_str(json).unwrap();
+        let rule: LoadBalancerFrontendRule = serde_json::from_str(json).unwrap();
         assert_eq!(rule.name, "example-rule-1");
         assert_eq!(rule.priority, 100);
         assert_eq!(rule.matching_condition.as_deref(), Some("and"));
@@ -1542,7 +1550,7 @@ mod tests {
                 "updated_at": "2022-02-11T17:33:08.490581Z"
             }
         ]"#;
-        let resolvers: Vec<LbResolver> = serde_json::from_str(json).unwrap();
+        let resolvers: Vec<LoadBalancerResolver> = serde_json::from_str(json).unwrap();
         assert_eq!(resolvers.len(), 1);
         let r = &resolvers[0];
         assert_eq!(r.name, "example-resolver");
@@ -1571,7 +1579,7 @@ mod tests {
             "timeout_retry": 10,
             "updated_at": "2022-02-11T17:33:08.490581Z"
         }"#;
-        let r: LbResolver = serde_json::from_str(json).unwrap();
+        let r: LoadBalancerResolver = serde_json::from_str(json).unwrap();
         assert_eq!(r.name, "example-resolver");
         assert_eq!(r.nameservers, vec!["172.16.1.250"]);
         assert_eq!(r.retries, 5);
@@ -1588,7 +1596,7 @@ mod tests {
     #[test]
     fn deserialize_create_resolver_request() {
         let json = r#"{"name": "example-resolver", "nameservers": ["172.16.1.4:53"], "retries": 5, "timeout": 30, "timeout_retry": 10, "cache_valid": 180, "cache_invalid": 10}"#;
-        let req: CreateResolverRequest = serde_json::from_str(json).unwrap();
+        let req: CreateLoadBalancerResolverRequest = serde_json::from_str(json).unwrap();
         assert_eq!(req.name, "example-resolver");
         assert_eq!(req.nameservers, vec!["172.16.1.4:53"]);
         assert_eq!(req.retries, Some(5));
@@ -1636,7 +1644,7 @@ mod tests {
             "networks": [{"name": "example-network-1"}],
             "properties": {"timeout_client": 5}
         }"#;
-        let req: CreateFrontendRequest = serde_json::from_str(json).unwrap();
+        let req: CreateLoadBalancerFrontendRequest = serde_json::from_str(json).unwrap();
         assert_eq!(req.name, "example-frontend");
         assert_eq!(req.mode, "http");
         assert_eq!(req.port, 443);
@@ -1657,7 +1665,7 @@ mod tests {
             "matchers": [{"type": "path", "match_path": {"method": "exact", "value": "/app"}}],
             "actions": [{"type": "use_backend", "action_use_backend": {"backend": "example-backend-2"}}]
         }"#;
-        let req: CreateFrontendRuleRequest = serde_json::from_str(json).unwrap();
+        let req: CreateLoadBalancerFrontendRuleRequest = serde_json::from_str(json).unwrap();
         assert_eq!(req.name, "example-rule-1");
         assert_eq!(req.priority, 100);
         assert_eq!(req.matchers.len(), 1);
@@ -1677,7 +1685,7 @@ mod tests {
             {"certificate_bundle_uuid": "0aded5c1-c7a3-498a-b9c8-a871611c47a2", "created_at": "2022-02-11T17:33:08.490581Z", "name": "example-backend-tls-1", "updated_at": "2022-02-11T17:33:08.490581Z"},
             {"certificate_bundle_uuid": "c136c429-d18f-4192-b55e-e7b5079dee40", "created_at": "2021-11-11T11:21:51.121789Z", "name": "example-backend-tls-2", "updated_at": "2021-11-11T11:21:51.121789Z"}
         ]"#;
-        let configs: Vec<LbTlsConfig> = serde_json::from_str(json).unwrap();
+        let configs: Vec<LoadBalancerTLSConfig> = serde_json::from_str(json).unwrap();
         assert_eq!(configs.len(), 2);
         assert_eq!(configs[0].name, "example-backend-tls-1");
         assert_eq!(configs[0].certificate_bundle_uuid.as_deref(), Some("0aded5c1-c7a3-498a-b9c8-a871611c47a2"));
@@ -1702,7 +1710,7 @@ mod tests {
         assert_eq!(val["name"], "example-tls-config");
         assert_eq!(val["certificate_bundle_uuid"], "0aded5c1-c7a3-498a-b9c8-a871611c47a2");
 
-        let req: CreateTlsConfigRequest = serde_json::from_str(json).unwrap();
+        let req: CreateLoadBalancerTLSConfigRequest = serde_json::from_str(json).unwrap();
         assert_eq!(req.name, "example-tls-config");
         assert!(req.certificate_chain.is_none());
         assert!(req.private_key.is_none());

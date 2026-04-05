@@ -8,17 +8,41 @@ use crate::{client::Client, error::Error};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
-pub enum KubernetesState {
-    Running,
-    Error,
+pub enum KubernetesClusterState {
     Pending,
-    Deleting,
+    Running,
+    Terminating,
+    Terminated,
+    Failed,
+    Unknown,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum KubernetesNodeGroupState {
+    Pending,
+    Running,
+    ScalingUp,
+    ScalingDown,
+    Terminating,
+    Failed,
+    Unknown,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum KubernetesNodeState {
+    Pending,
+    Running,
+    Terminating,
+    Failed,
+    Unknown,
 }
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct K8sPlan {
+pub struct KubernetesPlan {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -34,7 +58,7 @@ pub struct K8sPlan {
 pub struct KubernetesCluster {
     pub uuid: String,
     pub name: String,
-    pub state: KubernetesState,
+    pub state: KubernetesClusterState,
     pub zone: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -43,7 +67,7 @@ pub struct KubernetesCluster {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub network_cidr: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub node_groups: Option<Vec<NodeGroup>>,
+    pub node_groups: Option<Vec<KubernetesNodeGroup>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -57,20 +81,20 @@ pub struct KubernetesCluster {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct NodeGroup {
+pub struct KubernetesNodeGroup {
     pub name: String,
     pub plan: String,
     pub count: u32,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<String>,
+    pub state: Option<KubernetesNodeGroupState>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub anti_affinity: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub taints: Option<Vec<NodeTaint>>,
+    pub taints: Option<Vec<KubernetesTaint>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub kubelet_args: Option<Vec<KubeletArg>>,
+    pub kubelet_args: Option<Vec<KubernetesKubeletArg>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ssh_keys: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -80,41 +104,41 @@ pub struct NodeGroup {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub anti_affinity_status: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub nodes: Option<Vec<K8sNode>>,
+    pub nodes: Option<Vec<KubernetesNode>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct K8sNode {
+pub struct KubernetesNode {
     pub uuid: String,
     pub name: String,
-    pub state: String,
+    pub state: KubernetesNodeState,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub kubelet_version: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct NodeTaint {
+pub struct KubernetesTaint {
     pub key: String,
     pub value: String,
     pub effect: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct KubeletArg {
+pub struct KubernetesKubeletArg {
     pub key: String,
     pub value: String,
 }
 
 /// The kubeconfig YAML for a cluster.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct KubeconfigResponse {
+pub struct KubernetesKubeconfig {
     pub kubeconfig: String,
 }
 
 // ─── Request types ────────────────────────────────────────────────────────────
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CreateClusterRequest {
+pub struct CreateKubernetesClusterRequest {
     pub name: String,
     pub zone: String,
     pub network: String,
@@ -122,7 +146,7 @@ pub struct CreateClusterRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
     #[serde(default)]
-    pub node_groups: Vec<CreateNodeGroupRequest>,
+    pub node_groups: Vec<CreateKubernetesNodeGroupRequest>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -134,7 +158,7 @@ pub struct CreateClusterRequest {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CreateNodeGroupRequest {
+pub struct CreateKubernetesNodeGroupRequest {
     pub name: String,
     pub plan: String,
     pub count: u32,
@@ -143,9 +167,9 @@ pub struct CreateNodeGroupRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub taints: Option<Vec<NodeTaint>>,
+    pub taints: Option<Vec<KubernetesTaint>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub kubelet_args: Option<Vec<KubeletArg>>,
+    pub kubelet_args: Option<Vec<KubernetesKubeletArg>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ssh_keys: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -155,7 +179,7 @@ pub struct CreateNodeGroupRequest {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct ModifyNodeGroupRequest {
+pub struct ModifyKubernetesNodeGroupRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub count: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -163,20 +187,20 @@ pub struct ModifyNodeGroupRequest {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct UpgradeStrategy {
+pub struct KubernetesUpgradeStrategy {
     #[serde(rename = "type")]
     pub strategy_type: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct UpgradeClusterRequest {
+pub struct UpgradeKubernetesClusterRequest {
     pub version: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub strategy: Option<UpgradeStrategy>,
+    pub strategy: Option<KubernetesUpgradeStrategy>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct AvailableUpgradesResponse {
+pub struct KubernetesClusterAvailableUpgrades {
     pub versions: Vec<String>,
 }
 
@@ -184,7 +208,7 @@ pub struct AvailableUpgradesResponse {
 
 impl Client {
     /// Returns a list of available Kubernetes node plans.
-    pub async fn list_kubernetes_plans(&self) -> Result<Vec<K8sPlan>, Error> {
+    pub async fn list_kubernetes_plans(&self) -> Result<Vec<KubernetesPlan>, Error> {
         self.get("/1.3/kubernetes/plans").await
     }
 
@@ -201,7 +225,7 @@ impl Client {
     /// Creates a new Kubernetes cluster.
     pub async fn create_kubernetes_cluster(
         &self,
-        req: CreateClusterRequest,
+        req: CreateKubernetesClusterRequest,
     ) -> Result<KubernetesCluster, Error> {
         self.post("/1.3/kubernetes", &req).await
     }
@@ -213,7 +237,7 @@ impl Client {
 
     /// Returns the kubeconfig YAML for a Kubernetes cluster.
     pub async fn get_kubernetes_kubeconfig(&self, uuid: &str) -> Result<String, Error> {
-        let resp: KubeconfigResponse =
+        let resp: KubernetesKubeconfig =
             self.get(&format!("/1.3/kubernetes/{uuid}/kubeconfig")).await?;
         Ok(resp.kubeconfig)
     }
@@ -221,17 +245,17 @@ impl Client {
     // ─── Node groups ──────────────────────────────────────────────────────────
 
     /// Returns a list of node groups for a cluster.
-    pub async fn list_node_groups(&self, cluster_uuid: &str) -> Result<Vec<NodeGroup>, Error> {
+    pub async fn list_kubernetes_node_groups(&self, cluster_uuid: &str) -> Result<Vec<KubernetesNodeGroup>, Error> {
         self.get(&format!("/1.3/kubernetes/{cluster_uuid}/node-groups"))
             .await
     }
 
     /// Returns details for a specific node group.
-    pub async fn get_node_group(
+    pub async fn get_kubernetes_node_group(
         &self,
         cluster_uuid: &str,
         name: &str,
-    ) -> Result<NodeGroup, Error> {
+    ) -> Result<KubernetesNodeGroup, Error> {
         self.get(&format!(
             "/1.3/kubernetes/{cluster_uuid}/node-groups/{name}"
         ))
@@ -239,11 +263,11 @@ impl Client {
     }
 
     /// Creates a node group in a cluster.
-    pub async fn create_node_group(
+    pub async fn create_kubernetes_node_group(
         &self,
         cluster_uuid: &str,
-        req: CreateNodeGroupRequest,
-    ) -> Result<NodeGroup, Error> {
+        req: CreateKubernetesNodeGroupRequest,
+    ) -> Result<KubernetesNodeGroup, Error> {
         self.post(
             &format!("/1.3/kubernetes/{cluster_uuid}/node-groups"),
             &req,
@@ -252,12 +276,12 @@ impl Client {
     }
 
     /// Modifies a node group (e.g. scale count).
-    pub async fn modify_node_group(
+    pub async fn modify_kubernetes_node_group(
         &self,
         cluster_uuid: &str,
         name: &str,
-        req: ModifyNodeGroupRequest,
-    ) -> Result<NodeGroup, Error> {
+        req: ModifyKubernetesNodeGroupRequest,
+    ) -> Result<KubernetesNodeGroup, Error> {
         self.patch(
             &format!("/1.3/kubernetes/{cluster_uuid}/node-groups/{name}"),
             &req,
@@ -266,7 +290,7 @@ impl Client {
     }
 
     /// Deletes a node group.
-    pub async fn delete_node_group(&self, cluster_uuid: &str, name: &str) -> Result<(), Error> {
+    pub async fn delete_kubernetes_node_group(&self, cluster_uuid: &str, name: &str) -> Result<(), Error> {
         self.delete(&format!(
             "/1.3/kubernetes/{cluster_uuid}/node-groups/{name}"
         ))
@@ -402,7 +426,7 @@ mod tests {
 
     #[test]
     fn deserialize_k8s_plan_list() {
-        let plans: Vec<K8sPlan> = serde_json::from_str(K8S_PLAN_LIST_JSON).unwrap();
+        let plans: Vec<KubernetesPlan> = serde_json::from_str(K8S_PLAN_LIST_JSON).unwrap();
         assert_eq!(plans.len(), 2);
         assert_eq!(plans[0].name, "dev-md");
         assert_eq!(plans[0].max_nodes, Some(30));
@@ -424,7 +448,7 @@ mod tests {
 
         let c1 = &clusters[0];
         assert_eq!(c1.name, "example-cluster-1");
-        assert_eq!(c1.state, KubernetesState::Running);
+        assert_eq!(c1.state, KubernetesClusterState::Running);
         assert_eq!(c1.zone, "fi-hel2");
         assert_eq!(c1.plan.as_deref(), Some("dev-md"));
         assert_eq!(c1.private_node_groups, Some(false));
@@ -446,7 +470,7 @@ mod tests {
         assert_eq!(groups.len(), 1);
         assert_eq!(groups[0].name, "example-node-group-1");
         assert_eq!(groups[0].count, 3);
-        assert_eq!(groups[0].state.as_deref(), Some("running"));
+        assert_eq!(groups[0].state, Some(KubernetesNodeGroupState::Running));
         assert_eq!(groups[0].anti_affinity, Some(false));
         assert_eq!(groups[0].plan, "4xCPU-8GB");
         assert!(groups[0].kubelet_args.as_ref().unwrap().is_empty());
@@ -465,7 +489,7 @@ mod tests {
 
         let c2 = &clusters[1];
         assert_eq!(c2.name, "example-cluster-2");
-        assert_eq!(c2.state, KubernetesState::Pending);
+        assert_eq!(c2.state, KubernetesClusterState::Pending);
         assert_eq!(c2.zone, "de-fra1");
         assert_eq!(c2.plan.as_deref(), Some("prod-md"));
         assert_eq!(c2.private_node_groups, Some(true));
@@ -487,7 +511,7 @@ mod tests {
             serde_json::from_str(K8S_CLUSTER_DETAIL_JSON).unwrap();
         assert_eq!(cluster.uuid, "3fa85f64-5717-4562-b3fc-2c963f66afa6");
         assert_eq!(cluster.name, "example-cluster-1");
-        assert_eq!(cluster.state, KubernetesState::Running);
+        assert_eq!(cluster.state, KubernetesClusterState::Running);
         assert_eq!(cluster.zone, "fi-hel2");
         assert_eq!(cluster.plan.as_deref(), Some("dev-md"));
         assert_eq!(cluster.private_node_groups, Some(false));
@@ -509,7 +533,7 @@ mod tests {
         assert_eq!(groups[0].name, "example-node-group-1");
         assert_eq!(groups[0].plan, "4xCPU-8GB");
         assert_eq!(groups[0].count, 3);
-        assert_eq!(groups[0].state.as_deref(), Some("running"));
+        assert_eq!(groups[0].state, Some(KubernetesNodeGroupState::Running));
         assert_eq!(groups[0].anti_affinity, Some(false));
         assert!(groups[0].kubelet_args.as_ref().unwrap().is_empty());
         let g0_labels = groups[0].labels.as_ref().unwrap();
@@ -528,13 +552,13 @@ mod tests {
 
     #[test]
     fn deserialize_node_group_list() {
-        let groups: Vec<NodeGroup> = serde_json::from_str(NODE_GROUP_LIST_JSON).unwrap();
+        let groups: Vec<KubernetesNodeGroup> = serde_json::from_str(NODE_GROUP_LIST_JSON).unwrap();
         assert_eq!(groups.len(), 2);
 
         assert_eq!(groups[0].name, "example-node-group-1");
         assert_eq!(groups[0].plan, "4xCPU-8GB");
         assert_eq!(groups[0].count, 3);
-        assert_eq!(groups[0].state.as_deref(), Some("running"));
+        assert_eq!(groups[0].state, Some(KubernetesNodeGroupState::Running));
         assert_eq!(groups[0].utility_network_access, Some(true));
         assert!(groups[0].taints.as_ref().unwrap().is_empty());
         assert_eq!(groups[0].anti_affinity, Some(false));
@@ -555,7 +579,7 @@ mod tests {
         assert_eq!(groups[1].anti_affinity, Some(true));
         assert_eq!(groups[1].utility_network_access, Some(false));
         assert_eq!(groups[1].plan, "4xCPU-8GB");
-        assert_eq!(groups[1].state.as_deref(), Some("running"));
+        assert_eq!(groups[1].state, Some(KubernetesNodeGroupState::Running));
         assert_eq!(groups[1].storage.as_deref(), Some("01000000-0000-4000-8000-000160010100"));
         let g1_labels = groups[1].labels.as_ref().unwrap();
         assert_eq!(g1_labels.len(), 1);
@@ -762,7 +786,7 @@ mod tests {
 
     #[test]
     fn deserialize_create_cluster_request() {
-        let req: CreateClusterRequest =
+        let req: CreateKubernetesClusterRequest =
             serde_json::from_str(CREATE_CLUSTER_REQUEST_JSON).unwrap();
         assert_eq!(req.name, "example-cluster-1");
         assert_eq!(req.zone, "fi-hel2");
@@ -802,7 +826,7 @@ mod tests {
     fn deserialize_create_cluster_response() {
         let cluster: KubernetesCluster =
             serde_json::from_str(CREATE_CLUSTER_RESPONSE_JSON).unwrap();
-        assert_eq!(cluster.state, KubernetesState::Pending);
+        assert_eq!(cluster.state, KubernetesClusterState::Pending);
         assert_eq!(cluster.name, "example-cluster-1");
         assert_eq!(cluster.uuid, "3fa85f64-5717-4562-b3fc-2c963f66afa6");
         assert_eq!(cluster.zone, "fi-hel2");
@@ -823,7 +847,7 @@ mod tests {
 
         let groups = cluster.node_groups.as_ref().unwrap();
         assert_eq!(groups.len(), 1);
-        assert_eq!(groups[0].state.as_deref(), Some("pending"));
+        assert_eq!(groups[0].state, Some(KubernetesNodeGroupState::Pending));
         assert_eq!(groups[0].name, "example-node-group-1");
         assert_eq!(groups[0].plan, "4xCPU-8GB");
         assert_eq!(groups[0].count, 3);
@@ -864,7 +888,7 @@ mod tests {
     fn deserialize_modify_cluster_response() {
         let cluster: KubernetesCluster =
             serde_json::from_str(MODIFY_CLUSTER_RESPONSE_JSON).unwrap();
-        assert_eq!(cluster.state, KubernetesState::Running);
+        assert_eq!(cluster.state, KubernetesClusterState::Running);
         assert_eq!(cluster.name, "example-cluster-1");
         assert_eq!(cluster.uuid, "3fa85f64-5717-4562-b3fc-2c963f66afa6");
         assert_eq!(cluster.zone, "fi-hel2");
@@ -888,7 +912,7 @@ mod tests {
         assert_eq!(groups[0].name, "example-node-group-1");
         assert_eq!(groups[0].plan, "4xCPU-8GB");
         assert_eq!(groups[0].count, 3);
-        assert_eq!(groups[0].state.as_deref(), Some("running"));
+        assert_eq!(groups[0].state, Some(KubernetesNodeGroupState::Running));
         assert_eq!(groups[0].anti_affinity, Some(false));
         assert_eq!(groups[0].utility_network_access, Some(true));
         assert_eq!(groups[0].storage.as_deref(), Some("01000000-0000-4000-8000-000160010100"));
@@ -907,7 +931,7 @@ mod tests {
 
     #[test]
     fn deserialize_available_upgrades() {
-        let resp: AvailableUpgradesResponse =
+        let resp: KubernetesClusterAvailableUpgrades =
             serde_json::from_str(AVAILABLE_UPGRADES_JSON).unwrap();
         assert_eq!(resp.versions.len(), 1);
         assert_eq!(resp.versions[0], "1.31");
@@ -915,7 +939,7 @@ mod tests {
 
     #[test]
     fn deserialize_upgrade_cluster_request() {
-        let req: UpgradeClusterRequest =
+        let req: UpgradeKubernetesClusterRequest =
             serde_json::from_str(UPGRADE_CLUSTER_REQUEST_JSON).unwrap();
         assert_eq!(req.version, "1.31");
         let strategy = req.strategy.as_ref().unwrap();
@@ -931,7 +955,7 @@ mod tests {
 
     #[test]
     fn deserialize_upgrade_cluster_response() {
-        let resp: UpgradeClusterRequest =
+        let resp: UpgradeKubernetesClusterRequest =
             serde_json::from_str(UPGRADE_CLUSTER_RESPONSE_JSON).unwrap();
         assert_eq!(resp.version, "1.31");
         let strategy = resp.strategy.as_ref().unwrap();
@@ -940,7 +964,7 @@ mod tests {
 
     #[test]
     fn deserialize_kubeconfig_response() {
-        let resp: KubeconfigResponse =
+        let resp: KubernetesKubeconfig =
             serde_json::from_str(KUBECONFIG_RESPONSE_JSON).unwrap();
         assert!(resp.kubeconfig.starts_with("apiVersion"));
         assert!(resp.kubeconfig.contains("example-cluster-1"));
@@ -950,8 +974,8 @@ mod tests {
     }
 
     #[test]
-    fn deserialize_create_node_group_request() {
-        let req: CreateNodeGroupRequest =
+    fn deserialize_create_kubernetes_node_group_request() {
+        let req: CreateKubernetesNodeGroupRequest =
             serde_json::from_str(CREATE_NODE_GROUP_REQUEST_JSON).unwrap();
         assert_eq!(req.name, "example-node-group-2");
         assert_eq!(req.plan, "4xCPU-8GB");
@@ -981,10 +1005,10 @@ mod tests {
     }
 
     #[test]
-    fn deserialize_create_node_group_response() {
-        let group: NodeGroup =
+    fn deserialize_create_kubernetes_node_group_response() {
+        let group: KubernetesNodeGroup =
             serde_json::from_str(CREATE_NODE_GROUP_RESPONSE_JSON).unwrap();
-        assert_eq!(group.state.as_deref(), Some("pending"));
+        assert_eq!(group.state, Some(KubernetesNodeGroupState::Pending));
         assert_eq!(group.name, "example-node-group-2");
         assert_eq!(group.count, 9);
         assert_eq!(group.plan, "4xCPU-8GB");
@@ -1013,10 +1037,10 @@ mod tests {
 
     #[test]
     fn deserialize_node_group_detail() {
-        let group: NodeGroup =
+        let group: KubernetesNodeGroup =
             serde_json::from_str(NODE_GROUP_DETAIL_JSON).unwrap();
         assert_eq!(group.anti_affinity_status, Some(true));
-        assert_eq!(group.state.as_deref(), Some("running"));
+        assert_eq!(group.state, Some(KubernetesNodeGroupState::Running));
         assert_eq!(group.count, 2);
         assert_eq!(group.name, "example-node-group-2");
         assert_eq!(group.plan, "4xCPU-8GB");
@@ -1043,29 +1067,29 @@ mod tests {
         assert_eq!(nodes.len(), 2);
         assert_eq!(nodes[0].uuid, "564c8cd9-bc16-4f89-a328-daf3f138cc44");
         assert_eq!(nodes[0].name, "example-fzwwt-8smpz");
-        assert_eq!(nodes[0].state, "running");
+        assert_eq!(nodes[0].state, KubernetesNodeState::Running);
         assert_eq!(nodes[0].kubelet_version.as_deref(), Some("1.30"));
         assert_eq!(nodes[1].uuid, "2e8039c6-95d4-41a9-92ca-46808f560abb");
         assert_eq!(nodes[1].name, "example-fzwwt-zmjfs");
-        assert_eq!(nodes[1].state, "running");
+        assert_eq!(nodes[1].state, KubernetesNodeState::Running);
         assert_eq!(nodes[1].kubelet_version.as_deref(), Some("1.30"));
     }
 
     #[test]
-    fn deserialize_modify_node_group_request() {
-        let req: ModifyNodeGroupRequest =
+    fn deserialize_modify_kubernetes_node_group_request() {
+        let req: ModifyKubernetesNodeGroupRequest =
             serde_json::from_str(MODIFY_NODE_GROUP_REQUEST_JSON).unwrap();
         assert_eq!(req.count, Some(15));
         assert!(req.labels.is_none());
     }
 
     #[test]
-    fn deserialize_modify_node_group_response() {
-        let group: NodeGroup =
+    fn deserialize_modify_kubernetes_node_group_response() {
+        let group: KubernetesNodeGroup =
             serde_json::from_str(MODIFY_NODE_GROUP_RESPONSE_JSON).unwrap();
         assert_eq!(group.count, 15);
         assert_eq!(group.name, "example-node-group-2");
-        assert_eq!(group.state.as_deref(), Some("running"));
+        assert_eq!(group.state, Some(KubernetesNodeGroupState::Running));
         assert_eq!(group.plan, "4xCPU-8GB");
         assert_eq!(group.anti_affinity, Some(true));
         assert_eq!(group.utility_network_access, Some(true));

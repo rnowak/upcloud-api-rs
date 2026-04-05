@@ -67,7 +67,7 @@ struct PriceWrapper {
 
 impl Client {
     /// Returns pricing information for all zones.
-    pub async fn list_prices(&self) -> Result<Vec<PriceZone>, Error> {
+    pub async fn list_price_zones(&self) -> Result<Vec<PriceZone>, Error> {
         let resp: PriceListResponse = self.get("/1.3/price").await?;
         Ok(resp.prices.zone)
     }

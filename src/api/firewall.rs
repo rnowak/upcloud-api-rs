@@ -18,6 +18,8 @@ pub enum FirewallDirection {
 #[serde(rename_all = "lowercase")]
 pub enum FirewallAction {
     Accept,
+    #[deprecated(note = "no longer supported by UpCloud API")]
+    Reject,
     Drop,
 }
 

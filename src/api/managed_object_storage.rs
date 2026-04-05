@@ -10,17 +10,17 @@ use crate::{client::Client, error::Error, types::common::PageParams};
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MosRegionZone {
+pub struct ManagedObjectStorageRegionZone {
     pub name: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MosRegion {
+pub struct ManagedObjectStorageRegion {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub primary_zone: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub zones: Option<Vec<MosRegionZone>>,
+    pub zones: Option<Vec<ManagedObjectStorageRegionZone>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub endpoint_url: Option<String>,
 }
@@ -35,15 +35,15 @@ pub struct ManagedObjectStorage {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub operational_state: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub endpoints: Option<Vec<MosEndpoint>>,
+    pub endpoints: Option<Vec<ManagedObjectStorageEndpoint>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub networks: Option<Vec<MosNetwork>>,
+    pub networks: Option<Vec<ManagedObjectStorageNetwork>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub users: Option<Vec<MosUserSummary>>,
+    pub users: Option<Vec<ManagedObjectStorageUserSummary>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub usage: Option<MosUsage>,
+    pub usage: Option<ManagedObjectStorageUsage>,
     #[serde(default)]
     pub state_messages: Vec<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -59,7 +59,7 @@ pub struct ManagedObjectStorage {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MosUsage {
+pub struct ManagedObjectStorageUsage {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_objects: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -67,7 +67,7 @@ pub struct MosUsage {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MosEndpoint {
+pub struct ManagedObjectStorageEndpoint {
     pub domain_name: String,
     #[serde(rename = "type")]
     pub endpoint_type: String,
@@ -80,7 +80,7 @@ pub struct MosEndpoint {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MosNetwork {
+pub struct ManagedObjectStorageNetwork {
     pub family: String,
     pub name: String,
     #[serde(rename = "type")]
@@ -90,32 +90,32 @@ pub struct MosNetwork {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MosUserSummary {
+pub struct ManagedObjectStorageUserSummary {
     pub username: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MosUser {
+pub struct ManagedObjectStorageUser {
     pub username: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub access_keys: Option<Vec<MosCredential>>,
+    pub access_keys: Option<Vec<ManagedObjectStorageUserAccessKey>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub policies: Option<Vec<MosUserPolicy>>,
+    pub policies: Option<Vec<ManagedObjectStorageUserPolicy>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MosUserPolicy {
+pub struct ManagedObjectStorageUserPolicy {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MosCredential {
+pub struct ManagedObjectStorageUserAccessKey {
     pub access_key_id: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub secret_access_key: Option<String>,
@@ -128,7 +128,7 @@ pub struct MosCredential {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MosPolicy {
+pub struct ManagedObjectStoragePolicy {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<String>,
@@ -149,7 +149,7 @@ pub struct MosPolicy {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MosBucket {
+pub struct ManagedObjectStorageBucket {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_objects: Option<u64>,
@@ -160,17 +160,17 @@ pub struct MosBucket {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MosStats {
+pub struct ManagedObjectStorageMetrics {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_bytes: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_objects: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub buckets: Option<Vec<MosBucketStats>>,
+    pub buckets: Option<Vec<ManagedObjectStorageBucketMetrics>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MosBucketStats {
+pub struct ManagedObjectStorageBucketMetrics {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bytes: Option<u64>,
@@ -181,11 +181,11 @@ pub struct MosBucketStats {
 // ─── Request types ────────────────────────────────────────────────────────────
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CreateMosServiceRequest {
+pub struct CreateManagedObjectStorageRequest {
     pub name: String,
     pub region: String,
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
-    pub networks: Vec<MosNetworkInput>,
+    pub networks: Vec<ManagedObjectStorageNetworkInput>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configured_status: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -193,7 +193,7 @@ pub struct CreateMosServiceRequest {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MosNetworkInput {
+pub struct ManagedObjectStorageNetworkInput {
     pub family: String,
     pub name: String,
     #[serde(rename = "type")]
@@ -203,7 +203,7 @@ pub struct MosNetworkInput {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct ModifyMosServiceRequest {
+pub struct ModifyManagedObjectStorageRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -213,12 +213,12 @@ pub struct ModifyMosServiceRequest {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CreateMosUserRequest {
+pub struct CreateManagedObjectStorageUserRequest {
     pub username: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CreateMosPolicyRequest {
+pub struct CreateManagedObjectStoragePolicyRequest {
     pub name: String,
     pub document: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -231,12 +231,12 @@ impl Client {
     // ─── Regions ──────────────────────────────────────────────────────────────
 
     /// Returns a list of available managed object storage regions.
-    pub async fn list_mos_regions(&self) -> Result<Vec<MosRegion>, Error> {
+    pub async fn list_managed_object_storage_regions(&self) -> Result<Vec<ManagedObjectStorageRegion>, Error> {
         self.get("/1.3/object-storage-2/regions").await
     }
 
     /// Returns details for a specific managed object storage region.
-    pub async fn get_mos_region(&self, name: &str) -> Result<MosRegion, Error> {
+    pub async fn get_managed_object_storage_region(&self, name: &str) -> Result<ManagedObjectStorageRegion, Error> {
         self.get(&format!("/1.3/object-storage-2/regions/{name}"))
             .await
     }
@@ -244,67 +244,67 @@ impl Client {
     // ─── Services ─────────────────────────────────────────────────────────────
 
     /// Returns a list of all managed object storage services.
-    pub async fn list_mos_services(&self, params: PageParams) -> Result<Vec<ManagedObjectStorage>, Error> {
+    pub async fn list_managed_object_storages(&self, params: PageParams) -> Result<Vec<ManagedObjectStorage>, Error> {
         self.get_with_query("/1.3/object-storage-2", &params).await
     }
 
     /// Returns details for a specific managed object storage service.
-    pub async fn get_mos_service(&self, uuid: &str) -> Result<ManagedObjectStorage, Error> {
+    pub async fn get_managed_object_storage(&self, uuid: &str) -> Result<ManagedObjectStorage, Error> {
         self.get(&format!("/1.3/object-storage-2/{uuid}")).await
     }
 
     /// Creates a new managed object storage service.
-    pub async fn create_mos_service(
+    pub async fn create_managed_object_storage(
         &self,
-        req: CreateMosServiceRequest,
+        req: CreateManagedObjectStorageRequest,
     ) -> Result<ManagedObjectStorage, Error> {
         self.post("/1.3/object-storage-2", &req).await
     }
 
     /// Modifies a managed object storage service.
-    pub async fn modify_mos_service(
+    pub async fn modify_managed_object_storage(
         &self,
         uuid: &str,
-        req: ModifyMosServiceRequest,
+        req: ModifyManagedObjectStorageRequest,
     ) -> Result<ManagedObjectStorage, Error> {
         self.patch(&format!("/1.3/object-storage-2/{uuid}"), &req).await
     }
 
     /// Deletes a managed object storage service.
-    pub async fn delete_mos_service(&self, uuid: &str) -> Result<(), Error> {
+    pub async fn delete_managed_object_storage(&self, uuid: &str) -> Result<(), Error> {
         self.delete(&format!("/1.3/object-storage-2/{uuid}")).await
     }
 
     /// Returns usage statistics for a managed object storage service.
-    pub async fn get_mos_stats(&self, uuid: &str) -> Result<MosStats, Error> {
+    pub async fn get_managed_object_storage_metrics(&self, uuid: &str) -> Result<ManagedObjectStorageMetrics, Error> {
         self.get(&format!("/1.3/object-storage-2/{uuid}/stats")).await
     }
 
     // ─── Users ────────────────────────────────────────────────────────────────
 
     /// Returns a list of users for a managed object storage service.
-    pub async fn list_mos_users(&self, uuid: &str) -> Result<Vec<MosUser>, Error> {
+    pub async fn list_managed_object_storage_users(&self, uuid: &str) -> Result<Vec<ManagedObjectStorageUser>, Error> {
         self.get(&format!("/1.3/object-storage-2/{uuid}/users")).await
     }
 
     /// Returns details for a specific user.
-    pub async fn get_mos_user(&self, uuid: &str, username: &str) -> Result<MosUser, Error> {
+    pub async fn get_managed_object_storage_user(&self, uuid: &str, username: &str) -> Result<ManagedObjectStorageUser, Error> {
         self.get(&format!("/1.3/object-storage-2/{uuid}/users/{username}"))
             .await
     }
 
     /// Creates a user for a managed object storage service.
-    pub async fn create_mos_user(
+    pub async fn create_managed_object_storage_user(
         &self,
         uuid: &str,
-        req: CreateMosUserRequest,
-    ) -> Result<MosUser, Error> {
+        req: CreateManagedObjectStorageUserRequest,
+    ) -> Result<ManagedObjectStorageUser, Error> {
         self.post(&format!("/1.3/object-storage-2/{uuid}/users"), &req)
             .await
     }
 
     /// Deletes a user from a managed object storage service.
-    pub async fn delete_mos_user(&self, uuid: &str, username: &str) -> Result<(), Error> {
+    pub async fn delete_managed_object_storage_user(&self, uuid: &str, username: &str) -> Result<(), Error> {
         self.delete(&format!("/1.3/object-storage-2/{uuid}/users/{username}"))
             .await
     }
@@ -312,11 +312,11 @@ impl Client {
     // ─── User credentials ─────────────────────────────────────────────────────
 
     /// Returns a list of access keys for a user.
-    pub async fn list_mos_user_credentials(
+    pub async fn list_managed_object_storage_user_access_keys(
         &self,
         uuid: &str,
         username: &str,
-    ) -> Result<Vec<MosCredential>, Error> {
+    ) -> Result<Vec<ManagedObjectStorageUserAccessKey>, Error> {
         self.get(&format!(
             "/1.3/object-storage-2/{uuid}/users/{username}/access-keys"
         ))
@@ -324,11 +324,11 @@ impl Client {
     }
 
     /// Creates an access key for a user.
-    pub async fn create_mos_user_credential(
+    pub async fn create_managed_object_storage_user_access_key(
         &self,
         uuid: &str,
         username: &str,
-    ) -> Result<MosCredential, Error> {
+    ) -> Result<ManagedObjectStorageUserAccessKey, Error> {
         self.post_empty(&format!(
             "/1.3/object-storage-2/{uuid}/users/{username}/access-keys"
         ))
@@ -336,7 +336,7 @@ impl Client {
     }
 
     /// Deletes an access key for a user.
-    pub async fn delete_mos_user_credential(
+    pub async fn delete_managed_object_storage_user_access_key(
         &self,
         uuid: &str,
         username: &str,
@@ -351,23 +351,23 @@ impl Client {
     // ─── Policies ─────────────────────────────────────────────────────────────
 
     /// Returns a list of policies for a managed object storage service.
-    pub async fn list_mos_policies(&self, uuid: &str) -> Result<Vec<MosPolicy>, Error> {
+    pub async fn list_managed_object_storage_policies(&self, uuid: &str) -> Result<Vec<ManagedObjectStoragePolicy>, Error> {
         self.get(&format!("/1.3/object-storage-2/{uuid}/policies"))
             .await
     }
 
     /// Creates a policy for a managed object storage service.
-    pub async fn create_mos_policy(
+    pub async fn create_managed_object_storage_policy(
         &self,
         uuid: &str,
-        req: CreateMosPolicyRequest,
-    ) -> Result<MosPolicy, Error> {
+        req: CreateManagedObjectStoragePolicyRequest,
+    ) -> Result<ManagedObjectStoragePolicy, Error> {
         self.post(&format!("/1.3/object-storage-2/{uuid}/policies"), &req)
             .await
     }
 
     /// Deletes a policy.
-    pub async fn delete_mos_policy(&self, uuid: &str, policy_name: &str) -> Result<(), Error> {
+    pub async fn delete_managed_object_storage_policy(&self, uuid: &str, policy_name: &str) -> Result<(), Error> {
         self.delete(&format!(
             "/1.3/object-storage-2/{uuid}/policies/{policy_name}"
         ))
@@ -375,11 +375,11 @@ impl Client {
     }
 
     /// Returns policies attached to a user.
-    pub async fn list_mos_user_policies(
+    pub async fn list_managed_object_storage_user_policies(
         &self,
         uuid: &str,
         username: &str,
-    ) -> Result<Vec<MosPolicy>, Error> {
+    ) -> Result<Vec<ManagedObjectStoragePolicy>, Error> {
         self.get(&format!(
             "/1.3/object-storage-2/{uuid}/users/{username}/policies"
         ))
@@ -387,7 +387,7 @@ impl Client {
     }
 
     /// Attaches a policy to a user.
-    pub async fn attach_mos_user_policy(
+    pub async fn attach_managed_object_storage_user_policy(
         &self,
         uuid: &str,
         username: &str,
@@ -407,7 +407,7 @@ impl Client {
     }
 
     /// Detaches a policy from a user.
-    pub async fn detach_mos_user_policy(
+    pub async fn detach_managed_object_storage_user_policy(
         &self,
         uuid: &str,
         username: &str,
@@ -422,13 +422,13 @@ impl Client {
     // ─── Buckets ──────────────────────────────────────────────────────────────
 
     /// Returns a list of buckets in a managed object storage service.
-    pub async fn list_mos_buckets(&self, uuid: &str) -> Result<Vec<MosBucket>, Error> {
+    pub async fn list_managed_object_storage_buckets(&self, uuid: &str) -> Result<Vec<ManagedObjectStorageBucket>, Error> {
         self.get(&format!("/1.3/object-storage-2/{uuid}/buckets"))
             .await
     }
 
     /// Returns CORS configurations for buckets.
-    pub async fn list_mos_bucket_cors(&self, uuid: &str) -> Result<serde_json::Value, Error> {
+    pub async fn list_managed_object_storage_bucket_cors(&self, uuid: &str) -> Result<serde_json::Value, Error> {
         self.get(&format!("/1.3/object-storage-2/{uuid}/buckets/cors"))
             .await
     }
@@ -436,23 +436,23 @@ impl Client {
     // ─── Networks ─────────────────────────────────────────────────────────────
 
     /// Returns a list of networks for a managed object storage service.
-    pub async fn list_mos_networks(&self, uuid: &str) -> Result<Vec<MosNetwork>, Error> {
+    pub async fn list_managed_object_storage_networks(&self, uuid: &str) -> Result<Vec<ManagedObjectStorageNetwork>, Error> {
         self.get(&format!("/1.3/object-storage-2/{uuid}/networks"))
             .await
     }
 
     /// Creates a network for a managed object storage service.
-    pub async fn create_mos_network(
+    pub async fn create_managed_object_storage_network(
         &self,
         uuid: &str,
-        req: MosNetworkInput,
-    ) -> Result<MosNetwork, Error> {
+        req: ManagedObjectStorageNetworkInput,
+    ) -> Result<ManagedObjectStorageNetwork, Error> {
         self.post(&format!("/1.3/object-storage-2/{uuid}/networks"), &req)
             .await
     }
 
     /// Deletes a network from a managed object storage service.
-    pub async fn delete_mos_network(&self, uuid: &str, network_name: &str) -> Result<(), Error> {
+    pub async fn delete_managed_object_storage_network(&self, uuid: &str, network_name: &str) -> Result<(), Error> {
         self.delete(&format!(
             "/1.3/object-storage-2/{uuid}/networks/{network_name}"
         ))
@@ -462,7 +462,7 @@ impl Client {
     // ─── Metrics ──────────────────────────────────────────────────────────────
 
     /// Returns service-level metrics (total objects, total size).
-    pub async fn get_mos_metrics(&self, uuid: &str) -> Result<MosUsage, Error> {
+    pub async fn get_managed_object_storage_usage(&self, uuid: &str) -> Result<ManagedObjectStorageUsage, Error> {
         self.get(&format!("/1.3/object-storage-2/{uuid}/metrics"))
             .await
     }
@@ -570,7 +570,7 @@ mod tests {
 
     #[test]
     fn deserialize_mos_bucket_list() {
-        let buckets: Vec<MosBucket> = serde_json::from_str(MOS_BUCKET_LIST_JSON).unwrap();
+        let buckets: Vec<ManagedObjectStorageBucket> = serde_json::from_str(MOS_BUCKET_LIST_JSON).unwrap();
         assert_eq!(buckets.len(), 2);
         assert_eq!(buckets[0].name, "example-bucket-1");
         assert_eq!(buckets[0].total_objects, Some(157));
@@ -819,7 +819,7 @@ mod tests {
 
     #[test]
     fn deserialize_mos_region_list() {
-        let regions: Vec<MosRegion> = serde_json::from_str(MOS_REGION_LIST_JSON).unwrap();
+        let regions: Vec<ManagedObjectStorageRegion> = serde_json::from_str(MOS_REGION_LIST_JSON).unwrap();
         assert_eq!(regions.len(), 1);
         let r = &regions[0];
         assert_eq!(r.name, "europe-1");
@@ -833,7 +833,7 @@ mod tests {
 
     #[test]
     fn deserialize_mos_region_detail() {
-        let r: MosRegion = serde_json::from_str(MOS_REGION_DETAIL_JSON).unwrap();
+        let r: ManagedObjectStorageRegion = serde_json::from_str(MOS_REGION_DETAIL_JSON).unwrap();
         assert_eq!(r.name, "europe-1");
         assert_eq!(r.primary_zone.as_deref(), Some("fi-hel1"));
         assert!(r.endpoint_url.is_none());
@@ -845,7 +845,7 @@ mod tests {
 
     #[test]
     fn deserialize_mos_create_service_request() {
-        let req: CreateMosServiceRequest =
+        let req: CreateManagedObjectStorageRequest =
             serde_json::from_str(MOS_CREATE_SERVICE_REQUEST_JSON).unwrap();
         assert_eq!(req.name, "example-service");
         assert_eq!(req.region, "example");
@@ -1021,14 +1021,14 @@ mod tests {
 
     #[test]
     fn deserialize_mos_usage() {
-        let u: MosUsage = serde_json::from_str(MOS_USAGE_JSON).unwrap();
+        let u: ManagedObjectStorageUsage = serde_json::from_str(MOS_USAGE_JSON).unwrap();
         assert_eq!(u.total_objects, Some(1287));
         assert_eq!(u.total_size_bytes, Some(48277239));
     }
 
     #[test]
     fn deserialize_mos_create_bucket_response() {
-        let b: MosBucket = serde_json::from_str(MOS_CREATE_BUCKET_RESPONSE_JSON).unwrap();
+        let b: ManagedObjectStorageBucket = serde_json::from_str(MOS_CREATE_BUCKET_RESPONSE_JSON).unwrap();
         assert_eq!(b.name, "my-bucket-1");
         assert_eq!(b.total_objects, Some(0));
         assert_eq!(b.total_size_bytes, Some(0));
@@ -1037,7 +1037,7 @@ mod tests {
 
     #[test]
     fn deserialize_mos_network_list() {
-        let nets: Vec<MosNetwork> = serde_json::from_str(MOS_NETWORK_LIST_JSON).unwrap();
+        let nets: Vec<ManagedObjectStorageNetwork> = serde_json::from_str(MOS_NETWORK_LIST_JSON).unwrap();
         assert_eq!(nets.len(), 2);
         assert_eq!(nets[0].family, "IPv4");
         assert_eq!(nets[0].name, "example-public-network");
@@ -1054,7 +1054,7 @@ mod tests {
 
     #[test]
     fn deserialize_mos_network_detail() {
-        let n: MosNetwork = serde_json::from_str(MOS_NETWORK_DETAIL_JSON).unwrap();
+        let n: ManagedObjectStorageNetwork = serde_json::from_str(MOS_NETWORK_DETAIL_JSON).unwrap();
         assert_eq!(n.family, "IPv4");
         assert_eq!(n.name, "example-private-network");
         assert_eq!(n.network_type, "private");
@@ -1074,7 +1074,7 @@ mod tests {
 
     #[test]
     fn deserialize_mos_private_network_input() {
-        let n: MosNetworkInput =
+        let n: ManagedObjectStorageNetworkInput =
             serde_json::from_str(MOS_PRIVATE_NETWORK_INPUT_JSON).unwrap();
         assert_eq!(n.name, "example-private-network");
         assert_eq!(n.network_type, "private");
@@ -1172,7 +1172,7 @@ mod tests {
 
     #[test]
     fn deserialize_mos_policy_list() {
-        let policies: Vec<MosPolicy> = serde_json::from_str(MOS_POLICY_LIST_JSON).unwrap();
+        let policies: Vec<ManagedObjectStoragePolicy> = serde_json::from_str(MOS_POLICY_LIST_JSON).unwrap();
         assert_eq!(policies.len(), 5);
 
         let p0 = &policies[0];
@@ -1211,7 +1211,7 @@ mod tests {
 
     #[test]
     fn deserialize_mos_policy_detail() {
-        let p: MosPolicy = serde_json::from_str(MOS_POLICY_DETAIL_JSON).unwrap();
+        let p: ManagedObjectStoragePolicy = serde_json::from_str(MOS_POLICY_DETAIL_JSON).unwrap();
         assert_eq!(p.name, "ECSS3FullAccess");
         assert_eq!(p.arn.as_deref(), Some("urn:ecs:iam:::policy/ECSS3FullAccess"));
         assert_eq!(p.attachment_count, Some(0));
@@ -1285,7 +1285,7 @@ mod tests {
 
     #[test]
     fn deserialize_mos_user_list() {
-        let users: Vec<MosUser> = serde_json::from_str(MOS_USER_LIST_JSON).unwrap();
+        let users: Vec<ManagedObjectStorageUser> = serde_json::from_str(MOS_USER_LIST_JSON).unwrap();
         assert_eq!(users.len(), 1);
         let u = &users[0];
         assert_eq!(u.username, "example_user");
@@ -1310,7 +1310,7 @@ mod tests {
 
     #[test]
     fn deserialize_mos_user_detail() {
-        let u: MosUser = serde_json::from_str(MOS_USER_DETAIL_JSON).unwrap();
+        let u: ManagedObjectStorageUser = serde_json::from_str(MOS_USER_DETAIL_JSON).unwrap();
         assert_eq!(u.username, "example_user");
         assert_eq!(u.arn.as_deref(), Some("urn:ecs:iam::123bbb5c6a4240409e07f7d89fe28891:user/example_user"));
         assert_eq!(u.created_at.as_deref(), Some("2023-05-07T15:55:24.655776Z"));
@@ -1333,7 +1333,7 @@ mod tests {
 
     #[test]
     fn deserialize_mos_user_create_response() {
-        let u: MosUser = serde_json::from_str(MOS_USER_CREATE_RESPONSE_JSON).unwrap();
+        let u: ManagedObjectStorageUser = serde_json::from_str(MOS_USER_CREATE_RESPONSE_JSON).unwrap();
         assert_eq!(u.username, "example_user");
         assert_eq!(u.created_at.as_deref(), Some("2023-05-07T18:19:16.507681Z"));
         assert!(u.arn.is_none());
@@ -1371,7 +1371,7 @@ mod tests {
 
     #[test]
     fn deserialize_mos_access_key_list() {
-        let keys: Vec<MosCredential> = serde_json::from_str(MOS_ACCESS_KEY_LIST_JSON).unwrap();
+        let keys: Vec<ManagedObjectStorageUserAccessKey> = serde_json::from_str(MOS_ACCESS_KEY_LIST_JSON).unwrap();
         assert_eq!(keys.len(), 1);
         assert_eq!(keys[0].access_key_id, "AKIA63F41D01345BB477");
         assert_eq!(keys[0].created_at.as_deref(), Some("2023-05-07T20:52:19.705405Z"));
@@ -1382,7 +1382,7 @@ mod tests {
 
     #[test]
     fn deserialize_mos_access_key_create_response() {
-        let key: MosCredential =
+        let key: ManagedObjectStorageUserAccessKey =
             serde_json::from_str(MOS_ACCESS_KEY_CREATE_RESPONSE_JSON).unwrap();
         assert_eq!(key.access_key_id, "AKIA589142A152F5E423");
         assert_eq!(key.created_at.as_deref(), Some("2023-05-07T22:58:26.239729Z"));
@@ -1393,7 +1393,7 @@ mod tests {
 
     #[test]
     fn deserialize_mos_access_key_detail() {
-        let key: MosCredential =
+        let key: ManagedObjectStorageUserAccessKey =
             serde_json::from_str(MOS_ACCESS_KEY_DETAIL_JSON).unwrap();
         assert_eq!(key.access_key_id, "AKIA63F41D01345BB477");
         assert_eq!(key.created_at.as_deref(), Some("2023-05-07T20:52:19.705405Z"));

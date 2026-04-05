@@ -45,6 +45,9 @@ pub struct IpAddress {
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub floating: Option<bool>,
+    #[serde_as(as = "Option<YesNo>")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dhcp_provided: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub release_policy: Option<IpReleasePolicy>,
     #[serde_as(as = "Option<YesNo>")]

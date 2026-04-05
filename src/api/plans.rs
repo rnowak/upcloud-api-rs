@@ -31,7 +31,7 @@ pub struct Plan {
 /// A valid combination of CPU core count and memory for a custom server.
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ServerSize {
+pub struct ServerConfiguration {
     #[serde_as(as = "DisplayFromStr")]
     pub core_number: u32,
     #[serde_as(as = "DisplayFromStr")]
@@ -51,13 +51,13 @@ struct PlanWrapper {
 }
 
 #[derive(Debug, Deserialize)]
-struct ServerSizeListResponse {
-    server_sizes: ServerSizeWrapper,
+struct ServerConfigurationListResponse {
+    server_sizes: ServerConfigurationWrapper,
 }
 
 #[derive(Debug, Deserialize)]
-struct ServerSizeWrapper {
-    server_size: Vec<ServerSize>,
+struct ServerConfigurationWrapper {
+    server_size: Vec<ServerConfiguration>,
 }
 
 // ─── Client methods ───────────────────────────────────────────────────────────
@@ -70,8 +70,8 @@ impl Client {
     }
 
     /// Returns a list of valid CPU/memory combinations for custom servers.
-    pub async fn list_server_sizes(&self) -> Result<Vec<ServerSize>, Error> {
-        let resp: ServerSizeListResponse = self.get("/1.3/server_size").await?;
+    pub async fn list_server_configurations(&self) -> Result<Vec<ServerConfiguration>, Error> {
+        let resp: ServerConfigurationListResponse = self.get("/1.3/server_size").await?;
         Ok(resp.server_sizes.server_size)
     }
 }
@@ -168,7 +168,7 @@ mod tests {
 
     #[test]
     fn deserialize_server_size_list() {
-        let resp: ServerSizeListResponse =
+        let resp: ServerConfigurationListResponse =
             serde_json::from_str(SERVER_SIZE_LIST_JSON).unwrap();
         let sizes = resp.server_sizes.server_size;
         assert_eq!(sizes.len(), 2);
