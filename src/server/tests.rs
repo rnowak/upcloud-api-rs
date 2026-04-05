@@ -478,7 +478,7 @@ fn deserialize_create_server_from_template_request() {
     // storage_devices
     let sd = &s.storage_devices.unwrap().storage_device;
     assert_eq!(sd.len(), 1);
-    assert_eq!(sd[0].action, "clone");
+    assert_eq!(sd[0].action, StorageDeviceAction::Clone);
     assert_eq!(
         sd[0].storage.as_deref(),
         Some("01000000-0000-4000-8000-000020030100")
@@ -601,7 +601,7 @@ fn deserialize_create_server_by_cloning_request() {
     // storage_devices
     let sd = &s.storage_devices.unwrap().storage_device;
     assert_eq!(sd.len(), 1);
-    assert_eq!(sd[0].action, "clone");
+    assert_eq!(sd[0].action, StorageDeviceAction::Clone);
     assert_eq!(
         sd[0].storage.as_deref(),
         Some("0169b4f8-051c-4a86-9484-f5b798249949")
@@ -723,17 +723,17 @@ fn deserialize_create_server_from_scratch_request() {
     // storage_devices
     let sd = &s.storage_devices.unwrap().storage_device;
     assert_eq!(sd.len(), 2);
-    assert_eq!(sd[0].action, "create");
+    assert_eq!(sd[0].action, StorageDeviceAction::Create);
     assert_eq!(sd[0].size, Some(20));
     assert_eq!(sd[0].tier.as_deref(), Some("maxiops"));
     assert_eq!(sd[0].title.as_deref(), Some("Debian from scratch"));
     assert!(sd[0].storage.is_none());
-    assert_eq!(sd[1].action, "attach");
+    assert_eq!(sd[1].action, StorageDeviceAction::Attach);
     assert_eq!(
         sd[1].storage.as_deref(),
         Some("01000000-0000-4000-8000-000020010301")
     );
-    assert_eq!(sd[1].device_type.as_deref(), Some("cdrom"));
+    assert_eq!(sd[1].device_type, Some(StorageDeviceType::Cdrom));
     assert!(sd[1].size.is_none());
     // networking
     let ifaces = &s.networking.unwrap().interfaces.interface;

@@ -65,6 +65,23 @@ pub enum VideoModel {
     Cirrus,
 }
 
+/// The method used to create or attach a storage device during server creation.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum StorageDeviceAction {
+    Create,
+    Clone,
+    Attach,
+}
+
+/// The device type a storage will be attached as.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum StorageDeviceType {
+    Disk,
+    Cdrom,
+}
+
 // ─── Sub-types ────────────────────────────────────────────────────────────────
 
 #[serde_as]
@@ -360,6 +377,12 @@ pub struct CreateRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub nic_model: Option<NicModel>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub video_model: Option<VideoModel>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timezone: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub server_group: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub simple_backup: Option<String>,
@@ -369,12 +392,21 @@ pub struct CreateRequest {
     pub labels: Option<crate::types::common::Labels>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub avoid_host: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub host: Option<i64>,
+    #[serde_as(as = "Option<YesNo>")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub remote_access_enabled: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub remote_access_type: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub remote_access_password: Option<String>,
 }
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateServerStorageDevice {
-    pub action: String,
+    pub action: StorageDeviceAction,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub storage: Option<String>,
     #[serde_as(as = "Option<DisplayFromStr>")]
@@ -385,12 +417,16 @@ pub struct CreateServerStorageDevice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tier: Option<String>,
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub device_type: Option<String>,
+    pub device_type: Option<StorageDeviceType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub encrypted: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub boot_disk: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub backup_rule: Option<crate::storage::BackupRule>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
 }

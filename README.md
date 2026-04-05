@@ -1,8 +1,12 @@
 # upcloud-api-rs
 
-Unofficial Rust client library for [UpCloud API v1.3](https://developers.upcloud.com/1.3/).
+upcloud-api-rs is an unofficial Rust API client for [UpCloud API v1.3](https://developers.upcloud.com/1.3/).
 
-Built on **tokio** + **reqwest** + **serde**, with types for every resource, request, and response.
+Built on **tokio** + **reqwest** + **serde**, with strong typing for every
+resource, request, and response.
+
+Inspiration for the design was taken from the official [UpCloud Go API client](https://github.com/UpCloudLtd/upcloud-go-api)
+and the great unofficial Rust GitHub API client [Octocrab](https://github.com/XAMPPRocky/octocrab)
 
 AI disclosure: built with Claude.
 
