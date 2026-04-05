@@ -1,0 +1,16 @@
+[package]
+name = "upcloud-api-rs"
+version = "0.1.0"
+edition = "2024"
+description = "Unofficial Rust client library for the UpCloud API"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_with = { version = "3", features = ["chrono"] }
+thiserror = "2"
+chrono = { version = "0.4", features = ["serde"] }
+url = "2"
+base64 = "0.22"
