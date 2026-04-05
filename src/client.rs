@@ -294,6 +294,7 @@ pub struct ClientBuilder {
     auth: Option<AuthMode>,
     base_url: Option<String>,
     timeout: Option<Duration>,
+    http_client: Option<reqwest::Client>,
 }
 
 impl ClientBuilder {
@@ -328,6 +329,35 @@ impl ClientBuilder {
         self
     }
 
+    /// Use a pre-configured [`reqwest::Client`] instead of building one internally.
+    ///
+    /// This lets you control connection pooling, proxy settings, custom TLS
+    /// configuration, middleware, etc. When provided, the builder's
+    /// [`timeout()`](Self::timeout) setting is ignored — configure the timeout
+    /// on the `reqwest::Client` directly.
+    ///
+    /// # Example
+    ///
+    /// ```rust,no_run
+    /// use std::time::Duration;
+    /// use upcloud_api_rs::Client;
+    ///
+    /// let http = reqwest::Client::builder()
+    ///     .timeout(Duration::from_secs(120))
+    ///     .build()
+    ///     .unwrap();
+    ///
+    /// let client = Client::builder()
+    ///     .bearer_token("ucat_...")
+    ///     .http_client(http)
+    ///     .build()
+    ///     .unwrap();
+    /// ```
+    pub fn http_client(mut self, client: reqwest::Client) -> Self {
+        self.http_client = Some(client);
+        self
+    }
+
     /// Build the [`Client`].
     pub fn build(self) -> Result<Client, Error> {
         let auth = self
@@ -342,11 +372,14 @@ impl ClientBuilder {
             config = config.with_timeout(t);
         }
 
-        let http = reqwest::Client::builder()
-            .timeout(config.timeout)
-            .use_rustls_tls()
-            .build()
-            .map_err(Error::Http)?;
+        let http = match self.http_client {
+            Some(client) => client,
+            None => reqwest::Client::builder()
+                .timeout(config.timeout)
+                .use_rustls_tls()
+                .build()
+                .map_err(Error::Http)?,
+        };
 
         Ok(Client { http, config })
     }
