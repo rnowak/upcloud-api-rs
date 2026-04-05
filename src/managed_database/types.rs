@@ -68,6 +68,8 @@ pub struct Database {
     pub networks: Option<Vec<Network>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub termination_protection: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -211,6 +213,8 @@ pub struct CreateRequest {
     pub networks: Option<Vec<NetworkInput>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub termination_protection: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -225,6 +229,8 @@ pub struct ModifyRequest {
     pub powered: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub termination_protection: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
