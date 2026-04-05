@@ -171,6 +171,16 @@ impl Client {
         self.send(req).await
     }
 
+    /// GET with explicit key-value pairs, supporting repeated keys (e.g. `?label=a&label=b`).
+    pub(crate) async fn get_with_query_pairs<T: DeserializeOwned>(
+        &self,
+        path: &str,
+        pairs: &[(&str, String)],
+    ) -> Result<T, Error> {
+        let req = self.request(Method::GET, path).query(pairs);
+        self.send(req).await
+    }
+
     pub(crate) async fn post<T: DeserializeOwned, B: Serialize>(
         &self,
         path: &str,

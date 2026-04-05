@@ -2016,3 +2016,115 @@ fn deserialize_metadata_service_response() {
     assert_eq!(disks[0]["type"], "disk");
     assert_eq!(disks[0]["tier"], "maxiops");
 }
+
+// ─── ListParams query serialization tests ─────────────────────────────────────
+
+#[test]
+fn list_params_empty_by_default() {
+    let params = ListParams::new();
+    assert!(params.is_empty());
+    assert!(params.to_query_pairs().is_empty());
+}
+
+#[test]
+fn list_params_state_filter() {
+    let params = ListParams::new().state(State::Started);
+    let pairs = params.to_query_pairs();
+    assert_eq!(pairs, vec![("state", "started".to_string())]);
+}
+
+#[test]
+fn list_params_label_filters() {
+    let params = ListParams::new()
+        .label("env", "prod")
+        .label("team", "backend");
+    let pairs = params.to_query_pairs();
+    assert_eq!(pairs, vec![
+        ("label", "env=prod".to_string()),
+        ("label", "team=backend".to_string()),
+    ]);
+}
+
+#[test]
+fn list_params_tags() {
+    let params = ListParams::new().tag("web").tag("api");
+    let pairs = params.to_query_pairs();
+    assert_eq!(pairs, vec![("tag", "web,api".to_string())]);
+}
+
+#[test]
+fn list_params_search() {
+    let params = ListParams::new().search("production");
+    let pairs = params.to_query_pairs();
+    assert_eq!(pairs, vec![("search", "production".to_string())]);
+}
+
+#[test]
+fn list_params_hosts() {
+    let params = ListParams::new().host(100).host(200);
+    let pairs = params.to_query_pairs();
+    assert_eq!(pairs, vec![
+        ("host", "100".to_string()),
+        ("host", "200".to_string()),
+    ]);
+}
+
+#[test]
+fn list_params_uuids() {
+    let params = ListParams::new().uuid("abc-123").uuid("def-456");
+    let pairs = params.to_query_pairs();
+    assert_eq!(pairs, vec![
+        ("uuid", "abc-123".to_string()),
+        ("uuid", "def-456".to_string()),
+    ]);
+}
+
+#[test]
+fn list_params_ordering() {
+    use crate::types::common::SortOrder;
+    let params = ListParams::new().order_by(OrderBy::Title, SortOrder::Asc);
+    let pairs = params.to_query_pairs();
+    assert_eq!(pairs, vec![
+        ("order_by", "title".to_string()),
+        ("sort_by", "asc".to_string()),
+    ]);
+}
+
+#[test]
+fn list_params_pagination() {
+    let params = ListParams::new().limit(50).offset(100);
+    let pairs = params.to_query_pairs();
+    assert_eq!(pairs, vec![
+        ("limit", "50".to_string()),
+        ("offset", "100".to_string()),
+    ]);
+}
+
+#[test]
+fn list_params_full_combination() {
+    use crate::types::common::SortOrder;
+    let params = ListParams::new()
+        .state(State::Started)
+        .label("env", "prod")
+        .tag("web")
+        .search("api")
+        .host(42)
+        .uuid("abc-123")
+        .order_by(OrderBy::Memory, SortOrder::Desc)
+        .limit(10)
+        .offset(20);
+    let pairs = params.to_query_pairs();
+    assert!(!params.is_empty());
+    assert_eq!(pairs, vec![
+        ("state", "started".to_string()),
+        ("label", "env=prod".to_string()),
+        ("tag", "web".to_string()),
+        ("search", "api".to_string()),
+        ("host", "42".to_string()),
+        ("uuid", "abc-123".to_string()),
+        ("order_by", "memory".to_string()),
+        ("sort_by", "desc".to_string()),
+        ("limit", "10".to_string()),
+        ("offset", "20".to_string()),
+    ]);
+}

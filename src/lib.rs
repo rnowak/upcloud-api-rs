@@ -22,7 +22,7 @@
 //! let client = Client::with_bearer_token("ucat_...").unwrap();
 //!
 //! // Use domain-scoped handlers
-//! let servers = client.servers().list().await?;
+//! let servers = client.servers().list(&Default::default()).await?;
 //! let zones = client.zones().list().await?;
 //! let dbs = client.managed_database().list().await?;
 //! # Ok(())
@@ -65,7 +65,7 @@ pub mod prelude {
     pub use crate::client::{Client, ClientBuilder};
     pub use crate::config::AuthMode;
     pub use crate::error::{ApiError, Error};
-    pub use crate::types::common::{Label, Labels, PageParams};
+    pub use crate::types::common::{Label, Labels, PageParams, SortOrder};
 
     // Primary resource types from each domain module
     pub use crate::account::Account;

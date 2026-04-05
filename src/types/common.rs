@@ -124,6 +124,44 @@ where
     }
 }
 
+// ─── Sort order ───────────────────────────────────────────────────────────────
+
+/// Sort direction for list endpoints that support ordering.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SortOrder {
+    Asc,
+    Desc,
+}
+
+impl Serialize for SortOrder {
+    fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        s.serialize_str(match self {
+            Self::Asc => "asc",
+            Self::Desc => "desc",
+        })
+    }
+}
+
+impl<'de> Deserialize<'de> for SortOrder {
+    fn deserialize<D: Deserializer<'de>>(d: D) -> Result<Self, D::Error> {
+        let s: &str = Deserialize::deserialize(d)?;
+        match s {
+            "asc" => Ok(Self::Asc),
+            "desc" => Ok(Self::Desc),
+            other => Err(serde::de::Error::unknown_variant(other, &["asc", "desc"])),
+        }
+    }
+}
+
+impl fmt::Display for SortOrder {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Asc => write!(f, "asc"),
+            Self::Desc => write!(f, "desc"),
+        }
+    }
+}
+
 // ─── Pagination ───────────────────────────────────────────────────────────────
 
 /// Query parameters for paginated list endpoints.

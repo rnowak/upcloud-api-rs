@@ -7,8 +7,9 @@ Built on **tokio** + **reqwest** + **serde**, with proper Rust types for every r
 ## Features
 
 - Full coverage of all 22 UpCloud API resource groups
-- Domain-scoped handler pattern: `client.servers().list()`, `client.managed_database().create(req)`
+- Domain-scoped handler pattern: `client.servers().list(&Default::default())`, `client.managed_database().create(req)`
 - Short, module-scoped type names: `load_balancer::Backend`, `managed_database::User`
+- Typed query parameters for filtering, ordering, and pagination on list endpoints
 - Bearer token and HTTP Basic authentication
 - Strongly-typed request/response structs
 - Async/await throughout (`tokio`)
@@ -65,7 +66,7 @@ async fn main() -> Result<(), upcloud_api_rs::Error> {
     }
 
     // List servers
-    let servers = client.servers().list().await?;
+    let servers = client.servers().list(&Default::default()).await?;
     for server in &servers {
         println!("{} — {} ({:?})", server.uuid, server.title, server.state);
     }
@@ -90,8 +91,17 @@ client.account().delete_token(&token.id).await?;
 use upcloud_api_rs::server::*;
 
 // List / get
-let servers = client.servers().list().await?;
+let servers = client.servers().list(&Default::default()).await?;
 let server = client.servers().get("uuid").await?;
+
+// Filtered / paginated list
+let filtered = client.servers().list(
+    &ListParams::new()
+        .state(State::Started)
+        .label("env", "prod")
+        .order_by(OrderBy::Title, upcloud_api_rs::types::common::SortOrder::Asc)
+        .limit(25)
+).await?;
 
 // Create
 let req = CreateRequest {
@@ -116,7 +126,7 @@ let groups = client.servers().list_groups().await?;
 ```rust
 use upcloud_api_rs::storage::*;
 
-let storages = client.storages().list().await?;
+let storages = client.storages().list(&Default::default()).await?;
 let storage = client.storages().get("uuid").await?;
 let created = client.storages().create(CreateRequest { size: 20, title: "disk".into(), zone: "de-fra1".into(), ..Default::default() }).await?;
 let backup = client.storages().create_backup("uuid", CreateBackupRequest { title: "snap".into() }).await?;

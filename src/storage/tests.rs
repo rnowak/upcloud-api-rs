@@ -1338,3 +1338,25 @@ fn deserialize_cancel_import_response() {
     );
     assert_eq!(si.written_bytes, Some(0));
 }
+
+// ─── ListParams query serialization tests ─────────────────────────────────────
+
+#[test]
+fn list_params_empty_by_default() {
+    let params = ListParams::new();
+    assert!(params.is_empty());
+    assert!(params.to_query_pairs().is_empty());
+}
+
+#[test]
+fn list_params_label_filters() {
+    let params = ListParams::new()
+        .label("env", "prod")
+        .label("team", "backend");
+    let pairs = params.to_query_pairs();
+    assert!(!params.is_empty());
+    assert_eq!(pairs, vec![
+        ("label", "env=prod".to_string()),
+        ("label", "team=backend".to_string()),
+    ]);
+}

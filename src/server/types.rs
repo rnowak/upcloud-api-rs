@@ -587,3 +587,171 @@ pub struct ModifyGroupRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub servers: Option<GroupServers>,
 }
+
+// ─── List / filter parameters ─────────────────────────────────────────────────
+
+/// Sort field for server list ordering.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum OrderBy {
+    Title,
+    Zone,
+    Size,
+    Cores,
+    Memory,
+    Popularity,
+}
+
+impl std::fmt::Display for OrderBy {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Title => write!(f, "title"),
+            Self::Zone => write!(f, "zone"),
+            Self::Size => write!(f, "size"),
+            Self::Cores => write!(f, "cores"),
+            Self::Memory => write!(f, "memory"),
+            Self::Popularity => write!(f, "popularity"),
+        }
+    }
+}
+
+/// Query parameters for filtering, ordering, and paginating the server list.
+///
+/// # Examples
+///
+/// ```
+/// use upcloud_api_rs::server::{ListParams, State, OrderBy};
+/// use upcloud_api_rs::types::common::SortOrder;
+///
+/// let params = ListParams::new()
+///     .state(State::Started)
+///     .label("env", "prod")
+///     .search("web")
+///     .order_by(OrderBy::Title, SortOrder::Asc)
+///     .limit(25);
+/// ```
+#[derive(Debug, Clone, Default)]
+pub struct ListParams {
+    state: Option<State>,
+    labels: Vec<String>,
+    tags: Vec<String>,
+    search: Option<String>,
+    hosts: Vec<i64>,
+    uuids: Vec<String>,
+    order_by: Option<OrderBy>,
+    sort_order: Option<crate::types::common::SortOrder>,
+    limit: Option<u32>,
+    offset: Option<u32>,
+}
+
+impl ListParams {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Filter by server state (e.g. `State::Started`).
+    pub fn state(mut self, state: State) -> Self {
+        self.state = Some(state);
+        self
+    }
+
+    /// Add a label filter. Each call adds `key=value` as a separate `?label=` parameter.
+    /// Multiple labels are AND-combined by the API.
+    pub fn label(mut self, key: &str, value: &str) -> Self {
+        self.labels.push(format!("{key}={value}"));
+        self
+    }
+
+    /// Add a tag filter. Multiple tags can be specified to match servers having any of them.
+    pub fn tag(mut self, tag: &str) -> Self {
+        self.tags.push(tag.to_string());
+        self
+    }
+
+    /// Full-text search across server name, title, UUID, zone, IP, hostname, and tags.
+    pub fn search(mut self, search: &str) -> Self {
+        self.search = Some(search.to_string());
+        self
+    }
+
+    /// Filter by private cloud host ID. Multiple host IDs are OR-combined.
+    pub fn host(mut self, host_id: i64) -> Self {
+        self.hosts.push(host_id);
+        self
+    }
+
+    /// Filter by server UUID. Multiple UUIDs are OR-combined.
+    pub fn uuid(mut self, uuid: &str) -> Self {
+        self.uuids.push(uuid.to_string());
+        self
+    }
+
+    /// Sort results by the given field and direction.
+    pub fn order_by(mut self, field: OrderBy, direction: crate::types::common::SortOrder) -> Self {
+        self.order_by = Some(field);
+        self.sort_order = Some(direction);
+        self
+    }
+
+    /// Maximum number of results to return.
+    pub fn limit(mut self, limit: u32) -> Self {
+        self.limit = Some(limit);
+        self
+    }
+
+    /// Offset from the start of the result set.
+    pub fn offset(mut self, offset: u32) -> Self {
+        self.offset = Some(offset);
+        self
+    }
+
+    /// Returns `true` if no filters, ordering, or pagination are set.
+    pub fn is_empty(&self) -> bool {
+        self.state.is_none()
+            && self.labels.is_empty()
+            && self.tags.is_empty()
+            && self.search.is_none()
+            && self.hosts.is_empty()
+            && self.uuids.is_empty()
+            && self.order_by.is_none()
+            && self.limit.is_none()
+            && self.offset.is_none()
+    }
+
+    /// Encode as query parameter key-value pairs suitable for `reqwest::RequestBuilder::query`.
+    pub(crate) fn to_query_pairs(&self) -> Vec<(&str, String)> {
+        let mut pairs = Vec::new();
+
+        if let Some(state) = &self.state {
+            pairs.push(("state", format!("{state:?}").to_lowercase()));
+        }
+        for label in &self.labels {
+            pairs.push(("label", label.clone()));
+        }
+        if !self.tags.is_empty() {
+            pairs.push(("tag", self.tags.join(",")));
+        }
+        if let Some(search) = &self.search {
+            pairs.push(("search", search.clone()));
+        }
+        for host in &self.hosts {
+            pairs.push(("host", host.to_string()));
+        }
+        for uuid in &self.uuids {
+            pairs.push(("uuid", uuid.clone()));
+        }
+        if let Some(order_by) = &self.order_by {
+            pairs.push(("order_by", order_by.to_string()));
+        }
+        if let Some(sort_order) = &self.sort_order {
+            pairs.push(("sort_by", sort_order.to_string()));
+        }
+        if let Some(limit) = self.limit {
+            pairs.push(("limit", limit.to_string()));
+        }
+        if let Some(offset) = self.offset {
+            pairs.push(("offset", offset.to_string()));
+        }
+
+        pairs
+    }
+}

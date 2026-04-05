@@ -24,9 +24,18 @@ impl<'a> StorageHandler<'a> {
         Self { client }
     }
 
-    /// Returns a list of all storages.
-    pub async fn list(&self) -> Result<Vec<Storage>, Error> {
-        let resp: StorageListResponse = self.client.get("/1.3/storage").await?;
+    /// Returns a list of all storages, optionally filtered by labels.
+    ///
+    /// Pass `ListParams::default()` to list all storages without filtering.
+    pub async fn list(&self, params: &ListParams) -> Result<Vec<Storage>, Error> {
+        let pairs = params.to_query_pairs();
+        let resp: StorageListResponse = if pairs.is_empty() {
+            self.client.get("/1.3/storage").await?
+        } else {
+            self.client
+                .get_with_query_pairs("/1.3/storage", &pairs)
+                .await?
+        };
         Ok(resp.storages.storage)
     }
 

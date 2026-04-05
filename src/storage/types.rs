@@ -238,3 +238,44 @@ pub struct ResizeFilesystemBackup {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<String>,
 }
+
+// ─── List / filter parameters ─────────────────────────────────────────────────
+
+/// Query parameters for filtering the storage list.
+///
+/// # Examples
+///
+/// ```
+/// use upcloud_api_rs::storage::ListParams;
+///
+/// let params = ListParams::new()
+///     .label("env", "prod")
+///     .label("team", "backend");
+/// ```
+#[derive(Debug, Clone, Default)]
+pub struct ListParams {
+    labels: Vec<String>,
+}
+
+impl ListParams {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Add a label filter. Each call adds `key=value` as a separate `?label=` parameter.
+    /// Multiple labels are AND-combined by the API.
+    pub fn label(mut self, key: &str, value: &str) -> Self {
+        self.labels.push(format!("{key}={value}"));
+        self
+    }
+
+    /// Returns `true` if no filters are set.
+    pub fn is_empty(&self) -> bool {
+        self.labels.is_empty()
+    }
+
+    /// Encode as query parameter key-value pairs.
+    pub(crate) fn to_query_pairs(&self) -> Vec<(&str, String)> {
+        self.labels.iter().map(|l| ("label", l.clone())).collect()
+    }
+}

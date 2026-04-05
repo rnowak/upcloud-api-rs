@@ -29,9 +29,18 @@ impl<'a> ServerHandler<'a> {
 
     // ─── Servers ──────────────────────────────────────────────────────────────
 
-    /// Returns a list of all servers.
-    pub async fn list(&self) -> Result<Vec<Server>, Error> {
-        let resp: ServerListResponse = self.client.get("/1.3/server").await?;
+    /// Returns a list of all servers, optionally filtered, ordered, and paginated.
+    ///
+    /// Pass `ListParams::default()` to list all servers without filtering.
+    pub async fn list(&self, params: &ListParams) -> Result<Vec<Server>, Error> {
+        let pairs = params.to_query_pairs();
+        let resp: ServerListResponse = if pairs.is_empty() {
+            self.client.get("/1.3/server").await?
+        } else {
+            self.client
+                .get_with_query_pairs("/1.3/server", &pairs)
+                .await?
+        };
         Ok(resp.servers.server)
     }
 
