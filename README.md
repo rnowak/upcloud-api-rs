@@ -1,8 +1,10 @@
 # upcloud-api-rs
 
-A Rust SDK for [UpCloud API v1.3](https://developers.upcloud.com/1.3/).
+Unofficial Rust client library for [UpCloud API v1.3](https://developers.upcloud.com/1.3/).
 
 Built on **tokio** + **reqwest** + **serde**, with types for every resource, request, and response.
+
+AI disclosure: built with Claude.
 
 ## Features
 
