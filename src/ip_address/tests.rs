@@ -87,7 +87,10 @@ fn deserialize_ip_address_list() {
     assert_eq!(ips[0].address, "10.0.0.0");
     assert_eq!(ips[0].family, Family::IPv4);
     assert_eq!(ips[0].ptr_record.as_deref(), Some(""));
-    assert_eq!(ips[0].server.as_deref(), Some("0053cd80-5945-4105-9081-11192806a8f7"));
+    assert_eq!(
+        ips[0].server.as_deref(),
+        Some("0053cd80-5945-4105-9081-11192806a8f7")
+    );
     assert_eq!(ips[0].mac.as_deref(), Some("mm:mm:mm:mm:mm:m1"));
     assert_eq!(ips[0].floating, Some(false));
     assert_eq!(ips[0].release_policy, Some(ReleasePolicy::Release));
@@ -100,8 +103,14 @@ fn deserialize_ip_address_list() {
     assert_eq!(ips[1].address, "x.x.x.x");
     assert_eq!(ips[1].family, Family::IPv4);
     assert_eq!(ips[1].part_of_plan, Some(true));
-    assert_eq!(ips[1].ptr_record.as_deref(), Some("x-x-x-x.zone.upcloud.host"));
-    assert_eq!(ips[1].server.as_deref(), Some("0053cd80-5945-4105-9081-11192806a8f7"));
+    assert_eq!(
+        ips[1].ptr_record.as_deref(),
+        Some("x-x-x-x.zone.upcloud.host")
+    );
+    assert_eq!(
+        ips[1].server.as_deref(),
+        Some("0053cd80-5945-4105-9081-11192806a8f7")
+    );
     assert_eq!(ips[1].mac.as_deref(), Some("mm:mm:mm:mm:mm:m1"));
     assert_eq!(ips[1].floating, Some(true));
     assert_eq!(ips[1].release_policy, Some(ReleasePolicy::Release));
@@ -112,8 +121,14 @@ fn deserialize_ip_address_list() {
     assert_eq!(ips[2].access, Access::Public);
     assert_eq!(ips[2].address, "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx");
     assert_eq!(ips[2].family, Family::IPv6);
-    assert_eq!(ips[2].ptr_record.as_deref(), Some("xxxx-xxxx-xxxx-xxxx.v6.zone.upcloud.host"));
-    assert_eq!(ips[2].server.as_deref(), Some("006b6701-55d2-4374-ac40-56cc1501037f"));
+    assert_eq!(
+        ips[2].ptr_record.as_deref(),
+        Some("xxxx-xxxx-xxxx-xxxx.v6.zone.upcloud.host")
+    );
+    assert_eq!(
+        ips[2].server.as_deref(),
+        Some("006b6701-55d2-4374-ac40-56cc1501037f")
+    );
     assert_eq!(ips[2].mac.as_deref(), Some("mm:mm:mm:mm:mm:m3"));
     assert_eq!(ips[2].floating, Some(false));
     assert_eq!(ips[2].release_policy, Some(ReleasePolicy::Release));
@@ -125,7 +140,10 @@ fn deserialize_ip_address_list() {
     assert_eq!(ips[3].access, Access::Public);
     assert_eq!(ips[3].address, "y.y.y.y");
     assert_eq!(ips[3].family, Family::IPv4);
-    assert_eq!(ips[3].ptr_record.as_deref(), Some("y.y.y.y.zone.host.upcloud.com"));
+    assert_eq!(
+        ips[3].ptr_record.as_deref(),
+        Some("y.y.y.y.zone.host.upcloud.com")
+    );
     assert!(ips[3].server.is_none());
     assert!(ips[3].mac.is_none());
     assert_eq!(ips[3].floating, Some(true));
@@ -138,7 +156,10 @@ fn deserialize_ip_address_list() {
     assert_eq!(ips[4].access, Access::Public);
     assert_eq!(ips[4].address, "z.z.z.z");
     assert_eq!(ips[4].family, Family::IPv4);
-    assert_eq!(ips[4].ptr_record.as_deref(), Some("z.z.z.z.zone.host.upcloud.com"));
+    assert_eq!(
+        ips[4].ptr_record.as_deref(),
+        Some("z.z.z.z.zone.host.upcloud.com")
+    );
     assert!(ips[4].server.is_none());
     assert!(ips[4].mac.is_none());
     assert_eq!(ips[4].floating, Some(true));
@@ -156,7 +177,10 @@ fn deserialize_ip_address_detail() {
     assert_eq!(ip.address, "0.0.0.0");
     assert_eq!(ip.family, Family::IPv4);
     assert_eq!(ip.ptr_record.as_deref(), Some("test.example.com"));
-    assert_eq!(ip.server.as_deref(), Some("009d64ef-31d1-4684-a26b-c86c955cbf46"));
+    assert_eq!(
+        ip.server.as_deref(),
+        Some("009d64ef-31d1-4684-a26b-c86c955cbf46")
+    );
     assert_eq!(ip.mac.as_deref(), Some("mm:mm:mm:mm:mm:m5"));
     assert_eq!(ip.floating, Some(false));
     assert_eq!(ip.release_policy, Some(ReleasePolicy::Keep));
@@ -226,8 +250,14 @@ fn deserialize_assign_attached_floating_ip_response() {
     assert_eq!(ip.access, Access::Public);
     assert_eq!(ip.address, "0.0.0.0");
     assert_eq!(ip.family, Family::IPv4);
-    assert_eq!(ip.ptr_record.as_deref(), Some("xxxx-xxxx-xxxx-xxxx.v6.zone.upcloud.host"));
-    assert_eq!(ip.server.as_deref(), Some("009d64ef-31d1-4684-a26b-c86c955cbf46"));
+    assert_eq!(
+        ip.ptr_record.as_deref(),
+        Some("xxxx-xxxx-xxxx-xxxx.v6.zone.upcloud.host")
+    );
+    assert_eq!(
+        ip.server.as_deref(),
+        Some("009d64ef-31d1-4684-a26b-c86c955cbf46")
+    );
     assert_eq!(ip.mac.as_deref(), Some("mm:mm:mm:mm:mm:m1"));
     assert_eq!(ip.floating, Some(true));
     assert_eq!(ip.release_policy, Some(ReleasePolicy::Release));
@@ -277,7 +307,10 @@ fn deserialize_assign_detached_floating_ip_response() {
     assert_eq!(ip.access, Access::Public);
     assert_eq!(ip.address, "xx.xx.xx.xx");
     assert_eq!(ip.family, Family::IPv4);
-    assert_eq!(ip.ptr_record.as_deref(), Some("xx-xx-xx-xx.de-fra1.upcloud.host"));
+    assert_eq!(
+        ip.ptr_record.as_deref(),
+        Some("xx-xx-xx-xx.de-fra1.upcloud.host")
+    );
     assert_eq!(ip.floating, Some(true));
     assert_eq!(ip.release_policy, Some(ReleasePolicy::Keep));
     // Detached: no server or mac
@@ -326,14 +359,16 @@ fn deserialize_modify_ip_address_request() {
 
 #[test]
 fn deserialize_modify_ip_address_response() {
-    let resp: IpAddressResponse =
-        serde_json::from_str(MODIFY_IP_ADDRESS_RESPONSE_JSON).unwrap();
+    let resp: IpAddressResponse = serde_json::from_str(MODIFY_IP_ADDRESS_RESPONSE_JSON).unwrap();
     let ip = resp.ip_address;
     assert_eq!(ip.access, Access::Public);
     assert_eq!(ip.address, "0.0.0.0");
     assert_eq!(ip.family, Family::IPv4);
     assert_eq!(ip.ptr_record.as_deref(), Some("hostname.example.com"));
-    assert_eq!(ip.server.as_deref(), Some("009d64ef-31d1-4684-a26b-c86c95c5bf46"));
+    assert_eq!(
+        ip.server.as_deref(),
+        Some("009d64ef-31d1-4684-a26b-c86c95c5bf46")
+    );
     assert_eq!(ip.mac.as_deref(), Some("mm:mm:mm:mm:mm:m1"));
     assert_eq!(ip.floating, Some(true));
     assert_eq!(ip.zone.as_deref(), Some("sg-sin1"));

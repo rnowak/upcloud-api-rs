@@ -140,8 +140,7 @@ fn deserialize_k8s_plan_list() {
 
 #[test]
 fn deserialize_k8s_cluster_list() {
-    let clusters: Vec<Cluster> =
-        serde_json::from_str(K8S_CLUSTER_LIST_JSON).unwrap();
+    let clusters: Vec<Cluster> = serde_json::from_str(K8S_CLUSTER_LIST_JSON).unwrap();
     assert_eq!(clusters.len(), 2);
 
     let c1 = &clusters[0];
@@ -151,7 +150,10 @@ fn deserialize_k8s_cluster_list() {
     assert_eq!(c1.plan.as_deref(), Some("dev-md"));
     assert_eq!(c1.private_node_groups, Some(false));
     assert_eq!(c1.control_plane_ip_filter.as_ref().unwrap().len(), 0);
-    assert_eq!(c1.network.as_deref(), Some("03a85f64-5717-4562-b3fc-2c963f66afa6"));
+    assert_eq!(
+        c1.network.as_deref(),
+        Some("03a85f64-5717-4562-b3fc-2c963f66afa6")
+    );
     assert_eq!(c1.network_cidr.as_deref(), Some("172.16.0.0/24"));
     assert_eq!(c1.uuid, "3fa85f64-5717-4562-b3fc-2c963f66afa6");
     assert!(c1.version.is_none());
@@ -179,7 +181,10 @@ fn deserialize_k8s_cluster_list() {
     let g0_ssh = groups[0].ssh_keys.as_ref().unwrap();
     assert_eq!(g0_ssh.len(), 1);
     assert_eq!(g0_ssh[0], "ssh-rsa AAAAB3NzaC1yc2EAA");
-    assert_eq!(groups[0].storage.as_deref(), Some("01000000-0000-4000-8000-000160010100"));
+    assert_eq!(
+        groups[0].storage.as_deref(),
+        Some("01000000-0000-4000-8000-000160010100")
+    );
     assert!(groups[0].taints.as_ref().unwrap().is_empty());
     assert_eq!(groups[0].utility_network_access, Some(true));
     assert!(groups[0].anti_affinity_status.is_none());
@@ -192,7 +197,10 @@ fn deserialize_k8s_cluster_list() {
     assert_eq!(c2.plan.as_deref(), Some("prod-md"));
     assert_eq!(c2.private_node_groups, Some(true));
     assert_eq!(c2.uuid, "3fa85f64-5717-4562-b3fc-2c963f66afa6");
-    assert_eq!(c2.network.as_deref(), Some("03a85f64-5717-4562-b3fc-2c963f66afa6"));
+    assert_eq!(
+        c2.network.as_deref(),
+        Some("03a85f64-5717-4562-b3fc-2c963f66afa6")
+    );
     assert_eq!(c2.network_cidr.as_deref(), Some("172.17.0.0/24"));
     let c2_filters = c2.control_plane_ip_filter.as_ref().unwrap();
     assert_eq!(c2_filters.len(), 1);
@@ -205,17 +213,22 @@ fn deserialize_k8s_cluster_list() {
 
 #[test]
 fn deserialize_k8s_cluster_detail() {
-    let cluster: Cluster =
-        serde_json::from_str(K8S_CLUSTER_DETAIL_JSON).unwrap();
+    let cluster: Cluster = serde_json::from_str(K8S_CLUSTER_DETAIL_JSON).unwrap();
     assert_eq!(cluster.uuid, "3fa85f64-5717-4562-b3fc-2c963f66afa6");
     assert_eq!(cluster.name, "example-cluster-1");
     assert_eq!(cluster.state, ClusterState::Running);
     assert_eq!(cluster.zone, "fi-hel2");
     assert_eq!(cluster.plan.as_deref(), Some("dev-md"));
     assert_eq!(cluster.private_node_groups, Some(false));
-    assert_eq!(cluster.network.as_deref(), Some("03a85f64-5717-4562-b3fc-2c963f66afa6"));
+    assert_eq!(
+        cluster.network.as_deref(),
+        Some("03a85f64-5717-4562-b3fc-2c963f66afa6")
+    );
     assert_eq!(cluster.network_cidr.as_deref(), Some("172.16.0.0/24"));
-    assert_eq!(cluster.control_plane_ip_filter.as_ref().unwrap(), &["0.0.0.0/0"]);
+    assert_eq!(
+        cluster.control_plane_ip_filter.as_ref().unwrap(),
+        &["0.0.0.0/0"]
+    );
     assert!(cluster.version.is_none());
     assert!(cluster.created_at.is_none());
 
@@ -241,7 +254,10 @@ fn deserialize_k8s_cluster_detail() {
     let g0_ssh = groups[0].ssh_keys.as_ref().unwrap();
     assert_eq!(g0_ssh.len(), 1);
     assert_eq!(g0_ssh[0], "ssh-rsa AAAAB3NzaC1yc2EAA");
-    assert_eq!(groups[0].storage.as_deref(), Some("01000000-0000-4000-8000-000160010100"));
+    assert_eq!(
+        groups[0].storage.as_deref(),
+        Some("01000000-0000-4000-8000-000160010100")
+    );
     assert!(groups[0].taints.as_ref().unwrap().is_empty());
     assert_eq!(groups[0].utility_network_access, Some(true));
     assert!(groups[0].anti_affinity_status.is_none());
@@ -268,7 +284,10 @@ fn deserialize_node_group_list() {
     let g0_ssh = groups[0].ssh_keys.as_ref().unwrap();
     assert_eq!(g0_ssh.len(), 1);
     assert_eq!(g0_ssh[0], "ssh-rsa AAAAB3NzaC1yc2EAA");
-    assert_eq!(groups[0].storage.as_deref(), Some("01000000-0000-4000-8000-000160010100"));
+    assert_eq!(
+        groups[0].storage.as_deref(),
+        Some("01000000-0000-4000-8000-000160010100")
+    );
     assert!(groups[0].anti_affinity_status.is_none());
     assert!(groups[0].nodes.is_none());
 
@@ -278,7 +297,10 @@ fn deserialize_node_group_list() {
     assert_eq!(groups[1].utility_network_access, Some(false));
     assert_eq!(groups[1].plan, "4xCPU-8GB");
     assert_eq!(groups[1].state, Some(NodeGroupState::Running));
-    assert_eq!(groups[1].storage.as_deref(), Some("01000000-0000-4000-8000-000160010100"));
+    assert_eq!(
+        groups[1].storage.as_deref(),
+        Some("01000000-0000-4000-8000-000160010100")
+    );
     let g1_labels = groups[1].labels.as_ref().unwrap();
     assert_eq!(g1_labels.len(), 1);
     assert_eq!(g1_labels[0].key, "team");
@@ -482,11 +504,9 @@ const MODIFY_NODE_GROUP_RESPONSE_JSON: &str = r#"{
   "utility_network_access": true
 }"#;
 
-
 #[test]
 fn deserialize_create_cluster_request() {
-    let req: CreateClusterRequest =
-        serde_json::from_str(CREATE_CLUSTER_REQUEST_JSON).unwrap();
+    let req: CreateClusterRequest = serde_json::from_str(CREATE_CLUSTER_REQUEST_JSON).unwrap();
     assert_eq!(req.name, "example-cluster-1");
     assert_eq!(req.zone, "fi-hel2");
     assert_eq!(req.network, "03a85f64-5717-4562-b3fc-2c963f66afa6");
@@ -523,15 +543,17 @@ fn deserialize_create_cluster_request() {
 
 #[test]
 fn deserialize_create_cluster_response() {
-    let cluster: Cluster =
-        serde_json::from_str(CREATE_CLUSTER_RESPONSE_JSON).unwrap();
+    let cluster: Cluster = serde_json::from_str(CREATE_CLUSTER_RESPONSE_JSON).unwrap();
     assert_eq!(cluster.state, ClusterState::Pending);
     assert_eq!(cluster.name, "example-cluster-1");
     assert_eq!(cluster.uuid, "3fa85f64-5717-4562-b3fc-2c963f66afa6");
     assert_eq!(cluster.zone, "fi-hel2");
     assert_eq!(cluster.plan.as_deref(), Some("dev-md"));
     assert_eq!(cluster.private_node_groups, Some(false));
-    assert_eq!(cluster.network.as_deref(), Some("03a85f64-5717-4562-b3fc-2c963f66afa6"));
+    assert_eq!(
+        cluster.network.as_deref(),
+        Some("03a85f64-5717-4562-b3fc-2c963f66afa6")
+    );
     assert_eq!(cluster.network_cidr.as_deref(), Some("172.16.0.0/24"));
     assert!(cluster.control_plane_ip_filter.as_ref().unwrap().is_empty());
     assert!(cluster.version.is_none());
@@ -552,7 +574,10 @@ fn deserialize_create_cluster_response() {
     assert_eq!(groups[0].count, 3);
     assert_eq!(groups[0].anti_affinity, Some(false));
     assert_eq!(groups[0].utility_network_access, Some(true));
-    assert_eq!(groups[0].storage.as_deref(), Some("01000000-0000-4000-8000-000160010100"));
+    assert_eq!(
+        groups[0].storage.as_deref(),
+        Some("01000000-0000-4000-8000-000160010100")
+    );
     assert!(groups[0].kubelet_args.as_ref().unwrap().is_empty());
     assert!(groups[0].taints.as_ref().unwrap().is_empty());
     let g0_labels = groups[0].labels.as_ref().unwrap();
@@ -568,8 +593,7 @@ fn deserialize_create_cluster_response() {
 
 #[test]
 fn deserialize_modify_cluster_request() {
-    let val: serde_json::Value =
-        serde_json::from_str(MODIFY_CLUSTER_REQUEST_JSON).unwrap();
+    let val: serde_json::Value = serde_json::from_str(MODIFY_CLUSTER_REQUEST_JSON).unwrap();
     assert!(val.get("control_plane_ip_filter").is_some());
     assert!(val.get("labels").is_some());
     let filters = val["control_plane_ip_filter"].as_array().unwrap();
@@ -585,17 +609,22 @@ fn deserialize_modify_cluster_request() {
 
 #[test]
 fn deserialize_modify_cluster_response() {
-    let cluster: Cluster =
-        serde_json::from_str(MODIFY_CLUSTER_RESPONSE_JSON).unwrap();
+    let cluster: Cluster = serde_json::from_str(MODIFY_CLUSTER_RESPONSE_JSON).unwrap();
     assert_eq!(cluster.state, ClusterState::Running);
     assert_eq!(cluster.name, "example-cluster-1");
     assert_eq!(cluster.uuid, "3fa85f64-5717-4562-b3fc-2c963f66afa6");
     assert_eq!(cluster.zone, "fi-hel2");
     assert_eq!(cluster.plan.as_deref(), Some("dev-md"));
     assert_eq!(cluster.private_node_groups, Some(false));
-    assert_eq!(cluster.network.as_deref(), Some("03a85f64-5717-4562-b3fc-2c963f66afa6"));
+    assert_eq!(
+        cluster.network.as_deref(),
+        Some("03a85f64-5717-4562-b3fc-2c963f66afa6")
+    );
     assert_eq!(cluster.network_cidr.as_deref(), Some("172.16.0.0/24"));
-    assert_eq!(cluster.control_plane_ip_filter.as_ref().unwrap(), &["0.0.0.0/0"]);
+    assert_eq!(
+        cluster.control_plane_ip_filter.as_ref().unwrap(),
+        &["0.0.0.0/0"]
+    );
     assert!(cluster.version.is_none());
     assert!(cluster.created_at.is_none());
 
@@ -614,7 +643,10 @@ fn deserialize_modify_cluster_response() {
     assert_eq!(groups[0].state, Some(NodeGroupState::Running));
     assert_eq!(groups[0].anti_affinity, Some(false));
     assert_eq!(groups[0].utility_network_access, Some(true));
-    assert_eq!(groups[0].storage.as_deref(), Some("01000000-0000-4000-8000-000160010100"));
+    assert_eq!(
+        groups[0].storage.as_deref(),
+        Some("01000000-0000-4000-8000-000160010100")
+    );
     assert!(groups[0].kubelet_args.as_ref().unwrap().is_empty());
     assert!(groups[0].taints.as_ref().unwrap().is_empty());
     let g0_labels = groups[0].labels.as_ref().unwrap();
@@ -630,16 +662,14 @@ fn deserialize_modify_cluster_response() {
 
 #[test]
 fn deserialize_available_upgrades() {
-    let resp: ClusterAvailableUpgrades =
-        serde_json::from_str(AVAILABLE_UPGRADES_JSON).unwrap();
+    let resp: ClusterAvailableUpgrades = serde_json::from_str(AVAILABLE_UPGRADES_JSON).unwrap();
     assert_eq!(resp.versions.len(), 1);
     assert_eq!(resp.versions[0], "1.31");
 }
 
 #[test]
 fn deserialize_upgrade_cluster_request() {
-    let req: UpgradeClusterRequest =
-        serde_json::from_str(UPGRADE_CLUSTER_REQUEST_JSON).unwrap();
+    let req: UpgradeClusterRequest = serde_json::from_str(UPGRADE_CLUSTER_REQUEST_JSON).unwrap();
     assert_eq!(req.version, "1.31");
     let strategy = req.strategy.as_ref().unwrap();
     assert_eq!(strategy.strategy_type, "manual");
@@ -654,8 +684,7 @@ const UPGRADE_CLUSTER_RESPONSE_JSON: &str = r#"{
 
 #[test]
 fn deserialize_upgrade_cluster_response() {
-    let resp: UpgradeClusterRequest =
-        serde_json::from_str(UPGRADE_CLUSTER_RESPONSE_JSON).unwrap();
+    let resp: UpgradeClusterRequest = serde_json::from_str(UPGRADE_CLUSTER_RESPONSE_JSON).unwrap();
     assert_eq!(resp.version, "1.31");
     let strategy = resp.strategy.as_ref().unwrap();
     assert_eq!(strategy.strategy_type, "manual");
@@ -663,19 +692,20 @@ fn deserialize_upgrade_cluster_response() {
 
 #[test]
 fn deserialize_kubeconfig_response() {
-    let resp: Kubeconfig =
-        serde_json::from_str(KUBECONFIG_RESPONSE_JSON).unwrap();
+    let resp: Kubeconfig = serde_json::from_str(KUBECONFIG_RESPONSE_JSON).unwrap();
     assert!(resp.kubeconfig.starts_with("apiVersion"));
     assert!(resp.kubeconfig.contains("example-cluster-1"));
-    assert!(resp.kubeconfig.contains("certificate-authority-data: BASE64"));
+    assert!(
+        resp.kubeconfig
+            .contains("certificate-authority-data: BASE64")
+    );
     assert!(resp.kubeconfig.contains("client-certificate-data: BASE64"));
     assert!(resp.kubeconfig.contains("client-key-data: BASE64"));
 }
 
 #[test]
 fn deserialize_create_kubernetes_node_group_request() {
-    let req: CreateNodeGroupRequest =
-        serde_json::from_str(CREATE_NODE_GROUP_REQUEST_JSON).unwrap();
+    let req: CreateNodeGroupRequest = serde_json::from_str(CREATE_NODE_GROUP_REQUEST_JSON).unwrap();
     assert_eq!(req.name, "example-node-group-2");
     assert_eq!(req.plan, "4xCPU-8GB");
     assert_eq!(req.count, 9);
@@ -705,15 +735,17 @@ fn deserialize_create_kubernetes_node_group_request() {
 
 #[test]
 fn deserialize_create_kubernetes_node_group_response() {
-    let group: NodeGroup =
-        serde_json::from_str(CREATE_NODE_GROUP_RESPONSE_JSON).unwrap();
+    let group: NodeGroup = serde_json::from_str(CREATE_NODE_GROUP_RESPONSE_JSON).unwrap();
     assert_eq!(group.state, Some(NodeGroupState::Pending));
     assert_eq!(group.name, "example-node-group-2");
     assert_eq!(group.count, 9);
     assert_eq!(group.plan, "4xCPU-8GB");
     assert_eq!(group.anti_affinity, Some(true));
     assert_eq!(group.utility_network_access, Some(true));
-    assert_eq!(group.storage.as_deref(), Some("01000000-0000-4000-8000-000160010100"));
+    assert_eq!(
+        group.storage.as_deref(),
+        Some("01000000-0000-4000-8000-000160010100")
+    );
     let labels = group.labels.as_ref().unwrap();
     assert_eq!(labels.len(), 1);
     assert_eq!(labels[0].key, "team");
@@ -736,15 +768,17 @@ fn deserialize_create_kubernetes_node_group_response() {
 
 #[test]
 fn deserialize_node_group_detail() {
-    let group: NodeGroup =
-        serde_json::from_str(NODE_GROUP_DETAIL_JSON).unwrap();
+    let group: NodeGroup = serde_json::from_str(NODE_GROUP_DETAIL_JSON).unwrap();
     assert_eq!(group.anti_affinity_status, Some(true));
     assert_eq!(group.state, Some(NodeGroupState::Running));
     assert_eq!(group.count, 2);
     assert_eq!(group.name, "example-node-group-2");
     assert_eq!(group.plan, "4xCPU-8GB");
     assert_eq!(group.utility_network_access, Some(true));
-    assert_eq!(group.storage.as_deref(), Some("01000000-0000-4000-8000-000160010100"));
+    assert_eq!(
+        group.storage.as_deref(),
+        Some("01000000-0000-4000-8000-000160010100")
+    );
     assert!(group.anti_affinity.is_none());
     let labels = group.labels.as_ref().unwrap();
     assert_eq!(labels.len(), 1);
@@ -776,23 +810,24 @@ fn deserialize_node_group_detail() {
 
 #[test]
 fn deserialize_modify_kubernetes_node_group_request() {
-    let req: ModifyNodeGroupRequest =
-        serde_json::from_str(MODIFY_NODE_GROUP_REQUEST_JSON).unwrap();
+    let req: ModifyNodeGroupRequest = serde_json::from_str(MODIFY_NODE_GROUP_REQUEST_JSON).unwrap();
     assert_eq!(req.count, Some(15));
     assert!(req.labels.is_none());
 }
 
 #[test]
 fn deserialize_modify_kubernetes_node_group_response() {
-    let group: NodeGroup =
-        serde_json::from_str(MODIFY_NODE_GROUP_RESPONSE_JSON).unwrap();
+    let group: NodeGroup = serde_json::from_str(MODIFY_NODE_GROUP_RESPONSE_JSON).unwrap();
     assert_eq!(group.count, 15);
     assert_eq!(group.name, "example-node-group-2");
     assert_eq!(group.state, Some(NodeGroupState::Running));
     assert_eq!(group.plan, "4xCPU-8GB");
     assert_eq!(group.anti_affinity, Some(true));
     assert_eq!(group.utility_network_access, Some(true));
-    assert_eq!(group.storage.as_deref(), Some("01000000-0000-4000-8000-000160010100"));
+    assert_eq!(
+        group.storage.as_deref(),
+        Some("01000000-0000-4000-8000-000160010100")
+    );
     let labels = group.labels.as_ref().unwrap();
     assert_eq!(labels.len(), 1);
     assert_eq!(labels[0].key, "team");
@@ -829,10 +864,7 @@ fn serialize_modify_cluster_request() {
     let json = serde_json::to_value(&req).unwrap();
     assert!(json.get("ip_filter").is_none());
     assert!(json.get("plan").is_none());
-    assert_eq!(
-        json["control_plane_ip_filter"].as_array().unwrap().len(),
-        1
-    );
+    assert_eq!(json["control_plane_ip_filter"].as_array().unwrap().len(), 1);
     assert_eq!(json["labels"].as_array().unwrap().len(), 1);
     assert_eq!(json["labels"][0]["key"].as_str().unwrap(), "env");
     assert_eq!(json["labels"][0]["value"].as_str().unwrap(), "production");
@@ -840,8 +872,7 @@ fn serialize_modify_cluster_request() {
 
 #[test]
 fn deserialize_modify_cluster_request_typed() {
-    let req: ModifyClusterRequest =
-        serde_json::from_str(MODIFY_CLUSTER_REQUEST_JSON).unwrap();
+    let req: ModifyClusterRequest = serde_json::from_str(MODIFY_CLUSTER_REQUEST_JSON).unwrap();
     assert_eq!(
         req.control_plane_ip_filter.as_ref().unwrap(),
         &["0.0.0.0/0"]
@@ -861,8 +892,7 @@ const KUBERNETES_VERSIONS_JSON: &str = r#"[
 
 #[test]
 fn deserialize_kubernetes_versions() {
-    let versions: Vec<KubernetesVersion> =
-        serde_json::from_str(KUBERNETES_VERSIONS_JSON).unwrap();
+    let versions: Vec<KubernetesVersion> = serde_json::from_str(KUBERNETES_VERSIONS_JSON).unwrap();
     assert_eq!(versions.len(), 2);
     assert_eq!(versions[0].id, "1.30");
     assert_eq!(versions[0].version, "1.30");
@@ -895,8 +925,7 @@ const NODE_GROUP_WITH_CUSTOM_PLAN_JSON: &str = r#"{
 
 #[test]
 fn deserialize_node_group_with_custom_plan() {
-    let group: NodeGroup =
-        serde_json::from_str(NODE_GROUP_WITH_CUSTOM_PLAN_JSON).unwrap();
+    let group: NodeGroup = serde_json::from_str(NODE_GROUP_WITH_CUSTOM_PLAN_JSON).unwrap();
     assert_eq!(group.name, "custom-plan-group");
     assert_eq!(group.plan, "custom");
     assert_eq!(group.count, 3);
@@ -937,8 +966,7 @@ const NODE_GROUP_WITH_CLOUD_NATIVE_PLAN_JSON: &str = r#"{
 
 #[test]
 fn deserialize_node_group_with_cloud_native_plan() {
-    let group: NodeGroup =
-        serde_json::from_str(NODE_GROUP_WITH_CLOUD_NATIVE_PLAN_JSON).unwrap();
+    let group: NodeGroup = serde_json::from_str(NODE_GROUP_WITH_CLOUD_NATIVE_PLAN_JSON).unwrap();
     assert_eq!(group.name, "cloud-native-group");
     assert_eq!(group.plan, "CLOUDNATIVE-48xCPU-384GB");
     assert_eq!(group.count, 2);
@@ -974,8 +1002,7 @@ const NODE_GROUP_WITH_GPU_PLAN_JSON: &str = r#"{
 
 #[test]
 fn deserialize_node_group_with_gpu_plan() {
-    let group: NodeGroup =
-        serde_json::from_str(NODE_GROUP_WITH_GPU_PLAN_JSON).unwrap();
+    let group: NodeGroup = serde_json::from_str(NODE_GROUP_WITH_GPU_PLAN_JSON).unwrap();
     assert_eq!(group.name, "gpu-group");
     assert_eq!(group.plan, "GPU-12xCPU-128GB-1xL40s");
     assert_eq!(group.count, 1);
@@ -1031,8 +1058,7 @@ const K8S_CLUSTER_WITH_ENCRYPTION_JSON: &str = r#"{
 
 #[test]
 fn deserialize_cluster_with_storage_encryption() {
-    let cluster: Cluster =
-        serde_json::from_str(K8S_CLUSTER_WITH_ENCRYPTION_JSON).unwrap();
+    let cluster: Cluster = serde_json::from_str(K8S_CLUSTER_WITH_ENCRYPTION_JSON).unwrap();
     assert_eq!(cluster.name, "encrypted-cluster");
     assert_eq!(cluster.uuid, "3fa85f64-5717-4562-b3fc-2c963f66afa6");
     assert_eq!(cluster.state, ClusterState::Running);
@@ -1040,7 +1066,10 @@ fn deserialize_cluster_with_storage_encryption() {
     assert_eq!(cluster.plan.as_deref(), Some("prod-md"));
     assert_eq!(cluster.private_node_groups, Some(false));
     assert_eq!(cluster.storage_encryption.as_deref(), Some("data-at-rest"));
-    assert_eq!(cluster.control_plane_ip_filter.as_ref().unwrap(), &["0.0.0.0/0"]);
+    assert_eq!(
+        cluster.control_plane_ip_filter.as_ref().unwrap(),
+        &["0.0.0.0/0"]
+    );
 
     let labels = cluster.labels.as_ref().unwrap();
     assert_eq!(labels.len(), 1);
@@ -1053,5 +1082,8 @@ fn deserialize_cluster_with_storage_encryption() {
     assert_eq!(groups[0].plan, "4xCPU-8GB");
     assert_eq!(groups[0].count, 3);
     assert_eq!(groups[0].state, Some(NodeGroupState::Running));
-    assert_eq!(groups[0].storage_encryption.as_deref(), Some("data-at-rest"));
+    assert_eq!(
+        groups[0].storage_encryption.as_deref(),
+        Some("data-at-rest")
+    );
 }

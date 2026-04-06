@@ -46,9 +46,7 @@ impl<'a> FileStorageHandler<'a> {
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#get-service-details)
     pub async fn get(&self, uuid: &str) -> Result<Service, Error> {
-        self.client
-            .get(&format!("/1.3/file-storage/{uuid}"))
-            .await
+        self.client.get(&format!("/1.3/file-storage/{uuid}")).await
     }
 
     /// Creates a new file storage service.
@@ -65,11 +63,7 @@ impl<'a> FileStorageHandler<'a> {
     /// `PATCH /1.3/file-storage/{uuid}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#modify-service)
-    pub async fn modify(
-        &self,
-        uuid: &str,
-        req: ModifyRequest,
-    ) -> Result<Service, Error> {
+    pub async fn modify(&self, uuid: &str, req: ModifyRequest) -> Result<Service, Error> {
         self.client
             .patch(&format!("/1.3/file-storage/{uuid}"), &req)
             .await
@@ -104,11 +98,7 @@ impl<'a> FileStorageHandler<'a> {
     /// `GET /1.3/file-storage/{uuid}/shares/{share_name}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#get-share-details)
-    pub async fn get_share(
-        &self,
-        uuid: &str,
-        share_name: &str,
-    ) -> Result<Share, Error> {
+    pub async fn get_share(&self, uuid: &str, share_name: &str) -> Result<Share, Error> {
         self.client
             .get(&format!("/1.3/file-storage/{uuid}/shares/{share_name}"))
             .await
@@ -119,11 +109,7 @@ impl<'a> FileStorageHandler<'a> {
     /// `POST /1.3/file-storage/{uuid}/shares`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#create-share)
-    pub async fn create_share(
-        &self,
-        uuid: &str,
-        req: CreateShareRequest,
-    ) -> Result<Share, Error> {
+    pub async fn create_share(&self, uuid: &str, req: CreateShareRequest) -> Result<Share, Error> {
         self.client
             .post(&format!("/1.3/file-storage/{uuid}/shares"), &req)
             .await
@@ -153,11 +139,7 @@ impl<'a> FileStorageHandler<'a> {
     /// `DELETE /1.3/file-storage/{uuid}/shares/{share_name}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#delete-share)
-    pub async fn delete_share(
-        &self,
-        uuid: &str,
-        share_name: &str,
-    ) -> Result<(), Error> {
+    pub async fn delete_share(&self, uuid: &str, share_name: &str) -> Result<(), Error> {
         self.client
             .delete(&format!("/1.3/file-storage/{uuid}/shares/{share_name}"))
             .await
@@ -170,10 +152,7 @@ impl<'a> FileStorageHandler<'a> {
     /// `GET /1.3/file-storage/{uuid}/networks`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#list-networks)
-    pub async fn list_networks(
-        &self,
-        uuid: &str,
-    ) -> Result<Vec<Network>, Error> {
+    pub async fn list_networks(&self, uuid: &str) -> Result<Vec<Network>, Error> {
         self.client
             .get(&format!("/1.3/file-storage/{uuid}/networks"))
             .await
@@ -184,11 +163,7 @@ impl<'a> FileStorageHandler<'a> {
     /// `POST /1.3/file-storage/{uuid}/networks`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#create-network)
-    pub async fn create_network(
-        &self,
-        uuid: &str,
-        req: NetworkInput,
-    ) -> Result<Network, Error> {
+    pub async fn create_network(&self, uuid: &str, req: NetworkInput) -> Result<Network, Error> {
         self.client
             .post(&format!("/1.3/file-storage/{uuid}/networks"), &req)
             .await
@@ -199,15 +174,9 @@ impl<'a> FileStorageHandler<'a> {
     /// `DELETE /1.3/file-storage/{uuid}/networks/{network_name}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#delete-network)
-    pub async fn delete_network(
-        &self,
-        uuid: &str,
-        network_name: &str,
-    ) -> Result<(), Error> {
+    pub async fn delete_network(&self, uuid: &str, network_name: &str) -> Result<(), Error> {
         self.client
-            .delete(&format!(
-                "/1.3/file-storage/{uuid}/networks/{network_name}"
-            ))
+            .delete(&format!("/1.3/file-storage/{uuid}/networks/{network_name}"))
             .await
     }
 }

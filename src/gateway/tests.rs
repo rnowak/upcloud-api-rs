@@ -89,8 +89,14 @@ fn deserialize_gateway_list() {
     assert_eq!(gw.operational_state, Some(OperationalState::Running));
     assert_eq!(gw.configured_status, Some(ConfiguredStatus::Started));
     assert_eq!(gw.automatic_tunnel_internal_ip_allocation, Some(true));
-    assert_eq!(gw.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
-    assert_eq!(gw.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
+    assert_eq!(
+        gw.created_at.as_deref(),
+        Some("2022-12-01T09:04:08.529138Z")
+    );
+    assert_eq!(
+        gw.updated_at.as_deref(),
+        Some("2022-12-01T19:04:08.529138Z")
+    );
 
     // features
     assert_eq!(gw.features.len(), 2);
@@ -105,7 +111,10 @@ fn deserialize_gateway_list() {
     // routers
     assert_eq!(gw.routers.len(), 1);
     assert_eq!(gw.routers[0].uuid, "1085d477-8d8f-4c97-9bef-731933187538");
-    assert_eq!(gw.routers[0].created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
+    assert_eq!(
+        gw.routers[0].created_at.as_deref(),
+        Some("2022-12-01T09:04:08.529138Z")
+    );
 
     // labels
     let labels = gw.labels.as_ref().unwrap();
@@ -117,10 +126,19 @@ fn deserialize_gateway_list() {
     assert_eq!(gw.connections.len(), 1);
     let conn = &gw.connections[0];
     assert_eq!(conn.name, "example-connection");
-    assert_eq!(conn.uuid.as_deref(), Some("1085d477-8d8f-4c97-9bef-731933187538"));
+    assert_eq!(
+        conn.uuid.as_deref(),
+        Some("1085d477-8d8f-4c97-9bef-731933187538")
+    );
     assert_eq!(conn.connection_type, ConnectionType::IPSec);
-    assert_eq!(conn.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
-    assert_eq!(conn.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
+    assert_eq!(
+        conn.created_at.as_deref(),
+        Some("2022-12-01T09:04:08.529138Z")
+    );
+    assert_eq!(
+        conn.updated_at.as_deref(),
+        Some("2022-12-01T19:04:08.529138Z")
+    );
 
     // local_routes
     assert_eq!(conn.local_routes.len(), 1);
@@ -138,14 +156,26 @@ fn deserialize_gateway_list() {
     assert_eq!(conn.tunnels.len(), 1);
     let tunnel = &conn.tunnels[0];
     assert_eq!(tunnel.name, "example-tunnel-1");
-    assert_eq!(tunnel.uuid.as_deref(), Some("1085d477-8d8f-4c97-9bef-731933187777"));
+    assert_eq!(
+        tunnel.uuid.as_deref(),
+        Some("1085d477-8d8f-4c97-9bef-731933187777")
+    );
     assert_eq!(tunnel.tunnel_healthy, Some(true));
     assert_eq!(tunnel.tunnel_up, Some(true));
     assert_eq!(tunnel.tunnel_internal_ip.as_deref(), Some("169.254.17.1"));
     assert_eq!(tunnel.internal_peer_ping_interval, Some(0));
-    assert_eq!(tunnel.operational_state, Some(TunnelOperationalState::Established));
-    assert_eq!(tunnel.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
-    assert_eq!(tunnel.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
+    assert_eq!(
+        tunnel.operational_state,
+        Some(TunnelOperationalState::Established)
+    );
+    assert_eq!(
+        tunnel.created_at.as_deref(),
+        Some("2022-12-01T09:04:08.529138Z")
+    );
+    assert_eq!(
+        tunnel.updated_at.as_deref(),
+        Some("2022-12-01T19:04:08.529138Z")
+    );
 
     // tunnel local_address / remote_address
     let local_addr = tunnel.local_address.as_ref().unwrap();
@@ -157,7 +187,10 @@ fn deserialize_gateway_list() {
 
     // ipsec
     let ipsec = tunnel.ipsec.as_ref().unwrap();
-    assert_eq!(ipsec.authentication.as_ref().unwrap().authentication, IPSecAuthType::PSK);
+    assert_eq!(
+        ipsec.authentication.as_ref().unwrap().authentication,
+        IPSecAuthType::PSK
+    );
     assert!(ipsec.authentication.as_ref().unwrap().psk.is_none());
     assert_eq!(ipsec.child_rekey_time, Some(1440));
     assert_eq!(ipsec.dpd_delay, Some(30));
@@ -176,7 +209,16 @@ fn deserialize_gateway_list() {
 
     let p1_int = ipsec.phase1_integrity_algorithms.as_ref().unwrap();
     assert_eq!(p1_int.len(), 5);
-    assert_eq!(p1_int, &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
+    assert_eq!(
+        p1_int,
+        &[
+            IPSecIntegrityAlgorithm::Aes128Gmac,
+            IPSecIntegrityAlgorithm::Aes256Gmac,
+            IPSecIntegrityAlgorithm::Sha256,
+            IPSecIntegrityAlgorithm::Sha384,
+            IPSecIntegrityAlgorithm::Sha512
+        ]
+    );
 
     let p2_alg = ipsec.phase2_algorithms.as_ref().unwrap();
     assert_eq!(p2_alg.len(), 2);
@@ -189,7 +231,16 @@ fn deserialize_gateway_list() {
 
     let p2_int = ipsec.phase2_integrity_algorithms.as_ref().unwrap();
     assert_eq!(p2_int.len(), 5);
-    assert_eq!(p2_int, &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
+    assert_eq!(
+        p2_int,
+        &[
+            IPSecIntegrityAlgorithm::Aes128Gmac,
+            IPSecIntegrityAlgorithm::Aes256Gmac,
+            IPSecIntegrityAlgorithm::Sha256,
+            IPSecIntegrityAlgorithm::Sha384,
+            IPSecIntegrityAlgorithm::Sha512
+        ]
+    );
 }
 
 #[test]
@@ -508,8 +559,14 @@ fn deserialize_gateway_detail() {
     assert_eq!(gw.operational_state, Some(OperationalState::Running));
     assert_eq!(gw.configured_status, Some(ConfiguredStatus::Started));
     assert_eq!(gw.automatic_tunnel_internal_ip_allocation, Some(true));
-    assert_eq!(gw.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
-    assert_eq!(gw.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
+    assert_eq!(
+        gw.created_at.as_deref(),
+        Some("2022-12-01T09:04:08.529138Z")
+    );
+    assert_eq!(
+        gw.updated_at.as_deref(),
+        Some("2022-12-01T19:04:08.529138Z")
+    );
 
     // features
     assert_eq!(gw.features.len(), 2);
@@ -524,7 +581,10 @@ fn deserialize_gateway_detail() {
     // routers
     assert_eq!(gw.routers.len(), 1);
     assert_eq!(gw.routers[0].uuid, "1085d477-8d8f-4c97-9bef-731933187538");
-    assert_eq!(gw.routers[0].created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
+    assert_eq!(
+        gw.routers[0].created_at.as_deref(),
+        Some("2022-12-01T09:04:08.529138Z")
+    );
 
     // labels
     let labels = gw.labels.as_ref().unwrap();
@@ -536,10 +596,19 @@ fn deserialize_gateway_detail() {
     assert_eq!(gw.connections.len(), 1);
     let conn = &gw.connections[0];
     assert_eq!(conn.name, "example-connection");
-    assert_eq!(conn.uuid.as_deref(), Some("1085d477-8d8f-4c97-9bef-731933187538"));
+    assert_eq!(
+        conn.uuid.as_deref(),
+        Some("1085d477-8d8f-4c97-9bef-731933187538")
+    );
     assert_eq!(conn.connection_type, ConnectionType::IPSec);
-    assert_eq!(conn.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
-    assert_eq!(conn.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
+    assert_eq!(
+        conn.created_at.as_deref(),
+        Some("2022-12-01T09:04:08.529138Z")
+    );
+    assert_eq!(
+        conn.updated_at.as_deref(),
+        Some("2022-12-01T19:04:08.529138Z")
+    );
 
     assert_eq!(conn.local_routes.len(), 1);
     assert_eq!(conn.local_routes[0].name, "upcloud-example-route");
@@ -555,14 +624,26 @@ fn deserialize_gateway_detail() {
     assert_eq!(conn.tunnels.len(), 1);
     let tunnel = &conn.tunnels[0];
     assert_eq!(tunnel.name, "example-tunnel-1");
-    assert_eq!(tunnel.uuid.as_deref(), Some("1085d477-8d8f-4c97-9bef-731933187777"));
+    assert_eq!(
+        tunnel.uuid.as_deref(),
+        Some("1085d477-8d8f-4c97-9bef-731933187777")
+    );
     assert_eq!(tunnel.tunnel_healthy, Some(true));
     assert_eq!(tunnel.tunnel_up, Some(true));
     assert_eq!(tunnel.tunnel_internal_ip.as_deref(), Some("169.254.17.1"));
     assert_eq!(tunnel.internal_peer_ping_interval, Some(0));
-    assert_eq!(tunnel.operational_state, Some(TunnelOperationalState::Established));
-    assert_eq!(tunnel.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
-    assert_eq!(tunnel.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
+    assert_eq!(
+        tunnel.operational_state,
+        Some(TunnelOperationalState::Established)
+    );
+    assert_eq!(
+        tunnel.created_at.as_deref(),
+        Some("2022-12-01T09:04:08.529138Z")
+    );
+    assert_eq!(
+        tunnel.updated_at.as_deref(),
+        Some("2022-12-01T19:04:08.529138Z")
+    );
 
     let local_addr = tunnel.local_address.as_ref().unwrap();
     assert_eq!(local_addr.name.as_deref(), Some("public-ip-1"));
@@ -573,25 +654,57 @@ fn deserialize_gateway_detail() {
 
     // ipsec
     let ipsec = tunnel.ipsec.as_ref().unwrap();
-    assert_eq!(ipsec.authentication.as_ref().unwrap().authentication, IPSecAuthType::PSK);
+    assert_eq!(
+        ipsec.authentication.as_ref().unwrap().authentication,
+        IPSecAuthType::PSK
+    );
     assert!(ipsec.authentication.as_ref().unwrap().psk.is_none());
     assert_eq!(ipsec.child_rekey_time, Some(1440));
     assert_eq!(ipsec.dpd_delay, Some(30));
     assert_eq!(ipsec.dpd_timeout, Some(120));
     assert_eq!(ipsec.ike_lifetime, Some(86400));
     assert_eq!(ipsec.rekey_time, Some(14400));
-    assert_eq!(ipsec.phase1_algorithms.as_ref().unwrap(), &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]);
-    assert_eq!(ipsec.phase1_dh_group_numbers.as_ref().unwrap(), &[14, 16, 18, 19, 20, 21]);
-    assert_eq!(ipsec.phase1_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
-    assert_eq!(ipsec.phase2_algorithms.as_ref().unwrap(), &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]);
-    assert_eq!(ipsec.phase2_dh_group_numbers.as_ref().unwrap(), &[14, 16, 18, 19, 20, 21]);
-    assert_eq!(ipsec.phase2_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
+    assert_eq!(
+        ipsec.phase1_algorithms.as_ref().unwrap(),
+        &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]
+    );
+    assert_eq!(
+        ipsec.phase1_dh_group_numbers.as_ref().unwrap(),
+        &[14, 16, 18, 19, 20, 21]
+    );
+    assert_eq!(
+        ipsec.phase1_integrity_algorithms.as_ref().unwrap(),
+        &[
+            IPSecIntegrityAlgorithm::Aes128Gmac,
+            IPSecIntegrityAlgorithm::Aes256Gmac,
+            IPSecIntegrityAlgorithm::Sha256,
+            IPSecIntegrityAlgorithm::Sha384,
+            IPSecIntegrityAlgorithm::Sha512
+        ]
+    );
+    assert_eq!(
+        ipsec.phase2_algorithms.as_ref().unwrap(),
+        &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]
+    );
+    assert_eq!(
+        ipsec.phase2_dh_group_numbers.as_ref().unwrap(),
+        &[14, 16, 18, 19, 20, 21]
+    );
+    assert_eq!(
+        ipsec.phase2_integrity_algorithms.as_ref().unwrap(),
+        &[
+            IPSecIntegrityAlgorithm::Aes128Gmac,
+            IPSecIntegrityAlgorithm::Aes256Gmac,
+            IPSecIntegrityAlgorithm::Sha256,
+            IPSecIntegrityAlgorithm::Sha384,
+            IPSecIntegrityAlgorithm::Sha512
+        ]
+    );
 }
 
 #[test]
 fn deserialize_create_gateway_request() {
-    let req: CreateRequest =
-        serde_json::from_str(GATEWAY_CREATE_REQ_JSON).unwrap();
+    let req: CreateRequest = serde_json::from_str(GATEWAY_CREATE_REQ_JSON).unwrap();
     assert_eq!(req.name, "example-gateway");
     assert_eq!(req.zone, "fi-hel1");
     assert_eq!(req.configured_status, ConfiguredStatus::Started);
@@ -640,13 +753,22 @@ fn deserialize_create_gateway_request() {
     let tunnels = conns[0].tunnels.as_ref().unwrap();
     assert_eq!(tunnels.len(), 1);
     assert_eq!(tunnels[0].name, "example-tunnel-1");
-    assert_eq!(tunnels[0].tunnel_internal_ip.as_deref(), Some("169.254.17.1"));
+    assert_eq!(
+        tunnels[0].tunnel_internal_ip.as_deref(),
+        Some("169.254.17.1")
+    );
     assert_eq!(tunnels[0].internal_peer_ping_interval, Some(5));
 
     // tunnel addresses
-    assert_eq!(tunnels[0].local_address.name.as_deref(), Some("public-ip-1"));
+    assert_eq!(
+        tunnels[0].local_address.name.as_deref(),
+        Some("public-ip-1")
+    );
     assert!(tunnels[0].local_address.address.is_none());
-    assert_eq!(tunnels[0].remote_address.address.as_deref(), Some("100.10.0.111"));
+    assert_eq!(
+        tunnels[0].remote_address.address.as_deref(),
+        Some("100.10.0.111")
+    );
     assert!(tunnels[0].remote_address.name.is_none());
 
     // tunnel ipsec
@@ -669,8 +791,7 @@ fn deserialize_create_gateway_request() {
 
 #[test]
 fn deserialize_modify_gateway_request() {
-    let req: ModifyRequest =
-        serde_json::from_str(GATEWAY_MODIFY_REQ_JSON).unwrap();
+    let req: ModifyRequest = serde_json::from_str(GATEWAY_MODIFY_REQ_JSON).unwrap();
     assert_eq!(req.name.as_deref(), Some("example-gateway"));
     assert_eq!(req.configured_status, Some(ConfiguredStatus::Started));
     let labels = req.labels.as_ref().unwrap();
@@ -685,8 +806,7 @@ fn deserialize_modify_gateway_request() {
 
 #[test]
 fn deserialize_create_connection_request() {
-    let req: CreateConnectionRequest =
-        serde_json::from_str(CONNECTION_CREATE_REQ_JSON).unwrap();
+    let req: CreateConnectionRequest = serde_json::from_str(CONNECTION_CREATE_REQ_JSON).unwrap();
     assert_eq!(req.name, "example-connection");
     assert_eq!(req.connection_type, ConnectionType::IPSec);
 
@@ -706,13 +826,22 @@ fn deserialize_create_connection_request() {
     let tunnels = req.tunnels.as_ref().unwrap();
     assert_eq!(tunnels.len(), 1);
     assert_eq!(tunnels[0].name, "example-tunnel-1");
-    assert_eq!(tunnels[0].tunnel_internal_ip.as_deref(), Some("169.254.17.1"));
+    assert_eq!(
+        tunnels[0].tunnel_internal_ip.as_deref(),
+        Some("169.254.17.1")
+    );
     assert_eq!(tunnels[0].internal_peer_ping_interval, Some(0));
 
     // tunnel addresses
-    assert_eq!(tunnels[0].local_address.name.as_deref(), Some("public-ip-1"));
+    assert_eq!(
+        tunnels[0].local_address.name.as_deref(),
+        Some("public-ip-1")
+    );
     assert!(tunnels[0].local_address.address.is_none());
-    assert_eq!(tunnels[0].remote_address.address.as_deref(), Some("100.10.0.111"));
+    assert_eq!(
+        tunnels[0].remote_address.address.as_deref(),
+        Some("100.10.0.111")
+    );
     assert!(tunnels[0].remote_address.name.is_none());
 
     // tunnel ipsec
@@ -735,13 +864,21 @@ fn deserialize_create_connection_request() {
 
 #[test]
 fn deserialize_connection_detail() {
-    let conn: Connection =
-        serde_json::from_str(CONNECTION_DETAIL_JSON).unwrap();
+    let conn: Connection = serde_json::from_str(CONNECTION_DETAIL_JSON).unwrap();
     assert_eq!(conn.name, "example-connection");
-    assert_eq!(conn.uuid.as_deref(), Some("1085d477-8d8f-4c97-9bef-731933187538"));
+    assert_eq!(
+        conn.uuid.as_deref(),
+        Some("1085d477-8d8f-4c97-9bef-731933187538")
+    );
     assert_eq!(conn.connection_type, ConnectionType::IPSec);
-    assert_eq!(conn.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
-    assert_eq!(conn.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
+    assert_eq!(
+        conn.created_at.as_deref(),
+        Some("2022-12-01T09:04:08.529138Z")
+    );
+    assert_eq!(
+        conn.updated_at.as_deref(),
+        Some("2022-12-01T19:04:08.529138Z")
+    );
 
     // local_routes
     assert_eq!(conn.local_routes.len(), 1);
@@ -759,14 +896,26 @@ fn deserialize_connection_detail() {
     assert_eq!(conn.tunnels.len(), 1);
     let tunnel = &conn.tunnels[0];
     assert_eq!(tunnel.name, "example-tunnel-1");
-    assert_eq!(tunnel.uuid.as_deref(), Some("1085d477-8d8f-4c97-9bef-731933187777"));
-    assert_eq!(tunnel.operational_state, Some(TunnelOperationalState::Established));
+    assert_eq!(
+        tunnel.uuid.as_deref(),
+        Some("1085d477-8d8f-4c97-9bef-731933187777")
+    );
+    assert_eq!(
+        tunnel.operational_state,
+        Some(TunnelOperationalState::Established)
+    );
     assert_eq!(tunnel.tunnel_healthy, Some(true));
     assert_eq!(tunnel.tunnel_up, Some(true));
     assert_eq!(tunnel.tunnel_internal_ip.as_deref(), Some("169.254.17.1"));
     assert_eq!(tunnel.internal_peer_ping_interval, Some(0));
-    assert_eq!(tunnel.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
-    assert_eq!(tunnel.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
+    assert_eq!(
+        tunnel.created_at.as_deref(),
+        Some("2022-12-01T09:04:08.529138Z")
+    );
+    assert_eq!(
+        tunnel.updated_at.as_deref(),
+        Some("2022-12-01T19:04:08.529138Z")
+    );
 
     // tunnel addresses
     let local_addr = tunnel.local_address.as_ref().unwrap();
@@ -778,25 +927,57 @@ fn deserialize_connection_detail() {
 
     // ipsec
     let ipsec = tunnel.ipsec.as_ref().unwrap();
-    assert_eq!(ipsec.authentication.as_ref().unwrap().authentication, IPSecAuthType::PSK);
+    assert_eq!(
+        ipsec.authentication.as_ref().unwrap().authentication,
+        IPSecAuthType::PSK
+    );
     assert!(ipsec.authentication.as_ref().unwrap().psk.is_none());
     assert_eq!(ipsec.child_rekey_time, Some(1440));
     assert_eq!(ipsec.dpd_delay, Some(30));
     assert_eq!(ipsec.dpd_timeout, Some(120));
     assert_eq!(ipsec.ike_lifetime, Some(86400));
     assert_eq!(ipsec.rekey_time, Some(14400));
-    assert_eq!(ipsec.phase1_algorithms.as_ref().unwrap(), &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]);
-    assert_eq!(ipsec.phase1_dh_group_numbers.as_ref().unwrap(), &[14, 16, 18, 19, 20, 21]);
-    assert_eq!(ipsec.phase1_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
-    assert_eq!(ipsec.phase2_algorithms.as_ref().unwrap(), &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]);
-    assert_eq!(ipsec.phase2_dh_group_numbers.as_ref().unwrap(), &[14, 16, 18, 19, 20, 21]);
-    assert_eq!(ipsec.phase2_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
+    assert_eq!(
+        ipsec.phase1_algorithms.as_ref().unwrap(),
+        &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]
+    );
+    assert_eq!(
+        ipsec.phase1_dh_group_numbers.as_ref().unwrap(),
+        &[14, 16, 18, 19, 20, 21]
+    );
+    assert_eq!(
+        ipsec.phase1_integrity_algorithms.as_ref().unwrap(),
+        &[
+            IPSecIntegrityAlgorithm::Aes128Gmac,
+            IPSecIntegrityAlgorithm::Aes256Gmac,
+            IPSecIntegrityAlgorithm::Sha256,
+            IPSecIntegrityAlgorithm::Sha384,
+            IPSecIntegrityAlgorithm::Sha512
+        ]
+    );
+    assert_eq!(
+        ipsec.phase2_algorithms.as_ref().unwrap(),
+        &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]
+    );
+    assert_eq!(
+        ipsec.phase2_dh_group_numbers.as_ref().unwrap(),
+        &[14, 16, 18, 19, 20, 21]
+    );
+    assert_eq!(
+        ipsec.phase2_integrity_algorithms.as_ref().unwrap(),
+        &[
+            IPSecIntegrityAlgorithm::Aes128Gmac,
+            IPSecIntegrityAlgorithm::Aes256Gmac,
+            IPSecIntegrityAlgorithm::Sha256,
+            IPSecIntegrityAlgorithm::Sha384,
+            IPSecIntegrityAlgorithm::Sha512
+        ]
+    );
 }
 
 #[test]
 fn deserialize_modify_connection_request() {
-    let req: ModifyConnectionRequest =
-        serde_json::from_str(CONNECTION_MODIFY_REQ_JSON).unwrap();
+    let req: ModifyConnectionRequest = serde_json::from_str(CONNECTION_MODIFY_REQ_JSON).unwrap();
     let routes = req.local_routes.as_ref().unwrap();
     assert_eq!(routes.len(), 1);
     assert_eq!(routes[0].name, "modified-routes");
@@ -808,17 +989,22 @@ fn deserialize_modify_connection_request() {
 
 #[test]
 fn deserialize_tunnel_list() {
-    let tunnels: Vec<Tunnel> =
-        serde_json::from_str(TUNNEL_LIST_JSON).unwrap();
+    let tunnels: Vec<Tunnel> = serde_json::from_str(TUNNEL_LIST_JSON).unwrap();
     assert_eq!(tunnels.len(), 1);
     let t = &tunnels[0];
     assert_eq!(t.name, "example-tunnel-1");
-    assert_eq!(t.uuid.as_deref(), Some("1085d477-8d8f-4c97-9bef-731933187538"));
+    assert_eq!(
+        t.uuid.as_deref(),
+        Some("1085d477-8d8f-4c97-9bef-731933187538")
+    );
     assert_eq!(t.tunnel_healthy, Some(true));
     assert_eq!(t.tunnel_up, Some(true));
     assert_eq!(t.tunnel_internal_ip.as_deref(), Some("169.254.17.1"));
     assert_eq!(t.internal_peer_ping_interval, Some(0));
-    assert_eq!(t.operational_state, Some(TunnelOperationalState::Established));
+    assert_eq!(
+        t.operational_state,
+        Some(TunnelOperationalState::Established)
+    );
     assert_eq!(t.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
     assert_eq!(t.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
 
@@ -832,37 +1018,81 @@ fn deserialize_tunnel_list() {
 
     // ipsec
     let ipsec = t.ipsec.as_ref().unwrap();
-    assert_eq!(ipsec.authentication.as_ref().unwrap().authentication, IPSecAuthType::PSK);
+    assert_eq!(
+        ipsec.authentication.as_ref().unwrap().authentication,
+        IPSecAuthType::PSK
+    );
     assert!(ipsec.authentication.as_ref().unwrap().psk.is_none());
     assert_eq!(ipsec.child_rekey_time, Some(1440));
     assert_eq!(ipsec.dpd_delay, Some(30));
     assert_eq!(ipsec.dpd_timeout, Some(120));
     assert_eq!(ipsec.ike_lifetime, Some(86400));
     assert_eq!(ipsec.rekey_time, Some(14400));
-    assert_eq!(ipsec.phase1_algorithms.as_ref().unwrap(), &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]);
-    assert_eq!(ipsec.phase1_dh_group_numbers.as_ref().unwrap(), &[14, 16, 18, 19, 20, 21]);
-    assert_eq!(ipsec.phase1_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
-    assert_eq!(ipsec.phase2_algorithms.as_ref().unwrap(), &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]);
-    assert_eq!(ipsec.phase2_dh_group_numbers.as_ref().unwrap(), &[14, 16, 18, 19, 20, 21]);
-    assert_eq!(ipsec.phase2_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
+    assert_eq!(
+        ipsec.phase1_algorithms.as_ref().unwrap(),
+        &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]
+    );
+    assert_eq!(
+        ipsec.phase1_dh_group_numbers.as_ref().unwrap(),
+        &[14, 16, 18, 19, 20, 21]
+    );
+    assert_eq!(
+        ipsec.phase1_integrity_algorithms.as_ref().unwrap(),
+        &[
+            IPSecIntegrityAlgorithm::Aes128Gmac,
+            IPSecIntegrityAlgorithm::Aes256Gmac,
+            IPSecIntegrityAlgorithm::Sha256,
+            IPSecIntegrityAlgorithm::Sha384,
+            IPSecIntegrityAlgorithm::Sha512
+        ]
+    );
+    assert_eq!(
+        ipsec.phase2_algorithms.as_ref().unwrap(),
+        &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]
+    );
+    assert_eq!(
+        ipsec.phase2_dh_group_numbers.as_ref().unwrap(),
+        &[14, 16, 18, 19, 20, 21]
+    );
+    assert_eq!(
+        ipsec.phase2_integrity_algorithms.as_ref().unwrap(),
+        &[
+            IPSecIntegrityAlgorithm::Aes128Gmac,
+            IPSecIntegrityAlgorithm::Aes256Gmac,
+            IPSecIntegrityAlgorithm::Sha256,
+            IPSecIntegrityAlgorithm::Sha384,
+            IPSecIntegrityAlgorithm::Sha512
+        ]
+    );
 }
 
 #[test]
 fn deserialize_tunnel_detail() {
     // Same structure as tunnel_list[0], parsed as a single Tunnel
-    let tunnels: Vec<Tunnel> =
-        serde_json::from_str(TUNNEL_LIST_JSON).unwrap();
+    let tunnels: Vec<Tunnel> = serde_json::from_str(TUNNEL_LIST_JSON).unwrap();
     let json_str = serde_json::to_string(&tunnels[0]).unwrap();
     let tunnel: Tunnel = serde_json::from_str(&json_str).unwrap();
     assert_eq!(tunnel.name, "example-tunnel-1");
-    assert_eq!(tunnel.uuid.as_deref(), Some("1085d477-8d8f-4c97-9bef-731933187538"));
+    assert_eq!(
+        tunnel.uuid.as_deref(),
+        Some("1085d477-8d8f-4c97-9bef-731933187538")
+    );
     assert_eq!(tunnel.tunnel_healthy, Some(true));
     assert_eq!(tunnel.tunnel_up, Some(true));
     assert_eq!(tunnel.tunnel_internal_ip.as_deref(), Some("169.254.17.1"));
     assert_eq!(tunnel.internal_peer_ping_interval, Some(0));
-    assert_eq!(tunnel.operational_state, Some(TunnelOperationalState::Established));
-    assert_eq!(tunnel.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
-    assert_eq!(tunnel.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
+    assert_eq!(
+        tunnel.operational_state,
+        Some(TunnelOperationalState::Established)
+    );
+    assert_eq!(
+        tunnel.created_at.as_deref(),
+        Some("2022-12-01T09:04:08.529138Z")
+    );
+    assert_eq!(
+        tunnel.updated_at.as_deref(),
+        Some("2022-12-01T19:04:08.529138Z")
+    );
 
     let local = tunnel.local_address.as_ref().unwrap();
     assert_eq!(local.name.as_deref(), Some("public-ip-1"));
@@ -873,25 +1103,57 @@ fn deserialize_tunnel_detail() {
 
     // ipsec
     let ipsec = tunnel.ipsec.as_ref().unwrap();
-    assert_eq!(ipsec.authentication.as_ref().unwrap().authentication, IPSecAuthType::PSK);
+    assert_eq!(
+        ipsec.authentication.as_ref().unwrap().authentication,
+        IPSecAuthType::PSK
+    );
     assert!(ipsec.authentication.as_ref().unwrap().psk.is_none());
     assert_eq!(ipsec.child_rekey_time, Some(1440));
     assert_eq!(ipsec.dpd_delay, Some(30));
     assert_eq!(ipsec.dpd_timeout, Some(120));
     assert_eq!(ipsec.ike_lifetime, Some(86400));
     assert_eq!(ipsec.rekey_time, Some(14400));
-    assert_eq!(ipsec.phase1_algorithms.as_ref().unwrap(), &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]);
-    assert_eq!(ipsec.phase1_dh_group_numbers.as_ref().unwrap(), &[14, 16, 18, 19, 20, 21]);
-    assert_eq!(ipsec.phase1_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
-    assert_eq!(ipsec.phase2_algorithms.as_ref().unwrap(), &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]);
-    assert_eq!(ipsec.phase2_dh_group_numbers.as_ref().unwrap(), &[14, 16, 18, 19, 20, 21]);
-    assert_eq!(ipsec.phase2_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
+    assert_eq!(
+        ipsec.phase1_algorithms.as_ref().unwrap(),
+        &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]
+    );
+    assert_eq!(
+        ipsec.phase1_dh_group_numbers.as_ref().unwrap(),
+        &[14, 16, 18, 19, 20, 21]
+    );
+    assert_eq!(
+        ipsec.phase1_integrity_algorithms.as_ref().unwrap(),
+        &[
+            IPSecIntegrityAlgorithm::Aes128Gmac,
+            IPSecIntegrityAlgorithm::Aes256Gmac,
+            IPSecIntegrityAlgorithm::Sha256,
+            IPSecIntegrityAlgorithm::Sha384,
+            IPSecIntegrityAlgorithm::Sha512
+        ]
+    );
+    assert_eq!(
+        ipsec.phase2_algorithms.as_ref().unwrap(),
+        &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]
+    );
+    assert_eq!(
+        ipsec.phase2_dh_group_numbers.as_ref().unwrap(),
+        &[14, 16, 18, 19, 20, 21]
+    );
+    assert_eq!(
+        ipsec.phase2_integrity_algorithms.as_ref().unwrap(),
+        &[
+            IPSecIntegrityAlgorithm::Aes128Gmac,
+            IPSecIntegrityAlgorithm::Aes256Gmac,
+            IPSecIntegrityAlgorithm::Sha256,
+            IPSecIntegrityAlgorithm::Sha384,
+            IPSecIntegrityAlgorithm::Sha512
+        ]
+    );
 }
 
 #[test]
 fn deserialize_create_tunnel_request() {
-    let req: CreateTunnelRequest =
-        serde_json::from_str(TUNNEL_CREATE_REQ_JSON).unwrap();
+    let req: CreateTunnelRequest = serde_json::from_str(TUNNEL_CREATE_REQ_JSON).unwrap();
     assert_eq!(req.name, "example-tunnel-2");
     assert_eq!(req.tunnel_internal_ip.as_deref(), Some("169.254.17.1"));
     assert_eq!(req.internal_peer_ping_interval, Some(0));
@@ -924,8 +1186,7 @@ fn deserialize_create_tunnel_request() {
 
 #[test]
 fn deserialize_modify_tunnel_request() {
-    let req: ModifyTunnelRequest =
-        serde_json::from_str(TUNNEL_MODIFY_REQ_JSON).unwrap();
+    let req: ModifyTunnelRequest = serde_json::from_str(TUNNEL_MODIFY_REQ_JSON).unwrap();
     assert!(req.name.is_none());
     assert!(req.local_address.is_none());
     let remote = req.remote_address.as_ref().unwrap();
@@ -936,8 +1197,7 @@ fn deserialize_modify_tunnel_request() {
 
 #[test]
 fn deserialize_replace_gateway_request() {
-    let req: ModifyRequest =
-        serde_json::from_str(GATEWAY_REPLACE_REQ_JSON).unwrap();
+    let req: ModifyRequest = serde_json::from_str(GATEWAY_REPLACE_REQ_JSON).unwrap();
     assert_eq!(req.name.as_deref(), Some("example-gateway"));
     assert_eq!(req.configured_status, Some(ConfiguredStatus::Started));
     assert!(req.labels.is_none());
@@ -976,15 +1236,23 @@ fn deserialize_gateway_label_create() {
 
 #[test]
 fn deserialize_connection_list() {
-    let conns: Vec<Connection> =
-        serde_json::from_str(CONNECTION_LIST_JSON).unwrap();
+    let conns: Vec<Connection> = serde_json::from_str(CONNECTION_LIST_JSON).unwrap();
     assert_eq!(conns.len(), 1);
     let conn = &conns[0];
     assert_eq!(conn.name, "example-connection");
-    assert_eq!(conn.uuid.as_deref(), Some("1085d477-8d8f-4c97-9bef-731933187538"));
+    assert_eq!(
+        conn.uuid.as_deref(),
+        Some("1085d477-8d8f-4c97-9bef-731933187538")
+    );
     assert_eq!(conn.connection_type, ConnectionType::IPSec);
-    assert_eq!(conn.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
-    assert_eq!(conn.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
+    assert_eq!(
+        conn.created_at.as_deref(),
+        Some("2022-12-01T09:04:08.529138Z")
+    );
+    assert_eq!(
+        conn.updated_at.as_deref(),
+        Some("2022-12-01T19:04:08.529138Z")
+    );
 
     // local_routes
     assert_eq!(conn.local_routes.len(), 1);
@@ -1002,14 +1270,26 @@ fn deserialize_connection_list() {
     assert_eq!(conn.tunnels.len(), 1);
     let tunnel = &conn.tunnels[0];
     assert_eq!(tunnel.name, "example-tunnel-1");
-    assert_eq!(tunnel.uuid.as_deref(), Some("1085d477-8d8f-4c97-9bef-731933187777"));
+    assert_eq!(
+        tunnel.uuid.as_deref(),
+        Some("1085d477-8d8f-4c97-9bef-731933187777")
+    );
     assert_eq!(tunnel.tunnel_healthy, Some(true));
     assert_eq!(tunnel.tunnel_up, Some(true));
     assert_eq!(tunnel.tunnel_internal_ip.as_deref(), Some("169.254.17.1"));
     assert_eq!(tunnel.internal_peer_ping_interval, Some(0));
-    assert_eq!(tunnel.operational_state, Some(TunnelOperationalState::Established));
-    assert_eq!(tunnel.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
-    assert_eq!(tunnel.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
+    assert_eq!(
+        tunnel.operational_state,
+        Some(TunnelOperationalState::Established)
+    );
+    assert_eq!(
+        tunnel.created_at.as_deref(),
+        Some("2022-12-01T09:04:08.529138Z")
+    );
+    assert_eq!(
+        tunnel.updated_at.as_deref(),
+        Some("2022-12-01T19:04:08.529138Z")
+    );
 
     // tunnel addresses
     let local_addr = tunnel.local_address.as_ref().unwrap();
@@ -1021,19 +1301,52 @@ fn deserialize_connection_list() {
 
     // ipsec
     let ipsec = tunnel.ipsec.as_ref().unwrap();
-    assert_eq!(ipsec.authentication.as_ref().unwrap().authentication, IPSecAuthType::PSK);
+    assert_eq!(
+        ipsec.authentication.as_ref().unwrap().authentication,
+        IPSecAuthType::PSK
+    );
     assert!(ipsec.authentication.as_ref().unwrap().psk.is_none());
     assert_eq!(ipsec.child_rekey_time, Some(1440));
     assert_eq!(ipsec.dpd_delay, Some(30));
     assert_eq!(ipsec.dpd_timeout, Some(120));
     assert_eq!(ipsec.ike_lifetime, Some(86400));
     assert_eq!(ipsec.rekey_time, Some(14400));
-    assert_eq!(ipsec.phase1_algorithms.as_ref().unwrap(), &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]);
-    assert_eq!(ipsec.phase1_dh_group_numbers.as_ref().unwrap(), &[14, 16, 18, 19, 20, 21]);
-    assert_eq!(ipsec.phase1_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
-    assert_eq!(ipsec.phase2_algorithms.as_ref().unwrap(), &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]);
-    assert_eq!(ipsec.phase2_dh_group_numbers.as_ref().unwrap(), &[14, 16, 18, 19, 20, 21]);
-    assert_eq!(ipsec.phase2_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
+    assert_eq!(
+        ipsec.phase1_algorithms.as_ref().unwrap(),
+        &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]
+    );
+    assert_eq!(
+        ipsec.phase1_dh_group_numbers.as_ref().unwrap(),
+        &[14, 16, 18, 19, 20, 21]
+    );
+    assert_eq!(
+        ipsec.phase1_integrity_algorithms.as_ref().unwrap(),
+        &[
+            IPSecIntegrityAlgorithm::Aes128Gmac,
+            IPSecIntegrityAlgorithm::Aes256Gmac,
+            IPSecIntegrityAlgorithm::Sha256,
+            IPSecIntegrityAlgorithm::Sha384,
+            IPSecIntegrityAlgorithm::Sha512
+        ]
+    );
+    assert_eq!(
+        ipsec.phase2_algorithms.as_ref().unwrap(),
+        &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]
+    );
+    assert_eq!(
+        ipsec.phase2_dh_group_numbers.as_ref().unwrap(),
+        &[14, 16, 18, 19, 20, 21]
+    );
+    assert_eq!(
+        ipsec.phase2_integrity_algorithms.as_ref().unwrap(),
+        &[
+            IPSecIntegrityAlgorithm::Aes128Gmac,
+            IPSecIntegrityAlgorithm::Aes256Gmac,
+            IPSecIntegrityAlgorithm::Sha256,
+            IPSecIntegrityAlgorithm::Sha384,
+            IPSecIntegrityAlgorithm::Sha512
+        ]
+    );
 }
 
 // ─── Request type serialization tests (realistic data from API docs) ──────────
@@ -1084,12 +1397,24 @@ fn serialize_modify_tunnel_request() {
             dpd_timeout: Some(120),
             ike_lifetime: Some(86400),
             rekey_time: Some(14400),
-            phase1_algorithms: Some(vec![IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]),
+            phase1_algorithms: Some(vec![
+                IPSecAlgorithm::Aes128Gcm128,
+                IPSecAlgorithm::Aes256Gcm128,
+            ]),
             phase1_dh_group_numbers: Some(vec![14, 16, 18, 19, 20, 21]),
-            phase1_integrity_algorithms: Some(vec![IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac]),
-            phase2_algorithms: Some(vec![IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]),
+            phase1_integrity_algorithms: Some(vec![
+                IPSecIntegrityAlgorithm::Aes128Gmac,
+                IPSecIntegrityAlgorithm::Aes256Gmac,
+            ]),
+            phase2_algorithms: Some(vec![
+                IPSecAlgorithm::Aes128Gcm128,
+                IPSecAlgorithm::Aes256Gcm128,
+            ]),
             phase2_dh_group_numbers: Some(vec![14, 16, 18, 19, 20, 21]),
-            phase2_integrity_algorithms: Some(vec![IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac]),
+            phase2_integrity_algorithms: Some(vec![
+                IPSecIntegrityAlgorithm::Aes128Gmac,
+                IPSecIntegrityAlgorithm::Aes256Gmac,
+            ]),
         }),
         ..Default::default()
     };
@@ -1102,8 +1427,17 @@ fn serialize_modify_tunnel_request() {
     assert_eq!(json["ipsec"]["dpd_timeout"], 120);
     assert_eq!(json["ipsec"]["ike_lifetime"], 86400);
     assert_eq!(json["ipsec"]["rekey_time"], 14400);
-    assert_eq!(json["ipsec"]["phase1_algorithms"].as_array().unwrap().len(), 2);
-    assert_eq!(json["ipsec"]["phase1_dh_group_numbers"].as_array().unwrap().len(), 6);
+    assert_eq!(
+        json["ipsec"]["phase1_algorithms"].as_array().unwrap().len(),
+        2
+    );
+    assert_eq!(
+        json["ipsec"]["phase1_dh_group_numbers"]
+            .as_array()
+            .unwrap()
+            .len(),
+        6
+    );
     assert!(json.get("name").is_none());
     assert!(json.get("local_address").is_none());
 }

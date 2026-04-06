@@ -1,6 +1,5 @@
 use super::*;
 
-
 const DB_LIST_JSON: &str = r#"[
   {
 "uuid": "09d9d824-8b3e-4a57-a9b3-77ec51fd5c84",
@@ -164,8 +163,7 @@ fn deserialize_db_user_list() {
 
 #[test]
 fn deserialize_db_logical_database_list() {
-    let dbs: Vec<LogicalDatabase> =
-        serde_json::from_str(DB_LOGICAL_DB_LIST_JSON).unwrap();
+    let dbs: Vec<LogicalDatabase> = serde_json::from_str(DB_LOGICAL_DB_LIST_JSON).unwrap();
     assert_eq!(dbs.len(), 2);
     assert_eq!(dbs[0].name, "defaultdb");
     assert_eq!(dbs[0].lc_collate.as_deref(), Some("en_US.UTF-8"));
@@ -229,7 +227,8 @@ const PG_AVAILABLE_EXTENSIONS_JSON: &str = r#"[
 
 #[test]
 fn deserialize_pg_available_extensions() {
-    let versions: Vec<PgVersionExtensions> = serde_json::from_str(PG_AVAILABLE_EXTENSIONS_JSON).unwrap();
+    let versions: Vec<PgVersionExtensions> =
+        serde_json::from_str(PG_AVAILABLE_EXTENSIONS_JSON).unwrap();
     assert_eq!(versions.len(), 2);
     assert_eq!(versions[0].version, "13");
     assert_eq!(versions[0].extensions.len(), 3);
@@ -269,7 +268,8 @@ const INSTANCE_AVAILABLE_EXTENSIONS_JSON: &str = r#"[
 
 #[test]
 fn deserialize_instance_available_extensions() {
-    let exts: Vec<PgExtensionDetail> = serde_json::from_str(INSTANCE_AVAILABLE_EXTENSIONS_JSON).unwrap();
+    let exts: Vec<PgExtensionDetail> =
+        serde_json::from_str(INSTANCE_AVAILABLE_EXTENSIONS_JSON).unwrap();
     assert_eq!(exts.len(), 3);
     assert_eq!(exts[0].name, "pg_buffercache");
     assert_eq!(exts[0].default_version, "1.6");
@@ -338,7 +338,10 @@ fn deserialize_db_service_types() {
     let mysql_props = mysql["properties"].as_object().unwrap();
     assert!(mysql_props.contains_key("public_access"));
     assert_eq!(mysql["properties"]["public_access"]["default"], false);
-    assert_eq!(mysql["properties"]["public_access"]["title"], "Public Access");
+    assert_eq!(
+        mysql["properties"]["public_access"]["title"],
+        "Public Access"
+    );
     assert_eq!(mysql["properties"]["public_access"]["type"], "boolean");
 
     let pg = &val["pg"];
@@ -386,9 +389,17 @@ fn deserialize_create_db_request() {
     assert_eq!(val["maintenance"]["dow"], "sunday");
     assert_eq!(val["maintenance"]["time"], "05:00:00");
     assert_eq!(val["termination_protection"], false);
-    assert_eq!(val["properties"]["automatic_utility_network_ip_filter"], true);
+    assert_eq!(
+        val["properties"]["automatic_utility_network_ip_filter"],
+        true
+    );
     assert_eq!(val["properties"]["version"], "8");
-    assert!(val["properties"]["ip_filter"].as_array().unwrap().is_empty());
+    assert!(
+        val["properties"]["ip_filter"]
+            .as_array()
+            .unwrap()
+            .is_empty()
+    );
 
     let networks = val["networks"].as_array().unwrap();
     assert_eq!(networks.len(), 1);
@@ -535,20 +546,19 @@ fn deserialize_db_user_detail_pg() {
     assert_eq!(val["pg_access_control"]["allow_replication"], true);
 }
 
-const MODIFY_DB_USER_REQUEST_JSON: &str = r#"{"authentication": "caching_sha2_password", "password": "new-password"}"#;
+const MODIFY_DB_USER_REQUEST_JSON: &str =
+    r#"{"authentication": "caching_sha2_password", "password": "new-password"}"#;
 
 #[test]
 fn deserialize_modify_db_user_request() {
     let req: ModifyUserRequest = serde_json::from_str(MODIFY_DB_USER_REQUEST_JSON).unwrap();
     assert_eq!(req.password.as_deref(), Some("new-password"));
-    assert_eq!(
-        req.authentication.as_deref(),
-        Some("caching_sha2_password")
-    );
+    assert_eq!(req.authentication.as_deref(), Some("caching_sha2_password"));
     assert!(req.pg_allow_replication.is_none());
 }
 
-const CREATE_LOGICAL_DB_JSON: &str = r#"{"name": "database-doc-api", "lc_collate": "en_US.UTF8", "lc_ctype": "en_US.UTF8"}"#;
+const CREATE_LOGICAL_DB_JSON: &str =
+    r#"{"name": "database-doc-api", "lc_collate": "en_US.UTF8", "lc_ctype": "en_US.UTF8"}"#;
 
 #[test]
 fn deserialize_create_logical_db() {
@@ -792,8 +802,7 @@ const DB_SERVICE_TYPE_DETAIL_JSON: &str = r#"{
 
 #[test]
 fn deserialize_db_service_type_detail() {
-    let val: serde_json::Value =
-        serde_json::from_str(DB_SERVICE_TYPE_DETAIL_JSON).unwrap();
+    let val: serde_json::Value = serde_json::from_str(DB_SERVICE_TYPE_DETAIL_JSON).unwrap();
     assert!(val.is_object());
     let obj = val.as_object().unwrap();
     assert_eq!(obj.len(), 1);
@@ -801,7 +810,10 @@ fn deserialize_db_service_type_detail() {
 
     let mysql = &val["mysql"];
     assert_eq!(mysql["name"], "mysql");
-    assert_eq!(mysql["description"], "MySQL - Relational Database Management System");
+    assert_eq!(
+        mysql["description"],
+        "MySQL - Relational Database Management System"
+    );
     assert_eq!(mysql["latest_available_version"], "8.0.26");
 
     let plans = mysql["service_plans"].as_array().unwrap();
@@ -999,20 +1011,24 @@ fn deserialize_database_detail_from_docs() {
 
 // ─── OpenSearch access control types ──────────────────────────────────────
 
-const OPENSEARCH_ACCESS_CONTROL_JSON: &str = r#"{"access_control": true, "extended_access_control": false}"#;
+const OPENSEARCH_ACCESS_CONTROL_JSON: &str =
+    r#"{"access_control": true, "extended_access_control": false}"#;
 
 #[test]
 fn deserialize_opensearch_access_control() {
-    let acl: OpenSearchAccessControl = serde_json::from_str(OPENSEARCH_ACCESS_CONTROL_JSON).unwrap();
+    let acl: OpenSearchAccessControl =
+        serde_json::from_str(OPENSEARCH_ACCESS_CONTROL_JSON).unwrap();
     assert_eq!(acl.access_control, Some(true));
     assert_eq!(acl.extended_access_control, Some(false));
 }
 
-const OPENSEARCH_ACCESS_CONTROL_RULE_JSON: &str = r#"{"index": "my-index-*", "permission": "readwrite"}"#;
+const OPENSEARCH_ACCESS_CONTROL_RULE_JSON: &str =
+    r#"{"index": "my-index-*", "permission": "readwrite"}"#;
 
 #[test]
 fn deserialize_opensearch_access_control_rule() {
-    let rule: OpenSearchAccessControlRule = serde_json::from_str(OPENSEARCH_ACCESS_CONTROL_RULE_JSON).unwrap();
+    let rule: OpenSearchAccessControlRule =
+        serde_json::from_str(OPENSEARCH_ACCESS_CONTROL_RULE_JSON).unwrap();
     assert_eq!(rule.index, "my-index-*");
     assert_eq!(rule.permission, "readwrite");
 }
@@ -1044,11 +1060,13 @@ fn deserialize_opensearch_index() {
 
 // ─── ModifyAccessControlRequest ───────────────────────────────────────────
 
-const MODIFY_ACCESS_CONTROL_REQUEST_JSON: &str = r#"{"access_control": true, "extended_access_control": false}"#;
+const MODIFY_ACCESS_CONTROL_REQUEST_JSON: &str =
+    r#"{"access_control": true, "extended_access_control": false}"#;
 
 #[test]
 fn deserialize_modify_access_control_request() {
-    let req: ModifyAccessControlRequest = serde_json::from_str(MODIFY_ACCESS_CONTROL_REQUEST_JSON).unwrap();
+    let req: ModifyAccessControlRequest =
+        serde_json::from_str(MODIFY_ACCESS_CONTROL_REQUEST_JSON).unwrap();
     assert_eq!(req.access_control, Some(true));
     assert_eq!(req.extended_access_control, Some(false));
 }
@@ -1064,7 +1082,8 @@ const USER_OPENSEARCH_ACCESS_CONTROL_JSON: &str = r#"{
 
 #[test]
 fn deserialize_user_opensearch_access_control() {
-    let req: ModifyUserAccessControlRequest = serde_json::from_str(USER_OPENSEARCH_ACCESS_CONTROL_JSON).unwrap();
+    let req: ModifyUserAccessControlRequest =
+        serde_json::from_str(USER_OPENSEARCH_ACCESS_CONTROL_JSON).unwrap();
     let acl = req.opensearch_access_control.as_ref().unwrap();
     let rules = acl.rules.as_ref().unwrap();
     assert_eq!(rules.len(), 2);

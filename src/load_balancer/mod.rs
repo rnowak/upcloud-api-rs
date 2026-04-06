@@ -61,9 +61,7 @@ impl<'a> LoadBalancerHandler<'a> {
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#get-service-details)
     pub async fn get(&self, uuid: &str) -> Result<LoadBalancer, Error> {
-        self.client
-            .get(&format!("/1.3/load-balancer/{uuid}"))
-            .await
+        self.client.get(&format!("/1.3/load-balancer/{uuid}")).await
     }
 
     /// Creates a new load balancer.
@@ -80,11 +78,7 @@ impl<'a> LoadBalancerHandler<'a> {
     /// `PATCH /1.3/load-balancer/{uuid}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#modify-service)
-    pub async fn modify(
-        &self,
-        uuid: &str,
-        req: ModifyRequest,
-    ) -> Result<LoadBalancer, Error> {
+    pub async fn modify(&self, uuid: &str, req: ModifyRequest) -> Result<LoadBalancer, Error> {
         self.client
             .patch(&format!("/1.3/load-balancer/{uuid}"), &req)
             .await
@@ -682,9 +676,7 @@ impl<'a> LoadBalancerHandler<'a> {
         lb_uuid: &str,
     ) -> Result<Vec<CertificateBundle>, Error> {
         self.client
-            .get(&format!(
-                "/1.3/load-balancer/{lb_uuid}/certificate-bundles"
-            ))
+            .get(&format!("/1.3/load-balancer/{lb_uuid}/certificate-bundles"))
             .await
     }
 
@@ -747,11 +739,7 @@ impl<'a> LoadBalancerHandler<'a> {
     /// `DELETE /1.3/load-balancer/{uuid}/certificate-bundles/{id}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#delete-certificate-bundle)
-    pub async fn delete_certificate_bundle(
-        &self,
-        lb_uuid: &str,
-        id: &str,
-    ) -> Result<(), Error> {
+    pub async fn delete_certificate_bundle(&self, lb_uuid: &str, id: &str) -> Result<(), Error> {
         self.client
             .delete(&format!(
                 "/1.3/load-balancer/{lb_uuid}/certificate-bundles/{id}"

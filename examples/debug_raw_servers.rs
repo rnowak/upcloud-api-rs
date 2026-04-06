@@ -5,8 +5,7 @@
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let token = std::env::var("UPCLOUD_TOKEN")
-        .expect("Set UPCLOUD_TOKEN");
+    let token = std::env::var("UPCLOUD_TOKEN").expect("Set UPCLOUD_TOKEN");
 
     let client = reqwest::Client::new();
     let resp = client

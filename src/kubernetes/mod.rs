@@ -42,9 +42,7 @@ impl<'a> KubernetesHandler<'a> {
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/20-managed-kubernetes/#get-cluster-details)
     pub async fn get(&self, uuid: &str) -> Result<Cluster, Error> {
-        self.client
-            .get(&format!("/1.3/kubernetes/{uuid}"))
-            .await
+        self.client.get(&format!("/1.3/kubernetes/{uuid}")).await
     }
 
     /// Creates a new Kubernetes cluster.
@@ -62,9 +60,7 @@ impl<'a> KubernetesHandler<'a> {
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/20-managed-kubernetes/#delete-cluster)
     pub async fn delete(&self, uuid: &str) -> Result<(), Error> {
-        self.client
-            .delete(&format!("/1.3/kubernetes/{uuid}"))
-            .await
+        self.client.delete(&format!("/1.3/kubernetes/{uuid}")).await
     }
 
     /// Modifies a Kubernetes cluster.
@@ -111,10 +107,7 @@ impl<'a> KubernetesHandler<'a> {
     /// `GET /1.3/kubernetes/{uuid}/node-groups`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/20-managed-kubernetes/#list-node-groups)
-    pub async fn list_node_groups(
-        &self,
-        cluster_uuid: &str,
-    ) -> Result<Vec<NodeGroup>, Error> {
+    pub async fn list_node_groups(&self, cluster_uuid: &str) -> Result<Vec<NodeGroup>, Error> {
         self.client
             .get(&format!("/1.3/kubernetes/{cluster_uuid}/node-groups"))
             .await
@@ -125,11 +118,7 @@ impl<'a> KubernetesHandler<'a> {
     /// `GET /1.3/kubernetes/{uuid}/node-groups/{name}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/20-managed-kubernetes/#get-node-group-details)
-    pub async fn get_node_group(
-        &self,
-        cluster_uuid: &str,
-        name: &str,
-    ) -> Result<NodeGroup, Error> {
+    pub async fn get_node_group(&self, cluster_uuid: &str, name: &str) -> Result<NodeGroup, Error> {
         self.client
             .get(&format!(
                 "/1.3/kubernetes/{cluster_uuid}/node-groups/{name}"
@@ -148,10 +137,7 @@ impl<'a> KubernetesHandler<'a> {
         req: CreateNodeGroupRequest,
     ) -> Result<NodeGroup, Error> {
         self.client
-            .post(
-                &format!("/1.3/kubernetes/{cluster_uuid}/node-groups"),
-                &req,
-            )
+            .post(&format!("/1.3/kubernetes/{cluster_uuid}/node-groups"), &req)
             .await
     }
 
@@ -179,11 +165,7 @@ impl<'a> KubernetesHandler<'a> {
     /// `DELETE /1.3/kubernetes/{uuid}/node-groups/{name}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/20-managed-kubernetes/#delete-node-group)
-    pub async fn delete_node_group(
-        &self,
-        cluster_uuid: &str,
-        name: &str,
-    ) -> Result<(), Error> {
+    pub async fn delete_node_group(&self, cluster_uuid: &str, name: &str) -> Result<(), Error> {
         self.client
             .delete(&format!(
                 "/1.3/kubernetes/{cluster_uuid}/node-groups/{name}"

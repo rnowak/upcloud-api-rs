@@ -39,9 +39,7 @@ impl<'a> GatewayHandler<'a> {
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#get-plan-details)
     pub async fn get_plan(&self, name: &str) -> Result<Plan, Error> {
-        self.client
-            .get(&format!("/1.3/gateway/plans/{name}"))
-            .await
+        self.client.get(&format!("/1.3/gateway/plans/{name}")).await
     }
 
     // ─── Gateways ─────────────────────────────────────────────────────────────
@@ -52,9 +50,7 @@ impl<'a> GatewayHandler<'a> {
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#list-services)
     pub async fn list(&self, params: PageParams) -> Result<Vec<Gateway>, Error> {
-        self.client
-            .get_with_query("/1.3/gateway", &params)
-            .await
+        self.client.get_with_query("/1.3/gateway", &params).await
     }
 
     /// Returns details for a specific gateway.
@@ -80,11 +76,7 @@ impl<'a> GatewayHandler<'a> {
     /// `PATCH /1.3/gateway/{uuid}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#modify-service)
-    pub async fn modify(
-        &self,
-        uuid: &str,
-        req: ModifyRequest,
-    ) -> Result<Gateway, Error> {
+    pub async fn modify(&self, uuid: &str, req: ModifyRequest) -> Result<Gateway, Error> {
         self.client
             .patch(&format!("/1.3/gateway/{uuid}"), &req)
             .await
@@ -106,10 +98,7 @@ impl<'a> GatewayHandler<'a> {
     /// `GET /1.3/gateway/{gateway_uuid}/connections`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#list-connections)
-    pub async fn list_connections(
-        &self,
-        gateway_uuid: &str,
-    ) -> Result<Vec<Connection>, Error> {
+    pub async fn list_connections(&self, gateway_uuid: &str) -> Result<Vec<Connection>, Error> {
         self.client
             .get(&format!("/1.3/gateway/{gateway_uuid}/connections"))
             .await
@@ -126,9 +115,7 @@ impl<'a> GatewayHandler<'a> {
         name: &str,
     ) -> Result<Connection, Error> {
         self.client
-            .get(&format!(
-                "/1.3/gateway/{gateway_uuid}/connections/{name}"
-            ))
+            .get(&format!("/1.3/gateway/{gateway_uuid}/connections/{name}"))
             .await
     }
 
@@ -143,10 +130,7 @@ impl<'a> GatewayHandler<'a> {
         req: CreateConnectionRequest,
     ) -> Result<Connection, Error> {
         self.client
-            .post(
-                &format!("/1.3/gateway/{gateway_uuid}/connections"),
-                &req,
-            )
+            .post(&format!("/1.3/gateway/{gateway_uuid}/connections"), &req)
             .await
     }
 
@@ -155,15 +139,9 @@ impl<'a> GatewayHandler<'a> {
     /// `DELETE /1.3/gateway/{gateway_uuid}/connections/{name}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#delete-connection)
-    pub async fn delete_connection(
-        &self,
-        gateway_uuid: &str,
-        name: &str,
-    ) -> Result<(), Error> {
+    pub async fn delete_connection(&self, gateway_uuid: &str, name: &str) -> Result<(), Error> {
         self.client
-            .delete(&format!(
-                "/1.3/gateway/{gateway_uuid}/connections/{name}"
-            ))
+            .delete(&format!("/1.3/gateway/{gateway_uuid}/connections/{name}"))
             .await
     }
 
@@ -180,9 +158,7 @@ impl<'a> GatewayHandler<'a> {
     ) -> Result<Connection, Error> {
         self.client
             .patch(
-                &format!(
-                    "/1.3/gateway/{gateway_uuid}/connections/{connection_name}"
-                ),
+                &format!("/1.3/gateway/{gateway_uuid}/connections/{connection_name}"),
                 &req,
             )
             .await
@@ -220,9 +196,7 @@ impl<'a> GatewayHandler<'a> {
     ) -> Result<Tunnel, Error> {
         self.client
             .post(
-                &format!(
-                    "/1.3/gateway/{gateway_uuid}/connections/{connection_name}/tunnels"
-                ),
+                &format!("/1.3/gateway/{gateway_uuid}/connections/{connection_name}/tunnels"),
                 &req,
             )
             .await
@@ -293,10 +267,7 @@ impl<'a> GatewayHandler<'a> {
     /// `GET /1.3/gateway/{gateway_uuid}/routes`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/)
-    pub async fn list_routes(
-        &self,
-        gateway_uuid: &str,
-    ) -> Result<Vec<Route>, Error> {
+    pub async fn list_routes(&self, gateway_uuid: &str) -> Result<Vec<Route>, Error> {
         self.client
             .get(&format!("/1.3/gateway/{gateway_uuid}/routes"))
             .await
@@ -307,11 +278,7 @@ impl<'a> GatewayHandler<'a> {
     /// `POST /1.3/gateway/{gateway_uuid}/routes`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/)
-    pub async fn create_route(
-        &self,
-        gateway_uuid: &str,
-        req: RouteInput,
-    ) -> Result<Route, Error> {
+    pub async fn create_route(&self, gateway_uuid: &str, req: RouteInput) -> Result<Route, Error> {
         self.client
             .post(&format!("/1.3/gateway/{gateway_uuid}/routes"), &req)
             .await
@@ -322,15 +289,9 @@ impl<'a> GatewayHandler<'a> {
     /// `DELETE /1.3/gateway/{gateway_uuid}/routes/{route_name}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/)
-    pub async fn delete_route(
-        &self,
-        gateway_uuid: &str,
-        route_name: &str,
-    ) -> Result<(), Error> {
+    pub async fn delete_route(&self, gateway_uuid: &str, route_name: &str) -> Result<(), Error> {
         self.client
-            .delete(&format!(
-                "/1.3/gateway/{gateway_uuid}/routes/{route_name}"
-            ))
+            .delete(&format!("/1.3/gateway/{gateway_uuid}/routes/{route_name}"))
             .await
     }
 
@@ -361,10 +322,7 @@ impl<'a> GatewayHandler<'a> {
         label: crate::types::common::Label,
     ) -> Result<crate::types::common::Label, Error> {
         self.client
-            .post(
-                &format!("/1.3/gateway/{gateway_uuid}/labels"),
-                &label,
-            )
+            .post(&format!("/1.3/gateway/{gateway_uuid}/labels"), &label)
             .await
     }
 
@@ -380,10 +338,7 @@ impl<'a> GatewayHandler<'a> {
         label: crate::types::common::Label,
     ) -> Result<crate::types::common::Label, Error> {
         self.client
-            .patch(
-                &format!("/1.3/gateway/{gateway_uuid}/labels/{key}"),
-                &label,
-            )
+            .patch(&format!("/1.3/gateway/{gateway_uuid}/labels/{key}"), &label)
             .await
     }
 
@@ -392,11 +347,7 @@ impl<'a> GatewayHandler<'a> {
     /// `DELETE /1.3/gateway/{gateway_uuid}/labels/{key}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/)
-    pub async fn delete_label(
-        &self,
-        gateway_uuid: &str,
-        key: &str,
-    ) -> Result<(), Error> {
+    pub async fn delete_label(&self, gateway_uuid: &str, key: &str) -> Result<(), Error> {
         self.client
             .delete(&format!("/1.3/gateway/{gateway_uuid}/labels/{key}"))
             .await

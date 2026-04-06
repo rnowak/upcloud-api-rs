@@ -21,8 +21,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     for svc in &services {
         let state = svc.operational_state.as_deref().unwrap_or("unknown");
-        let endpoint: Option<&object_storage::Endpoint> = svc.endpoints.as_ref()
-            .and_then(|e| e.iter().find(|e| e.endpoint_type == "public").or_else(|| e.first()));
+        let endpoint: Option<&object_storage::Endpoint> = svc.endpoints.as_ref().and_then(|e| {
+            e.iter()
+                .find(|e| e.endpoint_type == "public")
+                .or_else(|| e.first())
+        });
         let endpoint_str = endpoint
             .map(|e| e.domain_name.as_str())
             .unwrap_or("(no endpoint)");
@@ -71,5 +74,3 @@ fn format_bytes(bytes: u64) -> String {
         format!("{bytes} B")
     }
 }
-
-

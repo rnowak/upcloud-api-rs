@@ -59,10 +59,7 @@ impl<'a> PartnerHandler<'a> {
     /// `POST /1.3/partner/accounts`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/23-partner-api/#create-new-account)
-    pub async fn create(
-        &self,
-        req: CreatePartnerAccountRequest,
-    ) -> Result<PartnerAccount, Error> {
+    pub async fn create(&self, req: CreatePartnerAccountRequest) -> Result<PartnerAccount, Error> {
         self.client.post("/1.3/partner/accounts", &req).await
     }
 }

@@ -1,6 +1,5 @@
 use super::*;
 
-
 #[derive(Debug, Deserialize)]
 struct GpusResponse {
     gpus: Vec<GpuDetail>,
@@ -159,8 +158,8 @@ const GET_SERVER_DETAILS_JSON: &str = r#"{
 /// including GPU devices, storage_encrypted, remote_access_host/port.
 #[test]
 fn deserialize_get_server_details() {
-
-    let resp: ServerResponse = serde_json::from_str(GET_SERVER_DETAILS_JSON).expect("deserialize server details");
+    let resp: ServerResponse =
+        serde_json::from_str(GET_SERVER_DETAILS_JSON).expect("deserialize server details");
     let s = resp.server;
     assert_eq!(s.uuid, "0077fa3d-32db-4b09-9f5f-30d9e9afb565");
     assert_eq!(s.core_number, 12);
@@ -245,8 +244,8 @@ const LIST_SERVERS_JSON: &str = r#"{
 /// List servers response from docs.
 #[test]
 fn deserialize_list_servers() {
-
-    let resp: ServerListResponse = serde_json::from_str(LIST_SERVERS_JSON).expect("deserialize server list");
+    let resp: ServerListResponse =
+        serde_json::from_str(LIST_SERVERS_JSON).expect("deserialize server list");
     assert_eq!(resp.servers.server.len(), 2);
     // Server 0
     let s0 = &resp.servers.server[0];
@@ -296,8 +295,8 @@ const MINIMAL_SERVER_JSON: &str = r#"{
 /// Minimal server (only required fields) still deserializes.
 #[test]
 fn deserialize_minimal_server() {
-
-    let resp: ServerResponse = serde_json::from_str(MINIMAL_SERVER_JSON).expect("deserialize minimal server");
+    let resp: ServerResponse =
+        serde_json::from_str(MINIMAL_SERVER_JSON).expect("deserialize minimal server");
     let s = resp.server;
     assert_eq!(s.uuid, "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
     assert!(s.devices.is_none());
@@ -327,7 +326,6 @@ const SERVER_GROUP_LIST_JSON: &str = r#"{
 /// Server group list response from docs.
 #[test]
 fn deserialize_server_group_list() {
-
     let resp: ServerGroupListResponse =
         serde_json::from_str(SERVER_GROUP_LIST_JSON).expect("deserialize server group list");
     assert_eq!(resp.server_groups.server_group.len(), 1);
@@ -359,7 +357,6 @@ const GET_SERVER_GPUS_JSON: &str = r#"{
 }
   ]
 }"#;
-
 
 /// Get server GPUs response (GET /1.3/server/{uuid}/gpus).
 #[test]
@@ -467,8 +464,8 @@ const CREATE_SERVER_FROM_TEMPLATE_REQUEST_JSON: &str = r#"{
 /// Create server from template request (POST /1.3/server).
 #[test]
 fn deserialize_create_server_from_template_request() {
-    let body: CreateRequestBody =
-        serde_json::from_str(CREATE_SERVER_FROM_TEMPLATE_REQUEST_JSON).expect("deserialize create from template");
+    let body: CreateRequestBody = serde_json::from_str(CREATE_SERVER_FROM_TEMPLATE_REQUEST_JSON)
+        .expect("deserialize create from template");
     let s = body.server;
     // Top-level scalar fields
     assert_eq!(s.zone, "fi-hel1");
@@ -596,8 +593,8 @@ const CREATE_SERVER_BY_CLONING_REQUEST_JSON: &str = r#"{
 /// Create server by cloning request (POST /1.3/server).
 #[test]
 fn deserialize_create_server_by_cloning_request() {
-    let body: CreateRequestBody =
-        serde_json::from_str(CREATE_SERVER_BY_CLONING_REQUEST_JSON).expect("deserialize create by cloning");
+    let body: CreateRequestBody = serde_json::from_str(CREATE_SERVER_BY_CLONING_REQUEST_JSON)
+        .expect("deserialize create by cloning");
     let s = body.server;
     // Top-level scalar fields
     assert_eq!(s.zone, "fi-hel1");
@@ -717,8 +714,8 @@ const CREATE_SERVER_FROM_SCRATCH_REQUEST_JSON: &str = r#"{
 /// Create server from scratch request (POST /1.3/server).
 #[test]
 fn deserialize_create_server_from_scratch_request() {
-    let body: CreateRequestBody =
-        serde_json::from_str(CREATE_SERVER_FROM_SCRATCH_REQUEST_JSON).expect("deserialize create from scratch");
+    let body: CreateRequestBody = serde_json::from_str(CREATE_SERVER_FROM_SCRATCH_REQUEST_JSON)
+        .expect("deserialize create from scratch");
     let s = body.server;
     // Top-level scalar fields
     assert_eq!(s.zone, "fi-hel1");
@@ -819,8 +816,8 @@ const CREATE_SERVER_RESPONSE_JSON: &str = r#"{
 /// Create server response (POST /1.3/server — 202 Accepted).
 #[test]
 fn deserialize_create_server_response() {
-    let resp: ServerResponse =
-        serde_json::from_str(CREATE_SERVER_RESPONSE_JSON).expect("deserialize create server response");
+    let resp: ServerResponse = serde_json::from_str(CREATE_SERVER_RESPONSE_JSON)
+        .expect("deserialize create server response");
     let s = resp.server;
     // Top-level scalar fields
     assert_eq!(s.uuid, "00c78863-db86-44ea-af70-d6edc4d162bf");
@@ -862,7 +859,10 @@ fn deserialize_create_server_response() {
     );
     assert_eq!(sd[0].storage_size, Some(1));
     assert_eq!(sd[0].storage_tier.as_deref(), Some("maxiops"));
-    assert_eq!(sd[0].storage_title.as_deref(), Some("Debian from a template"));
+    assert_eq!(
+        sd[0].storage_title.as_deref(),
+        Some("Debian from a template")
+    );
     assert_eq!(sd[0].device_type.as_deref(), Some("disk"));
     assert_eq!(sd[0].boot_disk.as_deref(), Some("0"));
     // tags
@@ -1162,8 +1162,8 @@ const START_SERVER_RESPONSE_JSON: &str = r#"{
 #[test]
 fn deserialize_start_server_response() {
     // Note: docs have a typo "plart_of_plan" (instead of "part_of_plan") — serde ignores unknown fields.
-    let resp: ServerResponse =
-        serde_json::from_str(START_SERVER_RESPONSE_JSON).expect("deserialize start server response");
+    let resp: ServerResponse = serde_json::from_str(START_SERVER_RESPONSE_JSON)
+        .expect("deserialize start server response");
     let s = resp.server;
     // Top-level scalar fields
     assert_eq!(s.uuid, "00c78863-db86-44ea-af70-d6edc4d162bf");
@@ -1202,7 +1202,10 @@ fn deserialize_start_server_response() {
         Some("0169b4f8-051c-4a86-9484-f5b798249949")
     );
     assert_eq!(sd.storage_device[0].storage_size, Some(10));
-    assert_eq!(sd.storage_device[0].storage_tier.as_deref(), Some("maxiops"));
+    assert_eq!(
+        sd.storage_device[0].storage_tier.as_deref(),
+        Some("maxiops")
+    );
     assert_eq!(
         sd.storage_device[0].storage_title.as_deref(),
         Some("Debian from a template")
@@ -1433,7 +1436,10 @@ fn deserialize_restart_server_response() {
         Some("0169b4f8-051c-4a86-9484-f5b798249949")
     );
     assert_eq!(sd.storage_device[0].storage_size, Some(10));
-    assert_eq!(sd.storage_device[0].storage_tier.as_deref(), Some("maxiops"));
+    assert_eq!(
+        sd.storage_device[0].storage_tier.as_deref(),
+        Some("maxiops")
+    );
     assert_eq!(
         sd.storage_device[0].storage_title.as_deref(),
         Some("Debian from a template")
@@ -1515,7 +1521,8 @@ const MODIFY_SERVER_RESPONSE_JSON: &str = r#"{
 #[test]
 fn deserialize_modify_server_response() {
     // Note: docs typo "plart_of_plan" — serde ignores unknown fields.
-    let resp: ServerResponse = serde_json::from_str(MODIFY_SERVER_RESPONSE_JSON).expect("deserialize modify response");
+    let resp: ServerResponse =
+        serde_json::from_str(MODIFY_SERVER_RESPONSE_JSON).expect("deserialize modify response");
     let s = resp.server;
     // Top-level scalar fields
     assert_eq!(s.uuid, "00c78863-db86-44ea-af70-d6edc4d162bf");
@@ -1555,7 +1562,10 @@ fn deserialize_modify_server_response() {
         Some("0169b4f8-051c-4a86-9484-f5b798249949")
     );
     assert_eq!(sd.storage_device[0].storage_size, Some(10));
-    assert_eq!(sd.storage_device[0].storage_tier.as_deref(), Some("maxiops"));
+    assert_eq!(
+        sd.storage_device[0].storage_tier.as_deref(),
+        Some("maxiops")
+    );
     assert_eq!(
         sd.storage_device[0].storage_title.as_deref(),
         Some("Debian from a template")
@@ -1652,8 +1662,8 @@ const SERVER_GROUP_LIST_FULL_JSON: &str = r#"{
 /// Full server group list from docs (2 groups, second has anti_affinity_status: null).
 #[test]
 fn deserialize_server_group_list_full() {
-    let resp: ServerGroupListResponse =
-        serde_json::from_str(SERVER_GROUP_LIST_FULL_JSON).expect("deserialize full server group list");
+    let resp: ServerGroupListResponse = serde_json::from_str(SERVER_GROUP_LIST_FULL_JSON)
+        .expect("deserialize full server group list");
     assert_eq!(resp.server_groups.server_group.len(), 2);
     // Group 0
     let g0 = &resp.server_groups.server_group[0];
@@ -1732,8 +1742,8 @@ const CREATE_SERVER_GROUP_REQUEST_JSON: &str = r#"{
 /// Create server group request (POST /1.3/server-group).
 #[test]
 fn deserialize_create_server_group_request() {
-    let body: GroupRequestBody =
-        serde_json::from_str(CREATE_SERVER_GROUP_REQUEST_JSON).expect("deserialize create group request");
+    let body: GroupRequestBody = serde_json::from_str(CREATE_SERVER_GROUP_REQUEST_JSON)
+        .expect("deserialize create group request");
     assert_eq!(
         body.server_group.title.as_deref(),
         Some("My brand new server group")
@@ -1760,8 +1770,8 @@ const MODIFY_SERVER_GROUP_REQUEST_JSON: &str = r#"{
 /// Modify server group request (PATCH /1.3/server-group/{uuid}).
 #[test]
 fn deserialize_modify_server_group_request() {
-    let body: GroupRequestBody =
-        serde_json::from_str(MODIFY_SERVER_GROUP_REQUEST_JSON).expect("deserialize modify group request");
+    let body: GroupRequestBody = serde_json::from_str(MODIFY_SERVER_GROUP_REQUEST_JSON)
+        .expect("deserialize modify group request");
     assert_eq!(
         body.server_group.title.as_deref(),
         Some("New fancy title for the group")
@@ -1780,7 +1790,8 @@ const ADD_SERVER_TO_GROUP_REQUEST_JSON: &str = r#"{
 /// Add server to group request (POST /1.3/server-group/{uuid}/servers).
 #[test]
 fn deserialize_add_server_to_group_request() {
-    let v: serde_json::Value = serde_json::from_str(ADD_SERVER_TO_GROUP_REQUEST_JSON).expect("valid JSON");
+    let v: serde_json::Value =
+        serde_json::from_str(ADD_SERVER_TO_GROUP_REQUEST_JSON).expect("valid JSON");
     assert_eq!(v["server"]["uuid"], "00235adf-add4-66f1-ef34-e331516bb6a1");
 }
 
@@ -1791,7 +1802,8 @@ const RELOCATE_SERVER_REQUEST_JSON: &str = r#"{
 /// Relocate server request (POST /1.3/server/{uuid}/relocate).
 #[test]
 fn deserialize_relocate_server_request() {
-    let v: serde_json::Value = serde_json::from_str(RELOCATE_SERVER_REQUEST_JSON).expect("valid JSON");
+    let v: serde_json::Value =
+        serde_json::from_str(RELOCATE_SERVER_REQUEST_JSON).expect("valid JSON");
     assert_eq!(v["zone"], "fi-priv-example");
 }
 
@@ -1883,7 +1895,10 @@ fn deserialize_relocate_server_response() {
         Some("0169b4f8-051c-4a86-9484-f5b798249949")
     );
     assert_eq!(sd.storage_device[0].storage_size, Some(10));
-    assert_eq!(sd.storage_device[0].storage_tier.as_deref(), Some("maxiops"));
+    assert_eq!(
+        sd.storage_device[0].storage_tier.as_deref(),
+        Some("maxiops")
+    );
     assert_eq!(
         sd.storage_device[0].storage_title.as_deref(),
         Some("Debian from a template")
@@ -1980,21 +1995,16 @@ const METADATA_SERVICE_RESPONSE_JSON: &str = r#"{
 /// Metadata service JSON response (curl http://169.254.169.254/metadata/v1.json).
 #[test]
 fn deserialize_metadata_service_response() {
-    let v: serde_json::Value = serde_json::from_str(METADATA_SERVICE_RESPONSE_JSON).expect("valid metadata JSON");
+    let v: serde_json::Value =
+        serde_json::from_str(METADATA_SERVICE_RESPONSE_JSON).expect("valid metadata JSON");
     // Top-level fields
     assert_eq!(v["cloud_name"], "upcloud");
     assert_eq!(v["instance_id"], "00bf9504-a4cb-4839-88ff-124a2c95e169");
     assert_eq!(v["hostname"], "metadata.example.com");
     assert_eq!(v["platform"], "servers");
-    assert_eq!(
-        v["subplatform"],
-        "metadata (http://169.254.169.254)"
-    );
+    assert_eq!(v["subplatform"], "metadata (http://169.254.169.254)");
     assert_eq!(v["region"], "de-fra1");
-    assert_eq!(
-        v["user_data"],
-        "apt-get update && apt-get -y upgrade"
-    );
+    assert_eq!(v["user_data"], "apt-get update && apt-get -y upgrade");
     assert_eq!(v["vendor_data"], "");
     // public_keys
     let pkeys = v["public_keys"].as_array().unwrap();
@@ -2068,10 +2078,13 @@ fn list_params_label_filters() {
         .label("env", "prod")
         .label("team", "backend");
     let pairs = params.to_query_pairs();
-    assert_eq!(pairs, vec![
-        ("label", "env=prod".to_string()),
-        ("label", "team=backend".to_string()),
-    ]);
+    assert_eq!(
+        pairs,
+        vec![
+            ("label", "env=prod".to_string()),
+            ("label", "team=backend".to_string()),
+        ]
+    );
 }
 
 #[test]
@@ -2092,20 +2105,23 @@ fn list_params_search() {
 fn list_params_hosts() {
     let params = ListParams::new().host(100).host(200);
     let pairs = params.to_query_pairs();
-    assert_eq!(pairs, vec![
-        ("host", "100".to_string()),
-        ("host", "200".to_string()),
-    ]);
+    assert_eq!(
+        pairs,
+        vec![("host", "100".to_string()), ("host", "200".to_string()),]
+    );
 }
 
 #[test]
 fn list_params_uuids() {
     let params = ListParams::new().uuid("abc-123").uuid("def-456");
     let pairs = params.to_query_pairs();
-    assert_eq!(pairs, vec![
-        ("uuid", "abc-123".to_string()),
-        ("uuid", "def-456".to_string()),
-    ]);
+    assert_eq!(
+        pairs,
+        vec![
+            ("uuid", "abc-123".to_string()),
+            ("uuid", "def-456".to_string()),
+        ]
+    );
 }
 
 #[test]
@@ -2113,20 +2129,23 @@ fn list_params_ordering() {
     use crate::types::common::SortOrder;
     let params = ListParams::new().order_by(OrderBy::Title, SortOrder::Asc);
     let pairs = params.to_query_pairs();
-    assert_eq!(pairs, vec![
-        ("order_by", "title".to_string()),
-        ("sort_by", "asc".to_string()),
-    ]);
+    assert_eq!(
+        pairs,
+        vec![
+            ("order_by", "title".to_string()),
+            ("sort_by", "asc".to_string()),
+        ]
+    );
 }
 
 #[test]
 fn list_params_pagination() {
     let params = ListParams::new().limit(50).offset(100);
     let pairs = params.to_query_pairs();
-    assert_eq!(pairs, vec![
-        ("limit", "50".to_string()),
-        ("offset", "100".to_string()),
-    ]);
+    assert_eq!(
+        pairs,
+        vec![("limit", "50".to_string()), ("offset", "100".to_string()),]
+    );
 }
 
 #[test]
@@ -2144,18 +2163,21 @@ fn list_params_full_combination() {
         .offset(20);
     let pairs = params.to_query_pairs();
     assert!(!params.is_empty());
-    assert_eq!(pairs, vec![
-        ("state", "started".to_string()),
-        ("label", "env=prod".to_string()),
-        ("tag", "web".to_string()),
-        ("search", "api".to_string()),
-        ("host", "42".to_string()),
-        ("uuid", "abc-123".to_string()),
-        ("order_by", "memory".to_string()),
-        ("sort_by", "desc".to_string()),
-        ("limit", "10".to_string()),
-        ("offset", "20".to_string()),
-    ]);
+    assert_eq!(
+        pairs,
+        vec![
+            ("state", "started".to_string()),
+            ("label", "env=prod".to_string()),
+            ("tag", "web".to_string()),
+            ("search", "api".to_string()),
+            ("host", "42".to_string()),
+            ("uuid", "abc-123".to_string()),
+            ("order_by", "memory".to_string()),
+            ("sort_by", "desc".to_string()),
+            ("limit", "10".to_string()),
+            ("offset", "20".to_string()),
+        ]
+    );
 }
 
 // ─── Device availability ─────────────────────────────────────────────────

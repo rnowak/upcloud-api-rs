@@ -226,6 +226,8 @@ where
     match v {
         None => Ok(None),
         Some(serde_json::Value::String(ref s)) if s.is_empty() => Ok(None),
-        Some(v) => serde_json::from_value(v).map(Some).map_err(serde::de::Error::custom),
+        Some(v) => serde_json::from_value(v)
+            .map(Some)
+            .map_err(serde::de::Error::custom),
     }
 }

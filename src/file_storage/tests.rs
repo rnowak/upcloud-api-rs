@@ -111,8 +111,14 @@ fn deserialize_file_storage_list() {
     assert_eq!(fs.configured_status, Some(ConfiguredStatus::Started));
 
     assert!(fs.plan.is_none());
-    assert_eq!(fs.created_at.as_deref(), Some("2025-08-01T10:40:04.140473Z"));
-    assert_eq!(fs.updated_at.as_deref(), Some("2025-08-03T19:23:52.350216Z"));
+    assert_eq!(
+        fs.created_at.as_deref(),
+        Some("2025-08-01T10:40:04.140473Z")
+    );
+    assert_eq!(
+        fs.updated_at.as_deref(),
+        Some("2025-08-03T19:23:52.350216Z")
+    );
     assert!(fs.state_messages.is_empty());
 
     // Networks
@@ -159,8 +165,14 @@ fn deserialize_file_storage_detail() {
     assert_eq!(fs.operational_state.as_deref(), Some("running"));
     assert_eq!(fs.size_gib, Some(250));
     assert_eq!(fs.encrypted, Some(false));
-    assert_eq!(fs.created_at.as_deref(), Some("2025-08-01T10:40:04.140473Z"));
-    assert_eq!(fs.updated_at.as_deref(), Some("2025-08-03T19:23:52.350216Z"));
+    assert_eq!(
+        fs.created_at.as_deref(),
+        Some("2025-08-01T10:40:04.140473Z")
+    );
+    assert_eq!(
+        fs.updated_at.as_deref(),
+        Some("2025-08-03T19:23:52.350216Z")
+    );
     assert!(fs.state_messages.is_empty());
 
     // Networks
@@ -191,8 +203,7 @@ fn deserialize_file_storage_detail() {
 
 #[test]
 fn deserialize_file_storage_network_list() {
-    let nets: Vec<Network> =
-        serde_json::from_str(FS_NETWORK_LIST_JSON).unwrap();
+    let nets: Vec<Network> = serde_json::from_str(FS_NETWORK_LIST_JSON).unwrap();
     assert_eq!(nets.len(), 1);
     assert_eq!(nets[0].family, "IPv4");
     assert_eq!(nets[0].name, "test-name");
@@ -204,8 +215,7 @@ fn deserialize_file_storage_network_list() {
 
 #[test]
 fn deserialize_file_storage_share_list() {
-    let shares: Vec<Share> =
-        serde_json::from_str(FS_SHARE_LIST_JSON).unwrap();
+    let shares: Vec<Share> = serde_json::from_str(FS_SHARE_LIST_JSON).unwrap();
     assert_eq!(shares.len(), 2);
     assert_eq!(shares[0].name, "share1");
     assert_eq!(shares[0].path, "/share-1");
@@ -495,8 +505,7 @@ const LABEL_DETAIL_JSON: &str = r#"{
 
 #[test]
 fn deserialize_create_file_storage_request() {
-    let req: CreateRequest =
-        serde_json::from_str(CREATE_FS_REQUEST_JSON).unwrap();
+    let req: CreateRequest = serde_json::from_str(CREATE_FS_REQUEST_JSON).unwrap();
     assert_eq!(req.name, "test-name");
     assert_eq!(req.zone, "fi-hel2");
     assert_eq!(req.configured_status.as_deref(), Some("started"));
@@ -506,7 +515,10 @@ fn deserialize_create_file_storage_request() {
     assert_eq!(req.networks[0].uuid, "03720d07-80a9-41ac-90b0-68a932109339");
     assert_eq!(req.networks[0].name, "net");
     assert_eq!(req.networks[0].family, "IPv4");
-    assert_eq!(req.networks[0].ip_address.as_deref(), Some("192.168.147.120"));
+    assert_eq!(
+        req.networks[0].ip_address.as_deref(),
+        Some("192.168.147.120")
+    );
     assert!(req.networks[0].network_type.is_none());
     assert_eq!(req.shares.len(), 2);
     assert_eq!(req.shares[0].name, "data");
@@ -531,14 +543,16 @@ fn deserialize_create_file_storage_request() {
 
 #[test]
 fn deserialize_replace_file_storage_request() {
-    let val: serde_json::Value =
-        serde_json::from_str(REPLACE_FS_REQUEST_JSON).unwrap();
+    let val: serde_json::Value = serde_json::from_str(REPLACE_FS_REQUEST_JSON).unwrap();
     assert_eq!(val["name"], "test-name");
     assert_eq!(val["configured_status"], "started");
     assert_eq!(val["size_gib"], 250);
     assert!(val["networks"].is_array());
     assert_eq!(val["networks"].as_array().unwrap().len(), 1);
-    assert_eq!(val["networks"][0]["uuid"], "03720d07-80a9-41ac-90b0-68a932109339");
+    assert_eq!(
+        val["networks"][0]["uuid"],
+        "03720d07-80a9-41ac-90b0-68a932109339"
+    );
     assert_eq!(val["networks"][0]["name"], "net");
     assert_eq!(val["networks"][0]["family"], "IPv4");
     assert_eq!(val["networks"][0]["ip_address"], "192.168.147.120");
@@ -552,8 +566,7 @@ fn deserialize_replace_file_storage_request() {
 
 #[test]
 fn deserialize_modify_file_storage_request() {
-    let req: ModifyRequest =
-        serde_json::from_str(MODIFY_FS_REQUEST_JSON).unwrap();
+    let req: ModifyRequest = serde_json::from_str(MODIFY_FS_REQUEST_JSON).unwrap();
     assert_eq!(req.name.as_deref(), Some("test-name"));
     assert_eq!(req.configured_status.as_deref(), Some("started"));
     assert_eq!(req.size_gib, Some(250));
@@ -564,8 +577,7 @@ fn deserialize_modify_file_storage_request() {
 
 #[test]
 fn deserialize_network_input() {
-    let net: NetworkInput =
-        serde_json::from_str(NETWORK_INPUT_JSON).unwrap();
+    let net: NetworkInput = serde_json::from_str(NETWORK_INPUT_JSON).unwrap();
     assert_eq!(net.uuid, "03720d07-80a9-41ac-90b0-68a932109339");
     assert_eq!(net.name, "test-name");
     assert_eq!(net.family, "IPv4");
@@ -577,8 +589,7 @@ fn deserialize_network_input() {
 
 #[test]
 fn deserialize_network_detail_single() {
-    let net: Network =
-        serde_json::from_str(NETWORK_DETAIL_SINGLE_JSON).unwrap();
+    let net: Network = serde_json::from_str(NETWORK_DETAIL_SINGLE_JSON).unwrap();
     assert_eq!(net.family, "IPv4");
     assert_eq!(net.ip_address.as_deref(), Some("192.168.147.250"));
     assert_eq!(net.name, "test-name");
@@ -591,8 +602,7 @@ fn deserialize_network_detail_single() {
 
 #[test]
 fn deserialize_share_acl_nested() {
-    let shares: Vec<Share> =
-        serde_json::from_str(SHARE_ACL_NESTED_JSON).unwrap();
+    let shares: Vec<Share> = serde_json::from_str(SHARE_ACL_NESTED_JSON).unwrap();
     assert_eq!(shares.len(), 2);
     assert_eq!(shares[0].name, "share1");
     assert_eq!(shares[0].path, "/share-1");
@@ -614,8 +624,7 @@ fn deserialize_share_acl_nested() {
 
 #[test]
 fn deserialize_share_acl_host_specific() {
-    let shares: Vec<Share> =
-        serde_json::from_str(SHARE_ACL_HOST_JSON).unwrap();
+    let shares: Vec<Share> = serde_json::from_str(SHARE_ACL_HOST_JSON).unwrap();
     assert_eq!(shares.len(), 2);
     assert_eq!(shares[0].name, "share1");
     assert_eq!(shares[0].path, "/share-1");
@@ -637,8 +646,7 @@ fn deserialize_share_acl_host_specific() {
 
 #[test]
 fn deserialize_share_acl_empty() {
-    let shares: Vec<Share> =
-        serde_json::from_str(SHARE_ACL_EMPTY_JSON).unwrap();
+    let shares: Vec<Share> = serde_json::from_str(SHARE_ACL_EMPTY_JSON).unwrap();
     assert_eq!(shares.len(), 2);
     assert_eq!(shares[0].name, "no-access");
     assert_eq!(shares[0].path, "/share-1");
@@ -657,8 +665,7 @@ fn deserialize_share_acl_empty() {
 
 #[test]
 fn deserialize_create_share_request() {
-    let req: CreateShareRequest =
-        serde_json::from_str(CREATE_SHARE_REQUEST_JSON).unwrap();
+    let req: CreateShareRequest = serde_json::from_str(CREATE_SHARE_REQUEST_JSON).unwrap();
     assert_eq!(req.name, "data");
     assert_eq!(req.path, "/data");
     assert_eq!(req.acl.len(), 1);
@@ -671,8 +678,7 @@ fn deserialize_create_share_request() {
 
 #[test]
 fn deserialize_share_list_with_deleting() {
-    let shares: Vec<Share> =
-        serde_json::from_str(SHARE_LIST_DELETING_JSON).unwrap();
+    let shares: Vec<Share> = serde_json::from_str(SHARE_LIST_DELETING_JSON).unwrap();
     assert_eq!(shares.len(), 2);
     assert_eq!(shares[0].name, "proj");
     assert_eq!(shares[0].path, "/project/data");
@@ -694,8 +700,7 @@ fn deserialize_share_list_with_deleting() {
 
 #[test]
 fn deserialize_share_detail() {
-    let share: Share =
-        serde_json::from_str(SHARE_DETAIL_JSON).unwrap();
+    let share: Share = serde_json::from_str(SHARE_DETAIL_JSON).unwrap();
     assert_eq!(share.name, "proj");
     assert_eq!(share.path, "/project/data");
     assert_eq!(share.acl.len(), 1);
@@ -709,8 +714,7 @@ fn deserialize_share_detail() {
 
 #[test]
 fn deserialize_modify_share_request() {
-    let req: ModifyShareRequest =
-        serde_json::from_str(MODIFY_SHARE_REQUEST_JSON).unwrap();
+    let req: ModifyShareRequest = serde_json::from_str(MODIFY_SHARE_REQUEST_JSON).unwrap();
     assert_eq!(req.name.as_deref(), Some("test-name"));
     let acl = req.acl.as_ref().unwrap();
     assert_eq!(acl.len(), 1);
@@ -723,8 +727,7 @@ fn deserialize_modify_share_request() {
 
 #[test]
 fn deserialize_acl_list() {
-    let acls: Vec<Acl> =
-        serde_json::from_str(ACL_LIST_JSON).unwrap();
+    let acls: Vec<Acl> = serde_json::from_str(ACL_LIST_JSON).unwrap();
     assert_eq!(acls.len(), 2);
     assert_eq!(acls[0].name, "read-only");
     assert_eq!(acls[0].target, "192.168.147.0/24");
@@ -738,8 +741,7 @@ fn deserialize_acl_list() {
 
 #[test]
 fn deserialize_acl_detail() {
-    let acl: Acl =
-        serde_json::from_str(ACL_DETAIL_JSON).unwrap();
+    let acl: Acl = serde_json::from_str(ACL_DETAIL_JSON).unwrap();
     assert_eq!(acl.name, "read-only");
     assert_eq!(acl.target, "*");
     assert_eq!(acl.permission, ShareACLPermission::Rw);
@@ -749,8 +751,7 @@ fn deserialize_acl_detail() {
 
 #[test]
 fn deserialize_create_acl() {
-    let acl: CreateShareAcl =
-        serde_json::from_str(CREATE_ACL_JSON).unwrap();
+    let acl: CreateShareAcl = serde_json::from_str(CREATE_ACL_JSON).unwrap();
     assert_eq!(acl.name, "read-only");
     assert_eq!(acl.target, "192.168.25.0/24");
     assert_eq!(acl.permission, ShareACLPermission::Ro);
@@ -760,8 +761,7 @@ fn deserialize_create_acl() {
 
 #[test]
 fn deserialize_label_list() {
-    let labels: Vec<crate::types::common::Label> =
-        serde_json::from_str(LABEL_LIST_JSON).unwrap();
+    let labels: Vec<crate::types::common::Label> = serde_json::from_str(LABEL_LIST_JSON).unwrap();
     assert_eq!(labels.len(), 2);
     assert_eq!(labels[0].key, "env");
     assert_eq!(labels[0].value, "staging");
@@ -773,8 +773,7 @@ fn deserialize_label_list() {
 
 #[test]
 fn deserialize_label_detail() {
-    let label: crate::types::common::Label =
-        serde_json::from_str(LABEL_DETAIL_JSON).unwrap();
+    let label: crate::types::common::Label = serde_json::from_str(LABEL_DETAIL_JSON).unwrap();
     assert_eq!(label.key, "env");
     assert_eq!(label.value, "staging");
 }
@@ -792,8 +791,14 @@ fn deserialize_current_state_response() {
     assert_eq!(fs.operational_state.as_deref(), Some("running"));
     assert_eq!(fs.size_gib, Some(250));
     assert_eq!(fs.encrypted, Some(false));
-    assert_eq!(fs.created_at.as_deref(), Some("2025-08-01T10:40:04.140473Z"));
-    assert_eq!(fs.updated_at.as_deref(), Some("2025-08-03T19:23:52.350216Z"));
+    assert_eq!(
+        fs.created_at.as_deref(),
+        Some("2025-08-01T10:40:04.140473Z")
+    );
+    assert_eq!(
+        fs.updated_at.as_deref(),
+        Some("2025-08-03T19:23:52.350216Z")
+    );
     assert!(fs.state_messages.is_empty());
     assert_eq!(fs.networks.len(), 1);
     assert_eq!(fs.shares.len(), 1);

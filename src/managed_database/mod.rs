@@ -66,9 +66,7 @@ impl<'a> DatabaseHandler<'a> {
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-details)
     pub async fn get(&self, uuid: &str) -> Result<Database, Error> {
-        self.client
-            .get(&format!("/1.3/database/{uuid}"))
-            .await
+        self.client.get(&format!("/1.3/database/{uuid}")).await
     }
 
     /// Creates a new managed database.
@@ -85,11 +83,7 @@ impl<'a> DatabaseHandler<'a> {
     /// `PATCH /1.3/database/{uuid}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#modify-managed-database)
-    pub async fn modify(
-        &self,
-        uuid: &str,
-        req: ModifyRequest,
-    ) -> Result<Database, Error> {
+    pub async fn modify(&self, uuid: &str, req: ModifyRequest) -> Result<Database, Error> {
         self.client
             .patch(&format!("/1.3/database/{uuid}"), &req)
             .await
@@ -101,9 +95,7 @@ impl<'a> DatabaseHandler<'a> {
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#delete-managed-database)
     pub async fn delete(&self, uuid: &str) -> Result<(), Error> {
-        self.client
-            .delete(&format!("/1.3/database/{uuid}"))
-            .await
+        self.client.delete(&format!("/1.3/database/{uuid}")).await
     }
 
     /// Starts a managed database.
@@ -148,10 +140,7 @@ impl<'a> DatabaseHandler<'a> {
     /// `GET /1.3/database/{uuid}/metrics`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-metrics)
-    pub async fn get_metrics(
-        &self,
-        uuid: &str,
-    ) -> Result<serde_json::Value, Error> {
+    pub async fn get_metrics(&self, uuid: &str) -> Result<serde_json::Value, Error> {
         self.client
             .get(&format!("/1.3/database/{uuid}/metrics"))
             .await
@@ -177,10 +166,7 @@ impl<'a> DatabaseHandler<'a> {
     /// `GET /1.3/database/{uuid}/query-statistics`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-query-statistics)
-    pub async fn get_query_statistics(
-        &self,
-        uuid: &str,
-    ) -> Result<serde_json::Value, Error> {
+    pub async fn get_query_statistics(&self, uuid: &str) -> Result<serde_json::Value, Error> {
         self.client
             .get(&format!("/1.3/database/{uuid}/query-statistics"))
             .await
@@ -191,10 +177,7 @@ impl<'a> DatabaseHandler<'a> {
     /// `GET /1.3/database/{uuid}/current-queries`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-current-queries)
-    pub async fn get_current_queries(
-        &self,
-        uuid: &str,
-    ) -> Result<serde_json::Value, Error> {
+    pub async fn get_current_queries(&self, uuid: &str) -> Result<serde_json::Value, Error> {
         self.client
             .get(&format!("/1.3/database/{uuid}/current-queries"))
             .await
@@ -220,10 +203,7 @@ impl<'a> DatabaseHandler<'a> {
     /// `GET /1.3/database/{uuid}/available-extensions`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-service-types)
-    pub async fn list_available_extensions(
-        &self,
-        uuid: &str,
-    ) -> Result<Vec<Extension>, Error> {
+    pub async fn list_available_extensions(&self, uuid: &str) -> Result<Vec<Extension>, Error> {
         self.client
             .get(&format!("/1.3/database/{uuid}/available-extensions"))
             .await
@@ -258,11 +238,7 @@ impl<'a> DatabaseHandler<'a> {
     /// `POST /1.3/database/{uuid}/users`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#create-user)
-    pub async fn create_user(
-        &self,
-        uuid: &str,
-        req: CreateUserRequest,
-    ) -> Result<User, Error> {
+    pub async fn create_user(&self, uuid: &str, req: CreateUserRequest) -> Result<User, Error> {
         self.client
             .post(&format!("/1.3/database/{uuid}/users"), &req)
             .await
@@ -321,10 +297,7 @@ impl<'a> DatabaseHandler<'a> {
     /// `GET /1.3/database/{uuid}/databases`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#list-logical-databases)
-    pub async fn list_logical_databases(
-        &self,
-        uuid: &str,
-    ) -> Result<Vec<LogicalDatabase>, Error> {
+    pub async fn list_logical_databases(&self, uuid: &str) -> Result<Vec<LogicalDatabase>, Error> {
         self.client
             .get(&format!("/1.3/database/{uuid}/databases"))
             .await
@@ -365,11 +338,7 @@ impl<'a> DatabaseHandler<'a> {
     /// `DELETE /1.3/database/{uuid}/databases/{dbname}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#delete-logical-database-mysql-postgresql)
-    pub async fn delete_logical_database(
-        &self,
-        uuid: &str,
-        dbname: &str,
-    ) -> Result<(), Error> {
+    pub async fn delete_logical_database(&self, uuid: &str, dbname: &str) -> Result<(), Error> {
         self.client
             .delete(&format!("/1.3/database/{uuid}/databases/{dbname}"))
             .await
@@ -380,11 +349,7 @@ impl<'a> DatabaseHandler<'a> {
     /// `POST /1.3/database/{uuid}/clone`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#clone-managed-database)
-    pub async fn clone_database(
-        &self,
-        uuid: &str,
-        req: &CloneRequest,
-    ) -> Result<Database, Error> {
+    pub async fn clone_database(&self, uuid: &str, req: &CloneRequest) -> Result<Database, Error> {
         self.client
             .post(&format!("/1.3/database/{uuid}/clone"), req)
             .await
@@ -412,10 +377,7 @@ impl<'a> DatabaseHandler<'a> {
     /// `GET /1.3/database/{uuid}/access-control`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-access-control)
-    pub async fn get_access_control(
-        &self,
-        uuid: &str,
-    ) -> Result<OpenSearchAccessControl, Error> {
+    pub async fn get_access_control(&self, uuid: &str) -> Result<OpenSearchAccessControl, Error> {
         self.client
             .get(&format!("/1.3/database/{uuid}/access-control"))
             .await
@@ -462,10 +424,7 @@ impl<'a> DatabaseHandler<'a> {
     /// `GET /1.3/database/{uuid}/indices`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-indices)
-    pub async fn list_indices(
-        &self,
-        uuid: &str,
-    ) -> Result<Vec<OpenSearchIndex>, Error> {
+    pub async fn list_indices(&self, uuid: &str) -> Result<Vec<OpenSearchIndex>, Error> {
         self.client
             .get(&format!("/1.3/database/{uuid}/indices"))
             .await
@@ -476,11 +435,7 @@ impl<'a> DatabaseHandler<'a> {
     /// `DELETE /1.3/database/{uuid}/indices/{index_name}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#delete-managed-database-index)
-    pub async fn delete_index(
-        &self,
-        uuid: &str,
-        index_name: &str,
-    ) -> Result<(), Error> {
+    pub async fn delete_index(&self, uuid: &str, index_name: &str) -> Result<(), Error> {
         self.client
             .delete(&format!("/1.3/database/{uuid}/indices/{index_name}"))
             .await
@@ -493,11 +448,7 @@ impl<'a> DatabaseHandler<'a> {
     /// `DELETE /1.3/database/{uuid}/sessions/{pid}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#cancel-managed-database-session)
-    pub async fn cancel_session(
-        &self,
-        uuid: &str,
-        pid: i64,
-    ) -> Result<(), Error> {
+    pub async fn cancel_session(&self, uuid: &str, pid: i64) -> Result<(), Error> {
         self.client
             .delete(&format!("/1.3/database/{uuid}/sessions/{pid}"))
             .await

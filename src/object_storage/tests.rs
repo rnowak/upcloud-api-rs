@@ -43,8 +43,7 @@ const MOS_BUCKET_LIST_JSON: &str = r#"[
 
 #[test]
 fn deserialize_mos_service_list() {
-    let services: Vec<Service> =
-        serde_json::from_str(MOS_SERVICE_LIST_JSON).unwrap();
+    let services: Vec<Service> = serde_json::from_str(MOS_SERVICE_LIST_JSON).unwrap();
     assert_eq!(services.len(), 1);
     let svc = &services[0];
     assert_eq!(svc.uuid, "1289deac-1cd1-459d-a467-a6fc420d4502");
@@ -345,7 +344,6 @@ const MOS_METRICS_SERIES_JSON: &str = r#"[
 }
 ]"#;
 
-
 #[test]
 fn deserialize_mos_region_list() {
     let regions: Vec<Region> = serde_json::from_str(MOS_REGION_LIST_JSON).unwrap();
@@ -374,8 +372,7 @@ fn deserialize_mos_region_detail() {
 
 #[test]
 fn deserialize_mos_create_service_request() {
-    let req: CreateRequest =
-        serde_json::from_str(MOS_CREATE_SERVICE_REQUEST_JSON).unwrap();
+    let req: CreateRequest = serde_json::from_str(MOS_CREATE_SERVICE_REQUEST_JSON).unwrap();
     assert_eq!(req.name, "example-service");
     assert_eq!(req.region, "example");
     assert_eq!(req.configured_status.as_deref(), Some("started"));
@@ -396,8 +393,7 @@ fn deserialize_mos_create_service_request() {
 
 #[test]
 fn deserialize_mos_service_detail() {
-    let svc: Service =
-        serde_json::from_str(MOS_SERVICE_DETAIL_JSON).unwrap();
+    let svc: Service = serde_json::from_str(MOS_SERVICE_DETAIL_JSON).unwrap();
     assert_eq!(svc.uuid, "1200ecde-db95-4d1c-9133-6508f3232567");
     assert_eq!(svc.name, "example-service");
     assert_eq!(svc.region, "europe-1");
@@ -428,10 +424,7 @@ fn deserialize_mos_service_detail() {
         endpoints[0].sts_url.as_deref(),
         Some("https://7mf5k.upcloudobjects.com:4443/sts")
     );
-    assert_eq!(
-        endpoints[1].domain_name,
-        "7mf5k-private.upcloudobjects.com"
-    );
+    assert_eq!(endpoints[1].domain_name, "7mf5k-private.upcloudobjects.com");
     assert_eq!(endpoints[1].endpoint_type, "private");
     assert_eq!(endpoints[1].mode.as_deref(), Some("api"));
     assert_eq!(
@@ -442,10 +435,7 @@ fn deserialize_mos_service_detail() {
         endpoints[1].sts_url.as_deref(),
         Some("https://7mf5k-private.upcloudobjects.com:4443/sts")
     );
-    assert_eq!(
-        endpoints[2].domain_name,
-        "7mf5k-static.upcloudobjects.com"
-    );
+    assert_eq!(endpoints[2].domain_name, "7mf5k-static.upcloudobjects.com");
     assert_eq!(endpoints[2].endpoint_type, "public");
     assert_eq!(endpoints[2].mode.as_deref(), Some("static-website"));
     assert!(endpoints[2].iam_url.is_none());
@@ -474,14 +464,8 @@ fn deserialize_mos_service_detail() {
 
     // state_messages
     assert_eq!(svc.state_messages.len(), 1);
-    assert_eq!(
-        svc.state_messages[0]["code"],
-        "waiting_certificate_issuing"
-    );
-    assert_eq!(
-        svc.state_messages[0]["operational_state"],
-        "setup-checkup"
-    );
+    assert_eq!(svc.state_messages[0]["code"], "waiting_certificate_issuing");
+    assert_eq!(svc.state_messages[0]["operational_state"], "setup-checkup");
 
     // static_websites
     assert_eq!(svc.static_websites.len(), 1);
@@ -503,8 +487,7 @@ fn deserialize_mos_service_detail() {
 
 #[test]
 fn deserialize_mos_replace_service_request() {
-    let v: serde_json::Value =
-        serde_json::from_str(MOS_REPLACE_SERVICE_REQUEST_JSON).unwrap();
+    let v: serde_json::Value = serde_json::from_str(MOS_REPLACE_SERVICE_REQUEST_JSON).unwrap();
     assert_eq!(v["name"], "example-service");
     assert_eq!(v["configured_status"], "started");
     assert_eq!(v["termination_protection"], false);
@@ -517,10 +500,7 @@ fn deserialize_mos_replace_service_request() {
     assert_eq!(networks[1]["name"], "example-private-network");
     assert_eq!(networks[1]["type"], "private");
     assert_eq!(networks[1]["family"], "IPv4");
-    assert_eq!(
-        networks[1]["uuid"],
-        "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4"
-    );
+    assert_eq!(networks[1]["uuid"], "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4");
 
     let labels = v["labels"].as_array().unwrap();
     assert_eq!(labels.len(), 1);
@@ -530,8 +510,7 @@ fn deserialize_mos_replace_service_request() {
 
 #[test]
 fn deserialize_mos_modify_service_request() {
-    let v: serde_json::Value =
-        serde_json::from_str(MOS_MODIFY_SERVICE_REQUEST_JSON).unwrap();
+    let v: serde_json::Value = serde_json::from_str(MOS_MODIFY_SERVICE_REQUEST_JSON).unwrap();
     assert_eq!(v["name"], "example-service");
     assert_eq!(v["configured_status"], "started");
     assert_eq!(v["termination_protection"], false);
@@ -542,10 +521,7 @@ fn deserialize_mos_modify_service_request() {
     assert_eq!(networks[0]["name"], "example-private-network");
     assert_eq!(networks[0]["type"], "private");
     assert_eq!(networks[0]["family"], "IPv4");
-    assert_eq!(
-        networks[0]["uuid"],
-        "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4"
-    );
+    assert_eq!(networks[0]["uuid"], "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4");
 }
 
 #[test]
@@ -603,8 +579,7 @@ fn deserialize_mos_public_network_value() {
 
 #[test]
 fn deserialize_mos_private_network_input() {
-    let n: NetworkInput =
-        serde_json::from_str(MOS_PRIVATE_NETWORK_INPUT_JSON).unwrap();
+    let n: NetworkInput = serde_json::from_str(MOS_PRIVATE_NETWORK_INPUT_JSON).unwrap();
     assert_eq!(n.name, "example-private-network");
     assert_eq!(n.network_type, "private");
     assert_eq!(n.family, "IPv4");
@@ -616,8 +591,7 @@ fn deserialize_mos_private_network_input() {
 
 #[test]
 fn deserialize_mos_metrics_series() {
-    let series: Vec<serde_json::Value> =
-        serde_json::from_str(MOS_METRICS_SERIES_JSON).unwrap();
+    let series: Vec<serde_json::Value> = serde_json::from_str(MOS_METRICS_SERIES_JSON).unwrap();
     assert_eq!(series.len(), 1);
     let m = &series[0];
     assert_eq!(m["bytes_created"], 530000);
@@ -717,36 +691,57 @@ fn deserialize_mos_policy_list() {
 
     let p1 = &policies[1];
     assert_eq!(p1.name, "ECSS3FullAccess");
-    assert_eq!(p1.arn.as_deref(), Some("urn:ecs:iam:::policy/ECSS3FullAccess"));
+    assert_eq!(
+        p1.arn.as_deref(),
+        Some("urn:ecs:iam:::policy/ECSS3FullAccess")
+    );
     assert_eq!(p1.attachment_count, Some(1));
-    assert_eq!(p1.description.as_deref(), Some("Provides full access to all buckets."));
+    assert_eq!(
+        p1.description.as_deref(),
+        Some("Provides full access to all buckets.")
+    );
     assert_eq!(p1.system, Some(true));
 
     let p2 = &policies[2];
     assert_eq!(p2.name, "ECSS3ReadOnlyAccess");
     assert_eq!(p2.attachment_count, Some(0));
-    assert_eq!(p2.description.as_deref(), Some("Provides read only access to all buckets."));
+    assert_eq!(
+        p2.description.as_deref(),
+        Some("Provides read only access to all buckets.")
+    );
 
     let p3 = &policies[3];
     assert_eq!(p3.name, "IAMFullAccess");
     assert_eq!(p3.attachment_count, Some(1));
-    assert_eq!(p3.description.as_deref(), Some("Provides full access to IAM."));
+    assert_eq!(
+        p3.description.as_deref(),
+        Some("Provides full access to IAM.")
+    );
 
     let p4 = &policies[4];
     assert_eq!(p4.name, "IAMReadOnlyAccess");
     assert_eq!(p4.attachment_count, Some(0));
-    assert_eq!(p4.description.as_deref(), Some("Provides read only access to IAM."));
+    assert_eq!(
+        p4.description.as_deref(),
+        Some("Provides read only access to IAM.")
+    );
 }
 
 #[test]
 fn deserialize_mos_policy_detail() {
     let p: Policy = serde_json::from_str(MOS_POLICY_DETAIL_JSON).unwrap();
     assert_eq!(p.name, "ECSS3FullAccess");
-    assert_eq!(p.arn.as_deref(), Some("urn:ecs:iam:::policy/ECSS3FullAccess"));
+    assert_eq!(
+        p.arn.as_deref(),
+        Some("urn:ecs:iam:::policy/ECSS3FullAccess")
+    );
     assert_eq!(p.attachment_count, Some(0));
     assert_eq!(p.created_at.as_deref(), Some("2024-02-05T11:06:16Z"));
     assert_eq!(p.default_version_id.as_deref(), Some("v1"));
-    assert_eq!(p.description.as_deref(), Some("Provides full access to all buckets."));
+    assert_eq!(
+        p.description.as_deref(),
+        Some("Provides full access to all buckets.")
+    );
     assert!(p.document.is_some());
     assert!(p.document.as_deref().unwrap().contains("%22Version%22"));
     assert_eq!(p.system, Some(true));
@@ -818,46 +813,76 @@ fn deserialize_mos_user_list() {
     assert_eq!(users.len(), 1);
     let u = &users[0];
     assert_eq!(u.username, "example_user");
-    assert_eq!(u.arn.as_deref(), Some("urn:ecs:iam::123bbb5c6a4240409e07f7d89fe28891:user/example_user"));
+    assert_eq!(
+        u.arn.as_deref(),
+        Some("urn:ecs:iam::123bbb5c6a4240409e07f7d89fe28891:user/example_user")
+    );
     assert_eq!(u.created_at.as_deref(), Some("2023-05-07T15:55:24.655776Z"));
 
     let keys = u.access_keys.as_ref().unwrap();
     assert_eq!(keys.len(), 1);
     assert_eq!(keys[0].access_key_id, "AKIA63F41D01345BB477");
-    assert_eq!(keys[0].created_at.as_deref(), Some("2023-05-07T20:52:19.705405Z"));
-    assert_eq!(keys[0].last_used_at.as_deref(), Some("2023-05-07T20:52:17Z"));
+    assert_eq!(
+        keys[0].created_at.as_deref(),
+        Some("2023-05-07T20:52:19.705405Z")
+    );
+    assert_eq!(
+        keys[0].last_used_at.as_deref(),
+        Some("2023-05-07T20:52:17Z")
+    );
     assert_eq!(keys[0].status.as_deref(), Some("Active"));
     assert!(keys[0].secret_access_key.is_none());
 
     let policies = u.policies.as_ref().unwrap();
     assert_eq!(policies.len(), 2);
     assert_eq!(policies[0].name, "ECSS3FullAccess");
-    assert_eq!(policies[0].arn.as_deref(), Some("urn:ecs:iam:::policy/ECSS3FullAccess"));
+    assert_eq!(
+        policies[0].arn.as_deref(),
+        Some("urn:ecs:iam:::policy/ECSS3FullAccess")
+    );
     assert_eq!(policies[1].name, "IAMFullAccess");
-    assert_eq!(policies[1].arn.as_deref(), Some("urn:ecs:iam:::policy/IAMFullAccess"));
+    assert_eq!(
+        policies[1].arn.as_deref(),
+        Some("urn:ecs:iam:::policy/IAMFullAccess")
+    );
 }
 
 #[test]
 fn deserialize_mos_user_detail() {
     let u: User = serde_json::from_str(MOS_USER_DETAIL_JSON).unwrap();
     assert_eq!(u.username, "example_user");
-    assert_eq!(u.arn.as_deref(), Some("urn:ecs:iam::123bbb5c6a4240409e07f7d89fe28891:user/example_user"));
+    assert_eq!(
+        u.arn.as_deref(),
+        Some("urn:ecs:iam::123bbb5c6a4240409e07f7d89fe28891:user/example_user")
+    );
     assert_eq!(u.created_at.as_deref(), Some("2023-05-07T15:55:24.655776Z"));
 
     let keys = u.access_keys.as_ref().unwrap();
     assert_eq!(keys.len(), 1);
     assert_eq!(keys[0].access_key_id, "AKIA63F41D01345BB477");
-    assert_eq!(keys[0].created_at.as_deref(), Some("2023-05-07T20:52:19.705405Z"));
-    assert_eq!(keys[0].last_used_at.as_deref(), Some("2023-05-07T20:52:17Z"));
+    assert_eq!(
+        keys[0].created_at.as_deref(),
+        Some("2023-05-07T20:52:19.705405Z")
+    );
+    assert_eq!(
+        keys[0].last_used_at.as_deref(),
+        Some("2023-05-07T20:52:17Z")
+    );
     assert_eq!(keys[0].status.as_deref(), Some("Active"));
     assert!(keys[0].secret_access_key.is_none());
 
     let policies = u.policies.as_ref().unwrap();
     assert_eq!(policies.len(), 2);
     assert_eq!(policies[0].name, "ECSS3FullAccess");
-    assert_eq!(policies[0].arn.as_deref(), Some("urn:ecs:iam:::policy/ECSS3FullAccess"));
+    assert_eq!(
+        policies[0].arn.as_deref(),
+        Some("urn:ecs:iam:::policy/ECSS3FullAccess")
+    );
     assert_eq!(policies[1].name, "IAMFullAccess");
-    assert_eq!(policies[1].arn.as_deref(), Some("urn:ecs:iam:::policy/IAMFullAccess"));
+    assert_eq!(
+        policies[1].arn.as_deref(),
+        Some("urn:ecs:iam:::policy/IAMFullAccess")
+    );
 }
 
 #[test]
@@ -903,29 +928,45 @@ fn deserialize_mos_access_key_list() {
     let keys: Vec<UserAccessKey> = serde_json::from_str(MOS_ACCESS_KEY_LIST_JSON).unwrap();
     assert_eq!(keys.len(), 1);
     assert_eq!(keys[0].access_key_id, "AKIA63F41D01345BB477");
-    assert_eq!(keys[0].created_at.as_deref(), Some("2023-05-07T20:52:19.705405Z"));
-    assert_eq!(keys[0].last_used_at.as_deref(), Some("2023-05-07T20:52:17Z"));
+    assert_eq!(
+        keys[0].created_at.as_deref(),
+        Some("2023-05-07T20:52:19.705405Z")
+    );
+    assert_eq!(
+        keys[0].last_used_at.as_deref(),
+        Some("2023-05-07T20:52:17Z")
+    );
     assert_eq!(keys[0].status.as_deref(), Some("Active"));
     assert!(keys[0].secret_access_key.is_none());
 }
 
 #[test]
 fn deserialize_mos_access_key_create_response() {
-    let key: UserAccessKey =
-        serde_json::from_str(MOS_ACCESS_KEY_CREATE_RESPONSE_JSON).unwrap();
+    let key: UserAccessKey = serde_json::from_str(MOS_ACCESS_KEY_CREATE_RESPONSE_JSON).unwrap();
     assert_eq!(key.access_key_id, "AKIA589142A152F5E423");
-    assert_eq!(key.created_at.as_deref(), Some("2023-05-07T22:58:26.239729Z"));
-    assert_eq!(key.last_used_at.as_deref(), Some("2023-05-07T22:58:26.239729Z"));
-    assert_eq!(key.secret_access_key.as_deref(), Some("xbINHFALkXjFjmxhAYL8mJnODRDX91OM7cCd2+1Y"));
+    assert_eq!(
+        key.created_at.as_deref(),
+        Some("2023-05-07T22:58:26.239729Z")
+    );
+    assert_eq!(
+        key.last_used_at.as_deref(),
+        Some("2023-05-07T22:58:26.239729Z")
+    );
+    assert_eq!(
+        key.secret_access_key.as_deref(),
+        Some("xbINHFALkXjFjmxhAYL8mJnODRDX91OM7cCd2+1Y")
+    );
     assert_eq!(key.status.as_deref(), Some("Active"));
 }
 
 #[test]
 fn deserialize_mos_access_key_detail() {
-    let key: UserAccessKey =
-        serde_json::from_str(MOS_ACCESS_KEY_DETAIL_JSON).unwrap();
+    let key: UserAccessKey = serde_json::from_str(MOS_ACCESS_KEY_DETAIL_JSON).unwrap();
     assert_eq!(key.access_key_id, "AKIA63F41D01345BB477");
-    assert_eq!(key.created_at.as_deref(), Some("2023-05-07T20:52:19.705405Z"));
+    assert_eq!(
+        key.created_at.as_deref(),
+        Some("2023-05-07T20:52:19.705405Z")
+    );
     assert_eq!(key.last_used_at.as_deref(), Some("2023-05-07T20:52:17Z"));
     assert_eq!(key.status.as_deref(), Some("Active"));
     assert!(key.secret_access_key.is_none());
@@ -965,7 +1006,10 @@ fn deserialize_custom_domain() {
     assert_eq!(cd.name, "objects-cdn");
     assert_eq!(cd.domain_name, "objects.example-company.com");
     assert_eq!(cd.status.as_deref(), Some("active"));
-    assert_eq!(cd.created_at.as_deref(), Some("2023-05-07T16:00:00.000000Z"));
+    assert_eq!(
+        cd.created_at.as_deref(),
+        Some("2023-05-07T16:00:00.000000Z")
+    );
 }
 
 #[test]
@@ -1011,13 +1055,15 @@ fn deserialize_policy_version() {
     assert_eq!(pv.version_id, "v2");
     assert!(pv.document.contains("2012-10-17"));
     assert_eq!(pv.is_default_version, Some(true));
-    assert_eq!(pv.created_at.as_deref(), Some("2024-03-27T17:24:38.000071+02:00"));
+    assert_eq!(
+        pv.created_at.as_deref(),
+        Some("2024-03-27T17:24:38.000071+02:00")
+    );
 }
 
 #[test]
 fn deserialize_policy_version_list() {
-    let list: Vec<PolicyVersion> =
-        serde_json::from_str(MOS_POLICY_VERSION_LIST_JSON).unwrap();
+    let list: Vec<PolicyVersion> = serde_json::from_str(MOS_POLICY_VERSION_LIST_JSON).unwrap();
     assert_eq!(list.len(), 2);
     assert_eq!(list[0].version_id, "v4");
     assert_eq!(list[0].is_default_version, Some(false));

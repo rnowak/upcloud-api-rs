@@ -145,11 +145,7 @@ impl<'a> StorageHandler<'a> {
     /// `PUT /1.3/storage/{uuid}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/9-storages/#modify-storage)
-    pub async fn modify(
-        &self,
-        uuid: &str,
-        req: ModifyRequest,
-    ) -> Result<StorageDetails, Error> {
+    pub async fn modify(&self, uuid: &str, req: ModifyRequest) -> Result<StorageDetails, Error> {
         #[derive(Serialize)]
         struct Body {
             storage: ModifyRequest,
@@ -167,9 +163,7 @@ impl<'a> StorageHandler<'a> {
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/9-storages/#delete-storage)
     pub async fn delete(&self, uuid: &str) -> Result<(), Error> {
-        self.client
-            .delete(&format!("/1.3/storage/{uuid}"))
-            .await
+        self.client.delete(&format!("/1.3/storage/{uuid}")).await
     }
 
     /// Clones a storage.
@@ -177,11 +171,7 @@ impl<'a> StorageHandler<'a> {
     /// `POST /1.3/storage/{uuid}/clone`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/9-storages/#clone-storage)
-    pub async fn clone(
-        &self,
-        uuid: &str,
-        req: CloneRequest,
-    ) -> Result<StorageDetails, Error> {
+    pub async fn clone(&self, uuid: &str, req: CloneRequest) -> Result<StorageDetails, Error> {
         #[derive(Serialize)]
         struct Body {
             storage: CloneRequest,
@@ -332,10 +322,7 @@ impl<'a> StorageHandler<'a> {
     /// `POST /1.3/storage/{uuid}/resize`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/9-storages/#resize-storage-partition-filesystem)
-    pub async fn resize_filesystem(
-        &self,
-        uuid: &str,
-    ) -> Result<ResizeFilesystemBackup, Error> {
+    pub async fn resize_filesystem(&self, uuid: &str) -> Result<ResizeFilesystemBackup, Error> {
         let resp: ResizeBackupResponse = self
             .client
             .post_empty(&format!("/1.3/storage/{uuid}/resize"))

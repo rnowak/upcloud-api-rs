@@ -242,14 +242,16 @@ mod tests {
 
     #[test]
     fn deserialize_firewall_rule_list() {
-        let resp: RuleListResponse =
-            serde_json::from_str(LIST_FIREWALL_RULES_JSON).unwrap();
+        let resp: RuleListResponse = serde_json::from_str(LIST_FIREWALL_RULES_JSON).unwrap();
         let rules = resp.firewall_rules.firewall_rule;
         assert_eq!(rules.len(), 4);
 
         // Rule 0: family but empty protocol
         assert_eq!(rules[0].action, Action::Accept);
-        assert_eq!(rules[0].comment.as_deref(), Some("Allow HTTP from anywhere"));
+        assert_eq!(
+            rules[0].comment.as_deref(),
+            Some("Allow HTTP from anywhere")
+        );
         assert_eq!(rules[0].destination_address_end.as_deref(), Some(""));
         assert_eq!(rules[0].destination_address_start.as_deref(), Some(""));
         assert_eq!(rules[0].destination_port_end.as_deref(), Some("80"));
@@ -279,8 +281,14 @@ mod tests {
         assert_eq!(rules[1].icmp_type.as_deref(), Some(""));
         assert_eq!(rules[1].position, Some(2));
         assert_eq!(rules[1].protocol, Some(Protocol::Tcp));
-        assert_eq!(rules[1].source_address_end.as_deref(), Some("192.168.1.255"));
-        assert_eq!(rules[1].source_address_start.as_deref(), Some("192.168.1.1"));
+        assert_eq!(
+            rules[1].source_address_end.as_deref(),
+            Some("192.168.1.255")
+        );
+        assert_eq!(
+            rules[1].source_address_start.as_deref(),
+            Some("192.168.1.1")
+        );
         assert_eq!(rules[1].source_port_end.as_deref(), Some(""));
         assert_eq!(rules[1].source_port_start.as_deref(), Some(""));
 
@@ -444,8 +452,7 @@ mod tests {
 
     #[test]
     fn deserialize_create_firewall_rule_response() {
-        let resp: RuleResponse =
-            serde_json::from_str(CREATE_FIREWALL_RULE_RESPONSE_JSON).unwrap();
+        let resp: RuleResponse = serde_json::from_str(CREATE_FIREWALL_RULE_RESPONSE_JSON).unwrap();
         let rule = resp.firewall_rule;
         assert_eq!(rule.action, Action::Accept);
         assert_eq!(rule.comment.as_deref(), Some("Allow SSH from this network"));
@@ -504,8 +511,7 @@ mod tests {
 
         // Verify each rule deserializes as CreateRuleRequest
         for rule_value in rules {
-            let rule: CreateRuleRequest =
-                serde_json::from_value(rule_value.clone()).unwrap();
+            let rule: CreateRuleRequest = serde_json::from_value(rule_value.clone()).unwrap();
             assert_eq!(rule.direction, Direction::In);
             assert_eq!(rule.family, Some(Family::IPv4));
             assert_eq!(rule.protocol, Some(Protocol::Tcp));

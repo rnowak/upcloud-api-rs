@@ -128,10 +128,7 @@ fn deserialize_create_tag_response() {
         resp.tag.servers.server[0],
         "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
     );
-    assert_eq!(
-        resp.tag.description.as_deref(),
-        Some("Development servers")
-    );
+    assert_eq!(resp.tag.description.as_deref(), Some("Development servers"));
 }
 
 // ─── Modify tag request ─────────────────────────────────────────────────
@@ -179,10 +176,7 @@ fn deserialize_modify_tag_response() {
     let resp: TagResponse = serde_json::from_str(MODIFY_TAG_RESP_JSON).unwrap();
     assert_eq!(resp.tag.name, "PROD");
     assert_eq!(resp.tag.servers.server.len(), 1);
-    assert_eq!(
-        resp.tag.description.as_deref(),
-        Some("Production servers")
-    );
+    assert_eq!(resp.tag.description.as_deref(), Some("Production servers"));
     assert_eq!(
         resp.tag.servers.server[0],
         "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
@@ -300,7 +294,10 @@ fn deserialize_assign_tag_server_response() {
     assert_eq!(storages[0]["storage_size"], 50);
     assert_eq!(storages[0]["address"], "virtio:0");
     assert_eq!(storages[0]["part_of_plan"], "yes");
-    assert_eq!(storages[0]["storage"], "0169b4f8-051c-4a86-9484-f5b798249949");
+    assert_eq!(
+        storages[0]["storage"],
+        "0169b4f8-051c-4a86-9484-f5b798249949"
+    );
     assert_eq!(storages[0]["storage_title"], "Debian from a template");
     assert_eq!(storages[0]["type"], "disk");
 }

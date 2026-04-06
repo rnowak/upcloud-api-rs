@@ -53,8 +53,10 @@ impl<'a> IpAddressHandler<'a> {
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/10-ip-addresses/#get-ip-address-details)
     pub async fn get(&self, address: &str) -> Result<IpAddress, Error> {
-        let resp: IpAddressResponse =
-            self.client.get(&format!("/1.3/ip_address/{address}")).await?;
+        let resp: IpAddressResponse = self
+            .client
+            .get(&format!("/1.3/ip_address/{address}"))
+            .await?;
         Ok(resp.ip_address)
     }
 
@@ -80,11 +82,7 @@ impl<'a> IpAddressHandler<'a> {
     /// `PATCH /1.3/ip_address/{address}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/10-ip-addresses/#modify-ip-address)
-    pub async fn modify(
-        &self,
-        address: &str,
-        req: ModifyRequest,
-    ) -> Result<IpAddress, Error> {
+    pub async fn modify(&self, address: &str, req: ModifyRequest) -> Result<IpAddress, Error> {
         #[derive(Serialize)]
         struct Body {
             ip_address: ModifyRequest,

@@ -161,7 +161,7 @@ fn deserialize_create_request_without_contact_details() {
     assert_eq!(req.username, "newuser");
     assert_eq!(req.password, "superSecret123");
     assert_eq!(req.email, "newuser@example.com");
-    assert_eq!(req.terms_of_service_agreed, true);
+    assert!(req.terms_of_service_agreed);
     assert!(req.first_name.is_none());
     assert!(req.last_name.is_none());
     assert!(req.company.is_none());

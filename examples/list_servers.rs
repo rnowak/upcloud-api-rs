@@ -31,4 +31,3 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Total: {} server(s)", servers.len());
     Ok(())
 }
-

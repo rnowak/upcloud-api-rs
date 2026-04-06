@@ -1,6 +1,5 @@
 use super::*;
 
-
 const LIST_STORAGES_JSON: &str = r#"{
   "storages": {
 "storage": [
@@ -162,10 +161,7 @@ fn deserialize_storage_list() {
     assert_eq!(storages[1].title, "On demand backup");
     assert_eq!(storages[1].storage_type, Kind::Backup);
     assert_eq!(storages[1].zone.as_deref(), Some("uk-lon1"));
-    assert_eq!(
-        storages[1].created.as_deref(),
-        Some("2019-09-17T14:34:43Z")
-    );
+    assert_eq!(storages[1].created.as_deref(), Some("2019-09-17T14:34:43Z"));
     assert!(storages[1].tier.is_none());
     assert!(storages[1].part_of_plan.is_none());
     assert!(storages[1].template_type.is_none());
@@ -334,8 +330,7 @@ fn deserialize_create_storage_request() {
 #[test]
 fn deserialize_create_storage_response_docs() {
     // The docs response uses "hour" instead of "time" in backup_rule
-    let resp: StorageResponse =
-        serde_json::from_str(CREATE_STORAGE_RESPONSE_DOCS_JSON).unwrap();
+    let resp: StorageResponse = serde_json::from_str(CREATE_STORAGE_RESPONSE_DOCS_JSON).unwrap();
     let s = resp.storage;
     assert_eq!(s.uuid, "01d4fcd4-e446-433b-8a9c-551a1284952e");
     assert_eq!(s.access, Access::Private);
@@ -1207,7 +1202,9 @@ fn deserialize_create_import_http_response() {
     assert_eq!(si.sha256sum.as_deref(), Some(""));
     assert_eq!(
         si.source_location.as_deref(),
-        Some("https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.4.0-amd64-netinst.iso")
+        Some(
+            "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.4.0-amd64-netinst.iso"
+        )
     );
     assert_eq!(si.written_bytes, Some(0));
     assert!(si.direct_upload_url.is_none());
@@ -1282,7 +1279,9 @@ fn deserialize_get_import_details_response() {
     assert_eq!(si.source.as_deref(), Some("http_import"));
     assert_eq!(
         si.source_location.as_deref(),
-        Some("https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.4.0-amd64-netinst.iso")
+        Some(
+            "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.4.0-amd64-netinst.iso"
+        )
     );
     assert_eq!(
         si.uuid.as_deref(),
@@ -1314,8 +1313,7 @@ const CANCEL_IMPORT_RESPONSE_JSON: &str = r#"{
 
 #[test]
 fn deserialize_cancel_import_response() {
-    let resp: StorageImportResponse =
-        serde_json::from_str(CANCEL_IMPORT_RESPONSE_JSON).unwrap();
+    let resp: StorageImportResponse = serde_json::from_str(CANCEL_IMPORT_RESPONSE_JSON).unwrap();
     let si = resp.storage_import;
     assert_eq!(si.state, Some(StorageImportState::Cancelling));
     assert_eq!(si.client_content_length, Some(0));
@@ -1330,7 +1328,9 @@ fn deserialize_cancel_import_response() {
     assert_eq!(si.source.as_deref(), Some("http_import"));
     assert_eq!(
         si.source_location.as_deref(),
-        Some("https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.4.0-amd64-netinst.iso")
+        Some(
+            "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.4.0-amd64-netinst.iso"
+        )
     );
     assert_eq!(
         si.uuid.as_deref(),
@@ -1355,8 +1355,11 @@ fn list_params_label_filters() {
         .label("team", "backend");
     let pairs = params.to_query_pairs();
     assert!(!params.is_empty());
-    assert_eq!(pairs, vec![
-        ("label", "env=prod".to_string()),
-        ("label", "team=backend".to_string()),
-    ]);
+    assert_eq!(
+        pairs,
+        vec![
+            ("label", "env=prod".to_string()),
+            ("label", "team=backend".to_string()),
+        ]
+    );
 }

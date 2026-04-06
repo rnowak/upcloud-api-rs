@@ -47,25 +47,33 @@ const PERMISSION_LIST_JSON: &str = r#"{
 
 #[test]
 fn deserialize_permission_list() {
-    let resp: PermissionListResponse =
-        serde_json::from_str(PERMISSION_LIST_JSON).unwrap();
+    let resp: PermissionListResponse = serde_json::from_str(PERMISSION_LIST_JSON).unwrap();
     let perms = resp.permissions.permission;
     assert_eq!(perms.len(), 7);
 
     // perm[0] — managed_loadbalancer
-    assert_eq!(perms[0].target_identifier, "0ad9408c-8563-4abf-b862-dbde5b581123");
+    assert_eq!(
+        perms[0].target_identifier,
+        "0ad9408c-8563-4abf-b862-dbde5b581123"
+    );
     assert_eq!(perms[0].target_type, TargetType::ManagedLoadbalancer);
     assert_eq!(perms[0].user, "sub_account_user1");
     assert!(perms[0].options.is_none());
 
     // perm[1] — managed_database
-    assert_eq!(perms[1].target_identifier, "0973a187-3ede-4jze-133e-85ea3e61b5bc");
+    assert_eq!(
+        perms[1].target_identifier,
+        "0973a187-3ede-4jze-133e-85ea3e61b5bc"
+    );
     assert_eq!(perms[1].target_type, TargetType::ManagedDatabase);
     assert_eq!(perms[1].user, "sub_account_user1");
     assert!(perms[1].options.is_none());
 
     // perm[2] — managed_object_storage
-    assert_eq!(perms[2].target_identifier, "1203a187-3ede-4aae-883e-85ea3e69babc");
+    assert_eq!(
+        perms[2].target_identifier,
+        "1203a187-3ede-4aae-883e-85ea3e69babc"
+    );
     assert_eq!(perms[2].target_type, TargetType::ManagedObjectStorage);
     assert_eq!(perms[2].user, "sub_account_user1");
     assert!(perms[2].options.is_none());
@@ -141,15 +149,24 @@ fn deserialize_permission_list_full() {
     assert_eq!(perms.len(), 12);
 
     // sub_account entries
-    assert_eq!(perms[0].target_identifier, "0ad9408c-8563-4abf-b862-dbde5b581123");
+    assert_eq!(
+        perms[0].target_identifier,
+        "0ad9408c-8563-4abf-b862-dbde5b581123"
+    );
     assert_eq!(perms[0].target_type, TargetType::ManagedLoadbalancer);
     assert_eq!(perms[0].user, "sub_account_user1");
 
-    assert_eq!(perms[1].target_identifier, "0973a187-3ede-4jze-133e-85ea3e61b5bc");
+    assert_eq!(
+        perms[1].target_identifier,
+        "0973a187-3ede-4jze-133e-85ea3e61b5bc"
+    );
     assert_eq!(perms[1].target_type, TargetType::ManagedDatabase);
     assert_eq!(perms[1].user, "sub_account_user1");
 
-    assert_eq!(perms[2].target_identifier, "1203a187-3ede-4aae-883e-85ea3e69babc");
+    assert_eq!(
+        perms[2].target_identifier,
+        "1203a187-3ede-4aae-883e-85ea3e69babc"
+    );
     assert_eq!(perms[2].target_type, TargetType::ManagedObjectStorage);
     assert_eq!(perms[2].user, "sub_account_user1");
 
@@ -205,16 +222,23 @@ const PERMISSION_LIST_SUBACCOUNT_JSON: &str = r#"{
 
 #[test]
 fn deserialize_permission_list_subaccount() {
-    let resp: PermissionListResponse = serde_json::from_str(PERMISSION_LIST_SUBACCOUNT_JSON).unwrap();
+    let resp: PermissionListResponse =
+        serde_json::from_str(PERMISSION_LIST_SUBACCOUNT_JSON).unwrap();
     let perms = resp.permissions.permission;
     assert_eq!(perms.len(), 3);
 
-    assert_eq!(perms[0].target_identifier, "0ad9408c-8563-4abf-b862-dbde5b581123");
+    assert_eq!(
+        perms[0].target_identifier,
+        "0ad9408c-8563-4abf-b862-dbde5b581123"
+    );
     assert_eq!(perms[0].target_type, TargetType::ManagedLoadbalancer);
     assert_eq!(perms[0].user, "sub_account_user1");
     assert!(perms[0].options.is_none());
 
-    assert_eq!(perms[1].target_identifier, "1203a187-3ede-4lwe-884v-25ea3e69babc");
+    assert_eq!(
+        perms[1].target_identifier,
+        "1203a187-3ede-4lwe-884v-25ea3e69babc"
+    );
     assert_eq!(perms[1].target_type, TargetType::ManagedObjectStorage);
     assert_eq!(perms[1].user, "sub_account_user1");
     assert!(perms[1].options.is_none());
@@ -239,7 +263,10 @@ const GRANT_PERMISSION_REQUEST_JSON: &str = r#"{
 fn deserialize_grant_permission_request() {
     let body: GrantPermissionBody = serde_json::from_str(GRANT_PERMISSION_REQUEST_JSON).unwrap();
     let perm = body.permission;
-    assert_eq!(perm.target_identifier, "0ad9408c-8563-4abf-b862-dbde5b581123");
+    assert_eq!(
+        perm.target_identifier,
+        "0ad9408c-8563-4abf-b862-dbde5b581123"
+    );
     assert_eq!(perm.target_type, TargetType::ManagedLoadbalancer);
     assert_eq!(perm.user, "sub_account_user1");
     assert!(perm.options.is_some());
@@ -258,7 +285,10 @@ const GRANT_PERMISSION_RESPONSE_JSON: &str = r#"{
 fn deserialize_grant_permission_response() {
     let body: PermissionBody = serde_json::from_str(GRANT_PERMISSION_RESPONSE_JSON).unwrap();
     let perm = body.permission;
-    assert_eq!(perm.target_identifier, "0ad9408c-8563-4abf-b862-dbde5b581123");
+    assert_eq!(
+        perm.target_identifier,
+        "0ad9408c-8563-4abf-b862-dbde5b581123"
+    );
     assert_eq!(perm.target_type, TargetType::ManagedLoadbalancer);
     assert_eq!(perm.user, "sub_account_user1");
     assert!(perm.options.is_some());
@@ -276,7 +306,10 @@ const REVOKE_PERMISSION_REQUEST_JSON: &str = r#"{
 fn deserialize_revoke_permission_request() {
     let body: RevokePermissionBody = serde_json::from_str(REVOKE_PERMISSION_REQUEST_JSON).unwrap();
     let perm = body.permission;
-    assert_eq!(perm.target_identifier, "0ad9408c-8563-4abf-b862-dbde5b581123");
+    assert_eq!(
+        perm.target_identifier,
+        "0ad9408c-8563-4abf-b862-dbde5b581123"
+    );
     assert_eq!(perm.target_type, TargetType::ManagedLoadbalancer);
     assert_eq!(perm.user, "sub_account_user1");
 }

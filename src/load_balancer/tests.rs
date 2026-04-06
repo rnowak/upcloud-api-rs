@@ -1,6 +1,5 @@
 use super::*;
 
-
 const LB_PLAN_LIST_JSON: &str = r#"[
   {
 "name": "development",
@@ -170,9 +169,18 @@ fn deserialize_lb_list() {
     assert_eq!(lb.zone, "fi-hel1");
     assert_eq!(lb.state, OperationalState::Pending);
     assert_eq!(lb.configured_status.as_deref(), Some("started"));
-    assert_eq!(lb.created_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
-    assert_eq!(lb.updated_at.as_deref(), Some("2022-10-04T16:36:09.933249Z"));
-    assert_eq!(lb.dns_name.as_deref(), Some("lb-0a498284629e4629a55d0415a6e89dda-1.upcloudlb.com"));
+    assert_eq!(
+        lb.created_at.as_deref(),
+        Some("2022-10-04T16:11:14.569638Z")
+    );
+    assert_eq!(
+        lb.updated_at.as_deref(),
+        Some("2022-10-04T16:36:09.933249Z")
+    );
+    assert_eq!(
+        lb.dns_name.as_deref(),
+        Some("lb-0a498284629e4629a55d0415a6e89dda-1.upcloudlb.com")
+    );
     assert!(lb.maintenance_dow.is_none());
     assert!(lb.maintenance_time.is_none());
     assert!(lb.nodes.is_none());
@@ -182,10 +190,19 @@ fn deserialize_lb_list() {
     assert_eq!(lb.backends.len(), 2);
     let be0 = &lb.backends[0];
     assert_eq!(be0.name, "example-backend-1");
-    assert_eq!(be0.created_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
-    assert_eq!(be0.updated_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
+    assert_eq!(
+        be0.created_at.as_deref(),
+        Some("2022-10-04T16:11:14.569638Z")
+    );
+    assert_eq!(
+        be0.updated_at.as_deref(),
+        Some("2022-10-04T16:11:14.569638Z")
+    );
     assert!(be0.properties.is_some());
-    assert_eq!(be0.properties.as_ref().unwrap()["health_check_type"], "http");
+    assert_eq!(
+        be0.properties.as_ref().unwrap()["health_check_type"],
+        "http"
+    );
     assert_eq!(be0.properties.as_ref().unwrap()["timeout_server"], 10);
     assert!(be0.resolver.is_none());
     assert!(be0.mode.is_none());
@@ -203,14 +220,23 @@ fn deserialize_lb_list() {
     assert_eq!(m0.max_sessions, 1000);
     assert_eq!(m0.member_type, "static");
     assert_eq!(m0.backup, Some(false));
-    assert_eq!(m0.created_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
+    assert_eq!(
+        m0.created_at.as_deref(),
+        Some("2022-10-04T16:11:14.569638Z")
+    );
     assert!(m0.updated_at.is_none());
 
     let be1 = &lb.backends[1];
     assert_eq!(be1.name, "example-backend-2");
     assert_eq!(be1.resolver.as_deref(), Some("example-resolver"));
-    assert_eq!(be1.created_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
-    assert_eq!(be1.updated_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
+    assert_eq!(
+        be1.created_at.as_deref(),
+        Some("2022-10-04T16:11:14.569638Z")
+    );
+    assert_eq!(
+        be1.updated_at.as_deref(),
+        Some("2022-10-04T16:11:14.569638Z")
+    );
     assert_eq!(be1.tls_configs.len(), 0);
     assert!(be1.mode.is_none());
     assert!(be1.http_cookie_name.is_none());
@@ -237,8 +263,14 @@ fn deserialize_lb_list() {
     assert_eq!(fe.port, 443);
     assert_eq!(fe.mode, "http");
     assert_eq!(fe.default_backend, "example-backend-1");
-    assert_eq!(fe.created_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
-    assert_eq!(fe.updated_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
+    assert_eq!(
+        fe.created_at.as_deref(),
+        Some("2022-10-04T16:11:14.569638Z")
+    );
+    assert_eq!(
+        fe.updated_at.as_deref(),
+        Some("2022-10-04T16:11:14.569638Z")
+    );
     assert!(fe.properties.is_some());
     assert_eq!(fe.properties.as_ref().unwrap()["timeout_client"], 5);
     assert_eq!(fe.networks.len(), 1);
@@ -252,13 +284,19 @@ fn deserialize_lb_list() {
     assert_eq!(fe.rules[0].matchers[0]["match_path"]["value"], "/app");
     assert_eq!(fe.rules[0].actions.len(), 1);
     assert_eq!(fe.rules[0].actions[0]["type"], "use_backend");
-    assert_eq!(fe.rules[0].actions[0]["action_use_backend"]["backend"], "example-backend-2");
+    assert_eq!(
+        fe.rules[0].actions[0]["action_use_backend"]["backend"],
+        "example-backend-2"
+    );
     assert!(fe.rules[0].matching_condition.is_none());
     assert!(fe.rules[0].created_at.is_none());
     assert!(fe.rules[0].updated_at.is_none());
     assert_eq!(fe.tls_configs.len(), 1);
     assert_eq!(fe.tls_configs[0].name, "example-tls-config");
-    assert_eq!(fe.tls_configs[0].certificate_bundle_uuid.as_deref(), Some("0a73c569-a2d1-481a-917f-b0fdafd78136"));
+    assert_eq!(
+        fe.tls_configs[0].certificate_bundle_uuid.as_deref(),
+        Some("0a73c569-a2d1-481a-917f-b0fdafd78136")
+    );
     assert!(fe.tls_configs[0].certificate_chain.is_none());
     assert!(fe.tls_configs[0].name_match.is_none());
     assert!(fe.tls_configs[0].created_at.is_none());
@@ -269,13 +307,22 @@ fn deserialize_lb_list() {
     assert_eq!(lb.networks[0].name, "example-network-1");
     assert_eq!(lb.networks[0].network_type, "public");
     assert_eq!(lb.networks[0].family.as_deref(), Some("IPv4"));
-    assert_eq!(lb.networks[0].dns_name.as_deref(), Some("lb-0a498284629e4629a55d0415a6e89dda-1.upcloudlb.com"));
+    assert_eq!(
+        lb.networks[0].dns_name.as_deref(),
+        Some("lb-0a498284629e4629a55d0415a6e89dda-1.upcloudlb.com")
+    );
     assert!(lb.networks[0].uuid.is_none());
     assert_eq!(lb.networks[1].name, "example-network-2");
     assert_eq!(lb.networks[1].network_type, "private");
     assert_eq!(lb.networks[1].family.as_deref(), Some("IPv4"));
-    assert_eq!(lb.networks[1].dns_name.as_deref(), Some("lb-0a498284629e4629a55d0415a6e89dda-2.upcloudlb.com"));
-    assert_eq!(lb.networks[1].uuid.as_deref(), Some("03631160-d57a-4926-ad48-a2f828229dcb"));
+    assert_eq!(
+        lb.networks[1].dns_name.as_deref(),
+        Some("lb-0a498284629e4629a55d0415a6e89dda-2.upcloudlb.com")
+    );
+    assert_eq!(
+        lb.networks[1].uuid.as_deref(),
+        Some("03631160-d57a-4926-ad48-a2f828229dcb")
+    );
 
     // Resolvers
     assert_eq!(lb.resolvers.len(), 1);
@@ -286,7 +333,10 @@ fn deserialize_lb_list() {
     assert_eq!(lb.resolvers[0].timeout_retry, 10);
     assert_eq!(lb.resolvers[0].cache_valid, 180);
     assert_eq!(lb.resolvers[0].cache_invalid, 10);
-    assert_eq!(lb.resolvers[0].created_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
+    assert_eq!(
+        lb.resolvers[0].created_at.as_deref(),
+        Some("2022-10-04T16:11:14.569638Z")
+    );
     assert!(lb.resolvers[0].updated_at.is_none());
 
     // Labels
@@ -300,8 +350,8 @@ fn deserialize_lb_list() {
 
 // ─── Test 1: Plan detail ──────────────────────────────────────────────────
 
-const LB_PLAN_DETAIL_JSON: &str = r#"{"name": "development", "per_server_max_sessions": 10000, "server_number": 1}"#;
-
+const LB_PLAN_DETAIL_JSON: &str =
+    r#"{"name": "development", "per_server_max_sessions": 10000, "server_number": 1}"#;
 
 #[test]
 fn deserialize_lb_plan_detail() {
@@ -330,7 +380,6 @@ const CREATE_LB_REQUEST_JSON: &str = r#"{
         ]
     }"#;
 
-
 #[test]
 fn deserialize_create_lb_request() {
     let val: serde_json::Value = serde_json::from_str(CREATE_LB_REQUEST_JSON).unwrap();
@@ -346,7 +395,10 @@ fn deserialize_create_lb_request() {
     assert_eq!(val["networks"][1]["name"], "example-network-2");
     assert_eq!(val["networks"][1]["type"], "private");
     assert_eq!(val["networks"][1]["family"], "IPv4");
-    assert_eq!(val["networks"][1]["uuid"], "03631160-d57a-4926-ad48-a2f828229dcb");
+    assert_eq!(
+        val["networks"][1]["uuid"],
+        "03631160-d57a-4926-ad48-a2f828229dcb"
+    );
 
     // Also parse as CreateRequest
     let req: CreateRequest = serde_json::from_str(CREATE_LB_REQUEST_JSON).unwrap();
@@ -363,7 +415,10 @@ fn deserialize_create_lb_request() {
     assert_eq!(req.networks[1].name, "example-network-2");
     assert_eq!(req.networks[1].network_type, "private");
     assert_eq!(req.networks[1].family.as_deref(), Some("IPv4"));
-    assert_eq!(req.networks[1].uuid.as_deref(), Some("03631160-d57a-4926-ad48-a2f828229dcb"));
+    assert_eq!(
+        req.networks[1].uuid.as_deref(),
+        Some("03631160-d57a-4926-ad48-a2f828229dcb")
+    );
 }
 
 // ─── Test 3: LB service details ───────────────────────────────────────────
@@ -424,7 +479,6 @@ const LB_SERVICE_DETAIL_JSON: &str = r#"{
         "zone": "fi-hel1"
     }"#;
 
-
 #[test]
 fn deserialize_lb_service_details() {
     let lb: LoadBalancer = serde_json::from_str(LB_SERVICE_DETAIL_JSON).unwrap();
@@ -434,9 +488,18 @@ fn deserialize_lb_service_details() {
     assert_eq!(lb.zone, "fi-hel1");
     assert_eq!(lb.state, OperationalState::Pending);
     assert_eq!(lb.configured_status.as_deref(), Some("started"));
-    assert_eq!(lb.dns_name.as_deref(), Some("lb-0a498284629e4629a55d0415a6e89dda-1.upcloudlb.com"));
-    assert_eq!(lb.created_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
-    assert_eq!(lb.updated_at.as_deref(), Some("2022-10-04T16:36:09.933249Z"));
+    assert_eq!(
+        lb.dns_name.as_deref(),
+        Some("lb-0a498284629e4629a55d0415a6e89dda-1.upcloudlb.com")
+    );
+    assert_eq!(
+        lb.created_at.as_deref(),
+        Some("2022-10-04T16:11:14.569638Z")
+    );
+    assert_eq!(
+        lb.updated_at.as_deref(),
+        Some("2022-10-04T16:36:09.933249Z")
+    );
     assert!(lb.maintenance_dow.is_none());
     assert!(lb.maintenance_time.is_none());
     assert!(lb.nodes.is_none());
@@ -446,8 +509,14 @@ fn deserialize_lb_service_details() {
     assert_eq!(lb.backends.len(), 1);
     let be = &lb.backends[0];
     assert_eq!(be.name, "example-backend-1");
-    assert_eq!(be.created_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
-    assert_eq!(be.updated_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
+    assert_eq!(
+        be.created_at.as_deref(),
+        Some("2022-10-04T16:11:14.569638Z")
+    );
+    assert_eq!(
+        be.updated_at.as_deref(),
+        Some("2022-10-04T16:11:14.569638Z")
+    );
     assert!(be.properties.is_some());
     assert_eq!(be.properties.as_ref().unwrap()["health_check_type"], "http");
     assert_eq!(be.properties.as_ref().unwrap()["timeout_server"], 10);
@@ -477,8 +546,14 @@ fn deserialize_lb_service_details() {
     assert_eq!(fe.port, 443);
     assert_eq!(fe.mode, "http");
     assert_eq!(fe.default_backend, "example-backend-1");
-    assert_eq!(fe.created_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
-    assert_eq!(fe.updated_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
+    assert_eq!(
+        fe.created_at.as_deref(),
+        Some("2022-10-04T16:11:14.569638Z")
+    );
+    assert_eq!(
+        fe.updated_at.as_deref(),
+        Some("2022-10-04T16:11:14.569638Z")
+    );
     assert!(fe.properties.is_some());
     assert_eq!(fe.properties.as_ref().unwrap()["timeout_client"], 5);
     assert_eq!(fe.networks.len(), 1);
@@ -488,8 +563,14 @@ fn deserialize_lb_service_details() {
     assert_eq!(fe.rules.len(), 1);
     assert_eq!(fe.rules[0].name, "example-rule-1");
     assert_eq!(fe.rules[0].priority, 100);
-    assert_eq!(fe.rules[0].created_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
-    assert_eq!(fe.rules[0].updated_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
+    assert_eq!(
+        fe.rules[0].created_at.as_deref(),
+        Some("2022-10-04T16:11:14.569638Z")
+    );
+    assert_eq!(
+        fe.rules[0].updated_at.as_deref(),
+        Some("2022-10-04T16:11:14.569638Z")
+    );
     assert!(fe.rules[0].matching_condition.is_none());
     assert_eq!(fe.rules[0].matchers.len(), 1);
     assert_eq!(fe.rules[0].matchers[0]["type"], "path");
@@ -498,14 +579,26 @@ fn deserialize_lb_service_details() {
     assert_eq!(fe.rules[0].matchers[0]["match_path"]["value"], "/app");
     assert_eq!(fe.rules[0].actions.len(), 1);
     assert_eq!(fe.rules[0].actions[0]["type"], "use_backend");
-    assert_eq!(fe.rules[0].actions[0]["action_use_backend"]["backend"], "example-backend-2");
+    assert_eq!(
+        fe.rules[0].actions[0]["action_use_backend"]["backend"],
+        "example-backend-2"
+    );
 
     // Frontend TLS configs
     assert_eq!(fe.tls_configs.len(), 1);
     assert_eq!(fe.tls_configs[0].name, "example-tls-config");
-    assert_eq!(fe.tls_configs[0].certificate_bundle_uuid.as_deref(), Some("0a73c569-a2d1-481a-917f-b0fdafd78136"));
-    assert_eq!(fe.tls_configs[0].created_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
-    assert_eq!(fe.tls_configs[0].updated_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
+    assert_eq!(
+        fe.tls_configs[0].certificate_bundle_uuid.as_deref(),
+        Some("0a73c569-a2d1-481a-917f-b0fdafd78136")
+    );
+    assert_eq!(
+        fe.tls_configs[0].created_at.as_deref(),
+        Some("2022-10-04T16:11:14.569638Z")
+    );
+    assert_eq!(
+        fe.tls_configs[0].updated_at.as_deref(),
+        Some("2022-10-04T16:11:14.569638Z")
+    );
     assert!(fe.tls_configs[0].certificate_chain.is_none());
     assert!(fe.tls_configs[0].name_match.is_none());
 
@@ -514,13 +607,22 @@ fn deserialize_lb_service_details() {
     assert_eq!(lb.networks[0].name, "example-network-1");
     assert_eq!(lb.networks[0].network_type, "public");
     assert_eq!(lb.networks[0].family.as_deref(), Some("IPv4"));
-    assert_eq!(lb.networks[0].dns_name.as_deref(), Some("lb-1.upcloudlb.com"));
+    assert_eq!(
+        lb.networks[0].dns_name.as_deref(),
+        Some("lb-1.upcloudlb.com")
+    );
     assert!(lb.networks[0].uuid.is_none());
     assert_eq!(lb.networks[1].name, "example-network-2");
     assert_eq!(lb.networks[1].network_type, "private");
     assert_eq!(lb.networks[1].family.as_deref(), Some("IPv4"));
-    assert_eq!(lb.networks[1].dns_name.as_deref(), Some("lb-2.upcloudlb.com"));
-    assert_eq!(lb.networks[1].uuid.as_deref(), Some("03631160-d57a-4926-ad48-a2f828229dcb"));
+    assert_eq!(
+        lb.networks[1].dns_name.as_deref(),
+        Some("lb-2.upcloudlb.com")
+    );
+    assert_eq!(
+        lb.networks[1].uuid.as_deref(),
+        Some("03631160-d57a-4926-ad48-a2f828229dcb")
+    );
 
     // Resolvers
     assert_eq!(lb.resolvers.len(), 1);
@@ -546,8 +648,8 @@ fn deserialize_lb_service_details() {
 
 // ─── Test 4: Modify LB request ────────────────────────────────────────────
 
-const MODIFY_LB_REQUEST_JSON: &str = r#"{"name": "example-service", "plan": "development", "configured_status": "started"}"#;
-
+const MODIFY_LB_REQUEST_JSON: &str =
+    r#"{"name": "example-service", "plan": "development", "configured_status": "started"}"#;
 
 #[test]
 fn deserialize_modify_lb_request() {
@@ -579,7 +681,6 @@ const LB_BACKEND_LIST_JSON: &str = r#"[
         }
     ]"#;
 
-
 #[test]
 fn deserialize_lb_backend_list() {
     let backends: Vec<Backend> = serde_json::from_str(LB_BACKEND_LIST_JSON).unwrap();
@@ -587,8 +688,14 @@ fn deserialize_lb_backend_list() {
     let be = &backends[0];
     assert_eq!(be.name, "example-backend-2");
     assert_eq!(be.resolver.as_deref(), Some("dns"));
-    assert_eq!(be.created_at.as_deref(), Some("2021-12-07T13:58:30.817272Z"));
-    assert_eq!(be.updated_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
+    assert_eq!(
+        be.created_at.as_deref(),
+        Some("2021-12-07T13:58:30.817272Z")
+    );
+    assert_eq!(
+        be.updated_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
     assert!(be.properties.is_some());
     assert_eq!(be.properties.as_ref().unwrap()["health_check_type"], "http");
     assert_eq!(be.properties.as_ref().unwrap()["timeout_server"], 10);
@@ -606,8 +713,14 @@ fn deserialize_lb_backend_list() {
     assert_eq!(be.members[0].weight, 100);
     assert_eq!(be.members[0].max_sessions, 1000);
     assert_eq!(be.members[0].backup, Some(false));
-    assert_eq!(be.members[0].created_at.as_deref(), Some("2022-02-11T16:39:55.321306Z"));
-    assert_eq!(be.members[0].updated_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
+    assert_eq!(
+        be.members[0].created_at.as_deref(),
+        Some("2022-02-11T16:39:55.321306Z")
+    );
+    assert_eq!(
+        be.members[0].updated_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
 }
 
 // ─── Test 6: Backend detail ───────────────────────────────────────────────
@@ -626,14 +739,19 @@ const LB_BACKEND_DETAIL_JSON: &str = r#"{
         "updated_at": "2022-02-11T17:33:08.490581Z"
     }"#;
 
-
 #[test]
 fn deserialize_lb_backend_detail() {
     let be: Backend = serde_json::from_str(LB_BACKEND_DETAIL_JSON).unwrap();
     assert_eq!(be.name, "example-backend-1");
     assert_eq!(be.resolver.as_deref(), Some("dns"));
-    assert_eq!(be.created_at.as_deref(), Some("2021-12-07T13:58:30.817272Z"));
-    assert_eq!(be.updated_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
+    assert_eq!(
+        be.created_at.as_deref(),
+        Some("2021-12-07T13:58:30.817272Z")
+    );
+    assert_eq!(
+        be.updated_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
     assert!(be.mode.is_none());
     assert!(be.http_cookie_name.is_none());
     assert!(be.outbound_proxy_protocol.is_none());
@@ -656,9 +774,18 @@ fn deserialize_lb_backend_detail() {
     // TLS configs
     assert_eq!(be.tls_configs.len(), 1);
     assert_eq!(be.tls_configs[0].name, "ca");
-    assert_eq!(be.tls_configs[0].certificate_bundle_uuid.as_deref(), Some("0a98ddbf-29e3-408c-b081-278a67101f76"));
-    assert_eq!(be.tls_configs[0].created_at.as_deref(), Some("2023-07-28T08:01:11.729382Z"));
-    assert_eq!(be.tls_configs[0].updated_at.as_deref(), Some("2023-07-28T08:26:30.436412Z"));
+    assert_eq!(
+        be.tls_configs[0].certificate_bundle_uuid.as_deref(),
+        Some("0a98ddbf-29e3-408c-b081-278a67101f76")
+    );
+    assert_eq!(
+        be.tls_configs[0].created_at.as_deref(),
+        Some("2023-07-28T08:01:11.729382Z")
+    );
+    assert_eq!(
+        be.tls_configs[0].updated_at.as_deref(),
+        Some("2023-07-28T08:26:30.436412Z")
+    );
     assert!(be.tls_configs[0].certificate_chain.is_none());
     assert!(be.tls_configs[0].name_match.is_none());
 
@@ -676,7 +803,6 @@ const LB_MEMBER_LIST_JSON: &str = r#"[
         {"backup": false, "created_at": "2021-12-07T13:58:30.817272Z", "enabled": true, "ip": "172.16.1.4", "max_sessions": 1000, "name": "example-member-1", "port": 8000, "type": "static", "updated_at": "2022-02-11T17:33:08.490581Z", "weight": 100}
     ]"#;
 
-
 #[test]
 fn deserialize_lb_member_list() {
     let members: Vec<BackendMember> = serde_json::from_str(LB_MEMBER_LIST_JSON).unwrap();
@@ -689,8 +815,14 @@ fn deserialize_lb_member_list() {
     assert_eq!(members[0].weight, 100);
     assert_eq!(members[0].max_sessions, 1000);
     assert_eq!(members[0].backup, Some(false));
-    assert_eq!(members[0].created_at.as_deref(), Some("2022-02-11T16:39:55.321306Z"));
-    assert_eq!(members[0].updated_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
+    assert_eq!(
+        members[0].created_at.as_deref(),
+        Some("2022-02-11T16:39:55.321306Z")
+    );
+    assert_eq!(
+        members[0].updated_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
     assert_eq!(members[1].name, "example-member-1");
     assert_eq!(members[1].member_type, "static");
     assert_eq!(members[1].ip, "172.16.1.4");
@@ -699,14 +831,19 @@ fn deserialize_lb_member_list() {
     assert_eq!(members[1].weight, 100);
     assert_eq!(members[1].max_sessions, 1000);
     assert_eq!(members[1].backup, Some(false));
-    assert_eq!(members[1].created_at.as_deref(), Some("2021-12-07T13:58:30.817272Z"));
-    assert_eq!(members[1].updated_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
+    assert_eq!(
+        members[1].created_at.as_deref(),
+        Some("2021-12-07T13:58:30.817272Z")
+    );
+    assert_eq!(
+        members[1].updated_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
 }
 
 // ─── Test 8: Member detail ────────────────────────────────────────────────
 
 const LB_MEMBER_DETAIL_JSON: &str = r#"{"backup": false, "created_at": "2021-12-07T13:58:30.817272Z", "enabled": true, "ip": "172.16.1.4", "max_sessions": 1000, "name": "example-member-1", "port": 8000, "type": "static", "updated_at": "2022-02-11T17:33:08.490581Z", "weight": 100}"#;
-
 
 #[test]
 fn deserialize_lb_member_detail() {
@@ -752,7 +889,6 @@ const LB_FRONTEND_LIST_JSON: &str = r#"[
         }
     ]"#;
 
-
 #[test]
 fn deserialize_lb_frontend_list() {
     let frontends: Vec<Frontend> = serde_json::from_str(LB_FRONTEND_LIST_JSON).unwrap();
@@ -762,8 +898,14 @@ fn deserialize_lb_frontend_list() {
     assert_eq!(fe.port, 443);
     assert_eq!(fe.mode, "http");
     assert_eq!(fe.default_backend, "example-backend-1");
-    assert_eq!(fe.created_at.as_deref(), Some("2021-12-07T13:58:30.817272Z"));
-    assert_eq!(fe.updated_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
+    assert_eq!(
+        fe.created_at.as_deref(),
+        Some("2021-12-07T13:58:30.817272Z")
+    );
+    assert_eq!(
+        fe.updated_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
     assert_eq!(fe.networks.len(), 1);
     assert_eq!(fe.networks[0].name, "example-network-1");
     assert!(fe.properties.is_some());
@@ -774,22 +916,40 @@ fn deserialize_lb_frontend_list() {
     assert_eq!(fe.rules[0].name, "example-rule-1");
     assert_eq!(fe.rules[0].priority, 100);
     assert_eq!(fe.rules[0].matching_condition.as_deref(), Some("and"));
-    assert_eq!(fe.rules[0].created_at.as_deref(), Some("2021-12-07T13:58:30.817272Z"));
-    assert_eq!(fe.rules[0].updated_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
+    assert_eq!(
+        fe.rules[0].created_at.as_deref(),
+        Some("2021-12-07T13:58:30.817272Z")
+    );
+    assert_eq!(
+        fe.rules[0].updated_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
     assert_eq!(fe.rules[0].matchers.len(), 1);
     assert_eq!(fe.rules[0].matchers[0]["type"], "path");
     assert_eq!(fe.rules[0].matchers[0]["match_path"]["method"], "exact");
     assert_eq!(fe.rules[0].matchers[0]["match_path"]["value"], "/app");
     assert_eq!(fe.rules[0].actions.len(), 1);
     assert_eq!(fe.rules[0].actions[0]["type"], "use_backend");
-    assert_eq!(fe.rules[0].actions[0]["action_use_backend"]["backend"], "example-backend-2");
+    assert_eq!(
+        fe.rules[0].actions[0]["action_use_backend"]["backend"],
+        "example-backend-2"
+    );
 
     // TLS configs
     assert_eq!(fe.tls_configs.len(), 1);
     assert_eq!(fe.tls_configs[0].name, "example-tls-config");
-    assert_eq!(fe.tls_configs[0].certificate_bundle_uuid.as_deref(), Some("0aded5c1-c7a3-498a-b9c8-a871611c47a2"));
-    assert_eq!(fe.tls_configs[0].created_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
-    assert_eq!(fe.tls_configs[0].updated_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
+    assert_eq!(
+        fe.tls_configs[0].certificate_bundle_uuid.as_deref(),
+        Some("0aded5c1-c7a3-498a-b9c8-a871611c47a2")
+    );
+    assert_eq!(
+        fe.tls_configs[0].created_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
+    assert_eq!(
+        fe.tls_configs[0].updated_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
     assert!(fe.tls_configs[0].certificate_chain.is_none());
     assert!(fe.tls_configs[0].name_match.is_none());
 }
@@ -821,7 +981,6 @@ const LB_FRONTEND_DETAIL_JSON: &str = r#"{
         "updated_at": "2022-02-11T17:33:08.490581Z"
     }"#;
 
-
 #[test]
 fn deserialize_lb_frontend_detail() {
     let fe: Frontend = serde_json::from_str(LB_FRONTEND_DETAIL_JSON).unwrap();
@@ -829,8 +988,14 @@ fn deserialize_lb_frontend_detail() {
     assert_eq!(fe.port, 443);
     assert_eq!(fe.mode, "http");
     assert_eq!(fe.default_backend, "example-backend-1");
-    assert_eq!(fe.created_at.as_deref(), Some("2021-12-07T13:58:30.817272Z"));
-    assert_eq!(fe.updated_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
+    assert_eq!(
+        fe.created_at.as_deref(),
+        Some("2021-12-07T13:58:30.817272Z")
+    );
+    assert_eq!(
+        fe.updated_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
     assert_eq!(fe.networks.len(), 1);
     assert_eq!(fe.networks[0].name, "example-network-1");
     assert!(fe.properties.is_some());
@@ -839,20 +1004,38 @@ fn deserialize_lb_frontend_detail() {
     assert_eq!(fe.rules[0].name, "example-rule-1");
     assert_eq!(fe.rules[0].priority, 100);
     assert_eq!(fe.rules[0].matching_condition.as_deref(), Some("and"));
-    assert_eq!(fe.rules[0].created_at.as_deref(), Some("2021-12-07T13:58:30.817272Z"));
-    assert_eq!(fe.rules[0].updated_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
+    assert_eq!(
+        fe.rules[0].created_at.as_deref(),
+        Some("2021-12-07T13:58:30.817272Z")
+    );
+    assert_eq!(
+        fe.rules[0].updated_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
     assert_eq!(fe.rules[0].matchers.len(), 1);
     assert_eq!(fe.rules[0].matchers[0]["type"], "path");
     assert_eq!(fe.rules[0].matchers[0]["match_path"]["method"], "exact");
     assert_eq!(fe.rules[0].matchers[0]["match_path"]["value"], "/app");
     assert_eq!(fe.rules[0].actions.len(), 1);
     assert_eq!(fe.rules[0].actions[0]["type"], "use_backend");
-    assert_eq!(fe.rules[0].actions[0]["action_use_backend"]["backend"], "example-backend-2");
+    assert_eq!(
+        fe.rules[0].actions[0]["action_use_backend"]["backend"],
+        "example-backend-2"
+    );
     assert_eq!(fe.tls_configs.len(), 1);
     assert_eq!(fe.tls_configs[0].name, "example-tls-config");
-    assert_eq!(fe.tls_configs[0].certificate_bundle_uuid.as_deref(), Some("0aded5c1-c7a3-498a-b9c8-a871611c47a2"));
-    assert_eq!(fe.tls_configs[0].created_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
-    assert_eq!(fe.tls_configs[0].updated_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
+    assert_eq!(
+        fe.tls_configs[0].certificate_bundle_uuid.as_deref(),
+        Some("0aded5c1-c7a3-498a-b9c8-a871611c47a2")
+    );
+    assert_eq!(
+        fe.tls_configs[0].created_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
+    assert_eq!(
+        fe.tls_configs[0].updated_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
     assert!(fe.tls_configs[0].certificate_chain.is_none());
     assert!(fe.tls_configs[0].name_match.is_none());
 }
@@ -864,21 +1047,38 @@ const LB_FRONTEND_TLS_CONFIG_LIST_JSON: &str = r#"[
         {"certificate_bundle_uuid": "c136c429-d18f-4192-b55e-e7b5079dee40", "created_at": "2021-11-11T11:21:51.121789Z", "name": "example-tls-config-2", "updated_at": "2021-11-11T11:21:51.121789Z"}
     ]"#;
 
-
 #[test]
 fn deserialize_lb_frontend_tls_config_list() {
     let configs: Vec<TLSConfig> = serde_json::from_str(LB_FRONTEND_TLS_CONFIG_LIST_JSON).unwrap();
     assert_eq!(configs.len(), 2);
     assert_eq!(configs[0].name, "example-tls-config-1");
-    assert_eq!(configs[0].certificate_bundle_uuid.as_deref(), Some("0aded5c1-c7a3-498a-b9c8-a871611c47a2"));
-    assert_eq!(configs[0].created_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
-    assert_eq!(configs[0].updated_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
+    assert_eq!(
+        configs[0].certificate_bundle_uuid.as_deref(),
+        Some("0aded5c1-c7a3-498a-b9c8-a871611c47a2")
+    );
+    assert_eq!(
+        configs[0].created_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
+    assert_eq!(
+        configs[0].updated_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
     assert!(configs[0].certificate_chain.is_none());
     assert!(configs[0].name_match.is_none());
     assert_eq!(configs[1].name, "example-tls-config-2");
-    assert_eq!(configs[1].certificate_bundle_uuid.as_deref(), Some("c136c429-d18f-4192-b55e-e7b5079dee40"));
-    assert_eq!(configs[1].created_at.as_deref(), Some("2021-11-11T11:21:51.121789Z"));
-    assert_eq!(configs[1].updated_at.as_deref(), Some("2021-11-11T11:21:51.121789Z"));
+    assert_eq!(
+        configs[1].certificate_bundle_uuid.as_deref(),
+        Some("c136c429-d18f-4192-b55e-e7b5079dee40")
+    );
+    assert_eq!(
+        configs[1].created_at.as_deref(),
+        Some("2021-11-11T11:21:51.121789Z")
+    );
+    assert_eq!(
+        configs[1].updated_at.as_deref(),
+        Some("2021-11-11T11:21:51.121789Z")
+    );
     assert!(configs[1].certificate_chain.is_none());
     assert!(configs[1].name_match.is_none());
 }
@@ -887,14 +1087,22 @@ fn deserialize_lb_frontend_tls_config_list() {
 
 const LB_FRONTEND_TLS_CONFIG_DETAIL_JSON: &str = r#"{"certificate_bundle_uuid": "0aded5c1-c7a3-498a-b9c8-a871611c47a2", "created_at": "2022-02-11T17:33:08.490581Z", "name": "example-tls-config", "updated_at": "2022-02-11T17:33:08.490581Z"}"#;
 
-
 #[test]
 fn deserialize_lb_frontend_tls_config_detail() {
     let config: TLSConfig = serde_json::from_str(LB_FRONTEND_TLS_CONFIG_DETAIL_JSON).unwrap();
     assert_eq!(config.name, "example-tls-config");
-    assert_eq!(config.certificate_bundle_uuid.as_deref(), Some("0aded5c1-c7a3-498a-b9c8-a871611c47a2"));
-    assert_eq!(config.created_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
-    assert_eq!(config.updated_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
+    assert_eq!(
+        config.certificate_bundle_uuid.as_deref(),
+        Some("0aded5c1-c7a3-498a-b9c8-a871611c47a2")
+    );
+    assert_eq!(
+        config.created_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
+    assert_eq!(
+        config.updated_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
     assert_eq!(config.certificate_chain, None);
     assert_eq!(config.name_match, None);
 }
@@ -913,7 +1121,6 @@ const LB_RULE_LIST_JSON: &str = r#"[
         }
     ]"#;
 
-
 #[test]
 fn deserialize_lb_rule_list() {
     let rules: Vec<FrontendRule> = serde_json::from_str(LB_RULE_LIST_JSON).unwrap();
@@ -921,12 +1128,21 @@ fn deserialize_lb_rule_list() {
     assert_eq!(rules[0].name, "example-rule-1");
     assert_eq!(rules[0].priority, 100);
     assert_eq!(rules[0].matching_condition.as_deref(), Some("and"));
-    assert_eq!(rules[0].created_at.as_deref(), Some("2021-12-07T13:58:30.817272Z"));
-    assert_eq!(rules[0].updated_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
+    assert_eq!(
+        rules[0].created_at.as_deref(),
+        Some("2021-12-07T13:58:30.817272Z")
+    );
+    assert_eq!(
+        rules[0].updated_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
     assert_eq!(rules[0].matchers.len(), 1);
     assert_eq!(rules[0].actions.len(), 1);
     assert_eq!(rules[0].actions[0]["type"], "use_backend");
-    assert_eq!(rules[0].actions[0]["action_use_backend"]["backend"], "example-backend-2");
+    assert_eq!(
+        rules[0].actions[0]["action_use_backend"]["backend"],
+        "example-backend-2"
+    );
     assert_eq!(rules[0].matchers[0]["type"], "path");
     assert_eq!(rules[0].matchers[0]["match_path"]["method"], "exact");
     assert_eq!(rules[0].matchers[0]["match_path"]["value"], "/app");
@@ -944,22 +1160,30 @@ const LB_RULE_DETAIL_JSON: &str = r#"{
         "updated_at": "2022-02-11T17:33:08.490581Z"
     }"#;
 
-
 #[test]
 fn deserialize_lb_rule_detail() {
     let rule: FrontendRule = serde_json::from_str(LB_RULE_DETAIL_JSON).unwrap();
     assert_eq!(rule.name, "example-rule-1");
     assert_eq!(rule.priority, 100);
     assert_eq!(rule.matching_condition.as_deref(), Some("and"));
-    assert_eq!(rule.created_at.as_deref(), Some("2021-12-07T13:58:30.817272Z"));
-    assert_eq!(rule.updated_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
+    assert_eq!(
+        rule.created_at.as_deref(),
+        Some("2021-12-07T13:58:30.817272Z")
+    );
+    assert_eq!(
+        rule.updated_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
     assert_eq!(rule.matchers.len(), 1);
     assert_eq!(rule.matchers[0]["type"], "path");
     assert_eq!(rule.matchers[0]["match_path"]["method"], "exact");
     assert_eq!(rule.matchers[0]["match_path"]["value"], "/app");
     assert_eq!(rule.actions.len(), 1);
     assert_eq!(rule.actions[0]["type"], "use_backend");
-    assert_eq!(rule.actions[0]["action_use_backend"]["backend"], "example-backend-2");
+    assert_eq!(
+        rule.actions[0]["action_use_backend"]["backend"],
+        "example-backend-2"
+    );
 }
 
 // ─── Test 15: List resolvers ──────────────────────────────────────────────
@@ -977,7 +1201,6 @@ const LB_RESOLVER_LIST_JSON: &str = r#"[
             "updated_at": "2022-02-11T17:33:08.490581Z"
         }
     ]"#;
-
 
 #[test]
 fn deserialize_lb_resolver_list() {
@@ -1009,7 +1232,6 @@ const LB_RESOLVER_DETAIL_JSON: &str = r#"{
         "updated_at": "2022-02-11T17:33:08.490581Z"
     }"#;
 
-
 #[test]
 fn deserialize_lb_resolver_detail() {
     let r: Resolver = serde_json::from_str(LB_RESOLVER_DETAIL_JSON).unwrap();
@@ -1027,7 +1249,6 @@ fn deserialize_lb_resolver_detail() {
 // ─── Test 17: Create resolver request ─────────────────────────────────────
 
 const CREATE_RESOLVER_REQUEST_JSON: &str = r#"{"name": "example-resolver", "nameservers": ["172.16.1.4:53"], "retries": 5, "timeout": 30, "timeout_retry": 10, "cache_valid": 180, "cache_invalid": 10}"#;
-
 
 #[test]
 fn deserialize_create_resolver_request() {
@@ -1051,7 +1272,6 @@ const CREATE_BACKEND_REQUEST_JSON: &str = r#"{
         ],
         "properties": {"timeout_server": 30, "health_check_type": "tcp"}
     }"#;
-
 
 #[test]
 fn deserialize_create_backend_request() {
@@ -1080,7 +1300,6 @@ const CREATE_FRONTEND_REQUEST_JSON: &str = r#"{
         "properties": {"timeout_client": 5}
     }"#;
 
-
 #[test]
 fn deserialize_create_frontend_request() {
     let req: CreateFrontendRequest = serde_json::from_str(CREATE_FRONTEND_REQUEST_JSON).unwrap();
@@ -1103,10 +1322,10 @@ const CREATE_FRONTEND_RULE_REQUEST_JSON: &str = r#"{
         "actions": [{"type": "use_backend", "action_use_backend": {"backend": "example-backend-2"}}]
     }"#;
 
-
 #[test]
 fn deserialize_create_frontend_rule_request() {
-    let req: CreateFrontendRuleRequest = serde_json::from_str(CREATE_FRONTEND_RULE_REQUEST_JSON).unwrap();
+    let req: CreateFrontendRuleRequest =
+        serde_json::from_str(CREATE_FRONTEND_RULE_REQUEST_JSON).unwrap();
     assert_eq!(req.name, "example-rule-1");
     assert_eq!(req.priority, 100);
     assert_eq!(req.matchers.len(), 1);
@@ -1115,7 +1334,10 @@ fn deserialize_create_frontend_rule_request() {
     assert_eq!(req.matchers[0]["match_path"]["value"], "/app");
     assert_eq!(req.actions.len(), 1);
     assert_eq!(req.actions[0]["type"], "use_backend");
-    assert_eq!(req.actions[0]["action_use_backend"]["backend"], "example-backend-2");
+    assert_eq!(
+        req.actions[0]["action_use_backend"]["backend"],
+        "example-backend-2"
+    );
 }
 
 // ─── Test 21: Backend TLS config list ─────────────────────────────────────
@@ -1125,21 +1347,38 @@ const LB_BACKEND_TLS_CONFIG_LIST_JSON: &str = r#"[
         {"certificate_bundle_uuid": "c136c429-d18f-4192-b55e-e7b5079dee40", "created_at": "2021-11-11T11:21:51.121789Z", "name": "example-backend-tls-2", "updated_at": "2021-11-11T11:21:51.121789Z"}
     ]"#;
 
-
 #[test]
 fn deserialize_lb_backend_tls_config_list() {
     let configs: Vec<TLSConfig> = serde_json::from_str(LB_BACKEND_TLS_CONFIG_LIST_JSON).unwrap();
     assert_eq!(configs.len(), 2);
     assert_eq!(configs[0].name, "example-backend-tls-1");
-    assert_eq!(configs[0].certificate_bundle_uuid.as_deref(), Some("0aded5c1-c7a3-498a-b9c8-a871611c47a2"));
-    assert_eq!(configs[0].created_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
-    assert_eq!(configs[0].updated_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
+    assert_eq!(
+        configs[0].certificate_bundle_uuid.as_deref(),
+        Some("0aded5c1-c7a3-498a-b9c8-a871611c47a2")
+    );
+    assert_eq!(
+        configs[0].created_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
+    assert_eq!(
+        configs[0].updated_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
     assert!(configs[0].certificate_chain.is_none());
     assert!(configs[0].name_match.is_none());
     assert_eq!(configs[1].name, "example-backend-tls-2");
-    assert_eq!(configs[1].certificate_bundle_uuid.as_deref(), Some("c136c429-d18f-4192-b55e-e7b5079dee40"));
-    assert_eq!(configs[1].created_at.as_deref(), Some("2021-11-11T11:21:51.121789Z"));
-    assert_eq!(configs[1].updated_at.as_deref(), Some("2021-11-11T11:21:51.121789Z"));
+    assert_eq!(
+        configs[1].certificate_bundle_uuid.as_deref(),
+        Some("c136c429-d18f-4192-b55e-e7b5079dee40")
+    );
+    assert_eq!(
+        configs[1].created_at.as_deref(),
+        Some("2021-11-11T11:21:51.121789Z")
+    );
+    assert_eq!(
+        configs[1].updated_at.as_deref(),
+        Some("2021-11-11T11:21:51.121789Z")
+    );
     assert!(configs[1].certificate_chain.is_none());
     assert!(configs[1].name_match.is_none());
 }
@@ -1148,12 +1387,14 @@ fn deserialize_lb_backend_tls_config_list() {
 
 const CREATE_TLS_CONFIG_REQUEST_JSON: &str = r#"{"name": "example-tls-config", "certificate_bundle_uuid": "0aded5c1-c7a3-498a-b9c8-a871611c47a2"}"#;
 
-
 #[test]
 fn deserialize_create_tls_config_request() {
     let val: serde_json::Value = serde_json::from_str(CREATE_TLS_CONFIG_REQUEST_JSON).unwrap();
     assert_eq!(val["name"], "example-tls-config");
-    assert_eq!(val["certificate_bundle_uuid"], "0aded5c1-c7a3-498a-b9c8-a871611c47a2");
+    assert_eq!(
+        val["certificate_bundle_uuid"],
+        "0aded5c1-c7a3-498a-b9c8-a871611c47a2"
+    );
 
     let req: CreateTLSConfigRequest = serde_json::from_str(CREATE_TLS_CONFIG_REQUEST_JSON).unwrap();
     assert_eq!(req.name, "example-tls-config");
@@ -1182,21 +1423,32 @@ const CERTIFICATE_BUNDLE_DETAIL_JSON: &str = r#"{
     "uuid": "0aded5c1-c7a3-498a-b9c8-a871611c47a2"
 }"#;
 
-
 #[test]
 fn deserialize_certificate_bundle_detail() {
     let cb: CertificateBundle = serde_json::from_str(CERTIFICATE_BUNDLE_DETAIL_JSON).unwrap();
     assert_eq!(cb.uuid, "0aded5c1-c7a3-498a-b9c8-a871611c47a2");
     assert_eq!(cb.name, "example-dynamic-certificate");
-    assert_eq!(cb.certificate.as_deref(), Some("LStLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0t"));
-    assert_eq!(cb.intermediates.as_deref(), Some("LS0tS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0t"));
+    assert_eq!(
+        cb.certificate.as_deref(),
+        Some("LStLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0t")
+    );
+    assert_eq!(
+        cb.intermediates.as_deref(),
+        Some("LS0tS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0t")
+    );
     assert_eq!(cb.key_type.as_deref(), Some("rsa"));
     assert_eq!(cb.operational_state.as_deref(), Some("idle"));
     assert_eq!(cb.not_after.as_deref(), Some("2022-02-13T05:33:43Z"));
     assert_eq!(cb.not_before.as_deref(), Some("2022-02-12T05:32:43Z"));
     assert_eq!(cb.bundle_type.as_deref(), Some("dynamic"));
-    assert_eq!(cb.created_at.as_deref(), Some("2022-02-11T17:31:38.202398Z"));
-    assert_eq!(cb.updated_at.as_deref(), Some("2022-02-12T08:13:47.877562Z"));
+    assert_eq!(
+        cb.created_at.as_deref(),
+        Some("2022-02-11T17:31:38.202398Z")
+    );
+    assert_eq!(
+        cb.updated_at.as_deref(),
+        Some("2022-02-12T08:13:47.877562Z")
+    );
 }
 
 // ─── Test 24: Certificate bundle list from docs ──────────────────────────
@@ -1236,16 +1488,19 @@ const CERTIFICATE_BUNDLE_LIST_JSON: &str = r#"[
     }
 ]"#;
 
-
 #[test]
 fn deserialize_certificate_bundle_list() {
-    let bundles: Vec<CertificateBundle> = serde_json::from_str(CERTIFICATE_BUNDLE_LIST_JSON).unwrap();
+    let bundles: Vec<CertificateBundle> =
+        serde_json::from_str(CERTIFICATE_BUNDLE_LIST_JSON).unwrap();
     assert_eq!(bundles.len(), 2);
     assert_eq!(bundles[0].uuid, "bf571589-7378-41f8-879e-5505613b070d");
     assert_eq!(bundles[0].name, "example-manual-certificate");
     assert_eq!(bundles[0].bundle_type.as_deref(), Some("manual"));
     assert_eq!(bundles[0].key_type.as_deref(), Some("ecdsa"));
-    assert_eq!(bundles[0].not_after.as_deref(), Some("2031-10-20T12:10:36Z"));
+    assert_eq!(
+        bundles[0].not_after.as_deref(),
+        Some("2031-10-20T12:10:36Z")
+    );
     assert_eq!(bundles[0].operational_state.as_deref(), Some("idle"));
     assert!(bundles[0].intermediates.is_none());
     assert_eq!(bundles[1].uuid, "0aded5c1-c7a3-498a-b9c8-a871611c47a2");
@@ -1292,7 +1547,6 @@ const FRONTEND_DETAIL_FROM_DOCS_JSON: &str = r#"{
     "updated_at": "2022-02-11T17:33:08.490581Z"
 }"#;
 
-
 #[test]
 fn deserialize_frontend_detail_from_docs() {
     let fe: Frontend = serde_json::from_str(FRONTEND_DETAIL_FROM_DOCS_JSON).unwrap();
@@ -1300,8 +1554,14 @@ fn deserialize_frontend_detail_from_docs() {
     assert_eq!(fe.port, 443);
     assert_eq!(fe.mode, "http");
     assert_eq!(fe.default_backend, "example-backend-1");
-    assert_eq!(fe.created_at.as_deref(), Some("2021-12-07T13:58:30.817272Z"));
-    assert_eq!(fe.updated_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
+    assert_eq!(
+        fe.created_at.as_deref(),
+        Some("2021-12-07T13:58:30.817272Z")
+    );
+    assert_eq!(
+        fe.updated_at.as_deref(),
+        Some("2022-02-11T17:33:08.490581Z")
+    );
     assert_eq!(fe.networks.len(), 1);
     assert_eq!(fe.networks[0].name, "example-network-1");
     assert!(fe.properties.is_some());
@@ -1314,7 +1574,10 @@ fn deserialize_frontend_detail_from_docs() {
     assert_eq!(fe.rules[0].actions.len(), 1);
     assert_eq!(fe.tls_configs.len(), 1);
     assert_eq!(fe.tls_configs[0].name, "example-tls-config");
-    assert_eq!(fe.tls_configs[0].certificate_bundle_uuid.as_deref(), Some("0aded5c1-c7a3-498a-b9c8-a871611c47a2"));
+    assert_eq!(
+        fe.tls_configs[0].certificate_bundle_uuid.as_deref(),
+        Some("0aded5c1-c7a3-498a-b9c8-a871611c47a2")
+    );
 }
 
 // ─── Test 26: ModifyBackendMemberRequest serialization ────────────────────
@@ -1348,8 +1611,12 @@ fn serialize_modify_frontend_request() {
         name: Some("example-frontend".to_string()),
         default_backend: Some("example-backend".to_string()),
         mode: Some("http".to_string()),
-        networks: Some(vec![FrontendNetwork { name: "example-network-2".to_string() }]),
-        properties: Some(serde_json::json!({"timeout_client": 10, "inbound_proxy_protocol": false})),
+        networks: Some(vec![FrontendNetwork {
+            name: "example-network-2".to_string(),
+        }]),
+        properties: Some(
+            serde_json::json!({"timeout_client": 10, "inbound_proxy_protocol": false}),
+        ),
     };
     let json = serde_json::to_value(&req).unwrap();
     assert_eq!(json["name"], "example-frontend");
@@ -1487,7 +1754,6 @@ const NODE_DETAIL_JSON: &str = r#"{
     ],
     "operational_state": "running"
 }"#;
-
 
 #[test]
 fn deserialize_node() {

@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use base64::Engine;
 use reqwest::{Method, RequestBuilder, Response, StatusCode};
-use serde::{de::DeserializeOwned, Serialize};
+use serde::{Serialize, de::DeserializeOwned};
 
 use crate::{
     config::{AuthMode, ClientConfig},
@@ -26,9 +26,7 @@ impl Client {
 
     /// Shorthand: create a client authenticated with a bearer token.
     pub fn with_bearer_token(token: impl Into<String>) -> Result<Self, Error> {
-        ClientBuilder::default()
-            .bearer_token(token)
-            .build()
+        ClientBuilder::default().bearer_token(token).build()
     }
 
     /// Shorthand: create a client authenticated with username + password (legacy Basic auth).
@@ -325,11 +323,7 @@ impl ClientBuilder {
     }
 
     /// Authenticate with username and password (HTTP Basic, legacy).
-    pub fn basic_auth(
-        mut self,
-        username: impl Into<String>,
-        password: impl Into<String>,
-    ) -> Self {
+    pub fn basic_auth(mut self, username: impl Into<String>, password: impl Into<String>) -> Self {
         self.auth = Some(AuthMode::Basic {
             username: username.into(),
             password: password.into(),

@@ -1,6 +1,5 @@
 use super::*;
 
-
 // ─── List all networks ──────────────────────────────────────────────────
 
 const LIST_NETWORKS_JSON: &str = r#"{
@@ -644,12 +643,14 @@ fn deserialize_router_list() {
     assert_eq!(routers.len(), 1);
     assert_eq!(routers[0].name, "Example router");
     assert_eq!(routers[0].uuid, "04c0df35-2658-4b0c-8ac7-962090f4e92a");
-    assert!(routers[0]
-        .attached_networks
-        .as_ref()
-        .unwrap()
-        .network
-        .is_empty());
+    assert!(
+        routers[0]
+            .attached_networks
+            .as_ref()
+            .unwrap()
+            .network
+            .is_empty()
+    );
     assert!(routers[0].static_routes.is_empty());
     assert_eq!(routers[0].router_type.as_deref(), Some("normal"));
     assert!(routers[0].labels.as_ref().unwrap().is_empty());
@@ -678,12 +679,14 @@ fn deserialize_router_detail() {
     assert_eq!(router.uuid, "04c0df35-2658-4b0c-8ac7-962090f4e92a");
     assert!(router.labels.as_ref().unwrap().is_empty());
     assert_eq!(router.router_type.as_deref(), Some("normal"));
-    assert!(router
-        .attached_networks
-        .as_ref()
-        .unwrap()
-        .network
-        .is_empty());
+    assert!(
+        router
+            .attached_networks
+            .as_ref()
+            .unwrap()
+            .network
+            .is_empty()
+    );
     assert!(router.static_routes.is_empty());
 }
 
@@ -749,17 +752,22 @@ fn deserialize_create_router_response() {
     let router = resp.router;
     assert_eq!(router.name, "Example router");
     assert_eq!(router.static_routes.len(), 1);
-    assert_eq!(router.static_routes[0].route_type, Some(RouterStaticRouteType::User));
+    assert_eq!(
+        router.static_routes[0].route_type,
+        Some(RouterStaticRouteType::User)
+    );
     assert_eq!(router.static_routes[0].route, "0.0.0.0/0");
     assert!(router.labels.as_ref().unwrap().is_empty());
     assert_eq!(router.uuid, "04c0df35-2658-4b0c-8ac7-962090f4e92a");
     assert_eq!(router.router_type.as_deref(), Some("normal"));
-    assert!(router
-        .attached_networks
-        .as_ref()
-        .unwrap()
-        .network
-        .is_empty());
+    assert!(
+        router
+            .attached_networks
+            .as_ref()
+            .unwrap()
+            .network
+            .is_empty()
+    );
     assert_eq!(
         router.static_routes[0].name.as_deref(),
         Some("static_route_0")
@@ -829,12 +837,14 @@ fn deserialize_modify_router_response() {
     assert_eq!(labels[0].value, "postgres cluster connectivity");
     assert_eq!(router.uuid, "04c0df35-2658-4b0c-8ac7-962090f4e92a");
     assert_eq!(router.router_type.as_deref(), Some("normal"));
-    assert!(router
-        .attached_networks
-        .as_ref()
-        .unwrap()
-        .network
-        .is_empty());
+    assert!(
+        router
+            .attached_networks
+            .as_ref()
+            .unwrap()
+            .network
+            .is_empty()
+    );
 }
 
 // ─── List network peerings ──────────────────────────────────────────────

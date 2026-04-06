@@ -15,8 +15,7 @@ const TIMEZONE_LIST_JSON: &str = r#"{
 
 #[test]
 fn deserialize_timezone_list() {
-    let resp: TimezoneListResponse =
-        serde_json::from_str(TIMEZONE_LIST_JSON).unwrap();
+    let resp: TimezoneListResponse = serde_json::from_str(TIMEZONE_LIST_JSON).unwrap();
     let tzs = resp.timezones.timezone;
     assert_eq!(tzs.len(), 6);
     assert_eq!(tzs[0], "Africa/Abidjan");

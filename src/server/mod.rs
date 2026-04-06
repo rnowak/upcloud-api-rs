@@ -3,8 +3,8 @@
 //! Servers: `GET/POST/PUT/DELETE /1.3/server` + actions.
 //! Server Groups: `GET/POST/PUT/DELETE /1.3/server-group`.
 
-mod types;
 pub mod firewall;
+mod types;
 
 pub use types::*;
 
@@ -13,9 +13,9 @@ use std::time::{Duration, Instant};
 use serde::{Deserialize, Serialize};
 use tokio::time::sleep;
 
+use self::firewall::{CreateRuleRequest, Rule};
 use crate::client::Client;
 use crate::error::Error;
-use self::firewall::{Rule, CreateRuleRequest};
 
 /// Handler for server operations.
 pub struct ServerHandler<'a> {
@@ -80,11 +80,7 @@ impl<'a> ServerHandler<'a> {
     /// `PUT /1.3/server/{uuid}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#modify-server)
-    pub async fn modify(
-        &self,
-        uuid: &str,
-        req: ModifyRequest,
-    ) -> Result<ServerDetails, Error> {
+    pub async fn modify(&self, uuid: &str, req: ModifyRequest) -> Result<ServerDetails, Error> {
         #[derive(Serialize)]
         struct Body {
             server: ModifyRequest,
@@ -117,10 +113,7 @@ impl<'a> ServerHandler<'a> {
     ) -> Result<(), Error> {
         let req = self
             .client
-            .request(
-                reqwest::Method::DELETE,
-                &format!("/1.3/server/{uuid}"),
-            )
+            .request(reqwest::Method::DELETE, &format!("/1.3/server/{uuid}"))
             .query(&[("storages", "1"), ("backups", &backups.to_string())]);
         self.client.send_empty(req).await
     }
@@ -182,11 +175,7 @@ impl<'a> ServerHandler<'a> {
     /// `POST /1.3/server/{uuid}/restart`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#restart-server)
-    pub async fn restart(
-        &self,
-        uuid: &str,
-        req: RestartRequest,
-    ) -> Result<ServerDetails, Error> {
+    pub async fn restart(&self, uuid: &str, req: RestartRequest) -> Result<ServerDetails, Error> {
         #[derive(Serialize)]
         struct Body {
             restart_server: RestartRequest,
@@ -219,11 +208,7 @@ impl<'a> ServerHandler<'a> {
     /// `POST /1.3/server/{uuid}/rebuild`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#rebuild-server)
-    pub async fn rebuild(
-        &self,
-        uuid: &str,
-        req: RebuildRequest,
-    ) -> Result<ServerDetails, Error> {
+    pub async fn rebuild(&self, uuid: &str, req: RebuildRequest) -> Result<ServerDetails, Error> {
         #[derive(Serialize)]
         struct Body {
             server_rebuild: RebuildRequest,
@@ -360,10 +345,7 @@ impl<'a> ServerHandler<'a> {
     /// `GET /1.3/server/{uuid}/firewall_rule`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/11-firewall/#list-firewall-rules)
-    pub async fn list_firewall_rules(
-        &self,
-        server_uuid: &str,
-    ) -> Result<Vec<Rule>, Error> {
+    pub async fn list_firewall_rules(&self, server_uuid: &str) -> Result<Vec<Rule>, Error> {
         let resp: FirewallRuleListResponse = self
             .client
             .get(&format!("/1.3/server/{server_uuid}/firewall_rule"))
@@ -400,11 +382,7 @@ impl<'a> ServerHandler<'a> {
     /// `GET /1.3/server/{uuid}/firewall_rule/{position}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/11-firewall/#get-firewall-rule-details)
-    pub async fn get_firewall_rule(
-        &self,
-        server_uuid: &str,
-        position: u32,
-    ) -> Result<Rule, Error> {
+    pub async fn get_firewall_rule(&self, server_uuid: &str, position: u32) -> Result<Rule, Error> {
         let resp: FirewallRuleResponse = self
             .client
             .get(&format!(
@@ -493,10 +471,7 @@ impl<'a> ServerHandler<'a> {
     /// `POST /1.3/server-group`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#create-a-new-server-group)
-    pub async fn create_group(
-        &self,
-        req: CreateGroupRequest,
-    ) -> Result<Group, Error> {
+    pub async fn create_group(&self, req: CreateGroupRequest) -> Result<Group, Error> {
         #[derive(Serialize)]
         struct Body {
             server_group: CreateGroupRequest,
@@ -513,11 +488,7 @@ impl<'a> ServerHandler<'a> {
     /// `PUT /1.3/server-group/{uuid}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#modify-server-group)
-    pub async fn modify_group(
-        &self,
-        uuid: &str,
-        req: ModifyGroupRequest,
-    ) -> Result<Group, Error> {
+    pub async fn modify_group(&self, uuid: &str, req: ModifyGroupRequest) -> Result<Group, Error> {
         #[derive(Serialize)]
         struct Body {
             server_group: ModifyGroupRequest,
@@ -555,8 +526,7 @@ impl<'a> ServerHandler<'a> {
     pub async fn list_configurations(
         &self,
     ) -> Result<Vec<crate::plan::ServerConfiguration>, Error> {
-        let resp: ServerConfigurationListResponse =
-            self.client.get("/1.3/server_size").await?;
+        let resp: ServerConfigurationListResponse = self.client.get("/1.3/server_size").await?;
         Ok(resp.server_sizes.server_size)
     }
 

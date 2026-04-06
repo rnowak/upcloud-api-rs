@@ -1,7 +1,7 @@
 //! Plan types.
 
 use serde::{Deserialize, Serialize};
-use serde_with::{serde_as, DisplayFromStr};
+use serde_with::{DisplayFromStr, serde_as};
 
 /// A predefined server plan (e.g. `1xCPU-1GB`).
 #[serde_as]

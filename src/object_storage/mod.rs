@@ -139,11 +139,7 @@ impl<'a> ObjectStorageHandler<'a> {
     /// `POST /1.3/object-storage-2/{uuid}/users`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/#create-user)
-    pub async fn create_user(
-        &self,
-        uuid: &str,
-        req: CreateUserRequest,
-    ) -> Result<User, Error> {
+    pub async fn create_user(&self, uuid: &str, req: CreateUserRequest) -> Result<User, Error> {
         self.client
             .post(&format!("/1.3/object-storage-2/{uuid}/users"), &req)
             .await
@@ -156,9 +152,7 @@ impl<'a> ObjectStorageHandler<'a> {
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/#delete-user)
     pub async fn delete_user(&self, uuid: &str, username: &str) -> Result<(), Error> {
         self.client
-            .delete(&format!(
-                "/1.3/object-storage-2/{uuid}/users/{username}"
-            ))
+            .delete(&format!("/1.3/object-storage-2/{uuid}/users/{username}"))
             .await
     }
 
@@ -359,11 +353,7 @@ impl<'a> ObjectStorageHandler<'a> {
     /// `POST /1.3/object-storage-2/{uuid}/networks`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/)
-    pub async fn create_network(
-        &self,
-        uuid: &str,
-        req: NetworkInput,
-    ) -> Result<Network, Error> {
+    pub async fn create_network(&self, uuid: &str, req: NetworkInput) -> Result<Network, Error> {
         self.client
             .post(&format!("/1.3/object-storage-2/{uuid}/networks"), &req)
             .await
@@ -467,11 +457,7 @@ impl<'a> ObjectStorageHandler<'a> {
     /// `DELETE /1.3/object-storage-2/{uuid}/custom-domains/{domain_name}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/#delete-custom-domain)
-    pub async fn delete_custom_domain(
-        &self,
-        uuid: &str,
-        domain_name: &str,
-    ) -> Result<(), Error> {
+    pub async fn delete_custom_domain(&self, uuid: &str, domain_name: &str) -> Result<(), Error> {
         self.client
             .delete(&format!(
                 "/1.3/object-storage-2/{uuid}/custom-domains/{domain_name}"
