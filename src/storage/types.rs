@@ -43,6 +43,18 @@ pub enum Access {
     Private,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum StorageImportState {
+    Prepared,
+    Pending,
+    Importing,
+    Completed,
+    Failed,
+    Cancelling,
+    Cancelled,
+}
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 #[serde_as]
@@ -139,7 +151,7 @@ pub struct ImportDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_location: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<String>,
+    pub state: Option<StorageImportState>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub written_bytes: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -174,6 +186,8 @@ pub struct CreateRequest {
     pub backup_rule: Option<BackupRule>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub encrypted: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub labels: Option<Vec<crate::types::common::Label>>,
 }
 
 #[serde_as]
@@ -186,6 +200,8 @@ pub struct ModifyRequest {
     pub size: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub backup_rule: Option<BackupRule>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub labels: Option<Vec<crate::types::common::Label>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

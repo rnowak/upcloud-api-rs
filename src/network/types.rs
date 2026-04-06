@@ -170,13 +170,20 @@ pub struct AssignInterfaceIpRequest {
 
 // ─── Router types ─────────────────────────────────────────────────────────────
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum RouterStaticRouteType {
+    Service,
+    User,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct StaticRoute {
     pub name: Option<String>,
     pub route: String,
     pub nexthop: String,
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub route_type: Option<String>,
+    pub route_type: Option<RouterStaticRouteType>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -233,6 +240,11 @@ pub enum PeeringState {
     Provisioning,
     Disabled,
     Error,
+    ConflictSubnet,
+    MissingLocalRouter,
+    MissingPeerRouter,
+    DeletedPeerNetwork,
+    PeerDisabled,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -286,4 +298,10 @@ pub struct ModifyPeeringRequest {
     pub configured_status: Option<PeeringConfiguredStatus>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum NetworkPeeringIPNetworkFamily {
+    IPv4,
+    IPv6,
 }

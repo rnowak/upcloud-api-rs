@@ -82,6 +82,21 @@ pub enum StorageDeviceType {
     Cdrom,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum RemoteAccessType {
+    Vnc,
+    Spice,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum PasswordDelivery {
+    None,
+    Email,
+    Sms,
+}
+
 // ─── Sub-types ────────────────────────────────────────────────────────────────
 
 #[serde_as]
@@ -371,7 +386,7 @@ pub struct CreateRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub login_user: Option<LoginUser>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub password_delivery: Option<String>,
+    pub password_delivery: Option<PasswordDelivery>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub firewall: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -398,7 +413,7 @@ pub struct CreateRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_access_enabled: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub remote_access_type: Option<String>,
+    pub remote_access_type: Option<RemoteAccessType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_access_password: Option<String>,
 }
@@ -511,7 +526,7 @@ pub struct ModifyRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_access_enabled: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub remote_access_type: Option<String>,
+    pub remote_access_type: Option<RemoteAccessType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_access_password: Option<String>,
 }

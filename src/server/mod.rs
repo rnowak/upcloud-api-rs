@@ -538,6 +538,21 @@ impl<'a> ServerHandler<'a> {
 
     // ─── Polling helpers ──────────────────────────────────────────────────────
 
+    // ─── Server Configurations ────────────────────────────────────────────
+
+    /// Returns a list of available server configurations (CPU/memory combinations).
+    ///
+    /// `GET /1.3/server_size`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#list-server-configurations)
+    pub async fn list_configurations(
+        &self,
+    ) -> Result<Vec<crate::plan::ServerConfiguration>, Error> {
+        let resp: ServerConfigurationListResponse =
+            self.client.get("/1.3/server_size").await?;
+        Ok(resp.server_sizes.server_size)
+    }
+
     /// Polls until a server reaches the desired state or the timeout expires.
     pub async fn wait_for_state(
         &self,
@@ -607,6 +622,16 @@ struct ServerGroupListWrapper {
 #[derive(Debug, Deserialize)]
 struct ServerGroupResponse {
     server_group: Group,
+}
+
+#[derive(Debug, Deserialize)]
+struct ServerConfigurationListResponse {
+    server_sizes: ServerConfigurationWrapper,
+}
+
+#[derive(Debug, Deserialize)]
+struct ServerConfigurationWrapper {
+    server_size: Vec<crate::plan::ServerConfiguration>,
 }
 
 #[cfg(test)]

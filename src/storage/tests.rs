@@ -1191,7 +1191,7 @@ fn deserialize_create_import_http_response() {
         serde_json::from_str(CREATE_IMPORT_HTTP_RESPONSE_JSON).unwrap();
     let si = resp.storage_import;
     assert_eq!(si.source.as_deref(), Some("http_import"));
-    assert_eq!(si.state.as_deref(), Some("prepared"));
+    assert_eq!(si.state, Some(StorageImportState::Prepared));
     assert_eq!(
         si.uuid.as_deref(),
         Some("07a6c9a3-300e-4d0e-b935-624f3dbdff3f")
@@ -1235,7 +1235,7 @@ fn deserialize_create_import_direct_response() {
     assert_eq!(si.md5sum.as_deref(), Some(""));
     assert_eq!(si.read_bytes, Some(0));
     assert_eq!(si.sha256sum.as_deref(), Some(""));
-    assert_eq!(si.state.as_deref(), Some("prepared"));
+    assert_eq!(si.state, Some(StorageImportState::Prepared));
     assert_eq!(
         si.uuid.as_deref(),
         Some("07a6c9a3-300e-4d0e-b935-624f3dbdff3f")
@@ -1269,7 +1269,7 @@ fn deserialize_get_import_details_response() {
     let resp: StorageImportResponse =
         serde_json::from_str(GET_IMPORT_DETAILS_RESPONSE_JSON).unwrap();
     let si = resp.storage_import;
-    assert_eq!(si.state.as_deref(), Some("pending"));
+    assert_eq!(si.state, Some(StorageImportState::Pending));
     assert_eq!(si.created.as_deref(), Some("2020-06-26T08:51:07Z"));
     assert_eq!(si.error_code.as_deref(), Some(""));
     assert_eq!(si.error_message.as_deref(), Some(""));
@@ -1317,7 +1317,7 @@ fn deserialize_cancel_import_response() {
     let resp: StorageImportResponse =
         serde_json::from_str(CANCEL_IMPORT_RESPONSE_JSON).unwrap();
     let si = resp.storage_import;
-    assert_eq!(si.state.as_deref(), Some("cancelling"));
+    assert_eq!(si.state, Some(StorageImportState::Cancelling));
     assert_eq!(si.client_content_length, Some(0));
     assert_eq!(si.client_content_type.as_deref(), Some(""));
     assert_eq!(si.completed.as_deref(), Some(""));

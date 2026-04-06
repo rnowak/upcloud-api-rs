@@ -749,7 +749,7 @@ fn deserialize_create_router_response() {
     let router = resp.router;
     assert_eq!(router.name, "Example router");
     assert_eq!(router.static_routes.len(), 1);
-    assert_eq!(router.static_routes[0].route_type.as_deref(), Some("user"));
+    assert_eq!(router.static_routes[0].route_type, Some(RouterStaticRouteType::User));
     assert_eq!(router.static_routes[0].route, "0.0.0.0/0");
     assert!(router.labels.as_ref().unwrap().is_empty());
     assert_eq!(router.uuid, "04c0df35-2658-4b0c-8ac7-962090f4e92a");
