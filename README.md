@@ -295,6 +295,8 @@ use upcloud_api::{Client, Error};
 
 match client.servers().get("nonexistent").await {
     Ok(server) => println!("Found: {}", server.title),
+    Err(ref e) if e.is_not_found() => eprintln!("Server not found"),
+    Err(ref e) if e.is_unauthorized() => eprintln!("Check your credentials"),
     Err(Error::Api(api_err)) => {
         eprintln!("UpCloud error {}: {} ({})", api_err.status, api_err.error_message, api_err.error_code);
     }
