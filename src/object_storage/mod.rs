@@ -638,7 +638,7 @@ impl<'a> ObjectStorageHandler<'a> {
         desired_state: OperationalState,
         timeout: std::time::Duration,
     ) -> Result<Service, Error> {
-        let desired_str = serde_json::to_value(&desired_state)
+        let desired_str = serde_json::to_value(desired_state)
             .ok()
             .and_then(|v| v.as_str().map(String::from));
         let start = std::time::Instant::now();

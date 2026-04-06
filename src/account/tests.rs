@@ -365,7 +365,7 @@ const MODIFY_ACCOUNT_JSON: &str = r#"{
 fn deserialize_modify_account_request() {
     #[derive(Debug, Deserialize)]
     struct Body {
-        account: UpdateAccountDetailsRequest,
+        account: ModifyAccountDetailsRequest,
     }
     let body: Body = serde_json::from_str(MODIFY_ACCOUNT_JSON).unwrap();
     let req = body.account;

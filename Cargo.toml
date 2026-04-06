@@ -2,7 +2,13 @@
 name = "upcloud-api-rs"
 version = "0.1.0"
 edition = "2024"
+rust-version = "1.85"
 description = "Unofficial Rust client library for the UpCloud API"
+license = "MIT"
+repository = "https://github.com/jzu822/upcloud-api-rs"
+keywords = ["upcloud", "cloud", "api", "sdk", "async"]
+categories = ["api-bindings", "web-programming::http-client"]
+readme = "README.md"
 
 [dependencies]
 tokio = { version = "1", features = ["full"] }

@@ -75,19 +75,19 @@ impl<'a> AccountHandler<'a> {
         Ok(resp.account)
     }
 
-    /// Updates account details.
+    /// Modifies account details.
     ///
     /// `PUT /1.3/account/details/{username}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/3-accounts/#modify-account-details)
-    pub async fn update_details(
+    pub async fn modify_details(
         &self,
         username: &str,
-        req: UpdateAccountDetailsRequest,
+        req: ModifyAccountDetailsRequest,
     ) -> Result<Account, Error> {
         #[derive(Serialize)]
         struct Body {
-            account: UpdateAccountDetailsRequest,
+            account: ModifyAccountDetailsRequest,
         }
         let resp: AccountResponse = self
             .client
@@ -116,19 +116,19 @@ impl<'a> AccountHandler<'a> {
         Ok(resp.account)
     }
 
-    /// Updates an existing subaccount.
+    /// Modifies an existing subaccount.
     ///
     /// `PUT /1.3/account/sub/{username}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/3-accounts/#modify-account-details)
-    pub async fn update_subaccount(
+    pub async fn modify_subaccount(
         &self,
         username: &str,
-        req: UpdateAccountDetailsRequest,
+        req: ModifyAccountDetailsRequest,
     ) -> Result<Account, Error> {
         #[derive(Serialize)]
         struct Body {
-            account: UpdateAccountDetailsRequest,
+            account: ModifyAccountDetailsRequest,
         }
         let resp: AccountResponse = self
             .client

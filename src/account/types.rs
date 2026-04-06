@@ -188,7 +188,7 @@ pub struct AccountEntry {
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct UpdateAccountDetailsRequest {
+pub struct ModifyAccountDetailsRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub first_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]

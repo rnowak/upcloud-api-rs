@@ -43,82 +43,102 @@ impl Client {
 
     // ─── Domain handlers ───────────────────────────────────────────────────
 
+    /// Account management — account details, subaccounts, API tokens, billing.
     pub fn account(&self) -> crate::account::AccountHandler<'_> {
         crate::account::AccountHandler::new(self)
     }
 
+    /// Audit log — query account-wide audit events.
     pub fn audit_log(&self) -> crate::audit_log::AuditLogHandler<'_> {
         crate::audit_log::AuditLogHandler::new(self)
     }
 
+    /// Managed file storage services, shares, and users.
     pub fn file_storage(&self) -> crate::file_storage::FileStorageHandler<'_> {
         crate::file_storage::FileStorageHandler::new(self)
     }
 
+    /// Network gateways — VPN connections, IPsec tunnels, and routes.
     pub fn gateway(&self) -> crate::gateway::GatewayHandler<'_> {
         crate::gateway::GatewayHandler::new(self)
     }
 
+    /// Dedicated hosts — private compute hardware.
     pub fn hosts(&self) -> crate::host::HostHandler<'_> {
         crate::host::HostHandler::new(self)
     }
 
+    /// IP address management — assign, modify, and release addresses.
     pub fn ip_addresses(&self) -> crate::ip_address::IpAddressHandler<'_> {
         crate::ip_address::IpAddressHandler::new(self)
     }
 
+    /// Managed Kubernetes — clusters, node groups, and plans.
     pub fn kubernetes(&self) -> crate::kubernetes::KubernetesHandler<'_> {
         crate::kubernetes::KubernetesHandler::new(self)
     }
 
+    /// Managed load balancers — backends, frontends, rules, TLS, and resolvers.
     pub fn load_balancer(&self) -> crate::load_balancer::LoadBalancerHandler<'_> {
         crate::load_balancer::LoadBalancerHandler::new(self)
     }
 
+    /// Managed databases — PostgreSQL, MySQL, Redis, OpenSearch.
     pub fn managed_database(&self) -> crate::managed_database::DatabaseHandler<'_> {
         crate::managed_database::DatabaseHandler::new(self)
     }
 
+    /// SDN networks, routers, and network peerings.
     pub fn networks(&self) -> crate::network::NetworkHandler<'_> {
         crate::network::NetworkHandler::new(self)
     }
 
+    /// Managed S3-compatible object storage — services, buckets, users, policies.
     pub fn object_storage(&self) -> crate::object_storage::ObjectStorageHandler<'_> {
         crate::object_storage::ObjectStorageHandler::new(self)
     }
 
+    /// Partner API — manage partner accounts.
     pub fn partners(&self) -> crate::partner::PartnerHandler<'_> {
         crate::partner::PartnerHandler::new(self)
     }
 
+    /// Permission management — grant and revoke resource access.
     pub fn permissions(&self) -> crate::permission::PermissionHandler<'_> {
         crate::permission::PermissionHandler::new(self)
     }
 
+    /// Server plans and configurations.
     pub fn plans(&self) -> crate::plan::PlanHandler<'_> {
         crate::plan::PlanHandler::new(self)
     }
 
+    /// Zone pricing information.
     pub fn pricing(&self) -> crate::pricing::PricingHandler<'_> {
         crate::pricing::PricingHandler::new(self)
     }
 
+    /// Cloud servers — lifecycle, groups, firewall rules, and configuration.
     pub fn servers(&self) -> crate::server::ServerHandler<'_> {
         crate::server::ServerHandler::new(self)
     }
 
+    /// Block storage — disks, backups, templates, imports, and favorites.
     pub fn storages(&self) -> crate::storage::StorageHandler<'_> {
         crate::storage::StorageHandler::new(self)
     }
 
+    /// Server tags — create, assign, and remove tags.
     pub fn tags(&self) -> crate::tag::TagHandler<'_> {
         crate::tag::TagHandler::new(self)
     }
 
+    /// Available timezone identifiers.
     pub fn timezones(&self) -> crate::timezone::TimezoneHandler<'_> {
         crate::timezone::TimezoneHandler::new(self)
     }
 
+    /// Data center zones (availability regions).
     pub fn zones(&self) -> crate::zone::ZoneHandler<'_> {
         crate::zone::ZoneHandler::new(self)
     }
