@@ -360,9 +360,9 @@ impl ClientBuilder {
     ///
     /// ```rust,no_run
     /// use std::time::Duration;
-    /// use upcloud_api_rs::Client;
+    /// use upcloud_api::Client;
     ///
-    /// let http = upcloud_api_rs::reqwest::Client::builder()
+    /// let http = upcloud_api::reqwest::Client::builder()
     ///     .timeout(Duration::from_secs(120))
     ///     .build()
     ///     .unwrap();

@@ -1,11 +1,11 @@
 [package]
-name = "upcloud-api-rs"
+name = "upcloud-api"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.85"
 description = "Unofficial Rust API client / API bindings for the UpCloud API"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/rnowak/upcloud-api-rs"
+repository = "https://github.com/rnowak/upcloud-api"
 keywords = ["upcloud", "cloud", "api", "sdk", "async"]
 categories = ["api-bindings", "web-programming::http-client"]
 readme = "README.md"

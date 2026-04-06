@@ -841,8 +841,8 @@ impl std::fmt::Display for OrderBy {
 /// # Examples
 ///
 /// ```
-/// use upcloud_api_rs::server::{ListParams, State, OrderBy};
-/// use upcloud_api_rs::types::common::SortOrder;
+/// use upcloud_api::server::{ListParams, State, OrderBy};
+/// use upcloud_api::types::common::SortOrder;
 ///
 /// let params = ListParams::new()
 ///     .state(State::Started)

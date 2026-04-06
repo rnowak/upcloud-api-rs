@@ -3,7 +3,7 @@
 //! Usage:
 //!   UPCLOUD_TOKEN=ucat_... cargo run --example list_servers
 
-use upcloud_api_rs::Client;
+use upcloud_api::Client;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

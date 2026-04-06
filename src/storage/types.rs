@@ -341,7 +341,7 @@ pub struct ResizeFilesystemBackup {
 /// # Examples
 ///
 /// ```
-/// use upcloud_api_rs::storage::ListParams;
+/// use upcloud_api::storage::ListParams;
 ///
 /// let params = ListParams::new()
 ///     .label("env", "prod")
