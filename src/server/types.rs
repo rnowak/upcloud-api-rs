@@ -806,3 +806,25 @@ impl ListParams {
         pairs
     }
 }
+
+// ─── Device Availability ──────────────────────────────────────────────────────
+
+/// Availability of devices (e.g. GPUs) across zones.
+///
+/// The outer map key is the zone ID (e.g. `"fi-hel1"`).
+pub type DevicesAvailability = std::collections::HashMap<String, Devices>;
+
+/// Available device plans within a zone.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Devices {
+    /// GPU plans keyed by plan name (e.g. `"NVIDIA A100"`).
+    #[serde(default)]
+    pub gpu_plans: std::collections::HashMap<String, DeviceAvailability>,
+}
+
+/// Availability count for a single device plan.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DeviceAvailability {
+    #[serde(default)]
+    pub amount: i64,
+}

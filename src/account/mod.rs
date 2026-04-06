@@ -195,6 +195,22 @@ impl<'a> AccountHandler<'a> {
             .delete(&format!("/1.3/account/tokens/{id}"))
             .await
     }
+
+    // ─── Billing & Statistics ─────────────────────────────────────────────────
+
+    /// Returns the billing summary for a given month.
+    ///
+    /// `GET /1.3/account/billing/summary/{year_month}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/3-accounts/#billing-summary)
+    pub async fn get_billing_summary(
+        &self,
+        year_month: &str,
+    ) -> Result<BillingSummaryResponse, Error> {
+        self.client
+            .get(&format!("/1.3/account/billing/summary/{year_month}"))
+            .await
+    }
 }
 
 #[cfg(test)]

@@ -275,8 +275,8 @@ fn deserialize_get_account_details() {
     assert_eq!(acct.account_type.as_deref(), Some("sub"));
     assert_eq!(acct.first_name.as_deref(), Some("first"));
     assert_eq!(acct.timezone.as_deref(), Some("UTC"));
-    assert_eq!(acct.allow_api.as_deref(), Some("yes"));
-    assert_eq!(acct.allow_gui.as_deref(), Some("no"));
+    assert_eq!(acct.allow_api, Some(true));
+    assert_eq!(acct.allow_gui, Some(false));
     assert_eq!(acct.enable_3rd_party_services.as_deref(), Some("yes"));
 
     let servers = acct.server_access.unwrap();
@@ -371,8 +371,8 @@ fn deserialize_modify_account_request() {
     let req = body.account;
     assert_eq!(req.first_name.as_deref(), Some("first"));
     assert_eq!(req.timezone.as_deref(), Some("Europe/Helsinki"));
-    assert_eq!(req.allow_api.as_deref(), Some("yes"));
-    assert_eq!(req.allow_gui.as_deref(), Some("no"));
+    assert_eq!(req.allow_api, Some(true));
+    assert_eq!(req.allow_gui, Some(false));
 
     let roles = req.roles.unwrap();
     assert_eq!(roles.role.len(), 3);
@@ -446,8 +446,8 @@ fn deserialize_add_subaccount_request() {
     assert_eq!(req.password, "mysecr3tPassword");
     assert_eq!(req.first_name.as_deref(), Some("first"));
     assert_eq!(req.timezone.as_deref(), Some("Europe/Helsinki"));
-    assert_eq!(req.allow_gui.as_deref(), Some("no"));
-    assert_eq!(req.allow_api.as_deref(), Some("yes"));
+    assert_eq!(req.allow_gui, Some(false));
+    assert_eq!(req.allow_api, Some(true));
 
     let roles = req.roles.unwrap();
     assert_eq!(roles.role.len(), 3);

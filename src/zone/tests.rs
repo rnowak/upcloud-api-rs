@@ -31,16 +31,16 @@ fn deserialize_zone_list() {
 
     assert_eq!(zones[0].id, "de-fra1");
     assert_eq!(zones[0].description, "Frankfurt #1");
-    assert_eq!(zones[0].public, "yes");
+    assert!(zones[0].public);
     assert!(zones[0].parent_zone.is_none());
 
     assert_eq!(zones[1].id, "fi-hel1");
     assert_eq!(zones[1].description, "Helsinki #1");
-    assert_eq!(zones[1].public, "yes");
+    assert!(zones[1].public);
     assert!(zones[1].parent_zone.is_none());
 
     assert_eq!(zones[2].id, "fi-fake-priv-cloud");
     assert_eq!(zones[2].description, "Fake private cloud");
-    assert_eq!(zones[2].public, "no");
+    assert!(!zones[2].public);
     assert_eq!(zones[2].parent_zone.as_deref(), Some("fi-hel1"));
 }

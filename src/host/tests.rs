@@ -80,7 +80,7 @@ fn deserialize_host_list() {
     assert_eq!(hosts[0].id, 7653311107);
     assert_eq!(hosts[0].description, "My Host #1");
     assert_eq!(hosts[0].zone, "private-zone-id");
-    assert_eq!(hosts[0].windows_enabled, "no");
+    assert!(!hosts[0].windows_enabled);
     assert_eq!(hosts[0].stats.stat.len(), 2);
     assert_eq!(hosts[0].stats.stat[0].name, "cpu_idle");
     assert_eq!(
@@ -99,7 +99,7 @@ fn deserialize_host_list() {
     assert_eq!(hosts[1].id, 8055964291);
     assert_eq!(hosts[1].description, "My Host #2");
     assert_eq!(hosts[1].zone, "private-zone-id");
-    assert_eq!(hosts[1].windows_enabled, "no");
+    assert!(!hosts[1].windows_enabled);
     assert_eq!(hosts[1].stats.stat.len(), 2);
     assert_eq!(hosts[1].stats.stat[0].name, "cpu_idle");
     assert_eq!(
@@ -122,7 +122,7 @@ fn deserialize_host_detail() {
     assert_eq!(host.id, 7653311107);
     assert_eq!(host.description, "My Host #1");
     assert_eq!(host.zone, "private-zone-id");
-    assert_eq!(host.windows_enabled, "no");
+    assert!(!host.windows_enabled);
     assert_eq!(host.stats.stat.len(), 2);
     assert_eq!(host.stats.stat[0].name, "cpu_idle");
     assert_eq!(
@@ -188,7 +188,7 @@ fn deserialize_modify_host_response() {
     assert_eq!(host.id, 7653311107);
     assert_eq!(host.description, "My New Host");
     assert_eq!(host.zone, "private-zone-id");
-    assert_eq!(host.windows_enabled, "no");
+    assert!(!host.windows_enabled);
     assert_eq!(host.stats.stat.len(), 2);
     assert_eq!(host.stats.stat[0].name, "cpu_idle");
     assert_eq!(

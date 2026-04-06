@@ -346,6 +346,13 @@ impl<'a> ServerHandler<'a> {
             .await
     }
 
+    /// Returns device availability across zones (e.g. GPU plans).
+    ///
+    /// `GET /1.3/device/availability`
+    pub async fn list_device_availability(&self) -> Result<DevicesAvailability, Error> {
+        self.client.get("/1.3/device/availability").await
+    }
+
     // ─── Firewall rules ───────────────────────────────────────────────────────
 
     /// Returns all firewall rules for a server.

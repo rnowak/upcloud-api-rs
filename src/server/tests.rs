@@ -2128,3 +2128,30 @@ fn list_params_full_combination() {
         ("offset", "20".to_string()),
     ]);
 }
+
+// ─── Device availability ─────────────────────────────────────────────────
+
+const DEVICE_AVAILABILITY_JSON: &str = r#"{
+  "fi-hel1": {
+    "gpu_plans": {
+      "NVIDIA A100": { "amount": 5 },
+      "NVIDIA T4": { "amount": 10 }
+    }
+  },
+  "de-fra1": {
+    "gpu_plans": {
+      "NVIDIA A100": { "amount": 3 }
+    }
+  }
+}"#;
+
+#[test]
+fn deserialize_device_availability() {
+    let avail: DevicesAvailability = serde_json::from_str(DEVICE_AVAILABILITY_JSON).unwrap();
+    assert_eq!(avail.len(), 2);
+    assert!(avail.contains_key("fi-hel1"));
+    assert!(avail.contains_key("de-fra1"));
+    assert_eq!(avail["fi-hel1"].gpu_plans["NVIDIA A100"].amount, 5);
+    assert_eq!(avail["fi-hel1"].gpu_plans["NVIDIA T4"].amount, 10);
+    assert_eq!(avail["de-fra1"].gpu_plans["NVIDIA A100"].amount, 3);
+}

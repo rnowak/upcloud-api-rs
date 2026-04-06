@@ -1,11 +1,31 @@
 //! Types for accounts, subaccounts, and API tokens.
 
 use serde::{Deserialize, Serialize};
+use serde_with::serde_as;
 
-use crate::types::common::Label;
+use crate::types::common::{Label, YesNo};
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+/// The type of an UpCloud account.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum AccountType {
+    Main,
+    Sub,
+}
+
+/// The type of an API token.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum TokenType {
+    Pat,
+    Workspace,
+}
 
 // ─── Account types ────────────────────────────────────────────────────────────
 
+#[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Account {
     pub username: String,
@@ -61,12 +81,16 @@ pub struct Account {
     pub timezone: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub campaigns: Option<serde_json::Value>,
+    #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub allow_api: Option<String>,
+    pub allow_api: Option<bool>,
+    #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub allow_gui: Option<String>,
+    pub allow_gui: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enable_3rd_party_services: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub simple_backup: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<Label>>,
 }
@@ -162,6 +186,7 @@ pub struct AccountEntry {
     pub labels: Option<Vec<Label>>,
 }
 
+#[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct UpdateAccountDetailsRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -196,10 +221,12 @@ pub struct UpdateAccountDetailsRequest {
     pub roles: Option<AccountRoles>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub timezone: Option<String>,
+    #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub allow_api: Option<String>,
+    pub allow_api: Option<bool>,
+    #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub allow_gui: Option<String>,
+    pub allow_gui: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enable_3rd_party_services: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -216,6 +243,7 @@ pub struct UpdateAccountDetailsRequest {
     pub labels: Option<Vec<Label>>,
 }
 
+#[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct CreateSubaccountRequest {
     pub username: String,
@@ -260,10 +288,12 @@ pub struct CreateSubaccountRequest {
     pub vat_number: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub timezone: Option<String>,
+    #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub allow_api: Option<String>,
+    pub allow_api: Option<bool>,
+    #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub allow_gui: Option<String>,
+    pub allow_gui: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tag_access: Option<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
