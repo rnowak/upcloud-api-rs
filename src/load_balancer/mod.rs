@@ -189,6 +189,24 @@ impl<'a> LoadBalancerHandler<'a> {
             .await
     }
 
+    /// Returns details for a specific backend member.
+    ///
+    /// `GET /1.3/load-balancer/{uuid}/backends/{backend_name}/members/{member_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#get-member-details)
+    pub async fn get_backend_member(
+        &self,
+        lb_uuid: &str,
+        backend_name: &str,
+        member_name: &str,
+    ) -> Result<BackendMember, Error> {
+        self.client
+            .get(&format!(
+                "/1.3/load-balancer/{lb_uuid}/backends/{backend_name}/members/{member_name}"
+            ))
+            .await
+    }
+
     /// Creates a member in a backend.
     ///
     /// `POST /1.3/load-balancer/{uuid}/backends/{name}/members`
@@ -203,6 +221,28 @@ impl<'a> LoadBalancerHandler<'a> {
         self.client
             .post(
                 &format!("/1.3/load-balancer/{lb_uuid}/backends/{backend_name}/members"),
+                &req,
+            )
+            .await
+    }
+
+    /// Modifies a backend member.
+    ///
+    /// `PATCH /1.3/load-balancer/{uuid}/backends/{backend_name}/members/{member_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#modify-member)
+    pub async fn modify_backend_member(
+        &self,
+        lb_uuid: &str,
+        backend_name: &str,
+        member_name: &str,
+        req: ModifyBackendMemberRequest,
+    ) -> Result<BackendMember, Error> {
+        self.client
+            .patch(
+                &format!(
+                    "/1.3/load-balancer/{lb_uuid}/backends/{backend_name}/members/{member_name}"
+                ),
                 &req,
             )
             .await
@@ -239,6 +279,17 @@ impl<'a> LoadBalancerHandler<'a> {
             .await
     }
 
+    /// Returns details for a specific frontend.
+    ///
+    /// `GET /1.3/load-balancer/{uuid}/frontends/{name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#get-frontend-details)
+    pub async fn get_frontend(&self, lb_uuid: &str, name: &str) -> Result<Frontend, Error> {
+        self.client
+            .get(&format!("/1.3/load-balancer/{lb_uuid}/frontends/{name}"))
+            .await
+    }
+
     /// Creates a frontend for a load balancer.
     ///
     /// `POST /1.3/load-balancer/{uuid}/frontends`
@@ -251,6 +302,25 @@ impl<'a> LoadBalancerHandler<'a> {
     ) -> Result<Frontend, Error> {
         self.client
             .post(&format!("/1.3/load-balancer/{lb_uuid}/frontends"), &req)
+            .await
+    }
+
+    /// Modifies a frontend.
+    ///
+    /// `PATCH /1.3/load-balancer/{uuid}/frontends/{name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#modify-frontend)
+    pub async fn modify_frontend(
+        &self,
+        lb_uuid: &str,
+        name: &str,
+        req: ModifyFrontendRequest,
+    ) -> Result<Frontend, Error> {
+        self.client
+            .patch(
+                &format!("/1.3/load-balancer/{lb_uuid}/frontends/{name}"),
+                &req,
+            )
             .await
     }
 
@@ -267,6 +337,41 @@ impl<'a> LoadBalancerHandler<'a> {
 
     // ─── Frontend rules ───────────────────────────────────────────────────────
 
+    /// Returns a list of rules for a frontend.
+    ///
+    /// `GET /1.3/load-balancer/{uuid}/frontends/{frontend_name}/rules`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#list-rules)
+    pub async fn list_frontend_rules(
+        &self,
+        lb_uuid: &str,
+        frontend_name: &str,
+    ) -> Result<Vec<FrontendRule>, Error> {
+        self.client
+            .get(&format!(
+                "/1.3/load-balancer/{lb_uuid}/frontends/{frontend_name}/rules"
+            ))
+            .await
+    }
+
+    /// Returns details for a specific frontend rule.
+    ///
+    /// `GET /1.3/load-balancer/{uuid}/frontends/{frontend_name}/rules/{rule_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#get-rule-details)
+    pub async fn get_frontend_rule(
+        &self,
+        lb_uuid: &str,
+        frontend_name: &str,
+        rule_name: &str,
+    ) -> Result<FrontendRule, Error> {
+        self.client
+            .get(&format!(
+                "/1.3/load-balancer/{lb_uuid}/frontends/{frontend_name}/rules/{rule_name}"
+            ))
+            .await
+    }
+
     /// Creates a rule for a frontend.
     ///
     /// `POST /1.3/load-balancer/{uuid}/frontends/{name}/rules`
@@ -281,6 +386,50 @@ impl<'a> LoadBalancerHandler<'a> {
         self.client
             .post(
                 &format!("/1.3/load-balancer/{lb_uuid}/frontends/{frontend_name}/rules"),
+                &req,
+            )
+            .await
+    }
+
+    /// Modifies a frontend rule.
+    ///
+    /// `PATCH /1.3/load-balancer/{uuid}/frontends/{frontend_name}/rules/{rule_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#modify-rule)
+    pub async fn modify_frontend_rule(
+        &self,
+        lb_uuid: &str,
+        frontend_name: &str,
+        rule_name: &str,
+        req: ModifyFrontendRuleRequest,
+    ) -> Result<FrontendRule, Error> {
+        self.client
+            .patch(
+                &format!(
+                    "/1.3/load-balancer/{lb_uuid}/frontends/{frontend_name}/rules/{rule_name}"
+                ),
+                &req,
+            )
+            .await
+    }
+
+    /// Replaces a frontend rule.
+    ///
+    /// `PUT /1.3/load-balancer/{uuid}/frontends/{frontend_name}/rules/{rule_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#replace-rule)
+    pub async fn replace_frontend_rule(
+        &self,
+        lb_uuid: &str,
+        frontend_name: &str,
+        rule_name: &str,
+        req: ReplaceFrontendRuleRequest,
+    ) -> Result<FrontendRule, Error> {
+        self.client
+            .put(
+                &format!(
+                    "/1.3/load-balancer/{lb_uuid}/frontends/{frontend_name}/rules/{rule_name}"
+                ),
                 &req,
             )
             .await
@@ -317,6 +466,17 @@ impl<'a> LoadBalancerHandler<'a> {
             .await
     }
 
+    /// Returns details for a specific resolver.
+    ///
+    /// `GET /1.3/load-balancer/{uuid}/resolvers/{name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#get-resolver-details)
+    pub async fn get_resolver(&self, lb_uuid: &str, name: &str) -> Result<Resolver, Error> {
+        self.client
+            .get(&format!("/1.3/load-balancer/{lb_uuid}/resolvers/{name}"))
+            .await
+    }
+
     /// Creates a resolver.
     ///
     /// `POST /1.3/load-balancer/{uuid}/resolvers`
@@ -332,6 +492,25 @@ impl<'a> LoadBalancerHandler<'a> {
             .await
     }
 
+    /// Modifies a resolver.
+    ///
+    /// `PATCH /1.3/load-balancer/{uuid}/resolvers/{name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#modify-resolver)
+    pub async fn modify_resolver(
+        &self,
+        lb_uuid: &str,
+        name: &str,
+        req: ModifyResolverRequest,
+    ) -> Result<Resolver, Error> {
+        self.client
+            .patch(
+                &format!("/1.3/load-balancer/{lb_uuid}/resolvers/{name}"),
+                &req,
+            )
+            .await
+    }
+
     /// Deletes a resolver.
     ///
     /// `DELETE /1.3/load-balancer/{uuid}/resolvers/{name}`
@@ -343,7 +522,42 @@ impl<'a> LoadBalancerHandler<'a> {
             .await
     }
 
-    // ─── TLS configs ─────────────────────────────────────────────────────────
+    // ─── Backend TLS configs ─────────────────────────────────────────────────
+
+    /// Returns a list of TLS configs for a backend.
+    ///
+    /// `GET /1.3/load-balancer/{uuid}/backends/{backend_name}/tls-configs`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#list-backend-tls-configs)
+    pub async fn list_backend_tls_configs(
+        &self,
+        lb_uuid: &str,
+        backend_name: &str,
+    ) -> Result<Vec<TLSConfig>, Error> {
+        self.client
+            .get(&format!(
+                "/1.3/load-balancer/{lb_uuid}/backends/{backend_name}/tls-configs"
+            ))
+            .await
+    }
+
+    /// Returns details for a specific backend TLS config.
+    ///
+    /// `GET /1.3/load-balancer/{uuid}/backends/{backend_name}/tls-configs/{config_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#get-backend-tls-config-details)
+    pub async fn get_backend_tls_config(
+        &self,
+        lb_uuid: &str,
+        backend_name: &str,
+        config_name: &str,
+    ) -> Result<TLSConfig, Error> {
+        self.client
+            .get(&format!(
+                "/1.3/load-balancer/{lb_uuid}/backends/{backend_name}/tls-configs/{config_name}"
+            ))
+            .await
+    }
 
     /// Creates a TLS config for a backend.
     ///
@@ -364,6 +578,61 @@ impl<'a> LoadBalancerHandler<'a> {
             .await
     }
 
+    /// Deletes a backend TLS config.
+    ///
+    /// `DELETE /1.3/load-balancer/{uuid}/backends/{backend_name}/tls-configs/{config_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#delete-backend-tls-config)
+    pub async fn delete_backend_tls_config(
+        &self,
+        lb_uuid: &str,
+        backend_name: &str,
+        config_name: &str,
+    ) -> Result<(), Error> {
+        self.client
+            .delete(&format!(
+                "/1.3/load-balancer/{lb_uuid}/backends/{backend_name}/tls-configs/{config_name}"
+            ))
+            .await
+    }
+
+    // ─── Frontend TLS configs ─────────────────────────────────────────────────
+
+    /// Returns a list of TLS configs for a frontend.
+    ///
+    /// `GET /1.3/load-balancer/{uuid}/frontends/{frontend_name}/tls-configs`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#list-frontend-tls-configs)
+    pub async fn list_frontend_tls_configs(
+        &self,
+        lb_uuid: &str,
+        frontend_name: &str,
+    ) -> Result<Vec<TLSConfig>, Error> {
+        self.client
+            .get(&format!(
+                "/1.3/load-balancer/{lb_uuid}/frontends/{frontend_name}/tls-configs"
+            ))
+            .await
+    }
+
+    /// Returns details for a specific frontend TLS config.
+    ///
+    /// `GET /1.3/load-balancer/{uuid}/frontends/{frontend_name}/tls-configs/{config_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#get-frontend-tls-config-details)
+    pub async fn get_frontend_tls_config(
+        &self,
+        lb_uuid: &str,
+        frontend_name: &str,
+        config_name: &str,
+    ) -> Result<TLSConfig, Error> {
+        self.client
+            .get(&format!(
+                "/1.3/load-balancer/{lb_uuid}/frontends/{frontend_name}/tls-configs/{config_name}"
+            ))
+            .await
+    }
+
     /// Creates a TLS config for a frontend.
     ///
     /// `POST /1.3/load-balancer/{uuid}/frontends/{name}/tls-configs`
@@ -378,6 +647,134 @@ impl<'a> LoadBalancerHandler<'a> {
         self.client
             .post(
                 &format!("/1.3/load-balancer/{lb_uuid}/frontends/{frontend_name}/tls-configs"),
+                &req,
+            )
+            .await
+    }
+
+    /// Deletes a frontend TLS config.
+    ///
+    /// `DELETE /1.3/load-balancer/{uuid}/frontends/{frontend_name}/tls-configs/{config_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#delete-frontend-tls-config)
+    pub async fn delete_frontend_tls_config(
+        &self,
+        lb_uuid: &str,
+        frontend_name: &str,
+        config_name: &str,
+    ) -> Result<(), Error> {
+        self.client
+            .delete(&format!(
+                "/1.3/load-balancer/{lb_uuid}/frontends/{frontend_name}/tls-configs/{config_name}"
+            ))
+            .await
+    }
+
+    // ─── Certificate bundles ──────────────────────────────────────────────────
+
+    /// Returns a list of certificate bundles for a load balancer.
+    ///
+    /// `GET /1.3/load-balancer/{uuid}/certificate-bundles`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#list-certificate-bundles)
+    pub async fn list_certificate_bundles(
+        &self,
+        lb_uuid: &str,
+    ) -> Result<Vec<CertificateBundle>, Error> {
+        self.client
+            .get(&format!(
+                "/1.3/load-balancer/{lb_uuid}/certificate-bundles"
+            ))
+            .await
+    }
+
+    /// Returns details for a specific certificate bundle.
+    ///
+    /// `GET /1.3/load-balancer/{uuid}/certificate-bundles/{id}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#get-certificate-bundle-details)
+    pub async fn get_certificate_bundle(
+        &self,
+        lb_uuid: &str,
+        id: &str,
+    ) -> Result<CertificateBundle, Error> {
+        self.client
+            .get(&format!(
+                "/1.3/load-balancer/{lb_uuid}/certificate-bundles/{id}"
+            ))
+            .await
+    }
+
+    /// Creates a certificate bundle for a load balancer.
+    ///
+    /// `POST /1.3/load-balancer/{uuid}/certificate-bundles`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#create-certificate-bundle)
+    pub async fn create_certificate_bundle(
+        &self,
+        lb_uuid: &str,
+        req: CreateCertificateBundleRequest,
+    ) -> Result<CertificateBundle, Error> {
+        self.client
+            .post(
+                &format!("/1.3/load-balancer/{lb_uuid}/certificate-bundles"),
+                &req,
+            )
+            .await
+    }
+
+    /// Modifies a certificate bundle.
+    ///
+    /// `PATCH /1.3/load-balancer/{uuid}/certificate-bundles/{id}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#modify-certificate-bundle)
+    pub async fn modify_certificate_bundle(
+        &self,
+        lb_uuid: &str,
+        id: &str,
+        req: ModifyCertificateBundleRequest,
+    ) -> Result<CertificateBundle, Error> {
+        self.client
+            .patch(
+                &format!("/1.3/load-balancer/{lb_uuid}/certificate-bundles/{id}"),
+                &req,
+            )
+            .await
+    }
+
+    /// Deletes a certificate bundle.
+    ///
+    /// `DELETE /1.3/load-balancer/{uuid}/certificate-bundles/{id}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#delete-certificate-bundle)
+    pub async fn delete_certificate_bundle(
+        &self,
+        lb_uuid: &str,
+        id: &str,
+    ) -> Result<(), Error> {
+        self.client
+            .delete(&format!(
+                "/1.3/load-balancer/{lb_uuid}/certificate-bundles/{id}"
+            ))
+            .await
+    }
+
+    // ─── Networks ─────────────────────────────────────────────────────────────
+
+    /// Modifies a load balancer network.
+    ///
+    /// `PATCH /1.3/load-balancer/{uuid}/networks/{network_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/17-managed-loadbalancer/#modify-network)
+    pub async fn modify_network(
+        &self,
+        lb_uuid: &str,
+        network_name: &str,
+        req: ModifyLoadBalancerNetworkRequest,
+    ) -> Result<Network, Error> {
+        self.client
+            .patch(
+                &format!("/1.3/load-balancer/{lb_uuid}/networks/{network_name}"),
                 &req,
             )
             .await

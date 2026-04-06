@@ -95,9 +95,54 @@ pub struct LoadBalancer {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maintenance_time: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub nodes: Option<serde_json::Value>,
+    pub nodes: Option<Vec<Node>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip_addresses: Option<serde_json::Value>,
+    pub ip_addresses: Option<Vec<IPAddress>>,
+}
+
+// ─── Node ─────────────────────────────────────────────────────────────────
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct NodeNetwork {
+    pub name: String,
+    #[serde(rename = "type")]
+    pub network_type: String,
+    #[serde(default)]
+    pub ip_addresses: Vec<IPAddress>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Node {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub operational_state: Option<String>,
+    #[serde(default)]
+    pub networks: Vec<NodeNetwork>,
+}
+
+// ─── Certificate Bundle ───────────────────────────────────────────────────
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CertificateBundle {
+    pub uuid: String,
+    pub name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub certificate: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub intermediates: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub key_type: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub operational_state: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub not_after: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub not_before: Option<String>,
+    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
+    pub bundle_type: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created_at: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub updated_at: Option<String>,
 }
 
 // ─── Backend ─────────────────────────────────────────────────────────────────
@@ -347,4 +392,111 @@ pub struct CreateTLSConfigRequest {
     pub private_key: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name_match: Option<Vec<String>>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct ModifyFrontendRequest {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_backend: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mode: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub networks: Option<Vec<FrontendNetwork>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub properties: Option<serde_json::Value>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct ModifyBackendMemberRequest {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub weight: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_sessions: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub port: Option<u16>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct ModifyResolverRequest {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nameservers: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub retries: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timeout: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timeout_retry: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cache_valid: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cache_invalid: Option<u32>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct ModifyFrontendRuleRequest {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub priority: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub matchers: Option<Vec<serde_json::Value>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub actions: Option<Vec<serde_json::Value>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub matching_condition: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ReplaceFrontendRuleRequest {
+    pub name: String,
+    pub priority: u32,
+    #[serde(default)]
+    pub matchers: Vec<serde_json::Value>,
+    #[serde(default)]
+    pub actions: Vec<serde_json::Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub matching_condition: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CreateCertificateBundleRequest {
+    pub name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub certificate: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub intermediates: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub private_key: Option<String>,
+    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
+    pub bundle_type: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct ModifyCertificateBundleRequest {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub certificate: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub intermediates: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub private_key: Option<String>,
+    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
+    pub bundle_type: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct ModifyLoadBalancerNetworkRequest {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }

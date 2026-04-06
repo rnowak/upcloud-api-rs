@@ -1117,3 +1117,271 @@ fn deserialize_create_tls_config_request() {
     assert!(req.private_key.is_none());
     assert!(req.name_match.is_none());
 }
+
+// ─── Test 23: Certificate bundle deserialization ──────────────────────────
+
+#[test]
+fn deserialize_certificate_bundle() {
+    let json = r#"{
+        "uuid": "0aded5c1-c7a3-498a-b9c8-a871611c47a2",
+        "name": "example-cert",
+        "certificate": "-----BEGIN CERTIFICATE-----\nMIIB...\n-----END CERTIFICATE-----",
+        "intermediates": "-----BEGIN CERTIFICATE-----\nMIIC...\n-----END CERTIFICATE-----",
+        "key_type": "rsa",
+        "operational_state": "idle",
+        "not_after": "2025-12-31T23:59:59Z",
+        "not_before": "2023-01-01T00:00:00Z",
+        "type": "manual",
+        "created_at": "2023-06-01T10:00:00Z",
+        "updated_at": "2023-06-02T12:00:00Z"
+    }"#;
+    let cb: CertificateBundle = serde_json::from_str(json).unwrap();
+    assert_eq!(cb.uuid, "0aded5c1-c7a3-498a-b9c8-a871611c47a2");
+    assert_eq!(cb.name, "example-cert");
+    assert!(cb.certificate.is_some());
+    assert!(cb.intermediates.is_some());
+    assert_eq!(cb.key_type.as_deref(), Some("rsa"));
+    assert_eq!(cb.operational_state.as_deref(), Some("idle"));
+    assert_eq!(cb.not_after.as_deref(), Some("2025-12-31T23:59:59Z"));
+    assert_eq!(cb.not_before.as_deref(), Some("2023-01-01T00:00:00Z"));
+    assert_eq!(cb.bundle_type.as_deref(), Some("manual"));
+    assert_eq!(cb.created_at.as_deref(), Some("2023-06-01T10:00:00Z"));
+    assert_eq!(cb.updated_at.as_deref(), Some("2023-06-02T12:00:00Z"));
+}
+
+// ─── Test 24: Certificate bundle list deserialization ─────────────────────
+
+#[test]
+fn deserialize_certificate_bundle_list() {
+    let json = r#"[
+        {"uuid": "aaa-111", "name": "cert-a", "type": "manual"},
+        {"uuid": "bbb-222", "name": "cert-b", "type": "authority", "key_type": "ecdsa"}
+    ]"#;
+    let bundles: Vec<CertificateBundle> = serde_json::from_str(json).unwrap();
+    assert_eq!(bundles.len(), 2);
+    assert_eq!(bundles[0].uuid, "aaa-111");
+    assert_eq!(bundles[0].name, "cert-a");
+    assert_eq!(bundles[0].bundle_type.as_deref(), Some("manual"));
+    assert!(bundles[0].key_type.is_none());
+    assert_eq!(bundles[1].uuid, "bbb-222");
+    assert_eq!(bundles[1].name, "cert-b");
+    assert_eq!(bundles[1].bundle_type.as_deref(), Some("authority"));
+    assert_eq!(bundles[1].key_type.as_deref(), Some("ecdsa"));
+}
+
+// ─── Test 25: Frontend with rules deserialization ─────────────────────────
+
+#[test]
+fn deserialize_frontend_with_rules() {
+    let json = r#"{
+        "name": "my-frontend",
+        "port": 443,
+        "mode": "http",
+        "default_backend": "my-backend",
+        "networks": [{"name": "public-net"}],
+        "rules": [
+            {
+                "name": "redirect-rule",
+                "priority": 10,
+                "matchers": [{"type": "path", "match_path": {"method": "exact", "value": "/old"}}],
+                "actions": [{"type": "http_redirect", "action_http_redirect": {"location": "/new"}}],
+                "matching_condition": "and"
+            }
+        ],
+        "tls_configs": [],
+        "properties": {"timeout_client": 30}
+    }"#;
+    let fe: Frontend = serde_json::from_str(json).unwrap();
+    assert_eq!(fe.name, "my-frontend");
+    assert_eq!(fe.port, 443);
+    assert_eq!(fe.mode, "http");
+    assert_eq!(fe.default_backend, "my-backend");
+    assert_eq!(fe.networks.len(), 1);
+    assert_eq!(fe.networks[0].name, "public-net");
+    assert_eq!(fe.rules.len(), 1);
+    assert_eq!(fe.rules[0].name, "redirect-rule");
+    assert_eq!(fe.rules[0].priority, 10);
+    assert_eq!(fe.rules[0].matching_condition.as_deref(), Some("and"));
+    assert_eq!(fe.rules[0].matchers.len(), 1);
+    assert_eq!(fe.rules[0].actions.len(), 1);
+    assert!(fe.properties.is_some());
+    assert_eq!(fe.properties.as_ref().unwrap()["timeout_client"], 30);
+}
+
+// ─── Test 26: ModifyBackendMemberRequest serialization ────────────────────
+
+#[test]
+fn serialize_modify_backend_member_request() {
+    let req = ModifyBackendMemberRequest {
+        name: Some("new-name".to_string()),
+        weight: Some(50),
+        max_sessions: None,
+        enabled: Some(false),
+        ip: Some("10.0.0.1".to_string()),
+        port: Some(8080),
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["name"], "new-name");
+    assert_eq!(json["weight"], 50);
+    assert_eq!(json["enabled"], false);
+    assert_eq!(json["ip"], "10.0.0.1");
+    assert_eq!(json["port"], 8080);
+    assert!(json.get("max_sessions").is_none());
+}
+
+// ─── Test 27: ModifyFrontendRequest serialization ─────────────────────────
+
+#[test]
+fn serialize_modify_frontend_request() {
+    let req = ModifyFrontendRequest {
+        name: Some("updated-fe".to_string()),
+        default_backend: Some("new-be".to_string()),
+        mode: None,
+        networks: None,
+        properties: None,
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["name"], "updated-fe");
+    assert_eq!(json["default_backend"], "new-be");
+    assert!(json.get("mode").is_none());
+    assert!(json.get("networks").is_none());
+    assert!(json.get("properties").is_none());
+}
+
+// ─── Test 28: ModifyResolverRequest serialization ─────────────────────────
+
+#[test]
+fn serialize_modify_resolver_request() {
+    let req = ModifyResolverRequest {
+        name: None,
+        nameservers: Some(vec!["8.8.8.8:53".to_string()]),
+        retries: Some(3),
+        timeout: None,
+        timeout_retry: None,
+        cache_valid: Some(300),
+        cache_invalid: None,
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert!(json.get("name").is_none());
+    assert_eq!(json["nameservers"], serde_json::json!(["8.8.8.8:53"]));
+    assert_eq!(json["retries"], 3);
+    assert_eq!(json["cache_valid"], 300);
+    assert!(json.get("timeout").is_none());
+    assert!(json.get("timeout_retry").is_none());
+    assert!(json.get("cache_invalid").is_none());
+}
+
+// ─── Test 29: ModifyFrontendRuleRequest round-trip ────────────────────────
+
+#[test]
+fn roundtrip_modify_frontend_rule_request() {
+    let req = ModifyFrontendRuleRequest {
+        name: Some("updated-rule".to_string()),
+        priority: Some(200),
+        matchers: Some(vec![serde_json::json!({"type": "path"})]),
+        actions: Some(vec![serde_json::json!({"type": "use_backend"})]),
+        matching_condition: Some("or".to_string()),
+    };
+    let json_str = serde_json::to_string(&req).unwrap();
+    let deserialized: ModifyFrontendRuleRequest = serde_json::from_str(&json_str).unwrap();
+    assert_eq!(deserialized.name.as_deref(), Some("updated-rule"));
+    assert_eq!(deserialized.priority, Some(200));
+    assert_eq!(deserialized.matchers.as_ref().unwrap().len(), 1);
+    assert_eq!(deserialized.actions.as_ref().unwrap().len(), 1);
+    assert_eq!(deserialized.matching_condition.as_deref(), Some("or"));
+}
+
+// ─── Test 30: ReplaceFrontendRuleRequest serialization ────────────────────
+
+#[test]
+fn serialize_replace_frontend_rule_request() {
+    let req = ReplaceFrontendRuleRequest {
+        name: "full-rule".to_string(),
+        priority: 100,
+        matchers: vec![serde_json::json!({"type": "path", "match_path": {"method": "exact", "value": "/api"}})],
+        actions: vec![serde_json::json!({"type": "use_backend", "action_use_backend": {"backend": "api-be"}})],
+        matching_condition: Some("and".to_string()),
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["name"], "full-rule");
+    assert_eq!(json["priority"], 100);
+    assert_eq!(json["matchers"].as_array().unwrap().len(), 1);
+    assert_eq!(json["actions"].as_array().unwrap().len(), 1);
+    assert_eq!(json["matching_condition"], "and");
+}
+
+// ─── Test 31: CreateCertificateBundleRequest serialization ────────────────
+
+#[test]
+fn serialize_create_certificate_bundle_request() {
+    let req = CreateCertificateBundleRequest {
+        name: "my-cert".to_string(),
+        certificate: Some("-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----".to_string()),
+        intermediates: None,
+        private_key: Some("-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----".to_string()),
+        bundle_type: Some("manual".to_string()),
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["name"], "my-cert");
+    assert!(json["certificate"].is_string());
+    assert!(json.get("intermediates").is_none());
+    assert!(json["private_key"].is_string());
+    assert_eq!(json["type"], "manual");
+}
+
+// ─── Test 32: ModifyCertificateBundleRequest serialization ────────────────
+
+#[test]
+fn serialize_modify_certificate_bundle_request() {
+    let req = ModifyCertificateBundleRequest {
+        name: Some("renamed-cert".to_string()),
+        certificate: None,
+        intermediates: None,
+        private_key: None,
+        bundle_type: None,
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["name"], "renamed-cert");
+    assert!(json.get("certificate").is_none());
+    assert!(json.get("intermediates").is_none());
+    assert!(json.get("private_key").is_none());
+    assert!(json.get("type").is_none());
+}
+
+// ─── Test 33: ModifyLoadBalancerNetworkRequest serialization ──────────────
+
+#[test]
+fn serialize_modify_network_request() {
+    let req = ModifyLoadBalancerNetworkRequest {
+        name: Some("renamed-network".to_string()),
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["name"], "renamed-network");
+
+    let empty_req = ModifyLoadBalancerNetworkRequest { name: None };
+    let json2 = serde_json::to_value(&empty_req).unwrap();
+    assert!(json2.get("name").is_none());
+}
+
+// ─── Test 34: Node deserialization ────────────────────────────────────────
+
+#[test]
+fn deserialize_node() {
+    let json = r#"{
+        "operational_state": "running",
+        "networks": [
+            {
+                "name": "public-net",
+                "type": "public",
+                "ip_addresses": [{"address": "192.0.2.1"}]
+            }
+        ]
+    }"#;
+    let node: Node = serde_json::from_str(json).unwrap();
+    assert_eq!(node.operational_state.as_deref(), Some("running"));
+    assert_eq!(node.networks.len(), 1);
+    assert_eq!(node.networks[0].name, "public-net");
+    assert_eq!(node.networks[0].network_type, "public");
+    assert_eq!(node.networks[0].ip_addresses.len(), 1);
+    assert_eq!(node.networks[0].ip_addresses[0].address, "192.0.2.1");
+}
