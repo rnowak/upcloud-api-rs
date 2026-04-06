@@ -36,6 +36,7 @@ pub enum OperationalState {
 
 /// A load balancer service plan with pricing and capacity limits.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Plan {
     pub name: String,
     /// Monthly price in EUR.
@@ -68,6 +69,7 @@ pub struct Plan {
 
 /// An IP address assigned to the load balancer.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct IPAddress {
     pub address: String,
     /// If true, the address is used only for listening (not for outbound traffic).
@@ -77,6 +79,7 @@ pub struct IPAddress {
 
 /// A network attached to the load balancer.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Network {
     pub name: String,
     /// Network type (e.g. `"public"`, `"private"`, `"utility"`).
@@ -94,6 +97,7 @@ pub struct Network {
 
 /// A managed load balancer instance.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct LoadBalancer {
     pub uuid: String,
     pub name: String,
@@ -146,6 +150,7 @@ pub struct LoadBalancer {
 
 /// A network attached to a load balancer compute node.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct NodeNetwork {
     pub name: String,
     /// Network type (e.g. `"public"`, `"private"`).
@@ -158,6 +163,7 @@ pub struct NodeNetwork {
 
 /// A compute node backing the load balancer.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Node {
     /// Current operational state of the node.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -171,6 +177,7 @@ pub struct Node {
 
 /// A TLS certificate bundle for frontend or backend TLS termination.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct CertificateBundle {
     pub uuid: String,
     pub name: String,
@@ -205,6 +212,7 @@ pub struct CertificateBundle {
 
 /// Health check configuration for a load balancer backend.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct HealthCheck {
     /// Interval between health checks in seconds.
     pub interval: u32,
@@ -227,6 +235,7 @@ pub struct HealthCheck {
 
 /// An upstream server (member) in a load balancer backend pool.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct BackendMember {
     pub name: String,
     /// Whether this member accepts traffic.
@@ -253,6 +262,7 @@ pub struct BackendMember {
 
 /// TLS configuration for backend connections.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct TLSConfig {
     pub name: String,
     /// PEM-encoded certificate chain for backend TLS verification.
@@ -272,6 +282,7 @@ pub struct TLSConfig {
 
 /// A load balancer backend — the upstream server pool.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Backend {
     pub name: String,
     /// Name of the DNS resolver used for backend member hostnames.
@@ -307,12 +318,14 @@ pub struct Backend {
 
 /// A network reference attached to a frontend.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct FrontendNetwork {
     pub name: String,
 }
 
 /// A rule attached to a frontend, consisting of matchers and actions.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct FrontendRule {
     pub name: String,
     /// Evaluation priority (lower values are evaluated first).
@@ -334,6 +347,7 @@ pub struct FrontendRule {
 
 /// A load balancer frontend — the client-facing listener.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Frontend {
     pub name: String,
     /// Port the frontend listens on.
@@ -364,6 +378,7 @@ pub struct Frontend {
 
 /// A DNS resolver used by backends for member hostname resolution.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Resolver {
     pub name: String,
     /// DNS nameserver IP addresses.
@@ -407,6 +422,7 @@ pub struct CreateRequest {
 
 /// Network configuration input for load balancer creation.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct NetworkInput {
     pub name: String,
     /// Network type (e.g. `"public"`, `"private"`, `"utility"`).

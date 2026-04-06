@@ -7,6 +7,7 @@ use crate::types::common::YesNo;
 
 /// A single host statistic measurement.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct HostStat {
     pub name: String,
     /// Statistic value.
@@ -21,6 +22,7 @@ pub struct HostStat {
 
 /// Collection of host statistics.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[non_exhaustive]
 pub struct HostStats {
     /// List of statistics.
     #[serde(default)]
@@ -30,6 +32,7 @@ pub struct HostStats {
 /// A private cloud host.
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Host {
     /// Host identifier.
     pub id: i64,

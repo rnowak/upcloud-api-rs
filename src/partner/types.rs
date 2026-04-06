@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 
 /// A partner-managed account.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct PartnerAccount {
     pub username: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -68,6 +69,7 @@ pub struct CreatePartnerAccountRequest {
 
 /// Contact details for a partner account.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct PartnerContactDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub first_name: Option<String>,

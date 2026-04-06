@@ -24,6 +24,7 @@ pub enum ShareACLPermission {
 
 /// File storage service plan.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Plan {
     pub name: String,
     /// Monthly price in EUR.
@@ -39,6 +40,7 @@ pub struct Plan {
 
 /// An ACL entry for a file storage share (allows a specific IP/CIDR to mount).
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Acl {
     pub name: String,
     /// The IP address or CIDR block allowed to access this share.
@@ -48,6 +50,7 @@ pub struct Acl {
 
 /// An NFS export share within a file storage service.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Share {
     pub name: String,
     pub path: String,
@@ -59,6 +62,7 @@ pub struct Share {
 
 /// A network attached to a file storage service.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Network {
     /// Address family.
     pub family: String,
@@ -77,6 +81,7 @@ pub struct Network {
 
 /// A file storage service instance.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Service {
     pub uuid: String,
     pub name: String,
@@ -141,6 +146,7 @@ pub struct CreateRequest {
 
 /// Network reference for file storage creation.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct NetworkInput {
     /// Address family.
     pub family: String,
@@ -180,6 +186,7 @@ pub struct CreateShareRequest {
 
 /// ACL entry for share creation.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct CreateShareAcl {
     pub name: String,
     /// Allowed IP/CIDR.

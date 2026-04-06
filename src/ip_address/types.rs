@@ -43,6 +43,7 @@ pub enum ReleasePolicy {
 /// An IP address resource.
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct IpAddress {
     pub access: Access,
     pub address: String,

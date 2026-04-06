@@ -21,6 +21,7 @@ pub enum NetworkType {
 
 /// An IP network (subnet) within an SDN network.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct IpNetwork {
     /// CIDR notation address (e.g. `"10.0.0.0/24"`).
     pub address: String,
@@ -54,6 +55,7 @@ pub struct IpNetwork {
 
 /// Wrapper for a list of IP networks within a network.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct NetworkIpNetworks {
     /// IP network (subnet) definitions.
     #[serde(default)]
@@ -62,6 +64,7 @@ pub struct NetworkIpNetworks {
 
 /// A server attached to a network.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct NetworkServer {
     /// IP address assigned to the server on this network.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -74,6 +77,7 @@ pub struct NetworkServer {
 
 /// Wrapper for a list of servers attached to a network.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct NetworkServers {
     /// Servers attached to the network.
     #[serde(default)]
@@ -82,6 +86,7 @@ pub struct NetworkServers {
 
 /// Summary of a network peering associated with a network.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct NetworkPeeringSummary {
     pub uuid: String,
     pub name: String,
@@ -92,6 +97,7 @@ pub struct NetworkPeeringSummary {
 
 /// Wrapper for a list of network peering summaries.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[non_exhaustive]
 pub struct NetworkPeerings {
     /// Peerings associated with the network.
     #[serde(default)]
@@ -100,6 +106,7 @@ pub struct NetworkPeerings {
 
 /// An UpCloud SDN network.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Network {
     pub uuid: String,
     pub name: String,
@@ -188,6 +195,7 @@ pub struct CreateInterfaceRequest {
 
 /// Wrapper for IP address inputs when creating an interface.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct InterfaceIpAddressesInput {
     /// IP address assignments.
     pub ip_address: Vec<InterfaceIpAddressInput>,
@@ -195,6 +203,7 @@ pub struct InterfaceIpAddressesInput {
 
 /// An IP address input for a server network interface.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct InterfaceIpAddressInput {
     /// Address family (`"IPv4"` or `"IPv6"`).
     pub family: String,
@@ -241,6 +250,7 @@ pub enum RouterStaticRouteType {
 
 /// A static route entry on a router.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct StaticRoute {
     pub name: Option<String>,
     /// Destination CIDR (e.g. `"10.0.0.0/24"`).
@@ -254,12 +264,14 @@ pub struct StaticRoute {
 
 /// A network reference attached to a router.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct RouterNetwork {
     pub uuid: String,
 }
 
 /// Wrapper for a list of networks attached to a router.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct RouterNetworkSlice {
     /// Networks attached to the router.
     #[serde(default)]
@@ -268,6 +280,7 @@ pub struct RouterNetworkSlice {
 
 /// An UpCloud router for connecting SDN networks.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Router {
     pub uuid: String,
     pub name: String,
@@ -347,6 +360,7 @@ pub enum PeeringConfiguredStatus {
 
 /// A network reference in a peering, with optional IP network details.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct PeeringNetwork {
     pub uuid: String,
     /// IP networks (subnets) exposed through the peering.
@@ -356,6 +370,7 @@ pub struct PeeringNetwork {
 
 /// A network peering between two UpCloud SDN networks.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct NetworkPeering {
     pub uuid: String,
     pub name: String,
@@ -389,6 +404,7 @@ pub struct CreatePeeringRequest {
 
 /// Network UUID input for creating a peering.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct PeeringNetworkInput {
     pub uuid: String,
 }

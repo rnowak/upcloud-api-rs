@@ -7,6 +7,7 @@ use std::str::FromStr;
 
 /// A key-value label used for filtering and classification across many resources.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Label {
     pub key: String,
     pub value: String,
@@ -17,6 +18,7 @@ pub struct Label {
 /// Newer endpoints (LB, K8s, MOS, Gateway, File Storage) return labels as a plain
 /// `HashMap<String, String>` instead.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Default)]
+#[non_exhaustive]
 pub struct Labels {
     #[serde(default)]
     pub label: Vec<Label>,
@@ -28,6 +30,7 @@ pub struct Labels {
 ///
 /// Use with `#[serde(with = "yes_no")]` or `#[serde_as(as = "YesNo")]`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[non_exhaustive]
 pub struct YesNo;
 
 impl SerializeAs<bool> for YesNo {
@@ -48,6 +51,7 @@ impl<'de> DeserializeAs<'de, bool> for YesNo {
 }
 
 /// Serde helper for `Option<bool>` encoded as `"yes"` / `"no"` / absent.
+#[non_exhaustive]
 pub struct YesNoOpt;
 
 impl SerializeAs<Option<bool>> for YesNoOpt {
@@ -76,6 +80,7 @@ impl<'de> DeserializeAs<'de, Option<bool>> for YesNoOpt {
 /// Serde helper for numeric fields that UpCloud encodes as JSON strings (e.g. `"core_number": "2"`).
 ///
 /// Use as `#[serde_as(as = "StringNumber")]`.
+#[non_exhaustive]
 pub struct StringNumber;
 
 impl<T> SerializeAs<T> for StringNumber
@@ -99,6 +104,7 @@ where
 }
 
 /// Like [`StringNumber`] but for `Option<T>`.
+#[non_exhaustive]
 pub struct StringNumberOpt;
 
 impl<T: fmt::Display> SerializeAs<Option<T>> for StringNumberOpt {

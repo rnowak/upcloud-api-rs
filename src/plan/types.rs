@@ -6,6 +6,7 @@ use serde_with::{serde_as, DisplayFromStr};
 /// A predefined server plan (e.g. `1xCPU-1GB`).
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Plan {
     pub name: String,
     #[serde_as(as = "DisplayFromStr")]
@@ -27,6 +28,7 @@ pub struct Plan {
 /// A valid combination of CPU core count and memory for a custom server.
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ServerConfiguration {
     #[serde_as(as = "DisplayFromStr")]
     pub core_number: u32,

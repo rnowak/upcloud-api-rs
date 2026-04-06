@@ -152,6 +152,7 @@ pub enum IPSecIntegrityAlgorithm {
 
 /// A gateway plan describing bandwidth, max connections, and available features.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Plan {
     pub name: String,
     /// Maximum bandwidth in Mbps.
@@ -173,6 +174,7 @@ pub struct Plan {
 
 /// A named address allocated on a gateway.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Address {
     pub name: String,
     /// IP address string (may be auto-assigned).
@@ -182,6 +184,7 @@ pub struct Address {
 
 /// An UpCloud network gateway resource.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Gateway {
     pub uuid: String,
     pub name: String,
@@ -219,6 +222,7 @@ pub struct Gateway {
 
 /// A router attached to the gateway.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Router {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
@@ -227,6 +231,7 @@ pub struct Router {
 
 /// A VPN connection on a gateway.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Connection {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -251,6 +256,7 @@ pub struct Connection {
 
 /// A network route in a VPN connection.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Route {
     pub name: String,
     /// CIDR network (e.g. `10.0.0.0/24`).
@@ -263,6 +269,7 @@ pub struct Route {
 /// A tunnel endpoint address. Can contain `name` (referencing a gateway address)
 /// or `address` (a literal IP), or both.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct TunnelAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -272,6 +279,7 @@ pub struct TunnelAddress {
 
 /// A VPN tunnel within a connection.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Tunnel {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -308,6 +316,7 @@ pub struct Tunnel {
 
 /// IPSec authentication configuration.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct IpsecAuthentication {
     /// Authentication method type.
     pub authentication: IPSecAuthType,
@@ -318,6 +327,7 @@ pub struct IpsecAuthentication {
 
 /// IPSec tunnel configuration properties.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct IpsecProperties {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub authentication: Option<IpsecAuthentication>,
@@ -380,12 +390,14 @@ pub struct CreateRequest {
 
 /// Router reference for gateway creation.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct RouterInput {
     pub uuid: String,
 }
 
 /// Named address input for gateway creation.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct AddressInput {
     pub name: String,
 }
@@ -429,6 +441,7 @@ pub struct CreateConnectionRequest {
 
 /// Route input for connection creation.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct RouteInput {
     pub name: String,
     /// CIDR network (e.g. `10.0.0.0/24`).

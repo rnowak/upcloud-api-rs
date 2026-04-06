@@ -136,6 +136,7 @@ pub enum PasswordDelivery {
 /// A storage device attached to a server.
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct StorageDevice {
     /// Device address (e.g. `"virtio:0"`).
     pub address: String,
@@ -173,6 +174,7 @@ pub struct StorageDevice {
 
 /// IP address assigned to a server.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct IpAddressEntry {
     /// Access type (`"public"` or `"private"`).
     pub access: String,
@@ -187,6 +189,7 @@ pub struct IpAddressEntry {
 /// Network interface attached to a server.
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Interface {
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -212,6 +215,7 @@ pub struct Interface {
 
 /// Wrapper for IP addresses on a network interface.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct InterfaceIpAddresses {
     #[serde(default)]
     pub ip_address: Vec<InterfaceIpAddress>,
@@ -220,6 +224,7 @@ pub struct InterfaceIpAddresses {
 /// IP address on a network interface.
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct InterfaceIpAddress {
     pub address: String,
     /// Whether the address was provided by DHCP.
@@ -239,6 +244,7 @@ pub struct InterfaceIpAddress {
 
 /// Login user configuration for server creation.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[non_exhaustive]
 pub struct LoginUser {
     /// Set to `1` to auto-generate a password for the user.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -251,6 +257,7 @@ pub struct LoginUser {
 
 /// Wrapper for a list of SSH public keys.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct SshKeys {
     #[serde(default)]
     pub ssh_key: Vec<String>,
@@ -258,6 +265,7 @@ pub struct SshKeys {
 
 /// Summary GPU information for a server.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct GpuInfo {
     pub model: String,
     /// Number of GPUs of this model.
@@ -266,6 +274,7 @@ pub struct GpuInfo {
 
 /// Detailed GPU information returned by the `GET /server/{uuid}/gpus` endpoint.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct GpuDetail {
     pub model: String,
     pub cores: u64,
@@ -279,6 +288,7 @@ pub struct GpuDetail {
 
 /// Wrapper for a list of devices (GPU/PCIe) on a server.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ServerDevices {
     #[serde(default)]
     pub device: Vec<ServerDevice>,
@@ -286,6 +296,7 @@ pub struct ServerDevices {
 
 /// A device (GPU or PCIe) attached to a server.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ServerDevice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub model: Option<String>,
@@ -300,6 +311,7 @@ pub struct ServerDevice {
 
 /// Hardware metadata for a server device.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ServerDeviceMetadata {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub serial: Option<String>,
@@ -316,6 +328,7 @@ pub struct ServerDeviceMetadata {
 /// Cloud server summary returned by the list endpoint.
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Server {
     pub uuid: String,
     pub hostname: String,
@@ -347,6 +360,7 @@ pub struct Server {
 /// Full cloud server details returned by get, create, and modify endpoints.
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ServerDetails {
     /// Base server fields (flattened).
     #[serde(flatten)]
@@ -422,6 +436,7 @@ impl std::ops::Deref for ServerDetails {
 
 /// Wrapper for a server's IP address list.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ServerIpAddresses {
     #[serde(default)]
     pub ip_address: Vec<IpAddressEntry>,
@@ -429,6 +444,7 @@ pub struct ServerIpAddresses {
 
 /// Wrapper for a server's storage device list.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ServerStorageDevices {
     #[serde(default)]
     pub storage_device: Vec<StorageDevice>,
@@ -436,6 +452,7 @@ pub struct ServerStorageDevices {
 
 /// Wrapper for a server's tag list.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ServerTags {
     #[serde(default)]
     pub tag: Vec<String>,
@@ -443,12 +460,14 @@ pub struct ServerTags {
 
 /// Server networking configuration.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ServerNetworking {
     pub interfaces: ServerInterfaces,
 }
 
 /// Wrapper for a list of network interfaces.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ServerInterfaces {
     #[serde(default)]
     pub interface: Vec<Interface>,
@@ -535,6 +554,7 @@ pub struct CreateRequest {
 /// Storage device definition for server creation.
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct CreateServerStorageDevice {
     pub action: StorageDeviceAction,
     /// UUID of the storage to clone or attach.
@@ -568,18 +588,21 @@ pub struct CreateServerStorageDevice {
 
 /// Wrapper for storage devices in a server create request.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct CreateServerStorageDevices {
     pub storage_device: Vec<CreateServerStorageDevice>,
 }
 
 /// Networking configuration for server creation.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[non_exhaustive]
 pub struct CreateServerNetworking {
     pub interfaces: CreateServerInterfaces,
 }
 
 /// Wrapper for interfaces in a server create request.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[non_exhaustive]
 pub struct CreateServerInterfaces {
     #[serde(default)]
     pub interface: Vec<CreateServerInterface>,
@@ -588,6 +611,7 @@ pub struct CreateServerInterfaces {
 /// Network interface definition for server creation.
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct CreateServerInterface {
     /// Interface type (`"public"`, `"private"`, or `"utility"`).
     #[serde(rename = "type")]
@@ -607,6 +631,7 @@ pub struct CreateServerInterface {
 
 /// Wrapper for IP addresses in a create-server interface.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct CreateServerInterfaceIpAddresses {
     #[serde(default)]
     pub ip_address: Vec<CreateServerInterfaceIpAddress>,
@@ -614,6 +639,7 @@ pub struct CreateServerInterfaceIpAddresses {
 
 /// IP address definition for a create-server interface.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct CreateServerInterfaceIpAddress {
     /// Address family (`"IPv4"` or `"IPv6"`).
     pub family: String,
@@ -745,6 +771,7 @@ pub struct RebuildRequest {
 
 /// Server group.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Group {
     pub uuid: String,
     pub title: String,
@@ -763,6 +790,7 @@ pub struct Group {
 
 /// Anti-affinity status for a server in a group.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct AntiAffinityStatus {
     /// Server UUID.
     pub uuid: String,
@@ -772,6 +800,7 @@ pub struct AntiAffinityStatus {
 
 /// Wrapper for server UUIDs in a group.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct GroupServers {
     #[serde(default)]
     pub server: Vec<String>,
@@ -987,6 +1016,7 @@ pub type DevicesAvailability = std::collections::HashMap<String, Devices>;
 
 /// Available device plans within a zone.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Devices {
     /// GPU plans keyed by plan name (e.g. `"NVIDIA A100"`).
     #[serde(default)]
@@ -995,6 +1025,7 @@ pub struct Devices {
 
 /// Availability count for a single device plan.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct DeviceAvailability {
     #[serde(default)]
     pub amount: i64,

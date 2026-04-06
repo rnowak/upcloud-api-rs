@@ -32,6 +32,7 @@ pub enum TargetType {
 
 /// A permission entry granting a user access to a resource.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Permission {
     /// UUID of the target resource.
     pub target_identifier: String,

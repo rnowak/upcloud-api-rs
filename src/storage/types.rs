@@ -88,6 +88,7 @@ pub enum StorageImportState {
 /// A storage resource.
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Storage {
     pub uuid: String,
     pub title: String,
@@ -133,6 +134,7 @@ pub struct Storage {
 /// Full storage details returned by get, create, and modify endpoints.
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct StorageDetails {
     /// Base storage fields (flattened).
     #[serde(flatten)]
@@ -160,6 +162,7 @@ impl std::ops::Deref for StorageDetails {
 
 /// Wrapper for server UUIDs that a storage is attached to.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct StorageServers {
     #[serde(default)]
     pub server: Vec<String>,
@@ -167,6 +170,7 @@ pub struct StorageServers {
 
 /// Wrapper for backup UUIDs of a storage.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct StorageBackups {
     #[serde(default)]
     pub backup: Vec<String>,
@@ -174,6 +178,7 @@ pub struct StorageBackups {
 
 /// Automatic backup schedule rule.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct BackupRule {
     /// Backup interval (`"daily"`, `"mon"`, `"tue"`, etc.).
     pub interval: String,
@@ -186,6 +191,7 @@ pub struct BackupRule {
 
 /// Details of a storage import operation.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ImportDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub completed_at: Option<String>,
@@ -313,6 +319,7 @@ pub struct CreateImportRequest {
 
 /// Backup metadata returned by a resize-filesystem operation.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ResizeFilesystemBackup {
     pub uuid: String,
     pub title: String,

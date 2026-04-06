@@ -51,12 +51,14 @@ pub enum UserAccessKeyStatus {
 
 /// A zone within an object storage region.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct RegionZone {
     pub name: String,
 }
 
 /// An object storage region.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Region {
     pub name: String,
     /// Primary availability zone.
@@ -72,6 +74,7 @@ pub struct Region {
 
 /// A managed object storage service instance.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Service {
     pub uuid: String,
     pub name: String,
@@ -116,6 +119,7 @@ pub struct Service {
 
 /// Storage usage statistics.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Usage {
     /// Total number of objects.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -127,6 +131,7 @@ pub struct Usage {
 
 /// A service endpoint.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Endpoint {
     /// Endpoint hostname.
     pub domain_name: String,
@@ -146,6 +151,7 @@ pub struct Endpoint {
 
 /// A network attached to an object storage service.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Network {
     /// Address family.
     pub family: String,
@@ -159,12 +165,14 @@ pub struct Network {
 
 /// Brief user summary (username only).
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct UserSummary {
     pub username: String,
 }
 
 /// An object storage service user.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct User {
     pub username: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -182,6 +190,7 @@ pub struct User {
 
 /// An IAM policy attached to a user.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct UserPolicy {
     pub name: String,
     /// Policy ARN.
@@ -191,6 +200,7 @@ pub struct UserPolicy {
 
 /// An access key for an object storage user.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct UserAccessKey {
     pub access_key_id: String,
     /// Secret key (only returned at creation).
@@ -207,6 +217,7 @@ pub struct UserAccessKey {
 
 /// An IAM policy for object storage.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Policy {
     pub name: String,
     /// JSON policy document.
@@ -234,6 +245,7 @@ pub struct Policy {
 
 /// An object storage bucket.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Bucket {
     pub name: String,
     /// Number of objects.
@@ -248,6 +260,7 @@ pub struct Bucket {
 
 /// A custom domain mapping for object storage.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct CustomDomain {
     pub name: String,
     /// Custom domain name.
@@ -261,6 +274,7 @@ pub struct CustomDomain {
 
 /// A version of an IAM policy.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct PolicyVersion {
     /// Version identifier.
     pub version_id: String,
@@ -275,6 +289,7 @@ pub struct PolicyVersion {
 
 /// Aggregated object storage metrics.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Metrics {
     /// Total storage bytes.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -289,6 +304,7 @@ pub struct Metrics {
 
 /// Metrics for a single bucket.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct BucketMetrics {
     pub name: String,
     /// Total bytes in bucket.
@@ -303,6 +319,7 @@ pub struct BucketMetrics {
 
 /// Network reference for service creation.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct NetworkInput {
     /// Address family.
     pub family: String,

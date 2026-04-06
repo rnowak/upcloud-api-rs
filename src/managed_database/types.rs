@@ -70,6 +70,7 @@ pub enum UserType {
 
 /// Preferred maintenance window (day of week + time).
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct MaintenanceTime {
     /// Day of week (e.g. `"monday"`).
     pub dow: String,
@@ -79,6 +80,7 @@ pub struct MaintenanceTime {
 
 /// A database backup entry.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Backup {
     pub backup_name: String,
     pub backup_time: String,
@@ -89,6 +91,7 @@ pub struct Backup {
 
 /// OpenSearch service-level access control settings.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct OpenSearchAccessControl {
     /// Enable basic access control.
     pub access_control: Option<bool>,
@@ -98,6 +101,7 @@ pub struct OpenSearchAccessControl {
 
 /// An access control rule for an OpenSearch index.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct OpenSearchAccessControlRule {
     /// Index pattern.
     pub index: String,
@@ -107,6 +111,7 @@ pub struct OpenSearchAccessControlRule {
 
 /// An OpenSearch index with metadata.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct OpenSearchIndex {
     pub index_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -132,6 +137,7 @@ pub struct OpenSearchIndex {
 
 /// Per-user OpenSearch access control rules.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct UserOpenSearchAccessControl {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rules: Option<Vec<OpenSearchAccessControlRule>>,
@@ -139,6 +145,7 @@ pub struct UserOpenSearchAccessControl {
 
 /// A managed database instance.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Database {
     pub uuid: String,
     pub name: String,
@@ -198,6 +205,7 @@ pub struct Database {
 
 /// A database service component (connection endpoint).
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Component {
     /// Component name (e.g. `"pg"`).
     pub component: String,
@@ -213,6 +221,7 @@ pub struct Component {
 
 /// State of a single database node.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct NodeState {
     pub name: String,
     /// Node role (e.g. `"master"`, `"standby"`).
@@ -222,6 +231,7 @@ pub struct NodeState {
 
 /// A network attached to a managed database.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Network {
     /// Address family (e.g. `"IPv4"`).
     pub family: String,
@@ -234,6 +244,7 @@ pub struct Network {
 
 /// A managed database service plan.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ServicePlan {
     pub name: String,
     /// Number of database nodes.
@@ -255,6 +266,7 @@ pub struct ServicePlan {
 
 /// A managed database user.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct User {
     pub username: String,
     /// Privilege level.
@@ -272,6 +284,7 @@ pub struct User {
 
 /// A logical database within a managed database service.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct LogicalDatabase {
     pub name: String,
     /// Collation locale.
@@ -284,6 +297,7 @@ pub struct LogicalDatabase {
 
 /// An active database session (PostgreSQL).
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Session {
     /// Process ID.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -309,6 +323,7 @@ pub struct Session {
 
 /// A database extension.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Extension {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -317,6 +332,7 @@ pub struct Extension {
 
 /// A supported database engine type.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct DatabaseType {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -330,6 +346,7 @@ pub struct DatabaseType {
 
 /// Detail of a single PostgreSQL extension.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct PgExtensionDetail {
     pub name: String,
     /// Default extension version.
@@ -341,6 +358,7 @@ pub struct PgExtensionDetail {
 
 /// Extensions available for a specific PostgreSQL version.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct PgVersionExtensions {
     pub version: String,
     pub extensions: Vec<PgExtensionDetail>,
@@ -348,6 +366,7 @@ pub struct PgVersionExtensions {
 
 /// Network reference for database creation/modification.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct NetworkInput {
     /// Address family.
     pub family: String,

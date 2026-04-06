@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 
 /// A resource tag for grouping servers.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Tag {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -15,6 +16,7 @@ pub struct Tag {
 
 /// Wrapper for the list of server UUIDs in a tag.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct TagServers {
     /// List of server UUIDs.
     #[serde(default)]

@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 /// A single price item (amount + price per unit).
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct PriceItem {
     pub amount: u64,
     pub price: f64,
@@ -9,6 +10,7 @@ pub struct PriceItem {
 
 /// Pricing for a single zone.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct PriceZone {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 /// A single audit log event.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct AuditEvent {
     /// When the event occurred.
     pub time: Option<String>,
@@ -58,6 +59,7 @@ pub struct AuditListParams {
 
 /// Paginated list of audit events with total count.
 #[derive(Debug, Clone)]
+#[non_exhaustive]
 pub struct AuditEventPage {
     pub events: Vec<AuditEvent>,
     /// Total count from the `Upcloud-Total-Count` response header.

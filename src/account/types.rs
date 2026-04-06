@@ -28,6 +28,7 @@ pub enum TokenType {
 /// An UpCloud account with profile, limits, and access settings.
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Account {
     pub username: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -112,6 +113,7 @@ pub struct Account {
 
 /// Maximum resource quotas for an account.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ResourceLimits {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cores: Option<u32>,
@@ -155,6 +157,7 @@ pub struct ResourceLimits {
 
 /// Account roles wrapper.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct AccountRoles {
     /// List of role names.
     #[serde(default)]
@@ -163,6 +166,7 @@ pub struct AccountRoles {
 
 /// Server-level access control entry.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ServerAccessEntry {
     pub uuid: String,
     /// Storage access mode for this server.
@@ -172,6 +176,7 @@ pub struct ServerAccessEntry {
 
 /// List of server access entries.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ServerAccessList {
     #[serde(default)]
     pub server: Vec<ServerAccessEntry>,
@@ -179,6 +184,7 @@ pub struct ServerAccessList {
 
 /// List of storage UUIDs the account can access.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct StorageAccessList {
     #[serde(default)]
     pub storage: Vec<String>,
@@ -186,6 +192,7 @@ pub struct StorageAccessList {
 
 /// List of network UUIDs the account can access.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct NetworkAccessList {
     #[serde(default)]
     pub network: Vec<String>,
@@ -200,6 +207,7 @@ pub struct IpFilterList {
 
 /// Simple account entry from the list endpoint.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct AccountEntry {
     pub username: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -330,6 +338,7 @@ pub struct CreateSubaccountRequest {
 
 /// An API token.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ApiToken {
     pub id: String,
     pub name: String,
@@ -371,6 +380,7 @@ pub struct CreateTokenRequest {
 /// Response from creating a token — includes the token value (only shown once).
 /// The response is flat: `{token, id, name, created_at, ...}`.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct CreateTokenResponse {
     /// The bearer token value — only returned at creation time.
     pub token: String,
@@ -392,6 +402,7 @@ pub struct CreateTokenResponse {
 
 /// Response for `GET /1.3/account/billing/summary/{yearmonth}`.
 #[derive(Debug, Clone, Deserialize)]
+#[non_exhaustive]
 pub struct BillingSummaryResponse {
     #[serde(default)]
     pub currency: Option<String>,
@@ -411,12 +422,14 @@ pub struct BillingSummaryResponse {
 
 /// Wrapper for deprecated billing endpoints.
 #[derive(Debug, Clone, Deserialize)]
+#[non_exhaustive]
 pub struct DeprecatedBillingWrapper {
     pub billing: DeprecatedBillingSummary,
 }
 
 /// Billing summary from the deprecated endpoint.
 #[derive(Debug, Clone, Deserialize)]
+#[non_exhaustive]
 pub struct DeprecatedBillingSummary {
     #[serde(default)]
     pub currency: Option<String>,
@@ -436,12 +449,14 @@ pub struct DeprecatedBillingSummary {
 
 /// Response for `GET /1.3/account/resource_billing_summary/{id}/{yearmonth}`.
 #[derive(Debug, Clone, Deserialize)]
+#[non_exhaustive]
 pub struct ResourceBillingWrapper {
     pub billing: ResourceBillingSummary,
 }
 
 /// Per-resource billing summary.
 #[derive(Debug, Clone, Deserialize)]
+#[non_exhaustive]
 pub struct ResourceBillingSummary {
     /// Daily billing amounts.
     #[serde(default)]
@@ -455,6 +470,7 @@ pub struct ResourceBillingSummary {
 
 /// Details of a billed resource.
 #[derive(Debug, Clone, Deserialize)]
+#[non_exhaustive]
 pub struct ResourceBillingDetails {
     /// Billed hours.
     #[serde(default)]
@@ -474,12 +490,14 @@ pub struct ResourceBillingDetails {
 
 /// Response for network transfer statistics.
 #[derive(Debug, Clone, Deserialize)]
+#[non_exhaustive]
 pub struct NetworkTransferStatsResponse {
     pub stats: NetworkTransferStatsWrapper,
 }
 
 /// Wrapper for network transfer statistics.
 #[derive(Debug, Clone, Deserialize)]
+#[non_exhaustive]
 pub struct NetworkTransferStatsWrapper {
     /// Transfer statistics entries.
     #[serde(default)]
@@ -491,6 +509,7 @@ pub struct NetworkTransferStatsWrapper {
 
 /// A single network transfer statistics entry.
 #[derive(Debug, Clone, Deserialize)]
+#[non_exhaustive]
 pub struct NetworkTransferStat {
     /// Accumulated bandwidth quota.
     #[serde(default)]
@@ -513,6 +532,7 @@ pub struct NetworkTransferStat {
 
 /// Stat entry for resource-level transfer stats.
 #[derive(Debug, Clone, Deserialize)]
+#[non_exhaustive]
 pub struct ResourceTransferStat {
     #[serde(default)]
     pub resource_id: Option<String>,
@@ -528,6 +548,7 @@ pub struct ResourceTransferStat {
 
 /// Response for current network usage.
 #[derive(Debug, Clone, Deserialize)]
+#[non_exhaustive]
 pub struct CurrentNetworkUsage {
     #[serde(default)]
     pub accumulated_quota_bytes: Option<u64>,

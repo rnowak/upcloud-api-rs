@@ -6,6 +6,7 @@ use crate::types::common::YesNo;
 /// An UpCloud data center zone.
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Zone {
     pub id: String,
     pub description: String,

@@ -73,6 +73,7 @@ pub enum TaintEffect {
 
 /// A Kubernetes node group plan.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Plan {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -90,6 +91,7 @@ pub struct Plan {
 
 /// A managed Kubernetes cluster.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Cluster {
     pub uuid: String,
     pub name: String,
@@ -125,6 +127,7 @@ pub struct Cluster {
 
 /// A group of worker nodes in a cluster.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct NodeGroup {
     pub name: String,
     pub plan: String,
@@ -172,6 +175,7 @@ pub struct NodeGroup {
 
 /// A single worker node.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Node {
     pub uuid: String,
     pub name: String,
@@ -183,6 +187,7 @@ pub struct Node {
 
 /// A Kubernetes node taint (key/value/effect).
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Taint {
     pub key: String,
     pub value: String,
@@ -191,6 +196,7 @@ pub struct Taint {
 
 /// A kubelet command-line argument (key/value pair).
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct KubeletArg {
     pub key: String,
     pub value: String,
@@ -198,6 +204,7 @@ pub struct KubeletArg {
 
 /// The kubeconfig YAML for a cluster.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Kubeconfig {
     pub kubeconfig: String,
 }
@@ -206,6 +213,7 @@ pub struct Kubeconfig {
 
 /// Custom node group plan with explicit resource allocation.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct CustomPlan {
     /// Number of CPU cores.
     pub cores: u32,
@@ -219,6 +227,7 @@ pub struct CustomPlan {
 
 /// Cloud-native node group plan configuration.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct CloudNativePlan {
     /// Storage size in GiB.
     pub storage_size: u64,
@@ -228,6 +237,7 @@ pub struct CloudNativePlan {
 
 /// GPU node group plan configuration.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct GPUPlan {
     /// Storage size in GiB.
     pub storage_size: u64,
@@ -239,6 +249,7 @@ pub struct GPUPlan {
 
 /// An available Kubernetes version.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct KubernetesVersion {
     pub id: String,
     pub version: String,
@@ -334,6 +345,7 @@ pub struct ModifyNodeGroupRequest {
 
 /// Strategy for cluster version upgrades.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct UpgradeStrategy {
     /// Strategy type identifier.
     #[serde(rename = "type")]
@@ -351,6 +363,7 @@ pub struct UpgradeClusterRequest {
 
 /// Available upgrade versions for a cluster.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ClusterAvailableUpgrades {
     /// List of available Kubernetes versions.
     pub versions: Vec<String>,
