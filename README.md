@@ -1,6 +1,6 @@
 # upcloud-api-rs
 
-upcloud-api-rs is an unofficial Rust API client for [UpCloud API v1.3](https://developers.upcloud.com/1.3/).
+Unofficial Rust API client / API bindings for [UpCloud API v1.3](https://developers.upcloud.com/1.3/).
 
 Built on **tokio** + **reqwest** + **serde**, with strong typing for every
 resource, request, and response.
@@ -33,7 +33,7 @@ tokio = { version = "1", features = ["full"] }
 
 ## Authentication
 
-```rust
+```rust,ignore
 use upcloud_api_rs::Client;
 
 // Bearer token (recommended — create tokens at https://hub.upcloud.com)
@@ -45,7 +45,7 @@ let client = Client::with_basic_auth("username", "password")?;
 
 ### Advanced configuration
 
-```rust
+```rust,ignore
 use std::time::Duration;
 use upcloud_api_rs::{Client, ClientBuilder, AuthMode};
 
@@ -58,7 +58,7 @@ let client = Client::builder()
 
 ## Quick Start
 
-```rust
+```rust,ignore
 use upcloud_api_rs::Client;
 
 #[tokio::main]
@@ -84,7 +84,7 @@ async fn main() -> Result<(), upcloud_api_rs::Error> {
 ## API Coverage
 
 ### Account & Identity
-```rust
+```rust,ignore
 let account = client.account().get().await?;
 let subaccounts = client.account().list().await?;
 let tokens = client.account().list_tokens().await?;
@@ -93,7 +93,7 @@ client.account().delete_token(&token.id).await?;
 ```
 
 ### Servers
-```rust
+```rust,ignore
 use upcloud_api_rs::server::*;
 
 // List / get
@@ -129,7 +129,7 @@ let groups = client.servers().list_groups().await?;
 ```
 
 ### Storages
-```rust
+```rust,ignore
 use upcloud_api_rs::storage::*;
 
 let storages = client.storages().list(&Default::default()).await?;
@@ -140,7 +140,7 @@ client.storages().delete("uuid").await?;
 ```
 
 ### IP Addresses
-```rust
+```rust,ignore
 use upcloud_api_rs::ip_address::*;
 
 let ips = client.ip_addresses().list().await?;
@@ -153,14 +153,14 @@ client.ip_addresses().release("1.2.3.4").await?;
 ```
 
 ### Networks
-```rust
+```rust,ignore
 let networks = client.networks().list().await?;
 let routers = client.networks().list_routers().await?;
 let peerings = client.networks().list_peerings().await?;
 ```
 
 ### Managed Databases
-```rust
+```rust,ignore
 use upcloud_api_rs::managed_database::*;
 
 let services = client.managed_database().list().await?;
@@ -175,7 +175,7 @@ let db = client.managed_database().create(CreateRequest {
 ```
 
 ### Load Balancer
-```rust
+```rust,ignore
 use upcloud_api_rs::load_balancer::*;
 
 let lbs = client.load_balancer().list(Default::default()).await?;
@@ -191,7 +191,7 @@ let frontends = client.load_balancer().list_frontends(&lb.uuid).await?;
 ```
 
 ### Kubernetes
-```rust
+```rust,ignore
 use upcloud_api_rs::kubernetes::*;
 
 let clusters = client.kubernetes().list().await?;
@@ -206,7 +206,7 @@ let kubeconfig = client.kubernetes().get_kubeconfig(&cluster.uuid).await?;
 ```
 
 ### Object Storage
-```rust
+```rust,ignore
 use upcloud_api_rs::object_storage::*;
 
 let services = client.object_storage().list(Default::default()).await?;
@@ -214,7 +214,7 @@ let regions = client.object_storage().list_regions().await?;
 ```
 
 ### Network Gateway
-```rust
+```rust,ignore
 use upcloud_api_rs::gateway::*;
 
 let gateways = client.gateway().list(Default::default()).await?;
@@ -222,7 +222,7 @@ let plans = client.gateway().list_plans().await?;
 ```
 
 ### File Storage
-```rust
+```rust,ignore
 use upcloud_api_rs::file_storage::*;
 
 let storages = client.file_storage().list(Default::default()).await?;
@@ -230,14 +230,14 @@ let plans = client.file_storage().list_plans().await?;
 ```
 
 ### Tags
-```rust
+```rust,ignore
 let tags = client.tags().list().await?;
 client.tags().tag_server("server-uuid", "production,web").await?;
 client.tags().untag_server("server-uuid", "staging").await?;
 ```
 
 ### Firewall Rules
-```rust
+```rust,ignore
 use upcloud_api_rs::server::firewall::*;
 
 let rules = client.servers().list_firewall_rules("server-uuid").await?;
@@ -250,7 +250,7 @@ let rule = client.servers().create_firewall_rule("server-uuid", CreateRuleReques
 ```
 
 ### Zones, Pricing, Plans
-```rust
+```rust,ignore
 let zones = client.zones().list().await?;
 let prices = client.pricing().list_zones().await?;
 let plans = client.plans().list().await?;
@@ -259,7 +259,7 @@ let timezones = client.timezones().list().await?;
 ```
 
 ### Audit Log
-```rust
+```rust,ignore
 use upcloud_api_rs::audit_log::AuditListParams;
 
 let page = client.audit_log().list(AuditListParams {
@@ -270,13 +270,13 @@ println!("{} total events, showing {}", page.total_count, page.events.len());
 ```
 
 ### Hosts (Dedicated)
-```rust
+```rust,ignore
 let hosts = client.hosts().list().await?;
 let host = client.hosts().get(12345).await?;
 ```
 
 ### Permissions
-```rust
+```rust,ignore
 use upcloud_api_rs::permission::*;
 
 let perms = client.permissions().list().await?;
@@ -284,13 +284,13 @@ client.permissions().grant(GrantRequest { target_identifier: "uuid".into(), ..De
 ```
 
 ### Partners
-```rust
+```rust,ignore
 let accounts = client.partners().list().await?;
 ```
 
 ## Error Handling
 
-```rust
+```rust,ignore
 use upcloud_api_rs::{Client, Error};
 
 match client.servers().get("nonexistent").await {
@@ -305,7 +305,7 @@ match client.servers().get("nonexistent").await {
 
 ## Module Structure
 
-```
+```text
 upcloud_api_rs/
 ├── src/
 │   ├── lib.rs                     # Crate root, prelude

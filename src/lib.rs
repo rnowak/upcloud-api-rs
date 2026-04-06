@@ -1,33 +1,4 @@
-//! # UpCloud API SDK
-//!
-//! An idiomatic Rust SDK for the [UpCloud API v1.3](https://developers.upcloud.com/1.3/).
-//!
-//! ## Authentication
-//!
-//! ```rust,no_run
-//! use upcloud_api_rs::Client;
-//!
-//! // Bearer token (recommended)
-//! let client = Client::with_bearer_token("ucat_...").unwrap();
-//!
-//! // Basic auth (legacy)
-//! let client = Client::with_basic_auth("username", "password").unwrap();
-//! ```
-//!
-//! ## Usage
-//!
-//! ```rust,no_run
-//! # use upcloud_api_rs::Client;
-//! # async fn example() -> Result<(), upcloud_api_rs::Error> {
-//! let client = Client::with_bearer_token("ucat_...").unwrap();
-//!
-//! // Use domain-scoped handlers
-//! let servers = client.servers().list(&Default::default()).await?;
-//! let zones = client.zones().list().await?;
-//! let dbs = client.managed_database().list().await?;
-//! # Ok(())
-//! # }
-//! ```
+#![doc = include_str!("../README.md")]
 
 pub mod client;
 pub mod config;
