@@ -394,6 +394,268 @@ impl<'a> ObjectStorageHandler<'a> {
             .get(&format!("/1.3/object-storage-2/{uuid}/metrics"))
             .await
     }
+
+    // ─── Custom Domains ───────────────────────────────────────────────────────
+
+    /// Returns a list of custom domains for a managed object storage service.
+    ///
+    /// `GET /1.3/object-storage-2/{uuid}/custom-domains`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/#list-custom-domains)
+    pub async fn list_custom_domains(&self, uuid: &str) -> Result<Vec<CustomDomain>, Error> {
+        self.client
+            .get(&format!("/1.3/object-storage-2/{uuid}/custom-domains"))
+            .await
+    }
+
+    /// Returns details for a specific custom domain.
+    ///
+    /// `GET /1.3/object-storage-2/{uuid}/custom-domains/{domain_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/#get-custom-domain-details)
+    pub async fn get_custom_domain(
+        &self,
+        uuid: &str,
+        domain_name: &str,
+    ) -> Result<CustomDomain, Error> {
+        self.client
+            .get(&format!(
+                "/1.3/object-storage-2/{uuid}/custom-domains/{domain_name}"
+            ))
+            .await
+    }
+
+    /// Creates a custom domain for a managed object storage service.
+    ///
+    /// `POST /1.3/object-storage-2/{uuid}/custom-domains`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/#create-custom-domain)
+    pub async fn create_custom_domain(
+        &self,
+        uuid: &str,
+        req: CreateCustomDomainRequest,
+    ) -> Result<CustomDomain, Error> {
+        self.client
+            .post(
+                &format!("/1.3/object-storage-2/{uuid}/custom-domains"),
+                &req,
+            )
+            .await
+    }
+
+    /// Modifies a custom domain for a managed object storage service.
+    ///
+    /// `PATCH /1.3/object-storage-2/{uuid}/custom-domains/{domain_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/#modify-custom-domain)
+    pub async fn modify_custom_domain(
+        &self,
+        uuid: &str,
+        domain_name: &str,
+        req: ModifyCustomDomainRequest,
+    ) -> Result<CustomDomain, Error> {
+        self.client
+            .patch(
+                &format!("/1.3/object-storage-2/{uuid}/custom-domains/{domain_name}"),
+                &req,
+            )
+            .await
+    }
+
+    /// Deletes a custom domain from a managed object storage service.
+    ///
+    /// `DELETE /1.3/object-storage-2/{uuid}/custom-domains/{domain_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/#delete-custom-domain)
+    pub async fn delete_custom_domain(
+        &self,
+        uuid: &str,
+        domain_name: &str,
+    ) -> Result<(), Error> {
+        self.client
+            .delete(&format!(
+                "/1.3/object-storage-2/{uuid}/custom-domains/{domain_name}"
+            ))
+            .await
+    }
+
+    // ─── Bucket lifecycle ─────────────────────────────────────────────────────
+
+    /// Creates a bucket in a managed object storage service.
+    ///
+    /// `POST /1.3/object-storage-2/{uuid}/buckets`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/#create-bucket)
+    pub async fn create_bucket(
+        &self,
+        uuid: &str,
+        req: CreateBucketRequest,
+    ) -> Result<Bucket, Error> {
+        self.client
+            .post(&format!("/1.3/object-storage-2/{uuid}/buckets"), &req)
+            .await
+    }
+
+    /// Deletes a bucket from a managed object storage service.
+    ///
+    /// `DELETE /1.3/object-storage-2/{uuid}/buckets/{bucket_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/#delete-bucket)
+    pub async fn delete_bucket(&self, uuid: &str, bucket_name: &str) -> Result<(), Error> {
+        self.client
+            .delete(&format!(
+                "/1.3/object-storage-2/{uuid}/buckets/{bucket_name}"
+            ))
+            .await
+    }
+
+    // ─── Policy versions ──────────────────────────────────────────────────────
+
+    /// Returns a list of versions for a policy.
+    ///
+    /// `GET /1.3/object-storage-2/{uuid}/policies/{policy_name}/versions`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/#list-policy-versions)
+    pub async fn list_policy_versions(
+        &self,
+        uuid: &str,
+        policy_name: &str,
+    ) -> Result<Vec<PolicyVersion>, Error> {
+        self.client
+            .get(&format!(
+                "/1.3/object-storage-2/{uuid}/policies/{policy_name}/versions"
+            ))
+            .await
+    }
+
+    /// Returns details for a specific policy version.
+    ///
+    /// `GET /1.3/object-storage-2/{uuid}/policies/{policy_name}/versions/{version_id}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/#get-policy-version-details)
+    pub async fn get_policy_version(
+        &self,
+        uuid: &str,
+        policy_name: &str,
+        version_id: &str,
+    ) -> Result<PolicyVersion, Error> {
+        self.client
+            .get(&format!(
+                "/1.3/object-storage-2/{uuid}/policies/{policy_name}/versions/{version_id}"
+            ))
+            .await
+    }
+
+    /// Creates a new version of a policy.
+    ///
+    /// `POST /1.3/object-storage-2/{uuid}/policies/{policy_name}/versions`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/#create-policy-version)
+    pub async fn create_policy_version(
+        &self,
+        uuid: &str,
+        policy_name: &str,
+        req: CreatePolicyVersionRequest,
+    ) -> Result<PolicyVersion, Error> {
+        self.client
+            .post(
+                &format!("/1.3/object-storage-2/{uuid}/policies/{policy_name}/versions"),
+                &req,
+            )
+            .await
+    }
+
+    /// Deletes a specific version of a policy.
+    ///
+    /// `DELETE /1.3/object-storage-2/{uuid}/policies/{policy_name}/versions/{version_id}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/#delete-policy-version)
+    pub async fn delete_policy_version(
+        &self,
+        uuid: &str,
+        policy_name: &str,
+        version_id: &str,
+    ) -> Result<(), Error> {
+        self.client
+            .delete(&format!(
+                "/1.3/object-storage-2/{uuid}/policies/{policy_name}/versions/{version_id}"
+            ))
+            .await
+    }
+
+    // ─── Access key management ────────────────────────────────────────────────
+
+    /// Returns details for a specific user access key.
+    ///
+    /// `GET /1.3/object-storage-2/{uuid}/users/{username}/access-keys/{access_key_id}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/#get-access-key-details)
+    pub async fn get_user_access_key(
+        &self,
+        uuid: &str,
+        username: &str,
+        access_key_id: &str,
+    ) -> Result<UserAccessKey, Error> {
+        self.client
+            .get(&format!(
+                "/1.3/object-storage-2/{uuid}/users/{username}/access-keys/{access_key_id}"
+            ))
+            .await
+    }
+
+    /// Modifies a user access key (e.g. activate or deactivate).
+    ///
+    /// `PATCH /1.3/object-storage-2/{uuid}/users/{username}/access-keys/{access_key_id}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/#modify-access-key)
+    pub async fn modify_user_access_key(
+        &self,
+        uuid: &str,
+        username: &str,
+        access_key_id: &str,
+        req: ModifyUserAccessKeyRequest,
+    ) -> Result<UserAccessKey, Error> {
+        self.client
+            .patch(
+                &format!(
+                    "/1.3/object-storage-2/{uuid}/users/{username}/access-keys/{access_key_id}"
+                ),
+                &req,
+            )
+            .await
+    }
+
+    // ─── Polling helpers ──────────────────────────────────────────────────────
+
+    /// Polls until the service reaches the desired operational state or the timeout expires.
+    ///
+    /// `GET /1.3/object-storage-2/{uuid}` (repeated)
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/#get-service-details)
+    pub async fn wait_for_state(
+        &self,
+        uuid: &str,
+        desired_state: OperationalState,
+        timeout: std::time::Duration,
+    ) -> Result<Service, Error> {
+        let desired_str = serde_json::to_value(&desired_state)
+            .ok()
+            .and_then(|v| v.as_str().map(String::from));
+        let start = std::time::Instant::now();
+        loop {
+            let details = self.get(uuid).await?;
+            if details.operational_state == desired_str {
+                return Ok(details);
+            }
+            if start.elapsed() >= timeout {
+                return Err(Error::InvalidConfig(format!(
+                    "timeout waiting for object storage {} to reach state {:?}",
+                    uuid, desired_state
+                )));
+            }
+            tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+        }
+    }
 }
 
 #[cfg(test)]

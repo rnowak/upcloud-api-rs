@@ -1,5 +1,37 @@
 use serde::{Deserialize, Serialize};
 
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum OperationalState {
+    Pending,
+    SetupDns,
+    SetupNetwork,
+    SetupServer,
+    SetupService,
+    Running,
+    DeleteDns,
+    DeleteNetwork,
+    DeleteServer,
+    DeleteService,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum ConfiguredStatus {
+    Started,
+    Stopped,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum UserAccessKeyStatus {
+    Active,
+    Inactive,
+}
+
+// ─── Response types ───────────────────────────────────────────────────────────
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RegionZone {
     pub name: String,
@@ -151,6 +183,26 @@ pub struct Bucket {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CustomDomain {
+    pub name: String,
+    pub domain_name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created_at: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PolicyVersion {
+    pub version_id: String,
+    pub document: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_default_version: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created_at: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Metrics {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_bytes: Option<u64>,
@@ -220,4 +272,30 @@ pub struct CreatePolicyRequest {
     pub document: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CreateCustomDomainRequest {
+    pub domain_name: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct ModifyCustomDomainRequest {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub domain_name: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CreateBucketRequest {
+    pub name: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CreatePolicyVersionRequest {
+    pub document: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ModifyUserAccessKeyRequest {
+    pub status: UserAccessKeyStatus,
 }

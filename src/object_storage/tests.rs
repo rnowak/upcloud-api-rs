@@ -929,3 +929,201 @@ fn deserialize_mos_access_key_detail() {
     assert_eq!(key.status.as_deref(), Some("Active"));
     assert!(key.secret_access_key.is_none());
 }
+
+// ─── Custom domain tests ─────────────────────────────────────────────────
+
+const MOS_CUSTOM_DOMAIN_JSON: &str = r#"{
+    "name": "my-custom-domain",
+    "domain_name": "objects.example.com",
+    "status": "active",
+    "created_at": "2024-03-15T10:00:00Z"
+}"#;
+
+const MOS_CUSTOM_DOMAIN_LIST_JSON: &str = r#"[
+    {
+        "name": "my-custom-domain",
+        "domain_name": "objects.example.com",
+        "status": "active",
+        "created_at": "2024-03-15T10:00:00Z"
+    },
+    {
+        "name": "second-domain",
+        "domain_name": "files.example.com",
+        "status": "pending",
+        "created_at": "2024-03-16T12:00:00Z"
+    }
+]"#;
+
+#[test]
+fn deserialize_custom_domain() {
+    let cd: CustomDomain = serde_json::from_str(MOS_CUSTOM_DOMAIN_JSON).unwrap();
+    assert_eq!(cd.name, "my-custom-domain");
+    assert_eq!(cd.domain_name, "objects.example.com");
+    assert_eq!(cd.status.as_deref(), Some("active"));
+    assert_eq!(cd.created_at.as_deref(), Some("2024-03-15T10:00:00Z"));
+}
+
+#[test]
+fn deserialize_custom_domain_list() {
+    let list: Vec<CustomDomain> = serde_json::from_str(MOS_CUSTOM_DOMAIN_LIST_JSON).unwrap();
+    assert_eq!(list.len(), 2);
+    assert_eq!(list[0].name, "my-custom-domain");
+    assert_eq!(list[0].domain_name, "objects.example.com");
+    assert_eq!(list[1].name, "second-domain");
+    assert_eq!(list[1].domain_name, "files.example.com");
+    assert_eq!(list[1].status.as_deref(), Some("pending"));
+}
+
+// ─── Policy version tests ────────────────────────────────────────────────
+
+const MOS_POLICY_VERSION_JSON: &str = r#"{
+    "version_id": "v1",
+    "document": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":\"s3:*\",\"Resource\":\"*\"}]}",
+    "is_default_version": true,
+    "created_at": "2024-02-05T11:06:16Z"
+}"#;
+
+const MOS_POLICY_VERSION_LIST_JSON: &str = r#"[
+    {
+        "version_id": "v1",
+        "document": "{\"Version\":\"2012-10-17\"}",
+        "is_default_version": true,
+        "created_at": "2024-02-05T11:06:16Z"
+    },
+    {
+        "version_id": "v2",
+        "document": "{\"Version\":\"2012-10-17\",\"Statement\":[]}",
+        "is_default_version": false,
+        "created_at": "2024-03-10T09:00:00Z"
+    }
+]"#;
+
+#[test]
+fn deserialize_policy_version() {
+    let pv: PolicyVersion = serde_json::from_str(MOS_POLICY_VERSION_JSON).unwrap();
+    assert_eq!(pv.version_id, "v1");
+    assert!(pv.document.contains("2012-10-17"));
+    assert_eq!(pv.is_default_version, Some(true));
+    assert_eq!(pv.created_at.as_deref(), Some("2024-02-05T11:06:16Z"));
+}
+
+#[test]
+fn deserialize_policy_version_list() {
+    let list: Vec<PolicyVersion> =
+        serde_json::from_str(MOS_POLICY_VERSION_LIST_JSON).unwrap();
+    assert_eq!(list.len(), 2);
+    assert_eq!(list[0].version_id, "v1");
+    assert_eq!(list[0].is_default_version, Some(true));
+    assert_eq!(list[1].version_id, "v2");
+    assert_eq!(list[1].is_default_version, Some(false));
+}
+
+// ─── Enum round-trip tests ───────────────────────────────────────────────
+
+#[test]
+fn operational_state_round_trip() {
+    let states = vec![
+        (OperationalState::Pending, "\"pending\""),
+        (OperationalState::SetupDns, "\"setup-dns\""),
+        (OperationalState::SetupNetwork, "\"setup-network\""),
+        (OperationalState::SetupServer, "\"setup-server\""),
+        (OperationalState::SetupService, "\"setup-service\""),
+        (OperationalState::Running, "\"running\""),
+        (OperationalState::DeleteDns, "\"delete-dns\""),
+        (OperationalState::DeleteNetwork, "\"delete-network\""),
+        (OperationalState::DeleteServer, "\"delete-server\""),
+        (OperationalState::DeleteService, "\"delete-service\""),
+    ];
+    for (variant, json) in states {
+        let serialized = serde_json::to_string(&variant).unwrap();
+        assert_eq!(serialized, json);
+        let deserialized: OperationalState = serde_json::from_str(json).unwrap();
+        assert_eq!(deserialized, variant);
+    }
+}
+
+#[test]
+fn configured_status_round_trip() {
+    let statuses = vec![
+        (ConfiguredStatus::Started, "\"started\""),
+        (ConfiguredStatus::Stopped, "\"stopped\""),
+    ];
+    for (variant, json) in statuses {
+        let serialized = serde_json::to_string(&variant).unwrap();
+        assert_eq!(serialized, json);
+        let deserialized: ConfiguredStatus = serde_json::from_str(json).unwrap();
+        assert_eq!(deserialized, variant);
+    }
+}
+
+#[test]
+fn user_access_key_status_round_trip() {
+    let statuses = vec![
+        (UserAccessKeyStatus::Active, "\"Active\""),
+        (UserAccessKeyStatus::Inactive, "\"Inactive\""),
+    ];
+    for (variant, json) in statuses {
+        let serialized = serde_json::to_string(&variant).unwrap();
+        assert_eq!(serialized, json);
+        let deserialized: UserAccessKeyStatus = serde_json::from_str(json).unwrap();
+        assert_eq!(deserialized, variant);
+    }
+}
+
+// ─── Request serialization tests ─────────────────────────────────────────
+
+#[test]
+fn serialize_create_custom_domain_request() {
+    let req = CreateCustomDomainRequest {
+        domain_name: "objects.example.com".to_string(),
+    };
+    let json: serde_json::Value = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["domain_name"], "objects.example.com");
+}
+
+#[test]
+fn serialize_modify_custom_domain_request() {
+    let req = ModifyCustomDomainRequest {
+        domain_name: Some("new.example.com".to_string()),
+    };
+    let json: serde_json::Value = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["domain_name"], "new.example.com");
+
+    let empty_req = ModifyCustomDomainRequest::default();
+    let json2: serde_json::Value = serde_json::to_value(&empty_req).unwrap();
+    assert!(json2.get("domain_name").is_none());
+}
+
+#[test]
+fn serialize_create_bucket_request() {
+    let req = CreateBucketRequest {
+        name: "my-bucket".to_string(),
+    };
+    let json: serde_json::Value = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["name"], "my-bucket");
+}
+
+#[test]
+fn serialize_create_policy_version_request() {
+    let doc = "{\"Version\":\"2012-10-17\"}";
+    let req = CreatePolicyVersionRequest {
+        document: doc.to_string(),
+    };
+    let json: serde_json::Value = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["document"], doc);
+}
+
+#[test]
+fn serialize_modify_user_access_key_request() {
+    let req = ModifyUserAccessKeyRequest {
+        status: UserAccessKeyStatus::Inactive,
+    };
+    let json: serde_json::Value = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["status"], "Inactive");
+
+    let req2 = ModifyUserAccessKeyRequest {
+        status: UserAccessKeyStatus::Active,
+    };
+    let json2: serde_json::Value = serde_json::to_value(&req2).unwrap();
+    assert_eq!(json2["status"], "Active");
+}
