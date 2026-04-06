@@ -19,13 +19,26 @@ jobs:
         include:
           - channel: beta
             os: ubuntu
+          - channel: nightly
+            os: ubuntu
+
     steps:
       - uses: actions/checkout@v5
+
       - name: Install Rust
         run: rustup default ${{ matrix.channel }}
-      - uses: swatinem/rust-cache@v2
-      - run: cargo build --all-targets
-      - run: cargo test
+
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+      
+      - name: Build
+        run: cargo build --all-targets
+
+      - name: Test
+        run: cargo test
+
+      - name: Clean up docs
+        run: cargo clean --doc
 
   clippy:
     runs-on: ubuntu-latest
