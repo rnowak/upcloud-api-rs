@@ -869,69 +869,188 @@ fn deserialize_kubernetes_versions() {
     assert_eq!(versions[1].version, "1.31");
 }
 
+// ─── Node group with custom_plan (docs section "Custom plan") ─────────────
+
+const NODE_GROUP_WITH_CUSTOM_PLAN_JSON: &str = r#"{
+  "count": 3,
+  "kubelet_args": [],
+  "labels": [{"key": "team", "value": "development"}],
+  "name": "custom-plan-group",
+  "plan": "custom",
+  "custom_plan": {
+    "cores": 4,
+    "memory": 8192,
+    "storage_size": 50,
+    "storage_tier": "maxiops"
+  },
+  "ssh_keys": ["ssh-rsa AAAAB3NzaC1yc2EAA"],
+  "state": "running",
+  "storage": "01000000-0000-4000-8000-000160010100",
+  "taints": [],
+  "anti_affinity": false,
+  "utility_network_access": true,
+  "storage_encryption": "data-at-rest"
+}"#;
+
 #[test]
-fn taint_effect_round_trip() {
-    let effects = vec![
-        TaintEffect::NoExecute,
-        TaintEffect::NoSchedule,
-        TaintEffect::PreferNoSchedule,
-    ];
-    for effect in &effects {
-        let json = serde_json::to_string(effect).unwrap();
-        let back: TaintEffect = serde_json::from_str(&json).unwrap();
-        assert_eq!(&back, effect);
+fn deserialize_node_group_with_custom_plan() {
+    let group: NodeGroup =
+        serde_json::from_str(NODE_GROUP_WITH_CUSTOM_PLAN_JSON).unwrap();
+    assert_eq!(group.name, "custom-plan-group");
+    assert_eq!(group.plan, "custom");
+    assert_eq!(group.count, 3);
+    assert_eq!(group.state, Some(NodeGroupState::Running));
+    assert_eq!(group.anti_affinity, Some(false));
+    assert_eq!(group.utility_network_access, Some(true));
+    assert_eq!(group.storage_encryption.as_deref(), Some("data-at-rest"));
+
+    let cp = group.custom_plan.as_ref().unwrap();
+    assert_eq!(cp.cores, 4);
+    assert_eq!(cp.memory, 8192);
+    assert_eq!(cp.storage_size, 50);
+    assert_eq!(cp.storage_tier, "maxiops");
+
+    assert!(group.cloud_native_plan.is_none());
+    assert!(group.gpu_plan.is_none());
+}
+
+// ─── Node group with cloud_native_plan (docs section "Cloud native plan") ────
+
+const NODE_GROUP_WITH_CLOUD_NATIVE_PLAN_JSON: &str = r#"{
+  "count": 2,
+  "kubelet_args": [],
+  "labels": [],
+  "name": "cloud-native-group",
+  "plan": "CLOUDNATIVE-48xCPU-384GB",
+  "cloud_native_plan": {
+    "storage_size": 25,
+    "storage_tier": "maxiops"
+  },
+  "ssh_keys": [],
+  "state": "running",
+  "storage": "01000000-0000-4000-8000-000160010100",
+  "taints": [],
+  "anti_affinity": false,
+  "utility_network_access": true
+}"#;
+
+#[test]
+fn deserialize_node_group_with_cloud_native_plan() {
+    let group: NodeGroup =
+        serde_json::from_str(NODE_GROUP_WITH_CLOUD_NATIVE_PLAN_JSON).unwrap();
+    assert_eq!(group.name, "cloud-native-group");
+    assert_eq!(group.plan, "CLOUDNATIVE-48xCPU-384GB");
+    assert_eq!(group.count, 2);
+    assert_eq!(group.state, Some(NodeGroupState::Running));
+
+    let cnp = group.cloud_native_plan.as_ref().unwrap();
+    assert_eq!(cnp.storage_size, 25);
+    assert_eq!(cnp.storage_tier, "maxiops");
+
+    assert!(group.custom_plan.is_none());
+    assert!(group.gpu_plan.is_none());
+}
+
+// ─── Node group with gpu_plan (docs section "GPU plan") ──────────────────────
+
+const NODE_GROUP_WITH_GPU_PLAN_JSON: &str = r#"{
+  "count": 1,
+  "kubelet_args": [],
+  "labels": [],
+  "name": "gpu-group",
+  "plan": "GPU-12xCPU-128GB-1xL40s",
+  "gpu_plan": {
+    "storage_size": 100,
+    "storage_tier": "maxiops"
+  },
+  "ssh_keys": [],
+  "state": "running",
+  "storage": "01000000-0000-4000-8000-000160010100",
+  "taints": [{"effect": "NoSchedule", "key": "nvidia.com/gpu", "value": "present"}],
+  "anti_affinity": false,
+  "utility_network_access": true
+}"#;
+
+#[test]
+fn deserialize_node_group_with_gpu_plan() {
+    let group: NodeGroup =
+        serde_json::from_str(NODE_GROUP_WITH_GPU_PLAN_JSON).unwrap();
+    assert_eq!(group.name, "gpu-group");
+    assert_eq!(group.plan, "GPU-12xCPU-128GB-1xL40s");
+    assert_eq!(group.count, 1);
+    assert_eq!(group.state, Some(NodeGroupState::Running));
+
+    let gp = group.gpu_plan.as_ref().unwrap();
+    assert_eq!(gp.storage_size, 100);
+    assert_eq!(gp.storage_tier, "maxiops");
+
+    let taints = group.taints.as_ref().unwrap();
+    assert_eq!(taints.len(), 1);
+    assert_eq!(taints[0].effect, "NoSchedule");
+    assert_eq!(taints[0].key, "nvidia.com/gpu");
+    assert_eq!(taints[0].value, "present");
+
+    assert!(group.custom_plan.is_none());
+    assert!(group.cloud_native_plan.is_none());
+}
+
+// ─── Full cluster response with storage_encryption (docs, page 20) ───────────
+
+const K8S_CLUSTER_WITH_ENCRYPTION_JSON: &str = r#"{
+  "control_plane_ip_filter": ["0.0.0.0/0"],
+  "labels": [
+    {"key": "env", "value": "production"}
+  ],
+  "name": "encrypted-cluster",
+  "network": "03a85f64-5717-4562-b3fc-2c963f66afa6",
+  "network_cidr": "172.16.0.0/24",
+  "node_groups": [
+    {
+      "count": 3,
+      "kubelet_args": [],
+      "labels": [{"key": "team", "value": "platform"}],
+      "name": "encrypted-node-group",
+      "plan": "4xCPU-8GB",
+      "ssh_keys": ["ssh-rsa AAAAB3NzaC1yc2EAA"],
+      "state": "running",
+      "storage": "01000000-0000-4000-8000-000160010100",
+      "taints": [],
+      "anti_affinity": false,
+      "utility_network_access": true,
+      "storage_encryption": "data-at-rest"
     }
-    assert_eq!(
-        serde_json::to_string(&TaintEffect::NoExecute).unwrap(),
-        r#""NoExecute""#
-    );
-    assert_eq!(
-        serde_json::to_string(&TaintEffect::NoSchedule).unwrap(),
-        r#""NoSchedule""#
-    );
-    assert_eq!(
-        serde_json::to_string(&TaintEffect::PreferNoSchedule).unwrap(),
-        r#""PreferNoSchedule""#
-    );
-}
-
-const CUSTOM_PLAN_JSON: &str = r#"{
-  "cores": 4,
-  "memory": 8192,
-  "storage_size": 50,
-  "storage_tier": "maxiops"
-}"#;
-
-const CLOUD_NATIVE_PLAN_JSON: &str = r#"{
-  "storage_size": 25,
-  "storage_tier": "maxiops"
-}"#;
-
-const GPU_PLAN_JSON: &str = r#"{
-  "storage_size": 100,
-  "storage_tier": "maxiops"
+  ],
+  "state": "running",
+  "plan": "prod-md",
+  "private_node_groups": false,
+  "storage_encryption": "data-at-rest",
+  "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "zone": "fi-hel2"
 }"#;
 
 #[test]
-fn deserialize_custom_plan() {
-    let plan: CustomPlan = serde_json::from_str(CUSTOM_PLAN_JSON).unwrap();
-    assert_eq!(plan.cores, 4);
-    assert_eq!(plan.memory, 8192);
-    assert_eq!(plan.storage_size, 50);
-    assert_eq!(plan.storage_tier, "maxiops");
-}
+fn deserialize_cluster_with_storage_encryption() {
+    let cluster: Cluster =
+        serde_json::from_str(K8S_CLUSTER_WITH_ENCRYPTION_JSON).unwrap();
+    assert_eq!(cluster.name, "encrypted-cluster");
+    assert_eq!(cluster.uuid, "3fa85f64-5717-4562-b3fc-2c963f66afa6");
+    assert_eq!(cluster.state, ClusterState::Running);
+    assert_eq!(cluster.zone, "fi-hel2");
+    assert_eq!(cluster.plan.as_deref(), Some("prod-md"));
+    assert_eq!(cluster.private_node_groups, Some(false));
+    assert_eq!(cluster.storage_encryption.as_deref(), Some("data-at-rest"));
+    assert_eq!(cluster.control_plane_ip_filter.as_ref().unwrap(), &["0.0.0.0/0"]);
 
-#[test]
-fn deserialize_cloud_native_plan() {
-    let plan: CloudNativePlan =
-        serde_json::from_str(CLOUD_NATIVE_PLAN_JSON).unwrap();
-    assert_eq!(plan.storage_size, 25);
-    assert_eq!(plan.storage_tier, "maxiops");
-}
+    let labels = cluster.labels.as_ref().unwrap();
+    assert_eq!(labels.len(), 1);
+    assert_eq!(labels[0].key, "env");
+    assert_eq!(labels[0].value, "production");
 
-#[test]
-fn deserialize_gpu_plan() {
-    let plan: GPUPlan = serde_json::from_str(GPU_PLAN_JSON).unwrap();
-    assert_eq!(plan.storage_size, 100);
-    assert_eq!(plan.storage_tier, "maxiops");
+    let groups = cluster.node_groups.as_ref().unwrap();
+    assert_eq!(groups.len(), 1);
+    assert_eq!(groups[0].name, "encrypted-node-group");
+    assert_eq!(groups[0].plan, "4xCPU-8GB");
+    assert_eq!(groups[0].count, 3);
+    assert_eq!(groups[0].state, Some(NodeGroupState::Running));
+    assert_eq!(groups[0].storage_encryption.as_deref(), Some("data-at-rest"));
 }

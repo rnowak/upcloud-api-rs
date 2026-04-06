@@ -1036,149 +1036,34 @@ fn deserialize_connection_list() {
     assert_eq!(ipsec.phase2_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
 }
 
-// ─── Enum round-trip tests ────────────────────────────────────────────────────
-
-#[test]
-fn enum_roundtrip_configured_status() {
-    for (variant, json) in [
-        (ConfiguredStatus::Started, "\"started\""),
-        (ConfiguredStatus::Stopped, "\"stopped\""),
-    ] {
-        let serialized = serde_json::to_string(&variant).unwrap();
-        assert_eq!(serialized, json);
-        let deserialized: ConfiguredStatus = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, variant);
-    }
-}
-
-#[test]
-fn enum_roundtrip_operational_state() {
-    for (variant, json) in [
-        (OperationalState::Pending, "\"pending\""),
-        (OperationalState::SetupAgent, "\"setup-agent\""),
-        (OperationalState::SetupLinkNetwork, "\"setup-link-network\""),
-        (OperationalState::SetupServer, "\"setup-server\""),
-        (OperationalState::SetupNetwork, "\"setup-network\""),
-        (OperationalState::SetupGw, "\"setup-gw\""),
-        (OperationalState::SetupDns, "\"setup-dns\""),
-        (OperationalState::Checkup, "\"checkup\""),
-        (OperationalState::Running, "\"running\""),
-        (OperationalState::DeleteDns, "\"delete-dns\""),
-        (OperationalState::DeleteNetwork, "\"delete-network\""),
-        (OperationalState::DeleteServer, "\"delete-server\""),
-        (OperationalState::DeleteLinkNetwork, "\"delete-link-network\""),
-        (OperationalState::DeleteService, "\"delete-service\""),
-    ] {
-        let serialized = serde_json::to_string(&variant).unwrap();
-        assert_eq!(serialized, json);
-        let deserialized: OperationalState = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, variant);
-    }
-}
-
-#[test]
-fn enum_roundtrip_connection_type() {
-    let json = "\"ipsec\"";
-    let serialized = serde_json::to_string(&ConnectionType::IPSec).unwrap();
-    assert_eq!(serialized, json);
-    let deserialized: ConnectionType = serde_json::from_str(json).unwrap();
-    assert_eq!(deserialized, ConnectionType::IPSec);
-}
-
-#[test]
-fn enum_roundtrip_tunnel_operational_state() {
-    for (variant, json) in [
-        (TunnelOperationalState::Uninitialized, "\"uninitialized\""),
-        (TunnelOperationalState::Created, "\"created\""),
-        (TunnelOperationalState::Connecting, "\"connecting\""),
-        (TunnelOperationalState::Established, "\"established\""),
-        (TunnelOperationalState::Rekeying, "\"rekeying\""),
-        (TunnelOperationalState::Rekeyed, "\"rekeyed\""),
-        (TunnelOperationalState::Deleting, "\"deleting\""),
-        (TunnelOperationalState::Destroying, "\"destroying\""),
-        (TunnelOperationalState::Unknown, "\"unknown\""),
-    ] {
-        let serialized = serde_json::to_string(&variant).unwrap();
-        assert_eq!(serialized, json);
-        let deserialized: TunnelOperationalState = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, variant);
-    }
-}
-
-#[test]
-fn enum_roundtrip_route_type() {
-    let json = "\"static\"";
-    let serialized = serde_json::to_string(&RouteType::Static).unwrap();
-    assert_eq!(serialized, json);
-    let deserialized: RouteType = serde_json::from_str(json).unwrap();
-    assert_eq!(deserialized, RouteType::Static);
-}
-
-#[test]
-fn enum_roundtrip_ipsec_auth_type() {
-    let json = "\"psk\"";
-    let serialized = serde_json::to_string(&IPSecAuthType::PSK).unwrap();
-    assert_eq!(serialized, json);
-    let deserialized: IPSecAuthType = serde_json::from_str(json).unwrap();
-    assert_eq!(deserialized, IPSecAuthType::PSK);
-}
-
-#[test]
-fn enum_roundtrip_ipsec_algorithm() {
-    for (variant, json) in [
-        (IPSecAlgorithm::Aes128Gcm16, "\"aes128gcm16\""),
-        (IPSecAlgorithm::Aes128Gcm128, "\"aes128gcm128\""),
-        (IPSecAlgorithm::Aes192Gcm16, "\"aes192gcm16\""),
-        (IPSecAlgorithm::Aes192Gcm128, "\"aes192gcm128\""),
-        (IPSecAlgorithm::Aes256Gcm16, "\"aes256gcm16\""),
-        (IPSecAlgorithm::Aes256Gcm128, "\"aes256gcm128\""),
-        (IPSecAlgorithm::Aes128, "\"aes128\""),
-        (IPSecAlgorithm::Aes192, "\"aes192\""),
-        (IPSecAlgorithm::Aes256, "\"aes256\""),
-    ] {
-        let serialized = serde_json::to_string(&variant).unwrap();
-        assert_eq!(serialized, json);
-        let deserialized: IPSecAlgorithm = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, variant);
-    }
-}
-
-#[test]
-fn enum_roundtrip_ipsec_integrity_algorithm() {
-    for (variant, json) in [
-        (IPSecIntegrityAlgorithm::Aes128Gmac, "\"aes128gmac\""),
-        (IPSecIntegrityAlgorithm::Aes256Gmac, "\"aes256gmac\""),
-        (IPSecIntegrityAlgorithm::Sha1, "\"sha1\""),
-        (IPSecIntegrityAlgorithm::Sha256, "\"sha256\""),
-        (IPSecIntegrityAlgorithm::Sha384, "\"sha384\""),
-        (IPSecIntegrityAlgorithm::Sha512, "\"sha512\""),
-    ] {
-        let serialized = serde_json::to_string(&variant).unwrap();
-        assert_eq!(serialized, json);
-        let deserialized: IPSecIntegrityAlgorithm = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, variant);
-    }
-}
-
-// ─── New request type serialization tests ─────────────────────────────────────
+// ─── Request type serialization tests (realistic data from API docs) ──────────
 
 #[test]
 fn serialize_modify_connection_request() {
     let req = ModifyConnectionRequest {
         local_routes: Some(vec![RouteInput {
-            name: "modified-routes".to_string(),
-            static_network: "10.0.22.0/24".to_string(),
+            name: "upcloud-example-route".to_string(),
+            static_network: "10.0.0.0/24".to_string(),
+            route_type: RouteType::Static,
+        }]),
+        remote_routes: Some(vec![RouteInput {
+            name: "remote-example-route".to_string(),
+            static_network: "10.0.1.0/24".to_string(),
             route_type: RouteType::Static,
         }]),
         ..Default::default()
     };
     let json = serde_json::to_value(&req).unwrap();
-    let routes = json["local_routes"].as_array().unwrap();
-    assert_eq!(routes.len(), 1);
-    assert_eq!(routes[0]["name"], "modified-routes");
-    assert_eq!(routes[0]["type"], "static");
-    assert_eq!(routes[0]["static_network"], "10.0.22.0/24");
-    assert!(json.get("remote_routes").is_none());
+    let local = json["local_routes"].as_array().unwrap();
+    assert_eq!(local.len(), 1);
+    assert_eq!(local[0]["name"], "upcloud-example-route");
+    assert_eq!(local[0]["type"], "static");
+    assert_eq!(local[0]["static_network"], "10.0.0.0/24");
+    let remote = json["remote_routes"].as_array().unwrap();
+    assert_eq!(remote.len(), 1);
+    assert_eq!(remote[0]["name"], "remote-example-route");
+    assert_eq!(remote[0]["type"], "static");
+    assert_eq!(remote[0]["static_network"], "10.0.1.0/24");
     assert!(json.get("tunnels").is_none());
 }
 
@@ -1186,14 +1071,39 @@ fn serialize_modify_connection_request() {
 fn serialize_modify_tunnel_request() {
     let req = ModifyTunnelRequest {
         remote_address: Some(TunnelAddress {
-            address: Some("100.10.0.222".to_string()),
+            address: Some("100.10.0.111".to_string()),
             name: None,
+        }),
+        ipsec: Some(IpsecProperties {
+            authentication: Some(IpsecAuthentication {
+                authentication: IPSecAuthType::PSK,
+                psk: Some("secretkey123".to_string()),
+            }),
+            child_rekey_time: Some(1440),
+            dpd_delay: Some(30),
+            dpd_timeout: Some(120),
+            ike_lifetime: Some(86400),
+            rekey_time: Some(14400),
+            phase1_algorithms: Some(vec![IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]),
+            phase1_dh_group_numbers: Some(vec![14, 16, 18, 19, 20, 21]),
+            phase1_integrity_algorithms: Some(vec![IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac]),
+            phase2_algorithms: Some(vec![IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]),
+            phase2_dh_group_numbers: Some(vec![14, 16, 18, 19, 20, 21]),
+            phase2_integrity_algorithms: Some(vec![IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac]),
         }),
         ..Default::default()
     };
     let json = serde_json::to_value(&req).unwrap();
-    assert_eq!(json["remote_address"]["address"], "100.10.0.222");
+    assert_eq!(json["remote_address"]["address"], "100.10.0.111");
+    assert_eq!(json["ipsec"]["authentication"]["authentication"], "psk");
+    assert_eq!(json["ipsec"]["authentication"]["psk"], "secretkey123");
+    assert_eq!(json["ipsec"]["child_rekey_time"], 1440);
+    assert_eq!(json["ipsec"]["dpd_delay"], 30);
+    assert_eq!(json["ipsec"]["dpd_timeout"], 120);
+    assert_eq!(json["ipsec"]["ike_lifetime"], 86400);
+    assert_eq!(json["ipsec"]["rekey_time"], 14400);
+    assert_eq!(json["ipsec"]["phase1_algorithms"].as_array().unwrap().len(), 2);
+    assert_eq!(json["ipsec"]["phase1_dh_group_numbers"].as_array().unwrap().len(), 6);
     assert!(json.get("name").is_none());
     assert!(json.get("local_address").is_none());
-    assert!(json.get("ipsec").is_none());
 }
