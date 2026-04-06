@@ -208,9 +208,7 @@ fn deserialize_db_session_list() {
 
 // ─── New deserialization tests ───────────────────────────────────────────
 
-#[test]
-fn deserialize_pg_available_extensions() {
-    let json = r#"[
+const PG_AVAILABLE_EXTENSIONS_JSON: &str = r#"[
   {
 "extensions": [
   {"default_version": "1.0", "name": "bloom", "versions": ["1.0"]},
@@ -228,7 +226,10 @@ fn deserialize_pg_available_extensions() {
 "version": "14"
   }
 ]"#;
-    let versions: Vec<PgVersionExtensions> = serde_json::from_str(json).unwrap();
+
+#[test]
+fn deserialize_pg_available_extensions() {
+    let versions: Vec<PgVersionExtensions> = serde_json::from_str(PG_AVAILABLE_EXTENSIONS_JSON).unwrap();
     assert_eq!(versions.len(), 2);
     assert_eq!(versions[0].version, "13");
     assert_eq!(versions[0].extensions.len(), 3);
@@ -260,14 +261,15 @@ fn deserialize_pg_available_extensions() {
     assert_eq!(versions[1].extensions[2].versions, vec!["0.8.1"]);
 }
 
-#[test]
-fn deserialize_instance_available_extensions() {
-    let json = r#"[
+const INSTANCE_AVAILABLE_EXTENSIONS_JSON: &str = r#"[
   {"default_version": "1.6", "name": "pg_buffercache", "versions": ["1.2", "1.3", "1.4", "1.5", "1.6"]},
   {"default_version": "1.6", "name": "pg_cron", "versions": ["1.0", "1.1", "1.2", "1.3", "1.4", "1.4-1", "1.5", "1.6"]},
   {"default_version": "5.2.4", "name": "pg_partman", "versions": ["5.2.4"]}
 ]"#;
-    let exts: Vec<PgExtensionDetail> = serde_json::from_str(json).unwrap();
+
+#[test]
+fn deserialize_instance_available_extensions() {
+    let exts: Vec<PgExtensionDetail> = serde_json::from_str(INSTANCE_AVAILABLE_EXTENSIONS_JSON).unwrap();
     assert_eq!(exts.len(), 3);
     assert_eq!(exts[0].name, "pg_buffercache");
     assert_eq!(exts[0].default_version, "1.6");
@@ -280,9 +282,7 @@ fn deserialize_instance_available_extensions() {
     assert_eq!(exts[2].versions, vec!["5.2.4"]);
 }
 
-#[test]
-fn deserialize_db_service_types() {
-    let json = r#"{
+const DB_SERVICE_TYPES_JSON: &str = r#"{
   "mysql": {
 "name": "mysql",
 "description": "MySQL - Relational Database Management System",
@@ -312,7 +312,10 @@ fn deserialize_db_service_types() {
 "properties": {}
   }
 }"#;
-    let val: serde_json::Value = serde_json::from_str(json).unwrap();
+
+#[test]
+fn deserialize_db_service_types() {
+    let val: serde_json::Value = serde_json::from_str(DB_SERVICE_TYPES_JSON).unwrap();
     assert!(val.is_object());
     let obj = val.as_object().unwrap();
     assert!(obj.contains_key("mysql"));
@@ -349,9 +352,7 @@ fn deserialize_db_service_types() {
     assert!(pg["properties"].as_object().unwrap().is_empty());
 }
 
-#[test]
-fn deserialize_create_db_request() {
-    let json = r#"{
+const CREATE_DB_REQUEST_JSON: &str = r#"{
   "hostname_prefix": "doc-api-unique-prefix",
   "plan": "1x1xCPU-2GB-25GB",
   "title": "my-managed-database",
@@ -372,8 +373,11 @@ fn deserialize_create_db_request() {
 {"key": "foo", "value": "bar"}
   ]
 }"#;
+
+#[test]
+fn deserialize_create_db_request() {
     // The docs use hostname_prefix but our type uses name; parse as Value first
-    let val: serde_json::Value = serde_json::from_str(json).unwrap();
+    let val: serde_json::Value = serde_json::from_str(CREATE_DB_REQUEST_JSON).unwrap();
     assert_eq!(val["hostname_prefix"], "doc-api-unique-prefix");
     assert_eq!(val["plan"], "1x1xCPU-2GB-25GB");
     assert_eq!(val["title"], "my-managed-database");
@@ -401,9 +405,7 @@ fn deserialize_create_db_request() {
     assert_eq!(labels[1]["value"], "bar");
 }
 
-#[test]
-fn deserialize_db_details() {
-    let json = r#"{
+const DB_DETAILS_JSON: &str = r#"{
   "uuid": "09d9d824-8b3e-4a57-a9b3-77ec51fd5c84",
   "name": "pg-2x2xcpu-4gb-50gb-de-fra1",
   "title": "pg-2x2xcpu-4gb-50gb-de-fra1",
@@ -422,12 +424,15 @@ fn deserialize_db_details() {
   "service_uri": "postgres://upadmin:pass@host:11550/defaultdb?sslmode=require",
   "service_uri_params": {"host": "example.db.upclouddatabases.com", "port": "11550"}
 }"#;
+
+#[test]
+fn deserialize_db_details() {
     // Parse as Value to verify full JSON validity
-    let val: serde_json::Value = serde_json::from_str(json).unwrap();
+    let val: serde_json::Value = serde_json::from_str(DB_DETAILS_JSON).unwrap();
     assert_eq!(val["uuid"], "09d9d824-8b3e-4a57-a9b3-77ec51fd5c84");
 
     // Parse as Database
-    let db: Database = serde_json::from_str(json).unwrap();
+    let db: Database = serde_json::from_str(DB_DETAILS_JSON).unwrap();
     assert_eq!(db.uuid, "09d9d824-8b3e-4a57-a9b3-77ec51fd5c84");
     assert_eq!(db.name, "pg-2x2xcpu-4gb-50gb-de-fra1");
     assert_eq!(db.title, "pg-2x2xcpu-4gb-50gb-de-fra1");
@@ -473,15 +478,16 @@ fn deserialize_db_details() {
     assert_eq!(props["version"], "13");
 }
 
-#[test]
-fn deserialize_modify_db_request() {
-    let json = r#"{
+const MODIFY_DB_REQUEST_JSON: &str = r#"{
   "title": "my-managed-database",
   "powered": true,
   "plan": "1x1xCPU-2GB-25GB",
   "properties": {"automatic_utility_network_ip_filter": true}
 }"#;
-    let req: ModifyRequest = serde_json::from_str(json).unwrap();
+
+#[test]
+fn deserialize_modify_db_request() {
+    let req: ModifyRequest = serde_json::from_str(MODIFY_DB_REQUEST_JSON).unwrap();
     assert_eq!(req.title.as_deref(), Some("my-managed-database"));
     assert_eq!(req.powered, Some(true));
     assert_eq!(req.plan.as_deref(), Some("1x1xCPU-2GB-25GB"));
@@ -490,10 +496,11 @@ fn deserialize_modify_db_request() {
     assert!(req.labels.is_none());
 }
 
+const CREATE_DB_USER_MYSQL_JSON: &str = r#"{"username": "api-doc-user", "authentication": "caching_sha2_password", "password": "new-password"}"#;
+
 #[test]
 fn deserialize_create_db_user_mysql() {
-    let json = r#"{"username": "api-doc-user", "authentication": "caching_sha2_password", "password": "new-password"}"#;
-    let req: CreateUserRequest = serde_json::from_str(json).unwrap();
+    let req: CreateUserRequest = serde_json::from_str(CREATE_DB_USER_MYSQL_JSON).unwrap();
     assert_eq!(req.username, "api-doc-user");
     assert_eq!(req.password, "new-password");
     assert_eq!(req.authentication.as_deref(), Some("caching_sha2_password"));
@@ -501,10 +508,11 @@ fn deserialize_create_db_user_mysql() {
     assert!(req.pg_allow_replication.is_none());
 }
 
+const DB_USER_DETAIL_MYSQL_JSON: &str = r#"{"username": "api-doc-user", "password": "my-password", "authentication": "caching_sha2_password", "type": "normal"}"#;
+
 #[test]
 fn deserialize_db_user_detail_mysql() {
-    let json = r#"{"username": "api-doc-user", "password": "my-password", "authentication": "caching_sha2_password", "type": "normal"}"#;
-    let user: User = serde_json::from_str(json).unwrap();
+    let user: User = serde_json::from_str(DB_USER_DETAIL_MYSQL_JSON).unwrap();
     assert_eq!(user.username, "api-doc-user");
     assert_eq!(user.password.as_deref(), Some("my-password"));
     assert_eq!(
@@ -515,22 +523,23 @@ fn deserialize_db_user_detail_mysql() {
     assert!(user.pg_allow_replication.is_none());
 }
 
+const DB_USER_DETAIL_PG_JSON: &str = r#"{"username": "api-doc-user", "password": "new-password", "type": "normal", "pg_access_control": {"allow_replication": true}}"#;
+
 #[test]
 fn deserialize_db_user_detail_pg() {
-    let json = r#"{"username": "api-doc-user", "password": "new-password", "type": "normal", "pg_access_control": {"allow_replication": true}}"#;
     // pg_access_control is not in User; parse as Value
-    let val: serde_json::Value = serde_json::from_str(json).unwrap();
+    let val: serde_json::Value = serde_json::from_str(DB_USER_DETAIL_PG_JSON).unwrap();
     assert_eq!(val["username"], "api-doc-user");
     assert_eq!(val["password"], "new-password");
     assert_eq!(val["type"], "normal");
     assert_eq!(val["pg_access_control"]["allow_replication"], true);
 }
 
+const MODIFY_DB_USER_REQUEST_JSON: &str = r#"{"authentication": "caching_sha2_password", "password": "new-password"}"#;
+
 #[test]
 fn deserialize_modify_db_user_request() {
-    let json =
-        r#"{"authentication": "caching_sha2_password", "password": "new-password"}"#;
-    let req: ModifyUserRequest = serde_json::from_str(json).unwrap();
+    let req: ModifyUserRequest = serde_json::from_str(MODIFY_DB_USER_REQUEST_JSON).unwrap();
     assert_eq!(req.password.as_deref(), Some("new-password"));
     assert_eq!(
         req.authentication.as_deref(),
@@ -539,26 +548,25 @@ fn deserialize_modify_db_user_request() {
     assert!(req.pg_allow_replication.is_none());
 }
 
+const CREATE_LOGICAL_DB_JSON: &str = r#"{"name": "database-doc-api", "lc_collate": "en_US.UTF8", "lc_ctype": "en_US.UTF8"}"#;
+
 #[test]
 fn deserialize_create_logical_db() {
-    let json =
-        r#"{"name": "database-doc-api", "lc_collate": "en_US.UTF8", "lc_ctype": "en_US.UTF8"}"#;
-    let req: CreateLogicalDatabaseRequest = serde_json::from_str(json).unwrap();
+    let req: CreateLogicalDatabaseRequest = serde_json::from_str(CREATE_LOGICAL_DB_JSON).unwrap();
     assert_eq!(req.name, "database-doc-api");
     assert_eq!(req.lc_collate.as_deref(), Some("en_US.UTF8"));
     assert_eq!(req.lc_ctype.as_deref(), Some("en_US.UTF8"));
 }
 
+const SESSION_TERMINATE_JSON: &str = r#"{"success": true}"#;
+
 #[test]
 fn deserialize_session_terminate() {
-    let json = r#"{"success": true}"#;
-    let val: serde_json::Value = serde_json::from_str(json).unwrap();
+    let val: serde_json::Value = serde_json::from_str(SESSION_TERMINATE_JSON).unwrap();
     assert_eq!(val["success"], true);
 }
 
-#[test]
-fn deserialize_pg_sessions_detailed() {
-    let json = r#"{
+const PG_SESSIONS_DETAILED_JSON: &str = r#"{
   "pg": [
 {
   "application_name": "client 1.5.14",
@@ -576,7 +584,10 @@ fn deserialize_pg_sessions_detailed() {
 }
   ]
 }"#;
-    let val: serde_json::Value = serde_json::from_str(json).unwrap();
+
+#[test]
+fn deserialize_pg_sessions_detailed() {
+    let val: serde_json::Value = serde_json::from_str(PG_SESSIONS_DETAILED_JSON).unwrap();
     let sessions = val["pg"].as_array().unwrap();
     assert_eq!(sessions.len(), 1);
     let s = &sessions[0];
@@ -594,9 +605,7 @@ fn deserialize_pg_sessions_detailed() {
     assert_eq!(s["usename"], "upadmin");
 }
 
-#[test]
-fn deserialize_query_statistics() {
-    let json = r#"{
+const QUERY_STATISTICS_JSON: &str = r#"{
   "pg": [
 {
   "blk_read_time": 0,
@@ -613,7 +622,10 @@ fn deserialize_query_statistics() {
 }
   ]
 }"#;
-    let val: serde_json::Value = serde_json::from_str(json).unwrap();
+
+#[test]
+fn deserialize_query_statistics() {
+    let val: serde_json::Value = serde_json::from_str(QUERY_STATISTICS_JSON).unwrap();
     let stats = val["pg"].as_array().unwrap();
     assert_eq!(stats.len(), 1);
     let s = &stats[0];
@@ -630,9 +642,7 @@ fn deserialize_query_statistics() {
     assert_eq!(s["user_name"], "upadmin");
 }
 
-#[test]
-fn deserialize_db_metrics() {
-    let json = r#"{
+const DB_METRICS_JSON: &str = r#"{
   "cpu_usage": {
 "data": {
   "cols": [
@@ -646,7 +656,10 @@ fn deserialize_db_metrics() {
 "hints": {"title": "CPU usage %"}
   }
 }"#;
-    let val: serde_json::Value = serde_json::from_str(json).unwrap();
+
+#[test]
+fn deserialize_db_metrics() {
+    let val: serde_json::Value = serde_json::from_str(DB_METRICS_JSON).unwrap();
     let cpu = &val["cpu_usage"];
     let cols = cpu["data"]["cols"].as_array().unwrap();
     assert_eq!(cols.len(), 2);
@@ -661,9 +674,7 @@ fn deserialize_db_metrics() {
     assert_eq!(cpu["hints"]["title"], "CPU usage %");
 }
 
-#[test]
-fn deserialize_db_logs() {
-    let json = r#"{
+const DB_LOGS_JSON: &str = r#"{
   "first_log_offset": "1642770443687",
   "offset": "1642770443687",
   "logs": [
@@ -675,7 +686,10 @@ fn deserialize_db_logs() {
 }
   ]
 }"#;
-    let val: serde_json::Value = serde_json::from_str(json).unwrap();
+
+#[test]
+fn deserialize_db_logs() {
+    let val: serde_json::Value = serde_json::from_str(DB_LOGS_JSON).unwrap();
     assert_eq!(val["first_log_offset"], "1642770443687");
     assert_eq!(val["offset"], "1642770443687");
     let logs = val["logs"].as_array().unwrap();
@@ -686,10 +700,11 @@ fn deserialize_db_logs() {
     assert_eq!(logs[0]["service"], "postgresql-13.service");
 }
 
+const DB_VERSIONS_JSON: &str = r#"["10", "11", "12", "13", "14"]"#;
+
 #[test]
 fn deserialize_db_versions() {
-    let json = r#"["10", "11", "12", "13", "14"]"#;
-    let versions: Vec<String> = serde_json::from_str(json).unwrap();
+    let versions: Vec<String> = serde_json::from_str(DB_VERSIONS_JSON).unwrap();
     assert_eq!(versions.len(), 5);
     assert_eq!(versions[0], "10");
     assert_eq!(versions[1], "11");
@@ -698,12 +713,13 @@ fn deserialize_db_versions() {
     assert_eq!(versions[4], "14");
 }
 
-#[test]
-fn deserialize_db_networks() {
-    let json = r#"[
+const DB_NETWORKS_JSON: &str = r#"[
   {"uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4", "name": "example-private-network", "family": "IPv4", "type": "private"}
 ]"#;
-    let nets: Vec<Network> = serde_json::from_str(json).unwrap();
+
+#[test]
+fn deserialize_db_networks() {
+    let nets: Vec<Network> = serde_json::from_str(DB_NETWORKS_JSON).unwrap();
     assert_eq!(nets.len(), 1);
     assert_eq!(nets[0].uuid, "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4");
     assert_eq!(nets[0].name, "example-private-network");
@@ -861,9 +877,7 @@ fn deserialize_state_kebab_case() {
 // ─── Database detail with backups and maintenance from docs ───────────────
 // Real JSON from UpCloud API 1.3 docs: "Get Managed Database details"
 
-#[test]
-fn deserialize_database_detail_from_docs() {
-    let json = r#"{
+const DATABASE_DETAIL_FROM_DOCS_JSON: &str = r#"{
   "backups": [
     {
       "backup_name": "backup-2022-01-06T12:36:06.739000Z",
@@ -933,7 +947,10 @@ fn deserialize_database_detail_from_docs() {
   "termination_protection": false,
   "zone": "de-fra1"
 }"#;
-    let db: Database = serde_json::from_str(json).unwrap();
+
+#[test]
+fn deserialize_database_detail_from_docs() {
+    let db: Database = serde_json::from_str(DATABASE_DETAIL_FROM_DOCS_JSON).unwrap();
     assert_eq!(db.uuid, "09d9d824-8b3e-4a57-a9b3-77ec51fd5c84");
     assert_eq!(db.name, "pg-2x2xcpu-4gb-50gb-de-fra1");
     assert_eq!(db.title, "pg-2x2xcpu-4gb-50gb-de-fra1");
@@ -982,25 +999,25 @@ fn deserialize_database_detail_from_docs() {
 
 // ─── OpenSearch access control types ──────────────────────────────────────
 
+const OPENSEARCH_ACCESS_CONTROL_JSON: &str = r#"{"access_control": true, "extended_access_control": false}"#;
+
 #[test]
 fn deserialize_opensearch_access_control() {
-    let json = r#"{"access_control": true, "extended_access_control": false}"#;
-    let acl: OpenSearchAccessControl = serde_json::from_str(json).unwrap();
+    let acl: OpenSearchAccessControl = serde_json::from_str(OPENSEARCH_ACCESS_CONTROL_JSON).unwrap();
     assert_eq!(acl.access_control, Some(true));
     assert_eq!(acl.extended_access_control, Some(false));
 }
 
+const OPENSEARCH_ACCESS_CONTROL_RULE_JSON: &str = r#"{"index": "my-index-*", "permission": "readwrite"}"#;
+
 #[test]
 fn deserialize_opensearch_access_control_rule() {
-    let json = r#"{"index": "my-index-*", "permission": "readwrite"}"#;
-    let rule: OpenSearchAccessControlRule = serde_json::from_str(json).unwrap();
+    let rule: OpenSearchAccessControlRule = serde_json::from_str(OPENSEARCH_ACCESS_CONTROL_RULE_JSON).unwrap();
     assert_eq!(rule.index, "my-index-*");
     assert_eq!(rule.permission, "readwrite");
 }
 
-#[test]
-fn deserialize_opensearch_index() {
-    let json = r#"{
+const OPENSEARCH_INDEX_JSON: &str = r#"{
   "create_time": "2022-06-01T00:00:00Z",
   "docs": 500,
   "health": "green",
@@ -1011,7 +1028,10 @@ fn deserialize_opensearch_index() {
   "size": 1048576,
   "status": "open"
 }"#;
-    let idx: OpenSearchIndex = serde_json::from_str(json).unwrap();
+
+#[test]
+fn deserialize_opensearch_index() {
+    let idx: OpenSearchIndex = serde_json::from_str(OPENSEARCH_INDEX_JSON).unwrap();
     assert_eq!(idx.index_name, "test-index");
     assert_eq!(idx.docs, Some(500));
     assert_eq!(idx.health.as_deref(), Some("green"));
@@ -1024,17 +1044,16 @@ fn deserialize_opensearch_index() {
 
 // ─── ModifyAccessControlRequest ───────────────────────────────────────────
 
+const MODIFY_ACCESS_CONTROL_REQUEST_JSON: &str = r#"{"access_control": true, "extended_access_control": false}"#;
+
 #[test]
 fn deserialize_modify_access_control_request() {
-    let json = r#"{"access_control": true, "extended_access_control": false}"#;
-    let req: ModifyAccessControlRequest = serde_json::from_str(json).unwrap();
+    let req: ModifyAccessControlRequest = serde_json::from_str(MODIFY_ACCESS_CONTROL_REQUEST_JSON).unwrap();
     assert_eq!(req.access_control, Some(true));
     assert_eq!(req.extended_access_control, Some(false));
 }
 
-#[test]
-fn deserialize_user_opensearch_access_control() {
-    let json = r#"{
+const USER_OPENSEARCH_ACCESS_CONTROL_JSON: &str = r#"{
   "opensearch_access_control": {
     "rules": [
       {"index": "logs-*", "permission": "read"},
@@ -1042,7 +1061,10 @@ fn deserialize_user_opensearch_access_control() {
     ]
   }
 }"#;
-    let req: ModifyUserAccessControlRequest = serde_json::from_str(json).unwrap();
+
+#[test]
+fn deserialize_user_opensearch_access_control() {
+    let req: ModifyUserAccessControlRequest = serde_json::from_str(USER_OPENSEARCH_ACCESS_CONTROL_JSON).unwrap();
     let acl = req.opensearch_access_control.as_ref().unwrap();
     let rules = acl.rules.as_ref().unwrap();
     assert_eq!(rules.len(), 2);

@@ -300,10 +300,12 @@ fn deserialize_lb_list() {
 
 // ─── Test 1: Plan detail ──────────────────────────────────────────────────
 
+const LB_PLAN_DETAIL_JSON: &str = r#"{"name": "development", "per_server_max_sessions": 10000, "server_number": 1}"#;
+
+
 #[test]
 fn deserialize_lb_plan_detail() {
-    let json = r#"{"name": "development", "per_server_max_sessions": 10000, "server_number": 1}"#;
-    let plan: Plan = serde_json::from_str(json).unwrap();
+    let plan: Plan = serde_json::from_str(LB_PLAN_DETAIL_JSON).unwrap();
     assert_eq!(plan.name, "development");
     assert_eq!(plan.per_server_max_sessions, Some(10000));
     assert_eq!(plan.server_number, Some(1));
@@ -317,9 +319,7 @@ fn deserialize_lb_plan_detail() {
 
 // ─── Test 2: Create LB request ────────────────────────────────────────────
 
-#[test]
-fn deserialize_create_lb_request() {
-    let json = r#"{
+const CREATE_LB_REQUEST_JSON: &str = r#"{
         "name": "example-service",
         "plan": "development",
         "zone": "fi-hel1",
@@ -329,7 +329,11 @@ fn deserialize_create_lb_request() {
             {"name": "example-network-2", "type": "private", "family": "IPv4", "uuid": "03631160-d57a-4926-ad48-a2f828229dcb"}
         ]
     }"#;
-    let val: serde_json::Value = serde_json::from_str(json).unwrap();
+
+
+#[test]
+fn deserialize_create_lb_request() {
+    let val: serde_json::Value = serde_json::from_str(CREATE_LB_REQUEST_JSON).unwrap();
     assert_eq!(val["name"], "example-service");
     assert_eq!(val["plan"], "development");
     assert_eq!(val["zone"], "fi-hel1");
@@ -345,7 +349,7 @@ fn deserialize_create_lb_request() {
     assert_eq!(val["networks"][1]["uuid"], "03631160-d57a-4926-ad48-a2f828229dcb");
 
     // Also parse as CreateRequest
-    let req: CreateRequest = serde_json::from_str(json).unwrap();
+    let req: CreateRequest = serde_json::from_str(CREATE_LB_REQUEST_JSON).unwrap();
     assert_eq!(req.name, "example-service");
     assert_eq!(req.plan, "development");
     assert_eq!(req.zone, "fi-hel1");
@@ -364,9 +368,7 @@ fn deserialize_create_lb_request() {
 
 // ─── Test 3: LB service details ───────────────────────────────────────────
 
-#[test]
-fn deserialize_lb_service_details() {
-    let json = r#"{
+const LB_SERVICE_DETAIL_JSON: &str = r#"{
         "backends": [
             {
                 "created_at": "2022-10-04T16:11:14.569638Z",
@@ -421,7 +423,11 @@ fn deserialize_lb_service_details() {
         "uuid": "0a498284-629e-4629-a55d-0415a6e89dda",
         "zone": "fi-hel1"
     }"#;
-    let lb: LoadBalancer = serde_json::from_str(json).unwrap();
+
+
+#[test]
+fn deserialize_lb_service_details() {
+    let lb: LoadBalancer = serde_json::from_str(LB_SERVICE_DETAIL_JSON).unwrap();
     assert_eq!(lb.uuid, "0a498284-629e-4629-a55d-0415a6e89dda");
     assert_eq!(lb.name, "example-service");
     assert_eq!(lb.plan, "development");
@@ -540,15 +546,17 @@ fn deserialize_lb_service_details() {
 
 // ─── Test 4: Modify LB request ────────────────────────────────────────────
 
+const MODIFY_LB_REQUEST_JSON: &str = r#"{"name": "example-service", "plan": "development", "configured_status": "started"}"#;
+
+
 #[test]
 fn deserialize_modify_lb_request() {
-    let json = r#"{"name": "example-service", "plan": "development", "configured_status": "started"}"#;
-    let val: serde_json::Value = serde_json::from_str(json).unwrap();
+    let val: serde_json::Value = serde_json::from_str(MODIFY_LB_REQUEST_JSON).unwrap();
     assert_eq!(val["name"], "example-service");
     assert_eq!(val["plan"], "development");
     assert_eq!(val["configured_status"], "started");
 
-    let req: ModifyRequest = serde_json::from_str(json).unwrap();
+    let req: ModifyRequest = serde_json::from_str(MODIFY_LB_REQUEST_JSON).unwrap();
     assert_eq!(req.name.as_deref(), Some("example-service"));
     assert_eq!(req.plan.as_deref(), Some("development"));
     assert_eq!(req.configured_status.as_deref(), Some("started"));
@@ -557,9 +565,7 @@ fn deserialize_modify_lb_request() {
 
 // ─── Test 5: List backends ────────────────────────────────────────────────
 
-#[test]
-fn deserialize_lb_backend_list() {
-    let json = r#"[
+const LB_BACKEND_LIST_JSON: &str = r#"[
         {
             "created_at": "2021-12-07T13:58:30.817272Z",
             "members": [
@@ -572,7 +578,11 @@ fn deserialize_lb_backend_list() {
             "updated_at": "2022-02-11T17:33:08.490581Z"
         }
     ]"#;
-    let backends: Vec<Backend> = serde_json::from_str(json).unwrap();
+
+
+#[test]
+fn deserialize_lb_backend_list() {
+    let backends: Vec<Backend> = serde_json::from_str(LB_BACKEND_LIST_JSON).unwrap();
     assert_eq!(backends.len(), 1);
     let be = &backends[0];
     assert_eq!(be.name, "example-backend-2");
@@ -602,9 +612,7 @@ fn deserialize_lb_backend_list() {
 
 // ─── Test 6: Backend detail ───────────────────────────────────────────────
 
-#[test]
-fn deserialize_lb_backend_detail() {
-    let json = r#"{
+const LB_BACKEND_DETAIL_JSON: &str = r#"{
         "created_at": "2021-12-07T13:58:30.817272Z",
         "members": [
             {"backup": false, "created_at": "2021-12-07T13:58:30.817272Z", "enabled": true, "ip": "172.16.1.4", "max_sessions": 1000, "name": "example-member-1", "port": 8000, "type": "static", "updated_at": "2022-02-11T17:33:08.490581Z", "weight": 100}
@@ -617,7 +625,11 @@ fn deserialize_lb_backend_detail() {
         ],
         "updated_at": "2022-02-11T17:33:08.490581Z"
     }"#;
-    let be: Backend = serde_json::from_str(json).unwrap();
+
+
+#[test]
+fn deserialize_lb_backend_detail() {
+    let be: Backend = serde_json::from_str(LB_BACKEND_DETAIL_JSON).unwrap();
     assert_eq!(be.name, "example-backend-1");
     assert_eq!(be.resolver.as_deref(), Some("dns"));
     assert_eq!(be.created_at.as_deref(), Some("2021-12-07T13:58:30.817272Z"));
@@ -659,13 +671,15 @@ fn deserialize_lb_backend_detail() {
 
 // ─── Test 7: List backend members ─────────────────────────────────────────
 
-#[test]
-fn deserialize_lb_member_list() {
-    let json = r#"[
+const LB_MEMBER_LIST_JSON: &str = r#"[
         {"backup": false, "created_at": "2022-02-11T16:39:55.321306Z", "enabled": true, "ip": "", "max_sessions": 1000, "name": "member.example.com", "port": 8000, "type": "dynamic", "updated_at": "2022-02-11T17:33:08.490581Z", "weight": 100},
         {"backup": false, "created_at": "2021-12-07T13:58:30.817272Z", "enabled": true, "ip": "172.16.1.4", "max_sessions": 1000, "name": "example-member-1", "port": 8000, "type": "static", "updated_at": "2022-02-11T17:33:08.490581Z", "weight": 100}
     ]"#;
-    let members: Vec<BackendMember> = serde_json::from_str(json).unwrap();
+
+
+#[test]
+fn deserialize_lb_member_list() {
+    let members: Vec<BackendMember> = serde_json::from_str(LB_MEMBER_LIST_JSON).unwrap();
     assert_eq!(members.len(), 2);
     assert_eq!(members[0].name, "member.example.com");
     assert_eq!(members[0].member_type, "dynamic");
@@ -691,10 +705,12 @@ fn deserialize_lb_member_list() {
 
 // ─── Test 8: Member detail ────────────────────────────────────────────────
 
+const LB_MEMBER_DETAIL_JSON: &str = r#"{"backup": false, "created_at": "2021-12-07T13:58:30.817272Z", "enabled": true, "ip": "172.16.1.4", "max_sessions": 1000, "name": "example-member-1", "port": 8000, "type": "static", "updated_at": "2022-02-11T17:33:08.490581Z", "weight": 100}"#;
+
+
 #[test]
 fn deserialize_lb_member_detail() {
-    let json = r#"{"backup": false, "created_at": "2021-12-07T13:58:30.817272Z", "enabled": true, "ip": "172.16.1.4", "max_sessions": 1000, "name": "example-member-1", "port": 8000, "type": "static", "updated_at": "2022-02-11T17:33:08.490581Z", "weight": 100}"#;
-    let m: BackendMember = serde_json::from_str(json).unwrap();
+    let m: BackendMember = serde_json::from_str(LB_MEMBER_DETAIL_JSON).unwrap();
     assert_eq!(m.name, "example-member-1");
     assert!(m.enabled);
     assert_eq!(m.ip, "172.16.1.4");
@@ -709,9 +725,7 @@ fn deserialize_lb_member_detail() {
 
 // ─── Test 9: List frontends ───────────────────────────────────────────────
 
-#[test]
-fn deserialize_lb_frontend_list() {
-    let json = r#"[
+const LB_FRONTEND_LIST_JSON: &str = r#"[
         {
             "created_at": "2021-12-07T13:58:30.817272Z",
             "default_backend": "example-backend-1",
@@ -737,7 +751,11 @@ fn deserialize_lb_frontend_list() {
             "updated_at": "2022-02-11T17:33:08.490581Z"
         }
     ]"#;
-    let frontends: Vec<Frontend> = serde_json::from_str(json).unwrap();
+
+
+#[test]
+fn deserialize_lb_frontend_list() {
+    let frontends: Vec<Frontend> = serde_json::from_str(LB_FRONTEND_LIST_JSON).unwrap();
     assert_eq!(frontends.len(), 1);
     let fe = &frontends[0];
     assert_eq!(fe.name, "example-frontend");
@@ -778,9 +796,7 @@ fn deserialize_lb_frontend_list() {
 
 // ─── Test 10: Frontend detail ─────────────────────────────────────────────
 
-#[test]
-fn deserialize_lb_frontend_detail() {
-    let json = r#"{
+const LB_FRONTEND_DETAIL_JSON: &str = r#"{
         "created_at": "2021-12-07T13:58:30.817272Z",
         "default_backend": "example-backend-1",
         "mode": "http",
@@ -804,7 +820,11 @@ fn deserialize_lb_frontend_detail() {
         ],
         "updated_at": "2022-02-11T17:33:08.490581Z"
     }"#;
-    let fe: Frontend = serde_json::from_str(json).unwrap();
+
+
+#[test]
+fn deserialize_lb_frontend_detail() {
+    let fe: Frontend = serde_json::from_str(LB_FRONTEND_DETAIL_JSON).unwrap();
     assert_eq!(fe.name, "example-frontend");
     assert_eq!(fe.port, 443);
     assert_eq!(fe.mode, "http");
@@ -839,13 +859,15 @@ fn deserialize_lb_frontend_detail() {
 
 // ─── Test 11: Frontend TLS config list ────────────────────────────────────
 
-#[test]
-fn deserialize_lb_frontend_tls_config_list() {
-    let json = r#"[
+const LB_FRONTEND_TLS_CONFIG_LIST_JSON: &str = r#"[
         {"certificate_bundle_uuid": "0aded5c1-c7a3-498a-b9c8-a871611c47a2", "created_at": "2022-02-11T17:33:08.490581Z", "name": "example-tls-config-1", "updated_at": "2022-02-11T17:33:08.490581Z"},
         {"certificate_bundle_uuid": "c136c429-d18f-4192-b55e-e7b5079dee40", "created_at": "2021-11-11T11:21:51.121789Z", "name": "example-tls-config-2", "updated_at": "2021-11-11T11:21:51.121789Z"}
     ]"#;
-    let configs: Vec<TLSConfig> = serde_json::from_str(json).unwrap();
+
+
+#[test]
+fn deserialize_lb_frontend_tls_config_list() {
+    let configs: Vec<TLSConfig> = serde_json::from_str(LB_FRONTEND_TLS_CONFIG_LIST_JSON).unwrap();
     assert_eq!(configs.len(), 2);
     assert_eq!(configs[0].name, "example-tls-config-1");
     assert_eq!(configs[0].certificate_bundle_uuid.as_deref(), Some("0aded5c1-c7a3-498a-b9c8-a871611c47a2"));
@@ -863,10 +885,12 @@ fn deserialize_lb_frontend_tls_config_list() {
 
 // ─── Test 12: Frontend TLS config detail ──────────────────────────────────
 
+const LB_FRONTEND_TLS_CONFIG_DETAIL_JSON: &str = r#"{"certificate_bundle_uuid": "0aded5c1-c7a3-498a-b9c8-a871611c47a2", "created_at": "2022-02-11T17:33:08.490581Z", "name": "example-tls-config", "updated_at": "2022-02-11T17:33:08.490581Z"}"#;
+
+
 #[test]
 fn deserialize_lb_frontend_tls_config_detail() {
-    let json = r#"{"certificate_bundle_uuid": "0aded5c1-c7a3-498a-b9c8-a871611c47a2", "created_at": "2022-02-11T17:33:08.490581Z", "name": "example-tls-config", "updated_at": "2022-02-11T17:33:08.490581Z"}"#;
-    let config: TLSConfig = serde_json::from_str(json).unwrap();
+    let config: TLSConfig = serde_json::from_str(LB_FRONTEND_TLS_CONFIG_DETAIL_JSON).unwrap();
     assert_eq!(config.name, "example-tls-config");
     assert_eq!(config.certificate_bundle_uuid.as_deref(), Some("0aded5c1-c7a3-498a-b9c8-a871611c47a2"));
     assert_eq!(config.created_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
@@ -877,9 +901,7 @@ fn deserialize_lb_frontend_tls_config_detail() {
 
 // ─── Test 13: Frontend rule list ──────────────────────────────────────────
 
-#[test]
-fn deserialize_lb_rule_list() {
-    let json = r#"[
+const LB_RULE_LIST_JSON: &str = r#"[
         {
             "actions": [{"type": "use_backend", "action_use_backend": {"backend": "example-backend-2"}}],
             "created_at": "2021-12-07T13:58:30.817272Z",
@@ -890,7 +912,11 @@ fn deserialize_lb_rule_list() {
             "updated_at": "2022-02-11T17:33:08.490581Z"
         }
     ]"#;
-    let rules: Vec<FrontendRule> = serde_json::from_str(json).unwrap();
+
+
+#[test]
+fn deserialize_lb_rule_list() {
+    let rules: Vec<FrontendRule> = serde_json::from_str(LB_RULE_LIST_JSON).unwrap();
     assert_eq!(rules.len(), 1);
     assert_eq!(rules[0].name, "example-rule-1");
     assert_eq!(rules[0].priority, 100);
@@ -908,9 +934,7 @@ fn deserialize_lb_rule_list() {
 
 // ─── Test 14: Rule detail ─────────────────────────────────────────────────
 
-#[test]
-fn deserialize_lb_rule_detail() {
-    let json = r#"{
+const LB_RULE_DETAIL_JSON: &str = r#"{
         "actions": [{"type": "use_backend", "action_use_backend": {"backend": "example-backend-2"}}],
         "created_at": "2021-12-07T13:58:30.817272Z",
         "matching_condition": "and",
@@ -919,7 +943,11 @@ fn deserialize_lb_rule_detail() {
         "priority": 100,
         "updated_at": "2022-02-11T17:33:08.490581Z"
     }"#;
-    let rule: FrontendRule = serde_json::from_str(json).unwrap();
+
+
+#[test]
+fn deserialize_lb_rule_detail() {
+    let rule: FrontendRule = serde_json::from_str(LB_RULE_DETAIL_JSON).unwrap();
     assert_eq!(rule.name, "example-rule-1");
     assert_eq!(rule.priority, 100);
     assert_eq!(rule.matching_condition.as_deref(), Some("and"));
@@ -936,9 +964,7 @@ fn deserialize_lb_rule_detail() {
 
 // ─── Test 15: List resolvers ──────────────────────────────────────────────
 
-#[test]
-fn deserialize_lb_resolver_list() {
-    let json = r#"[
+const LB_RESOLVER_LIST_JSON: &str = r#"[
         {
             "cache_invalid": 30,
             "cache_valid": 180,
@@ -951,7 +977,11 @@ fn deserialize_lb_resolver_list() {
             "updated_at": "2022-02-11T17:33:08.490581Z"
         }
     ]"#;
-    let resolvers: Vec<Resolver> = serde_json::from_str(json).unwrap();
+
+
+#[test]
+fn deserialize_lb_resolver_list() {
+    let resolvers: Vec<Resolver> = serde_json::from_str(LB_RESOLVER_LIST_JSON).unwrap();
     assert_eq!(resolvers.len(), 1);
     let r = &resolvers[0];
     assert_eq!(r.name, "example-resolver");
@@ -967,9 +997,7 @@ fn deserialize_lb_resolver_list() {
 
 // ─── Test 16: Resolver detail ─────────────────────────────────────────────
 
-#[test]
-fn deserialize_lb_resolver_detail() {
-    let json = r#"{
+const LB_RESOLVER_DETAIL_JSON: &str = r#"{
         "cache_invalid": 30,
         "cache_valid": 180,
         "created_at": "2022-02-11T16:39:55.321306Z",
@@ -980,7 +1008,11 @@ fn deserialize_lb_resolver_detail() {
         "timeout_retry": 10,
         "updated_at": "2022-02-11T17:33:08.490581Z"
     }"#;
-    let r: Resolver = serde_json::from_str(json).unwrap();
+
+
+#[test]
+fn deserialize_lb_resolver_detail() {
+    let r: Resolver = serde_json::from_str(LB_RESOLVER_DETAIL_JSON).unwrap();
     assert_eq!(r.name, "example-resolver");
     assert_eq!(r.nameservers, vec!["172.16.1.250"]);
     assert_eq!(r.retries, 5);
@@ -994,10 +1026,12 @@ fn deserialize_lb_resolver_detail() {
 
 // ─── Test 17: Create resolver request ─────────────────────────────────────
 
+const CREATE_RESOLVER_REQUEST_JSON: &str = r#"{"name": "example-resolver", "nameservers": ["172.16.1.4:53"], "retries": 5, "timeout": 30, "timeout_retry": 10, "cache_valid": 180, "cache_invalid": 10}"#;
+
+
 #[test]
 fn deserialize_create_resolver_request() {
-    let json = r#"{"name": "example-resolver", "nameservers": ["172.16.1.4:53"], "retries": 5, "timeout": 30, "timeout_retry": 10, "cache_valid": 180, "cache_invalid": 10}"#;
-    let req: CreateResolverRequest = serde_json::from_str(json).unwrap();
+    let req: CreateResolverRequest = serde_json::from_str(CREATE_RESOLVER_REQUEST_JSON).unwrap();
     assert_eq!(req.name, "example-resolver");
     assert_eq!(req.nameservers, vec!["172.16.1.4:53"]);
     assert_eq!(req.retries, Some(5));
@@ -1009,9 +1043,7 @@ fn deserialize_create_resolver_request() {
 
 // ─── Test 18: Create backend request ──────────────────────────────────────
 
-#[test]
-fn deserialize_create_backend_request() {
-    let json = r#"{
+const CREATE_BACKEND_REQUEST_JSON: &str = r#"{
         "name": "example-backend-2",
         "resolver": "example-resolver",
         "members": [
@@ -1019,7 +1051,11 @@ fn deserialize_create_backend_request() {
         ],
         "properties": {"timeout_server": 30, "health_check_type": "tcp"}
     }"#;
-    let val: serde_json::Value = serde_json::from_str(json).unwrap();
+
+
+#[test]
+fn deserialize_create_backend_request() {
+    let val: serde_json::Value = serde_json::from_str(CREATE_BACKEND_REQUEST_JSON).unwrap();
     assert_eq!(val["name"], "example-backend-2");
     assert_eq!(val["resolver"], "example-resolver");
     assert_eq!(val["members"].as_array().unwrap().len(), 1);
@@ -1035,9 +1071,7 @@ fn deserialize_create_backend_request() {
 
 // ─── Test 19: Create frontend request ─────────────────────────────────────
 
-#[test]
-fn deserialize_create_frontend_request() {
-    let json = r#"{
+const CREATE_FRONTEND_REQUEST_JSON: &str = r#"{
         "name": "example-frontend",
         "mode": "http",
         "port": 443,
@@ -1045,7 +1079,11 @@ fn deserialize_create_frontend_request() {
         "networks": [{"name": "example-network-1"}],
         "properties": {"timeout_client": 5}
     }"#;
-    let req: CreateFrontendRequest = serde_json::from_str(json).unwrap();
+
+
+#[test]
+fn deserialize_create_frontend_request() {
+    let req: CreateFrontendRequest = serde_json::from_str(CREATE_FRONTEND_REQUEST_JSON).unwrap();
     assert_eq!(req.name, "example-frontend");
     assert_eq!(req.mode, "http");
     assert_eq!(req.port, 443);
@@ -1058,15 +1096,17 @@ fn deserialize_create_frontend_request() {
 
 // ─── Test 20: Create frontend rule request ────────────────────────────────
 
-#[test]
-fn deserialize_create_frontend_rule_request() {
-    let json = r#"{
+const CREATE_FRONTEND_RULE_REQUEST_JSON: &str = r#"{
         "name": "example-rule-1",
         "priority": 100,
         "matchers": [{"type": "path", "match_path": {"method": "exact", "value": "/app"}}],
         "actions": [{"type": "use_backend", "action_use_backend": {"backend": "example-backend-2"}}]
     }"#;
-    let req: CreateFrontendRuleRequest = serde_json::from_str(json).unwrap();
+
+
+#[test]
+fn deserialize_create_frontend_rule_request() {
+    let req: CreateFrontendRuleRequest = serde_json::from_str(CREATE_FRONTEND_RULE_REQUEST_JSON).unwrap();
     assert_eq!(req.name, "example-rule-1");
     assert_eq!(req.priority, 100);
     assert_eq!(req.matchers.len(), 1);
@@ -1080,13 +1120,15 @@ fn deserialize_create_frontend_rule_request() {
 
 // ─── Test 21: Backend TLS config list ─────────────────────────────────────
 
-#[test]
-fn deserialize_lb_backend_tls_config_list() {
-    let json = r#"[
+const LB_BACKEND_TLS_CONFIG_LIST_JSON: &str = r#"[
         {"certificate_bundle_uuid": "0aded5c1-c7a3-498a-b9c8-a871611c47a2", "created_at": "2022-02-11T17:33:08.490581Z", "name": "example-backend-tls-1", "updated_at": "2022-02-11T17:33:08.490581Z"},
         {"certificate_bundle_uuid": "c136c429-d18f-4192-b55e-e7b5079dee40", "created_at": "2021-11-11T11:21:51.121789Z", "name": "example-backend-tls-2", "updated_at": "2021-11-11T11:21:51.121789Z"}
     ]"#;
-    let configs: Vec<TLSConfig> = serde_json::from_str(json).unwrap();
+
+
+#[test]
+fn deserialize_lb_backend_tls_config_list() {
+    let configs: Vec<TLSConfig> = serde_json::from_str(LB_BACKEND_TLS_CONFIG_LIST_JSON).unwrap();
     assert_eq!(configs.len(), 2);
     assert_eq!(configs[0].name, "example-backend-tls-1");
     assert_eq!(configs[0].certificate_bundle_uuid.as_deref(), Some("0aded5c1-c7a3-498a-b9c8-a871611c47a2"));
@@ -1104,14 +1146,16 @@ fn deserialize_lb_backend_tls_config_list() {
 
 // ─── Test 22: Create TLS config request ───────────────────────────────────
 
+const CREATE_TLS_CONFIG_REQUEST_JSON: &str = r#"{"name": "example-tls-config", "certificate_bundle_uuid": "0aded5c1-c7a3-498a-b9c8-a871611c47a2"}"#;
+
+
 #[test]
 fn deserialize_create_tls_config_request() {
-    let json = r#"{"name": "example-tls-config", "certificate_bundle_uuid": "0aded5c1-c7a3-498a-b9c8-a871611c47a2"}"#;
-    let val: serde_json::Value = serde_json::from_str(json).unwrap();
+    let val: serde_json::Value = serde_json::from_str(CREATE_TLS_CONFIG_REQUEST_JSON).unwrap();
     assert_eq!(val["name"], "example-tls-config");
     assert_eq!(val["certificate_bundle_uuid"], "0aded5c1-c7a3-498a-b9c8-a871611c47a2");
 
-    let req: CreateTLSConfigRequest = serde_json::from_str(json).unwrap();
+    let req: CreateTLSConfigRequest = serde_json::from_str(CREATE_TLS_CONFIG_REQUEST_JSON).unwrap();
     assert_eq!(req.name, "example-tls-config");
     assert!(req.certificate_chain.is_none());
     assert!(req.private_key.is_none());
@@ -1121,9 +1165,7 @@ fn deserialize_create_tls_config_request() {
 // ─── Test 23: Certificate bundle detail from docs ─────────────────────────
 // Real JSON from UpCloud API 1.3 docs: "Get certificate bundle details"
 
-#[test]
-fn deserialize_certificate_bundle_detail() {
-    let json = r#"{
+const CERTIFICATE_BUNDLE_DETAIL_JSON: &str = r#"{
     "certificate": "LStLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0t",
     "created_at": "2022-02-11T17:31:38.202398Z",
     "hostnames": [
@@ -1139,7 +1181,11 @@ fn deserialize_certificate_bundle_detail() {
     "updated_at": "2022-02-12T08:13:47.877562Z",
     "uuid": "0aded5c1-c7a3-498a-b9c8-a871611c47a2"
 }"#;
-    let cb: CertificateBundle = serde_json::from_str(json).unwrap();
+
+
+#[test]
+fn deserialize_certificate_bundle_detail() {
+    let cb: CertificateBundle = serde_json::from_str(CERTIFICATE_BUNDLE_DETAIL_JSON).unwrap();
     assert_eq!(cb.uuid, "0aded5c1-c7a3-498a-b9c8-a871611c47a2");
     assert_eq!(cb.name, "example-dynamic-certificate");
     assert_eq!(cb.certificate.as_deref(), Some("LStLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0t"));
@@ -1156,9 +1202,7 @@ fn deserialize_certificate_bundle_detail() {
 // ─── Test 24: Certificate bundle list from docs ──────────────────────────
 // Real JSON from UpCloud API 1.3 docs: "List certificate bundles"
 
-#[test]
-fn deserialize_certificate_bundle_list() {
-    let json = r#"[
+const CERTIFICATE_BUNDLE_LIST_JSON: &str = r#"[
     {
         "certificate": "LS0LS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0t",
         "created_at": "2021-11-09T08:07:39.749472Z",
@@ -1191,7 +1235,11 @@ fn deserialize_certificate_bundle_list() {
         "uuid": "0aded5c1-c7a3-498a-b9c8-a871611c47a2"
     }
 ]"#;
-    let bundles: Vec<CertificateBundle> = serde_json::from_str(json).unwrap();
+
+
+#[test]
+fn deserialize_certificate_bundle_list() {
+    let bundles: Vec<CertificateBundle> = serde_json::from_str(CERTIFICATE_BUNDLE_LIST_JSON).unwrap();
     assert_eq!(bundles.len(), 2);
     assert_eq!(bundles[0].uuid, "bf571589-7378-41f8-879e-5505613b070d");
     assert_eq!(bundles[0].name, "example-manual-certificate");
@@ -1210,9 +1258,7 @@ fn deserialize_certificate_bundle_list() {
 // ─── Test 25: Frontend detail from docs (with rules + tls_configs) ───────
 // Real JSON from UpCloud API 1.3 docs: "Get frontend details"
 
-#[test]
-fn deserialize_frontend_detail_from_docs() {
-    let json = r#"{
+const FRONTEND_DETAIL_FROM_DOCS_JSON: &str = r#"{
     "created_at": "2021-12-07T13:58:30.817272Z",
     "default_backend": "example-backend-1",
     "mode": "http",
@@ -1245,7 +1291,11 @@ fn deserialize_frontend_detail_from_docs() {
     ],
     "updated_at": "2022-02-11T17:33:08.490581Z"
 }"#;
-    let fe: Frontend = serde_json::from_str(json).unwrap();
+
+
+#[test]
+fn deserialize_frontend_detail_from_docs() {
+    let fe: Frontend = serde_json::from_str(FRONTEND_DETAIL_FROM_DOCS_JSON).unwrap();
     assert_eq!(fe.name, "example-frontend");
     assert_eq!(fe.port, 443);
     assert_eq!(fe.mode, "http");
@@ -1417,9 +1467,7 @@ fn serialize_modify_network_request() {
 // ─── Test 33: Node deserialization from docs ──────────────────────────────
 // Real JSON from the "List services" response `nodes` array.
 
-#[test]
-fn deserialize_node() {
-    let json = r#"{
+const NODE_DETAIL_JSON: &str = r#"{
     "networks": [
         {
             "ip_addresses": [
@@ -1439,7 +1487,11 @@ fn deserialize_node() {
     ],
     "operational_state": "running"
 }"#;
-    let node: Node = serde_json::from_str(json).unwrap();
+
+
+#[test]
+fn deserialize_node() {
+    let node: Node = serde_json::from_str(NODE_DETAIL_JSON).unwrap();
     assert_eq!(node.operational_state.as_deref(), Some("running"));
     assert_eq!(node.networks.len(), 2);
     assert_eq!(node.networks[0].name, "example-network-1");

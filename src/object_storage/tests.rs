@@ -328,6 +328,8 @@ const MOS_PRIVATE_NETWORK_INPUT_JSON: &str = r#"{
 "family": "IPv4"
 }"#;
 
+// ─── New tests ───────────────────────────────────────────────────────────
+
 const MOS_METRICS_SERIES_JSON: &str = r#"[
 {
     "bytes_created": 530000,
@@ -343,7 +345,6 @@ const MOS_METRICS_SERIES_JSON: &str = r#"[
 }
 ]"#;
 
-// ─── New tests ───────────────────────────────────────────────────────────
 
 #[test]
 fn deserialize_mos_region_list() {

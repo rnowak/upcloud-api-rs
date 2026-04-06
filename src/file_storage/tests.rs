@@ -486,12 +486,12 @@ const LABEL_LIST_JSON: &str = r#"[
 }
 ]"#;
 
+// ─── Test: Create FS service request (#1) ────────────────────────────────
+
 const LABEL_DETAIL_JSON: &str = r#"{
 "key": "env",
 "value": "staging"
 }"#;
-
-// ─── Test: Create FS service request (#1) ────────────────────────────────
 
 #[test]
 fn deserialize_create_file_storage_request() {

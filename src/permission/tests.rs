@@ -115,9 +115,7 @@ struct RevokePermissionBody {
 
 // ─── Additional deserialization tests ──────────────────────────────────
 
-#[test]
-fn deserialize_permission_list_full() {
-    let json = r#"{
+const PERMISSION_LIST_FULL_JSON: &str = r#"{
   "permissions": {
 "permission": [
   {"target_identifier": "0ad9408c-8563-4abf-b862-dbde5b581123", "target_type": "managed_loadbalancer", "user": "sub_account_user1"},
@@ -135,7 +133,10 @@ fn deserialize_permission_list_full() {
 ]
   }
 }"#;
-    let resp: PermissionListResponse = serde_json::from_str(json).unwrap();
+
+#[test]
+fn deserialize_permission_list_full() {
+    let resp: PermissionListResponse = serde_json::from_str(PERMISSION_LIST_FULL_JSON).unwrap();
     let perms = resp.permissions.permission;
     assert_eq!(perms.len(), 12);
 
@@ -192,9 +193,7 @@ fn deserialize_permission_list_full() {
     assert_eq!(perms[11].user, "main_account_user1");
 }
 
-#[test]
-fn deserialize_permission_list_subaccount() {
-    let json = r#"{
+const PERMISSION_LIST_SUBACCOUNT_JSON: &str = r#"{
   "permissions": {
 "permission": [
   {"target_identifier": "0ad9408c-8563-4abf-b862-dbde5b581123", "target_type": "managed_loadbalancer", "user": "sub_account_user1"},
@@ -203,7 +202,10 @@ fn deserialize_permission_list_subaccount() {
 ]
   }
 }"#;
-    let resp: PermissionListResponse = serde_json::from_str(json).unwrap();
+
+#[test]
+fn deserialize_permission_list_subaccount() {
+    let resp: PermissionListResponse = serde_json::from_str(PERMISSION_LIST_SUBACCOUNT_JSON).unwrap();
     let perms = resp.permissions.permission;
     assert_eq!(perms.len(), 3);
 
@@ -224,9 +226,7 @@ fn deserialize_permission_list_subaccount() {
     assert_eq!(perms[2].options.as_ref().unwrap()["storage"], "yes");
 }
 
-#[test]
-fn deserialize_grant_permission_request() {
-    let json = r#"{
+const GRANT_PERMISSION_REQUEST_JSON: &str = r#"{
   "permission": {
 "options": {},
 "target_identifier": "0ad9408c-8563-4abf-b862-dbde5b581123",
@@ -234,25 +234,29 @@ fn deserialize_grant_permission_request() {
 "user": "sub_account_user1"
   }
 }"#;
-    let body: GrantPermissionBody = serde_json::from_str(json).unwrap();
+
+#[test]
+fn deserialize_grant_permission_request() {
+    let body: GrantPermissionBody = serde_json::from_str(GRANT_PERMISSION_REQUEST_JSON).unwrap();
     let perm = body.permission;
     assert_eq!(perm.target_identifier, "0ad9408c-8563-4abf-b862-dbde5b581123");
     assert_eq!(perm.target_type, TargetType::ManagedLoadbalancer);
     assert_eq!(perm.user, "sub_account_user1");
     assert!(perm.options.is_some());
 }
+
+const GRANT_PERMISSION_RESPONSE_JSON: &str = r#"{
+  "permission": {
+"options": {},
+"target_identifier": "0ad9408c-8563-4abf-b862-dbde5b581123",
+"target_type": "managed_loadbalancer",
+"user": "sub_account_user1"
+  }
+}"#;
 
 #[test]
 fn deserialize_grant_permission_response() {
-    let json = r#"{
-  "permission": {
-"options": {},
-"target_identifier": "0ad9408c-8563-4abf-b862-dbde5b581123",
-"target_type": "managed_loadbalancer",
-"user": "sub_account_user1"
-  }
-}"#;
-    let body: PermissionBody = serde_json::from_str(json).unwrap();
+    let body: PermissionBody = serde_json::from_str(GRANT_PERMISSION_RESPONSE_JSON).unwrap();
     let perm = body.permission;
     assert_eq!(perm.target_identifier, "0ad9408c-8563-4abf-b862-dbde5b581123");
     assert_eq!(perm.target_type, TargetType::ManagedLoadbalancer);
@@ -260,25 +264,27 @@ fn deserialize_grant_permission_response() {
     assert!(perm.options.is_some());
 }
 
-#[test]
-fn deserialize_revoke_permission_request() {
-    let json = r#"{
+const REVOKE_PERMISSION_REQUEST_JSON: &str = r#"{
   "permission": {
 "target_identifier": "0ad9408c-8563-4abf-b862-dbde5b581123",
 "target_type": "managed_loadbalancer",
 "user": "sub_account_user1"
   }
 }"#;
-    let body: RevokePermissionBody = serde_json::from_str(json).unwrap();
+
+#[test]
+fn deserialize_revoke_permission_request() {
+    let body: RevokePermissionBody = serde_json::from_str(REVOKE_PERMISSION_REQUEST_JSON).unwrap();
     let perm = body.permission;
     assert_eq!(perm.target_identifier, "0ad9408c-8563-4abf-b862-dbde5b581123");
     assert_eq!(perm.target_type, TargetType::ManagedLoadbalancer);
     assert_eq!(perm.user, "sub_account_user1");
 }
 
+const EMPTY_PERMISSION_LIST_JSON: &str = r#"{"permissions": {"permission": []}}"#;
+
 #[test]
 fn deserialize_empty_permission_list() {
-    let json = r#"{"permissions": {"permission": []}}"#;
-    let resp: PermissionListResponse = serde_json::from_str(json).unwrap();
+    let resp: PermissionListResponse = serde_json::from_str(EMPTY_PERMISSION_LIST_JSON).unwrap();
     assert_eq!(resp.permissions.permission.len(), 0);
 }

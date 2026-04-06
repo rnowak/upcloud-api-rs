@@ -464,6 +464,8 @@ const NODE_GROUP_DETAIL_JSON: &str = r#"{
   ]
 }"#;
 
+// ─── New test functions ───────────────────────────────────────────────────
+
 const MODIFY_NODE_GROUP_REQUEST_JSON: &str = r#"{"count": 15}"#;
 
 const MODIFY_NODE_GROUP_RESPONSE_JSON: &str = r#"{
@@ -480,7 +482,6 @@ const MODIFY_NODE_GROUP_RESPONSE_JSON: &str = r#"{
   "utility_network_access": true
 }"#;
 
-// ─── New test functions ───────────────────────────────────────────────────
 
 #[test]
 fn deserialize_create_cluster_request() {
