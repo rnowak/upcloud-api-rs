@@ -1,5 +1,6 @@
 /target
-**/target
-**/.rs.bk
+/Cargo.lock
 .env
-*.mm_profdata
+.idea
+.vscode
+.DS_Store

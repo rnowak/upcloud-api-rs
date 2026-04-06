@@ -19,8 +19,6 @@ jobs:
         include:
           - channel: beta
             os: ubuntu
-          - channel: nightly
-            os: ubuntu
 
     steps:
       - uses: actions/checkout@v5
