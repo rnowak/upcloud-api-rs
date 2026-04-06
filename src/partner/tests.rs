@@ -48,8 +48,7 @@ const PARTNER_ACCOUNT_CREATE_JSON: &str = r#"{
 
 #[test]
 fn deserialize_partner_account_list() {
-    let accounts: Vec<PartnerAccount> =
-        serde_json::from_str(PARTNER_ACCOUNT_LIST_JSON).unwrap();
+    let accounts: Vec<PartnerAccount> = serde_json::from_str(PARTNER_ACCOUNT_LIST_JSON).unwrap();
     assert_eq!(accounts.len(), 2);
 
     assert_eq!(accounts[0].username, "someuser");
@@ -74,15 +73,17 @@ fn deserialize_partner_account_list() {
     assert_eq!(accounts[1].city.as_deref(), Some("Another city"));
     assert_eq!(accounts[1].state.as_deref(), Some(""));
     assert_eq!(accounts[1].country.as_deref(), Some("FIN"));
-    assert_eq!(accounts[1].email.as_deref(), Some("anotheruser@example.com"));
+    assert_eq!(
+        accounts[1].email.as_deref(),
+        Some("anotheruser@example.com")
+    );
     assert_eq!(accounts[1].phone.as_deref(), Some("+358.97654321"));
     assert_eq!(accounts[1].vat_number.as_deref(), Some(""));
 }
 
 #[test]
 fn deserialize_partner_account_create_response() {
-    let account: PartnerAccount =
-        serde_json::from_str(PARTNER_ACCOUNT_CREATE_JSON).unwrap();
+    let account: PartnerAccount = serde_json::from_str(PARTNER_ACCOUNT_CREATE_JSON).unwrap();
     assert_eq!(account.username, "newuser");
     assert_eq!(account.first_name.as_deref(), Some("New"));
     assert_eq!(account.last_name.as_deref(), Some("User"));
@@ -118,7 +119,7 @@ fn deserialize_create_request_with_contact_details() {
     assert_eq!(req.username, "newuser");
     assert_eq!(req.password, "superSecret123");
     assert_eq!(req.email, "newuser@example.com");
-    assert_eq!(req.terms_of_service_agreed, true);
+    assert!(req.terms_of_service_agreed);
     assert!(req.first_name.is_none());
     assert!(req.last_name.is_none());
     assert!(req.company.is_none());
@@ -216,8 +217,7 @@ const MODIFY_PARTNER_ACCOUNT_RESPONSE_JSON: &str = r#"{
 
 #[test]
 fn deserialize_partner_account_detail() {
-    let account: PartnerAccount =
-        serde_json::from_str(PARTNER_ACCOUNT_DETAIL_JSON).unwrap();
+    let account: PartnerAccount = serde_json::from_str(PARTNER_ACCOUNT_DETAIL_JSON).unwrap();
     assert_eq!(account.username, "someuser");
     assert_eq!(account.first_name.as_deref(), Some("Some"));
     assert_eq!(account.last_name.as_deref(), Some("User"));
