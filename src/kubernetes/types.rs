@@ -37,6 +37,13 @@ pub enum NodeState {
     Unknown,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum TaintEffect {
+    NoExecute,
+    NoSchedule,
+    PreferNoSchedule,
+}
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -76,6 +83,8 @@ pub struct Cluster {
     pub plan: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub private_node_groups: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub storage_encryption: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -103,6 +112,14 @@ pub struct NodeGroup {
     pub anti_affinity_status: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<Node>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_plan: Option<CustomPlan>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cloud_native_plan: Option<CloudNativePlan>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gpu_plan: Option<GPUPlan>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub storage_encryption: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -133,6 +150,36 @@ pub struct Kubeconfig {
     pub kubeconfig: String,
 }
 
+// ─── Node group plan types ────────────────────────────────────────────────────
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CustomPlan {
+    pub cores: u32,
+    pub memory: u64,
+    pub storage_size: u64,
+    pub storage_tier: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CloudNativePlan {
+    pub storage_size: u64,
+    pub storage_tier: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GPUPlan {
+    pub storage_size: u64,
+    pub storage_tier: String,
+}
+
+// ─── Response types ──────────────────────────────────────────────────────────
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct KubernetesVersion {
+    pub id: String,
+    pub version: String,
+}
+
 // ─── Request types ────────────────────────────────────────────────────────────
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -155,6 +202,18 @@ pub struct CreateClusterRequest {
     pub control_plane_ip_filter: Option<Vec<String>>,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct ModifyClusterRequest {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip_filter: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub labels: Option<Vec<crate::types::common::Label>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub control_plane_ip_filter: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub plan: Option<String>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateNodeGroupRequest {
     pub name: String,
@@ -174,6 +233,14 @@ pub struct CreateNodeGroupRequest {
     pub utility_network_access: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub storage: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_plan: Option<CustomPlan>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cloud_native_plan: Option<CloudNativePlan>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gpu_plan: Option<GPUPlan>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub storage_encryption: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]

@@ -67,6 +67,30 @@ impl<'a> KubernetesHandler<'a> {
             .await
     }
 
+    /// Modifies a Kubernetes cluster.
+    ///
+    /// `PATCH /1.3/kubernetes/{uuid}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/20-managed-kubernetes/#modify-cluster)
+    pub async fn modify_cluster(
+        &self,
+        uuid: &str,
+        req: ModifyClusterRequest,
+    ) -> Result<Cluster, Error> {
+        self.client
+            .patch(&format!("/1.3/kubernetes/{uuid}"), &req)
+            .await
+    }
+
+    /// Returns a list of available Kubernetes versions.
+    ///
+    /// `GET /1.3/kubernetes/versions`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/20-managed-kubernetes/#list-versions)
+    pub async fn list_versions(&self) -> Result<Vec<KubernetesVersion>, Error> {
+        self.client.get("/1.3/kubernetes/versions").await
+    }
+
     /// Returns the kubeconfig YAML for a Kubernetes cluster.
     ///
     /// `GET /1.3/kubernetes/{uuid}/kubeconfig`
@@ -165,6 +189,73 @@ impl<'a> KubernetesHandler<'a> {
                 "/1.3/kubernetes/{cluster_uuid}/node-groups/{name}"
             ))
             .await
+    }
+
+    /// Deletes a specific node from a node group.
+    ///
+    /// `DELETE /1.3/kubernetes/{uuid}/node-groups/{node_group_name}/nodes/{node_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/20-managed-kubernetes/#delete-node)
+    pub async fn delete_node(
+        &self,
+        cluster_uuid: &str,
+        node_group_name: &str,
+        node_name: &str,
+    ) -> Result<(), Error> {
+        self.client
+            .delete(&format!(
+                "/1.3/kubernetes/{cluster_uuid}/node-groups/{node_group_name}/nodes/{node_name}"
+            ))
+            .await
+    }
+
+    // ─── Wait helpers ─────────────────────────────────────────────────────────
+
+    /// Polls until the cluster reaches the desired state or the timeout expires.
+    pub async fn wait_for_cluster_state(
+        &self,
+        uuid: &str,
+        desired_state: ClusterState,
+        timeout: std::time::Duration,
+    ) -> Result<Cluster, Error> {
+        let start = std::time::Instant::now();
+        loop {
+            let cluster = self.get(uuid).await?;
+            if cluster.state == desired_state {
+                return Ok(cluster);
+            }
+            if start.elapsed() >= timeout {
+                return Err(crate::error::Error::InvalidConfig(format!(
+                    "timeout waiting for cluster {} to reach state {:?}",
+                    uuid, desired_state
+                )));
+            }
+            tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+        }
+    }
+
+    /// Polls until the node group reaches the desired state or the timeout expires.
+    pub async fn wait_for_node_group_state(
+        &self,
+        cluster_uuid: &str,
+        group_name: &str,
+        desired_state: NodeGroupState,
+        timeout: std::time::Duration,
+    ) -> Result<NodeGroup, Error> {
+        let start = std::time::Instant::now();
+        loop {
+            let group = self.get_node_group(cluster_uuid, group_name).await?;
+            if group.state == Some(desired_state) {
+                return Ok(group);
+            }
+            if start.elapsed() >= timeout {
+                return Err(crate::error::Error::InvalidConfig(format!(
+                    "timeout waiting for node group {} to reach state {:?}",
+                    group_name, desired_state
+                )));
+            }
+            tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+        }
     }
 }
 

@@ -811,3 +811,127 @@ fn deserialize_modify_kubernetes_node_group_response() {
     assert!(group.anti_affinity_status.is_none());
     assert!(group.nodes.is_none());
 }
+
+// ─── New parity tests ─────────────────────────────────────────────────────
+
+#[test]
+fn serialize_modify_cluster_request() {
+    let req = ModifyClusterRequest {
+        ip_filter: None,
+        labels: Some(vec![crate::types::common::Label {
+            key: "env".into(),
+            value: "production".into(),
+        }]),
+        control_plane_ip_filter: Some(vec!["0.0.0.0/0".into()]),
+        plan: None,
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert!(json.get("ip_filter").is_none());
+    assert!(json.get("plan").is_none());
+    assert_eq!(
+        json["control_plane_ip_filter"].as_array().unwrap().len(),
+        1
+    );
+    assert_eq!(json["labels"].as_array().unwrap().len(), 1);
+    assert_eq!(json["labels"][0]["key"].as_str().unwrap(), "env");
+    assert_eq!(json["labels"][0]["value"].as_str().unwrap(), "production");
+}
+
+#[test]
+fn deserialize_modify_cluster_request_typed() {
+    let req: ModifyClusterRequest =
+        serde_json::from_str(MODIFY_CLUSTER_REQUEST_JSON).unwrap();
+    assert_eq!(
+        req.control_plane_ip_filter.as_ref().unwrap(),
+        &["0.0.0.0/0"]
+    );
+    let labels = req.labels.as_ref().unwrap();
+    assert_eq!(labels.len(), 2);
+    assert_eq!(labels[0].key, "env");
+    assert_eq!(labels[0].value, "production");
+    assert!(req.ip_filter.is_none());
+    assert!(req.plan.is_none());
+}
+
+const KUBERNETES_VERSIONS_JSON: &str = r#"[
+  {"id": "1.30", "version": "1.30"},
+  {"id": "1.31", "version": "1.31"}
+]"#;
+
+#[test]
+fn deserialize_kubernetes_versions() {
+    let versions: Vec<KubernetesVersion> =
+        serde_json::from_str(KUBERNETES_VERSIONS_JSON).unwrap();
+    assert_eq!(versions.len(), 2);
+    assert_eq!(versions[0].id, "1.30");
+    assert_eq!(versions[0].version, "1.30");
+    assert_eq!(versions[1].id, "1.31");
+    assert_eq!(versions[1].version, "1.31");
+}
+
+#[test]
+fn taint_effect_round_trip() {
+    let effects = vec![
+        TaintEffect::NoExecute,
+        TaintEffect::NoSchedule,
+        TaintEffect::PreferNoSchedule,
+    ];
+    for effect in &effects {
+        let json = serde_json::to_string(effect).unwrap();
+        let back: TaintEffect = serde_json::from_str(&json).unwrap();
+        assert_eq!(&back, effect);
+    }
+    assert_eq!(
+        serde_json::to_string(&TaintEffect::NoExecute).unwrap(),
+        r#""NoExecute""#
+    );
+    assert_eq!(
+        serde_json::to_string(&TaintEffect::NoSchedule).unwrap(),
+        r#""NoSchedule""#
+    );
+    assert_eq!(
+        serde_json::to_string(&TaintEffect::PreferNoSchedule).unwrap(),
+        r#""PreferNoSchedule""#
+    );
+}
+
+const CUSTOM_PLAN_JSON: &str = r#"{
+  "cores": 4,
+  "memory": 8192,
+  "storage_size": 50,
+  "storage_tier": "maxiops"
+}"#;
+
+const CLOUD_NATIVE_PLAN_JSON: &str = r#"{
+  "storage_size": 25,
+  "storage_tier": "maxiops"
+}"#;
+
+const GPU_PLAN_JSON: &str = r#"{
+  "storage_size": 100,
+  "storage_tier": "maxiops"
+}"#;
+
+#[test]
+fn deserialize_custom_plan() {
+    let plan: CustomPlan = serde_json::from_str(CUSTOM_PLAN_JSON).unwrap();
+    assert_eq!(plan.cores, 4);
+    assert_eq!(plan.memory, 8192);
+    assert_eq!(plan.storage_size, 50);
+    assert_eq!(plan.storage_tier, "maxiops");
+}
+
+#[test]
+fn deserialize_cloud_native_plan() {
+    let plan: CloudNativePlan =
+        serde_json::from_str(CLOUD_NATIVE_PLAN_JSON).unwrap();
+    assert_eq!(plan.storage_size, 25);
+    assert_eq!(plan.storage_tier, "maxiops");
+}
+
+#[test]
+fn deserialize_gpu_plan() {
+    let plan: GPUPlan = serde_json::from_str(GPU_PLAN_JSON).unwrap();
+    assert_eq!(plan.storage_size, 100);
+    assert_eq!(plan.storage_tier, "maxiops");
+}
