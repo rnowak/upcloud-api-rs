@@ -7,6 +7,9 @@ use crate::client::Client;
 use crate::error::Error;
 use crate::types::common::PageParams;
 
+use std::time::{Duration, Instant};
+use tokio::time::sleep;
+
 // ─── Handler ──────────────────────────────────────────────────────────────────
 
 /// Handler for network gateway operations.
@@ -164,6 +167,27 @@ impl<'a> GatewayHandler<'a> {
             .await
     }
 
+    /// Modifies an existing connection.
+    ///
+    /// `PATCH /1.3/gateway/{gateway_uuid}/connections/{connection_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#modify-connection)
+    pub async fn modify_connection(
+        &self,
+        gateway_uuid: &str,
+        connection_name: &str,
+        req: ModifyConnectionRequest,
+    ) -> Result<Connection, Error> {
+        self.client
+            .patch(
+                &format!(
+                    "/1.3/gateway/{gateway_uuid}/connections/{connection_name}"
+                ),
+                &req,
+            )
+            .await
+    }
+
     // ─── Tunnels ──────────────────────────────────────────────────────────────
 
     /// Returns a list of tunnels for a connection.
@@ -219,6 +243,46 @@ impl<'a> GatewayHandler<'a> {
             .delete(&format!(
                 "/1.3/gateway/{gateway_uuid}/connections/{connection_name}/tunnels/{tunnel_name}"
             ))
+            .await
+    }
+
+    /// Returns details for a specific tunnel.
+    ///
+    /// `GET /1.3/gateway/{gateway_uuid}/connections/{connection_name}/tunnels/{tunnel_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#get-tunnel-details)
+    pub async fn get_tunnel(
+        &self,
+        gateway_uuid: &str,
+        connection_name: &str,
+        tunnel_name: &str,
+    ) -> Result<Tunnel, Error> {
+        self.client
+            .get(&format!(
+                "/1.3/gateway/{gateway_uuid}/connections/{connection_name}/tunnels/{tunnel_name}"
+            ))
+            .await
+    }
+
+    /// Modifies an existing tunnel.
+    ///
+    /// `PATCH /1.3/gateway/{gateway_uuid}/connections/{connection_name}/tunnels/{tunnel_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/19-network-gateways/#modify-tunnel)
+    pub async fn modify_tunnel(
+        &self,
+        gateway_uuid: &str,
+        connection_name: &str,
+        tunnel_name: &str,
+        req: ModifyTunnelRequest,
+    ) -> Result<Tunnel, Error> {
+        self.client
+            .patch(
+                &format!(
+                    "/1.3/gateway/{gateway_uuid}/connections/{connection_name}/tunnels/{tunnel_name}"
+                ),
+                &req,
+            )
             .await
     }
 
@@ -336,6 +400,31 @@ impl<'a> GatewayHandler<'a> {
         self.client
             .delete(&format!("/1.3/gateway/{gateway_uuid}/labels/{key}"))
             .await
+    }
+
+    // ─── Polling helpers ──────────────────────────────────────────────────────
+
+    /// Polls until a gateway reaches the desired operational state or the timeout expires.
+    pub async fn wait_for_state(
+        &self,
+        uuid: &str,
+        desired_state: OperationalState,
+        timeout: Duration,
+    ) -> Result<Gateway, Error> {
+        let start = Instant::now();
+        loop {
+            let gw = self.get(uuid).await?;
+            if gw.operational_state == Some(desired_state) {
+                return Ok(gw);
+            }
+            if start.elapsed() >= timeout {
+                return Err(Error::InvalidConfig(format!(
+                    "timeout waiting for gateway {} to reach state {:?}",
+                    uuid, desired_state
+                )));
+            }
+            sleep(Duration::from_secs(5)).await;
+        }
     }
 }
 

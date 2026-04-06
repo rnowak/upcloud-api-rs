@@ -86,8 +86,8 @@ fn deserialize_gateway_list() {
     assert_eq!(gw.name, "example-gateway");
     assert_eq!(gw.zone, "fi-hel1");
     assert_eq!(gw.plan, "production");
-    assert_eq!(gw.operational_state.as_deref(), Some("running"));
-    assert_eq!(gw.configured_status.as_deref(), Some("started"));
+    assert_eq!(gw.operational_state, Some(OperationalState::Running));
+    assert_eq!(gw.configured_status, Some(ConfiguredStatus::Started));
     assert_eq!(gw.automatic_tunnel_internal_ip_allocation, Some(true));
     assert_eq!(gw.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
     assert_eq!(gw.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
@@ -118,20 +118,20 @@ fn deserialize_gateway_list() {
     let conn = &gw.connections[0];
     assert_eq!(conn.name, "example-connection");
     assert_eq!(conn.uuid.as_deref(), Some("1085d477-8d8f-4c97-9bef-731933187538"));
-    assert_eq!(conn.connection_type, "ipsec");
+    assert_eq!(conn.connection_type, ConnectionType::IPSec);
     assert_eq!(conn.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
     assert_eq!(conn.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
 
     // local_routes
     assert_eq!(conn.local_routes.len(), 1);
     assert_eq!(conn.local_routes[0].name, "upcloud-example-route");
-    assert_eq!(conn.local_routes[0].route_type, "static");
+    assert_eq!(conn.local_routes[0].route_type, RouteType::Static);
     assert_eq!(conn.local_routes[0].static_network, "10.0.0.0/24");
 
     // remote_routes
     assert_eq!(conn.remote_routes.len(), 1);
     assert_eq!(conn.remote_routes[0].name, "remote-example-route");
-    assert_eq!(conn.remote_routes[0].route_type, "static");
+    assert_eq!(conn.remote_routes[0].route_type, RouteType::Static);
     assert_eq!(conn.remote_routes[0].static_network, "10.0.1.0/24");
 
     // tunnels
@@ -143,7 +143,7 @@ fn deserialize_gateway_list() {
     assert_eq!(tunnel.tunnel_up, Some(true));
     assert_eq!(tunnel.tunnel_internal_ip.as_deref(), Some("169.254.17.1"));
     assert_eq!(tunnel.internal_peer_ping_interval, Some(0));
-    assert_eq!(tunnel.operational_state.as_deref(), Some("established"));
+    assert_eq!(tunnel.operational_state, Some(TunnelOperationalState::Established));
     assert_eq!(tunnel.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
     assert_eq!(tunnel.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
 
@@ -157,7 +157,7 @@ fn deserialize_gateway_list() {
 
     // ipsec
     let ipsec = tunnel.ipsec.as_ref().unwrap();
-    assert_eq!(ipsec.authentication.as_ref().unwrap().authentication, "psk");
+    assert_eq!(ipsec.authentication.as_ref().unwrap().authentication, IPSecAuthType::PSK);
     assert!(ipsec.authentication.as_ref().unwrap().psk.is_none());
     assert_eq!(ipsec.child_rekey_time, Some(1440));
     assert_eq!(ipsec.dpd_delay, Some(30));
@@ -167,8 +167,8 @@ fn deserialize_gateway_list() {
 
     let p1_alg = ipsec.phase1_algorithms.as_ref().unwrap();
     assert_eq!(p1_alg.len(), 2);
-    assert_eq!(p1_alg[0], "aes128gcm128");
-    assert_eq!(p1_alg[1], "aes256gcm128");
+    assert_eq!(p1_alg[0], IPSecAlgorithm::Aes128Gcm128);
+    assert_eq!(p1_alg[1], IPSecAlgorithm::Aes256Gcm128);
 
     let p1_dh = ipsec.phase1_dh_group_numbers.as_ref().unwrap();
     assert_eq!(p1_dh.len(), 6);
@@ -176,12 +176,12 @@ fn deserialize_gateway_list() {
 
     let p1_int = ipsec.phase1_integrity_algorithms.as_ref().unwrap();
     assert_eq!(p1_int.len(), 5);
-    assert_eq!(p1_int, &["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"]);
+    assert_eq!(p1_int, &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
 
     let p2_alg = ipsec.phase2_algorithms.as_ref().unwrap();
     assert_eq!(p2_alg.len(), 2);
-    assert_eq!(p2_alg[0], "aes128gcm128");
-    assert_eq!(p2_alg[1], "aes256gcm128");
+    assert_eq!(p2_alg[0], IPSecAlgorithm::Aes128Gcm128);
+    assert_eq!(p2_alg[1], IPSecAlgorithm::Aes256Gcm128);
 
     let p2_dh = ipsec.phase2_dh_group_numbers.as_ref().unwrap();
     assert_eq!(p2_dh.len(), 6);
@@ -189,7 +189,7 @@ fn deserialize_gateway_list() {
 
     let p2_int = ipsec.phase2_integrity_algorithms.as_ref().unwrap();
     assert_eq!(p2_int.len(), 5);
-    assert_eq!(p2_int, &["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"]);
+    assert_eq!(p2_int, &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
 }
 
 #[test]
@@ -505,8 +505,8 @@ fn deserialize_gateway_detail() {
     assert_eq!(gw.name, "example-gateway");
     assert_eq!(gw.zone, "fi-hel1");
     assert_eq!(gw.plan, "production");
-    assert_eq!(gw.operational_state.as_deref(), Some("running"));
-    assert_eq!(gw.configured_status.as_deref(), Some("started"));
+    assert_eq!(gw.operational_state, Some(OperationalState::Running));
+    assert_eq!(gw.configured_status, Some(ConfiguredStatus::Started));
     assert_eq!(gw.automatic_tunnel_internal_ip_allocation, Some(true));
     assert_eq!(gw.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
     assert_eq!(gw.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
@@ -537,18 +537,18 @@ fn deserialize_gateway_detail() {
     let conn = &gw.connections[0];
     assert_eq!(conn.name, "example-connection");
     assert_eq!(conn.uuid.as_deref(), Some("1085d477-8d8f-4c97-9bef-731933187538"));
-    assert_eq!(conn.connection_type, "ipsec");
+    assert_eq!(conn.connection_type, ConnectionType::IPSec);
     assert_eq!(conn.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
     assert_eq!(conn.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
 
     assert_eq!(conn.local_routes.len(), 1);
     assert_eq!(conn.local_routes[0].name, "upcloud-example-route");
-    assert_eq!(conn.local_routes[0].route_type, "static");
+    assert_eq!(conn.local_routes[0].route_type, RouteType::Static);
     assert_eq!(conn.local_routes[0].static_network, "10.0.0.0/24");
 
     assert_eq!(conn.remote_routes.len(), 1);
     assert_eq!(conn.remote_routes[0].name, "remote-example-route");
-    assert_eq!(conn.remote_routes[0].route_type, "static");
+    assert_eq!(conn.remote_routes[0].route_type, RouteType::Static);
     assert_eq!(conn.remote_routes[0].static_network, "10.0.1.0/24");
 
     // tunnel
@@ -560,7 +560,7 @@ fn deserialize_gateway_detail() {
     assert_eq!(tunnel.tunnel_up, Some(true));
     assert_eq!(tunnel.tunnel_internal_ip.as_deref(), Some("169.254.17.1"));
     assert_eq!(tunnel.internal_peer_ping_interval, Some(0));
-    assert_eq!(tunnel.operational_state.as_deref(), Some("established"));
+    assert_eq!(tunnel.operational_state, Some(TunnelOperationalState::Established));
     assert_eq!(tunnel.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
     assert_eq!(tunnel.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
 
@@ -573,19 +573,19 @@ fn deserialize_gateway_detail() {
 
     // ipsec
     let ipsec = tunnel.ipsec.as_ref().unwrap();
-    assert_eq!(ipsec.authentication.as_ref().unwrap().authentication, "psk");
+    assert_eq!(ipsec.authentication.as_ref().unwrap().authentication, IPSecAuthType::PSK);
     assert!(ipsec.authentication.as_ref().unwrap().psk.is_none());
     assert_eq!(ipsec.child_rekey_time, Some(1440));
     assert_eq!(ipsec.dpd_delay, Some(30));
     assert_eq!(ipsec.dpd_timeout, Some(120));
     assert_eq!(ipsec.ike_lifetime, Some(86400));
     assert_eq!(ipsec.rekey_time, Some(14400));
-    assert_eq!(ipsec.phase1_algorithms.as_ref().unwrap(), &["aes128gcm128", "aes256gcm128"]);
+    assert_eq!(ipsec.phase1_algorithms.as_ref().unwrap(), &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]);
     assert_eq!(ipsec.phase1_dh_group_numbers.as_ref().unwrap(), &[14, 16, 18, 19, 20, 21]);
-    assert_eq!(ipsec.phase1_integrity_algorithms.as_ref().unwrap(), &["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"]);
-    assert_eq!(ipsec.phase2_algorithms.as_ref().unwrap(), &["aes128gcm128", "aes256gcm128"]);
+    assert_eq!(ipsec.phase1_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
+    assert_eq!(ipsec.phase2_algorithms.as_ref().unwrap(), &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]);
     assert_eq!(ipsec.phase2_dh_group_numbers.as_ref().unwrap(), &[14, 16, 18, 19, 20, 21]);
-    assert_eq!(ipsec.phase2_integrity_algorithms.as_ref().unwrap(), &["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"]);
+    assert_eq!(ipsec.phase2_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
 }
 
 #[test]
@@ -594,7 +594,7 @@ fn deserialize_create_gateway_request() {
         serde_json::from_str(GATEWAY_CREATE_REQ_JSON).unwrap();
     assert_eq!(req.name, "example-gateway");
     assert_eq!(req.zone, "fi-hel1");
-    assert_eq!(req.configured_status, "started");
+    assert_eq!(req.configured_status, ConfiguredStatus::Started);
     assert_eq!(req.plan, Some("production".to_string()));
     assert_eq!(req.automatic_tunnel_internal_ip_allocation, Some(false));
 
@@ -622,18 +622,18 @@ fn deserialize_create_gateway_request() {
     let conns = req.connections.as_ref().unwrap();
     assert_eq!(conns.len(), 1);
     assert_eq!(conns[0].name, "example-connection");
-    assert_eq!(conns[0].connection_type, "ipsec");
+    assert_eq!(conns[0].connection_type, ConnectionType::IPSec);
 
     // connection local_routes
     assert_eq!(conns[0].local_routes.len(), 1);
     assert_eq!(conns[0].local_routes[0].name, "upcloud-example-route");
-    assert_eq!(conns[0].local_routes[0].route_type, "static");
+    assert_eq!(conns[0].local_routes[0].route_type, RouteType::Static);
     assert_eq!(conns[0].local_routes[0].static_network, "10.0.0.0/24");
 
     // connection remote_routes
     assert_eq!(conns[0].remote_routes.len(), 1);
     assert_eq!(conns[0].remote_routes[0].name, "remote-example-route");
-    assert_eq!(conns[0].remote_routes[0].route_type, "static");
+    assert_eq!(conns[0].remote_routes[0].route_type, RouteType::Static);
     assert_eq!(conns[0].remote_routes[0].static_network, "10.0.1.0/24");
 
     // tunnels
@@ -652,7 +652,7 @@ fn deserialize_create_gateway_request() {
     // tunnel ipsec
     let ipsec = tunnels[0].ipsec.as_ref().unwrap();
     let auth = ipsec.authentication.as_ref().unwrap();
-    assert_eq!(auth.authentication, "psk");
+    assert_eq!(auth.authentication, IPSecAuthType::PSK);
     assert_eq!(auth.psk.as_deref(), Some("secretkey123"));
     assert!(ipsec.child_rekey_time.is_none());
     assert!(ipsec.dpd_delay.is_none());
@@ -672,7 +672,7 @@ fn deserialize_modify_gateway_request() {
     let req: ModifyRequest =
         serde_json::from_str(GATEWAY_MODIFY_REQ_JSON).unwrap();
     assert_eq!(req.name.as_deref(), Some("example-gateway"));
-    assert_eq!(req.configured_status.as_deref(), Some("started"));
+    assert_eq!(req.configured_status, Some(ConfiguredStatus::Started));
     let labels = req.labels.as_ref().unwrap();
     assert_eq!(labels.len(), 1);
     assert_eq!(labels[0].key, "env");
@@ -688,18 +688,18 @@ fn deserialize_create_connection_request() {
     let req: CreateConnectionRequest =
         serde_json::from_str(CONNECTION_CREATE_REQ_JSON).unwrap();
     assert_eq!(req.name, "example-connection");
-    assert_eq!(req.connection_type, "ipsec");
+    assert_eq!(req.connection_type, ConnectionType::IPSec);
 
     // local_routes
     assert_eq!(req.local_routes.len(), 1);
     assert_eq!(req.local_routes[0].name, "upcloud-example-route");
-    assert_eq!(req.local_routes[0].route_type, "static");
+    assert_eq!(req.local_routes[0].route_type, RouteType::Static);
     assert_eq!(req.local_routes[0].static_network, "10.0.0.0/24");
 
     // remote_routes
     assert_eq!(req.remote_routes.len(), 1);
     assert_eq!(req.remote_routes[0].name, "remote-example-route");
-    assert_eq!(req.remote_routes[0].route_type, "static");
+    assert_eq!(req.remote_routes[0].route_type, RouteType::Static);
     assert_eq!(req.remote_routes[0].static_network, "10.0.1.0/24");
 
     // tunnels
@@ -718,7 +718,7 @@ fn deserialize_create_connection_request() {
     // tunnel ipsec
     let ipsec = tunnels[0].ipsec.as_ref().unwrap();
     let auth = ipsec.authentication.as_ref().unwrap();
-    assert_eq!(auth.authentication, "psk");
+    assert_eq!(auth.authentication, IPSecAuthType::PSK);
     assert_eq!(auth.psk.as_deref(), Some("secretkey123"));
     assert!(ipsec.child_rekey_time.is_none());
     assert!(ipsec.dpd_delay.is_none());
@@ -739,20 +739,20 @@ fn deserialize_connection_detail() {
         serde_json::from_str(CONNECTION_DETAIL_JSON).unwrap();
     assert_eq!(conn.name, "example-connection");
     assert_eq!(conn.uuid.as_deref(), Some("1085d477-8d8f-4c97-9bef-731933187538"));
-    assert_eq!(conn.connection_type, "ipsec");
+    assert_eq!(conn.connection_type, ConnectionType::IPSec);
     assert_eq!(conn.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
     assert_eq!(conn.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
 
     // local_routes
     assert_eq!(conn.local_routes.len(), 1);
     assert_eq!(conn.local_routes[0].name, "upcloud-example-route");
-    assert_eq!(conn.local_routes[0].route_type, "static");
+    assert_eq!(conn.local_routes[0].route_type, RouteType::Static);
     assert_eq!(conn.local_routes[0].static_network, "10.0.0.0/24");
 
     // remote_routes
     assert_eq!(conn.remote_routes.len(), 1);
     assert_eq!(conn.remote_routes[0].name, "remote-example-route");
-    assert_eq!(conn.remote_routes[0].route_type, "static");
+    assert_eq!(conn.remote_routes[0].route_type, RouteType::Static);
     assert_eq!(conn.remote_routes[0].static_network, "10.0.1.0/24");
 
     // tunnel
@@ -760,7 +760,7 @@ fn deserialize_connection_detail() {
     let tunnel = &conn.tunnels[0];
     assert_eq!(tunnel.name, "example-tunnel-1");
     assert_eq!(tunnel.uuid.as_deref(), Some("1085d477-8d8f-4c97-9bef-731933187777"));
-    assert_eq!(tunnel.operational_state.as_deref(), Some("established"));
+    assert_eq!(tunnel.operational_state, Some(TunnelOperationalState::Established));
     assert_eq!(tunnel.tunnel_healthy, Some(true));
     assert_eq!(tunnel.tunnel_up, Some(true));
     assert_eq!(tunnel.tunnel_internal_ip.as_deref(), Some("169.254.17.1"));
@@ -778,32 +778,32 @@ fn deserialize_connection_detail() {
 
     // ipsec
     let ipsec = tunnel.ipsec.as_ref().unwrap();
-    assert_eq!(ipsec.authentication.as_ref().unwrap().authentication, "psk");
+    assert_eq!(ipsec.authentication.as_ref().unwrap().authentication, IPSecAuthType::PSK);
     assert!(ipsec.authentication.as_ref().unwrap().psk.is_none());
     assert_eq!(ipsec.child_rekey_time, Some(1440));
     assert_eq!(ipsec.dpd_delay, Some(30));
     assert_eq!(ipsec.dpd_timeout, Some(120));
     assert_eq!(ipsec.ike_lifetime, Some(86400));
     assert_eq!(ipsec.rekey_time, Some(14400));
-    assert_eq!(ipsec.phase1_algorithms.as_ref().unwrap(), &["aes128gcm128", "aes256gcm128"]);
+    assert_eq!(ipsec.phase1_algorithms.as_ref().unwrap(), &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]);
     assert_eq!(ipsec.phase1_dh_group_numbers.as_ref().unwrap(), &[14, 16, 18, 19, 20, 21]);
-    assert_eq!(ipsec.phase1_integrity_algorithms.as_ref().unwrap(), &["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"]);
-    assert_eq!(ipsec.phase2_algorithms.as_ref().unwrap(), &["aes128gcm128", "aes256gcm128"]);
+    assert_eq!(ipsec.phase1_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
+    assert_eq!(ipsec.phase2_algorithms.as_ref().unwrap(), &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]);
     assert_eq!(ipsec.phase2_dh_group_numbers.as_ref().unwrap(), &[14, 16, 18, 19, 20, 21]);
-    assert_eq!(ipsec.phase2_integrity_algorithms.as_ref().unwrap(), &["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"]);
+    assert_eq!(ipsec.phase2_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
 }
 
 #[test]
 fn deserialize_modify_connection_request() {
-    let val: serde_json::Value =
+    let req: ModifyConnectionRequest =
         serde_json::from_str(CONNECTION_MODIFY_REQ_JSON).unwrap();
-    let obj = val.as_object().unwrap();
-    assert_eq!(obj.len(), 1);
-    let routes = val["local_routes"].as_array().unwrap();
+    let routes = req.local_routes.as_ref().unwrap();
     assert_eq!(routes.len(), 1);
-    assert_eq!(routes[0]["name"], "modified-routes");
-    assert_eq!(routes[0]["type"], "static");
-    assert_eq!(routes[0]["static_network"], "10.0.22.0/24");
+    assert_eq!(routes[0].name, "modified-routes");
+    assert_eq!(routes[0].route_type, RouteType::Static);
+    assert_eq!(routes[0].static_network, "10.0.22.0/24");
+    assert!(req.remote_routes.is_none());
+    assert!(req.tunnels.is_none());
 }
 
 #[test]
@@ -818,7 +818,7 @@ fn deserialize_tunnel_list() {
     assert_eq!(t.tunnel_up, Some(true));
     assert_eq!(t.tunnel_internal_ip.as_deref(), Some("169.254.17.1"));
     assert_eq!(t.internal_peer_ping_interval, Some(0));
-    assert_eq!(t.operational_state.as_deref(), Some("established"));
+    assert_eq!(t.operational_state, Some(TunnelOperationalState::Established));
     assert_eq!(t.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
     assert_eq!(t.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
 
@@ -832,19 +832,19 @@ fn deserialize_tunnel_list() {
 
     // ipsec
     let ipsec = t.ipsec.as_ref().unwrap();
-    assert_eq!(ipsec.authentication.as_ref().unwrap().authentication, "psk");
+    assert_eq!(ipsec.authentication.as_ref().unwrap().authentication, IPSecAuthType::PSK);
     assert!(ipsec.authentication.as_ref().unwrap().psk.is_none());
     assert_eq!(ipsec.child_rekey_time, Some(1440));
     assert_eq!(ipsec.dpd_delay, Some(30));
     assert_eq!(ipsec.dpd_timeout, Some(120));
     assert_eq!(ipsec.ike_lifetime, Some(86400));
     assert_eq!(ipsec.rekey_time, Some(14400));
-    assert_eq!(ipsec.phase1_algorithms.as_ref().unwrap(), &["aes128gcm128", "aes256gcm128"]);
+    assert_eq!(ipsec.phase1_algorithms.as_ref().unwrap(), &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]);
     assert_eq!(ipsec.phase1_dh_group_numbers.as_ref().unwrap(), &[14, 16, 18, 19, 20, 21]);
-    assert_eq!(ipsec.phase1_integrity_algorithms.as_ref().unwrap(), &["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"]);
-    assert_eq!(ipsec.phase2_algorithms.as_ref().unwrap(), &["aes128gcm128", "aes256gcm128"]);
+    assert_eq!(ipsec.phase1_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
+    assert_eq!(ipsec.phase2_algorithms.as_ref().unwrap(), &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]);
     assert_eq!(ipsec.phase2_dh_group_numbers.as_ref().unwrap(), &[14, 16, 18, 19, 20, 21]);
-    assert_eq!(ipsec.phase2_integrity_algorithms.as_ref().unwrap(), &["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"]);
+    assert_eq!(ipsec.phase2_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
 }
 
 #[test]
@@ -860,7 +860,7 @@ fn deserialize_tunnel_detail() {
     assert_eq!(tunnel.tunnel_up, Some(true));
     assert_eq!(tunnel.tunnel_internal_ip.as_deref(), Some("169.254.17.1"));
     assert_eq!(tunnel.internal_peer_ping_interval, Some(0));
-    assert_eq!(tunnel.operational_state.as_deref(), Some("established"));
+    assert_eq!(tunnel.operational_state, Some(TunnelOperationalState::Established));
     assert_eq!(tunnel.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
     assert_eq!(tunnel.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
 
@@ -873,19 +873,19 @@ fn deserialize_tunnel_detail() {
 
     // ipsec
     let ipsec = tunnel.ipsec.as_ref().unwrap();
-    assert_eq!(ipsec.authentication.as_ref().unwrap().authentication, "psk");
+    assert_eq!(ipsec.authentication.as_ref().unwrap().authentication, IPSecAuthType::PSK);
     assert!(ipsec.authentication.as_ref().unwrap().psk.is_none());
     assert_eq!(ipsec.child_rekey_time, Some(1440));
     assert_eq!(ipsec.dpd_delay, Some(30));
     assert_eq!(ipsec.dpd_timeout, Some(120));
     assert_eq!(ipsec.ike_lifetime, Some(86400));
     assert_eq!(ipsec.rekey_time, Some(14400));
-    assert_eq!(ipsec.phase1_algorithms.as_ref().unwrap(), &["aes128gcm128", "aes256gcm128"]);
+    assert_eq!(ipsec.phase1_algorithms.as_ref().unwrap(), &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]);
     assert_eq!(ipsec.phase1_dh_group_numbers.as_ref().unwrap(), &[14, 16, 18, 19, 20, 21]);
-    assert_eq!(ipsec.phase1_integrity_algorithms.as_ref().unwrap(), &["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"]);
-    assert_eq!(ipsec.phase2_algorithms.as_ref().unwrap(), &["aes128gcm128", "aes256gcm128"]);
+    assert_eq!(ipsec.phase1_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
+    assert_eq!(ipsec.phase2_algorithms.as_ref().unwrap(), &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]);
     assert_eq!(ipsec.phase2_dh_group_numbers.as_ref().unwrap(), &[14, 16, 18, 19, 20, 21]);
-    assert_eq!(ipsec.phase2_integrity_algorithms.as_ref().unwrap(), &["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"]);
+    assert_eq!(ipsec.phase2_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
 }
 
 #[test]
@@ -907,7 +907,7 @@ fn deserialize_create_tunnel_request() {
     // ipsec
     let ipsec = req.ipsec.as_ref().unwrap();
     let auth = ipsec.authentication.as_ref().unwrap();
-    assert_eq!(auth.authentication, "psk");
+    assert_eq!(auth.authentication, IPSecAuthType::PSK);
     assert_eq!(auth.psk.as_deref(), Some("secretkey123"));
     assert!(ipsec.child_rekey_time.is_none());
     assert!(ipsec.dpd_delay.is_none());
@@ -924,13 +924,14 @@ fn deserialize_create_tunnel_request() {
 
 #[test]
 fn deserialize_modify_tunnel_request() {
-    let val: serde_json::Value =
+    let req: ModifyTunnelRequest =
         serde_json::from_str(TUNNEL_MODIFY_REQ_JSON).unwrap();
-    let obj = val.as_object().unwrap();
-    assert_eq!(obj.len(), 1);
-    let remote = val["remote_address"].as_object().unwrap();
-    assert_eq!(remote.len(), 1);
-    assert_eq!(val["remote_address"]["address"], "100.10.0.222");
+    assert!(req.name.is_none());
+    assert!(req.local_address.is_none());
+    let remote = req.remote_address.as_ref().unwrap();
+    assert_eq!(remote.address.as_deref(), Some("100.10.0.222"));
+    assert!(remote.name.is_none());
+    assert!(req.ipsec.is_none());
 }
 
 #[test]
@@ -938,7 +939,7 @@ fn deserialize_replace_gateway_request() {
     let req: ModifyRequest =
         serde_json::from_str(GATEWAY_REPLACE_REQ_JSON).unwrap();
     assert_eq!(req.name.as_deref(), Some("example-gateway"));
-    assert_eq!(req.configured_status.as_deref(), Some("started"));
+    assert_eq!(req.configured_status, Some(ConfiguredStatus::Started));
     assert!(req.labels.is_none());
     assert!(req.features.is_none());
     assert!(req.plan.is_none());
@@ -981,20 +982,20 @@ fn deserialize_connection_list() {
     let conn = &conns[0];
     assert_eq!(conn.name, "example-connection");
     assert_eq!(conn.uuid.as_deref(), Some("1085d477-8d8f-4c97-9bef-731933187538"));
-    assert_eq!(conn.connection_type, "ipsec");
+    assert_eq!(conn.connection_type, ConnectionType::IPSec);
     assert_eq!(conn.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
     assert_eq!(conn.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
 
     // local_routes
     assert_eq!(conn.local_routes.len(), 1);
     assert_eq!(conn.local_routes[0].name, "upcloud-example-route");
-    assert_eq!(conn.local_routes[0].route_type, "static");
+    assert_eq!(conn.local_routes[0].route_type, RouteType::Static);
     assert_eq!(conn.local_routes[0].static_network, "10.0.0.0/24");
 
     // remote_routes
     assert_eq!(conn.remote_routes.len(), 1);
     assert_eq!(conn.remote_routes[0].name, "remote-example-route");
-    assert_eq!(conn.remote_routes[0].route_type, "static");
+    assert_eq!(conn.remote_routes[0].route_type, RouteType::Static);
     assert_eq!(conn.remote_routes[0].static_network, "10.0.1.0/24");
 
     // tunnel
@@ -1006,7 +1007,7 @@ fn deserialize_connection_list() {
     assert_eq!(tunnel.tunnel_up, Some(true));
     assert_eq!(tunnel.tunnel_internal_ip.as_deref(), Some("169.254.17.1"));
     assert_eq!(tunnel.internal_peer_ping_interval, Some(0));
-    assert_eq!(tunnel.operational_state.as_deref(), Some("established"));
+    assert_eq!(tunnel.operational_state, Some(TunnelOperationalState::Established));
     assert_eq!(tunnel.created_at.as_deref(), Some("2022-12-01T09:04:08.529138Z"));
     assert_eq!(tunnel.updated_at.as_deref(), Some("2022-12-01T19:04:08.529138Z"));
 
@@ -1020,17 +1021,179 @@ fn deserialize_connection_list() {
 
     // ipsec
     let ipsec = tunnel.ipsec.as_ref().unwrap();
-    assert_eq!(ipsec.authentication.as_ref().unwrap().authentication, "psk");
+    assert_eq!(ipsec.authentication.as_ref().unwrap().authentication, IPSecAuthType::PSK);
     assert!(ipsec.authentication.as_ref().unwrap().psk.is_none());
     assert_eq!(ipsec.child_rekey_time, Some(1440));
     assert_eq!(ipsec.dpd_delay, Some(30));
     assert_eq!(ipsec.dpd_timeout, Some(120));
     assert_eq!(ipsec.ike_lifetime, Some(86400));
     assert_eq!(ipsec.rekey_time, Some(14400));
-    assert_eq!(ipsec.phase1_algorithms.as_ref().unwrap(), &["aes128gcm128", "aes256gcm128"]);
+    assert_eq!(ipsec.phase1_algorithms.as_ref().unwrap(), &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]);
     assert_eq!(ipsec.phase1_dh_group_numbers.as_ref().unwrap(), &[14, 16, 18, 19, 20, 21]);
-    assert_eq!(ipsec.phase1_integrity_algorithms.as_ref().unwrap(), &["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"]);
-    assert_eq!(ipsec.phase2_algorithms.as_ref().unwrap(), &["aes128gcm128", "aes256gcm128"]);
+    assert_eq!(ipsec.phase1_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
+    assert_eq!(ipsec.phase2_algorithms.as_ref().unwrap(), &[IPSecAlgorithm::Aes128Gcm128, IPSecAlgorithm::Aes256Gcm128]);
     assert_eq!(ipsec.phase2_dh_group_numbers.as_ref().unwrap(), &[14, 16, 18, 19, 20, 21]);
-    assert_eq!(ipsec.phase2_integrity_algorithms.as_ref().unwrap(), &["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"]);
+    assert_eq!(ipsec.phase2_integrity_algorithms.as_ref().unwrap(), &[IPSecIntegrityAlgorithm::Aes128Gmac, IPSecIntegrityAlgorithm::Aes256Gmac, IPSecIntegrityAlgorithm::Sha256, IPSecIntegrityAlgorithm::Sha384, IPSecIntegrityAlgorithm::Sha512]);
+}
+
+// ─── Enum round-trip tests ────────────────────────────────────────────────────
+
+#[test]
+fn enum_roundtrip_configured_status() {
+    for (variant, json) in [
+        (ConfiguredStatus::Started, "\"started\""),
+        (ConfiguredStatus::Stopped, "\"stopped\""),
+    ] {
+        let serialized = serde_json::to_string(&variant).unwrap();
+        assert_eq!(serialized, json);
+        let deserialized: ConfiguredStatus = serde_json::from_str(json).unwrap();
+        assert_eq!(deserialized, variant);
+    }
+}
+
+#[test]
+fn enum_roundtrip_operational_state() {
+    for (variant, json) in [
+        (OperationalState::Pending, "\"pending\""),
+        (OperationalState::SetupAgent, "\"setup-agent\""),
+        (OperationalState::SetupLinkNetwork, "\"setup-link-network\""),
+        (OperationalState::SetupServer, "\"setup-server\""),
+        (OperationalState::SetupNetwork, "\"setup-network\""),
+        (OperationalState::SetupGw, "\"setup-gw\""),
+        (OperationalState::SetupDns, "\"setup-dns\""),
+        (OperationalState::Checkup, "\"checkup\""),
+        (OperationalState::Running, "\"running\""),
+        (OperationalState::DeleteDns, "\"delete-dns\""),
+        (OperationalState::DeleteNetwork, "\"delete-network\""),
+        (OperationalState::DeleteServer, "\"delete-server\""),
+        (OperationalState::DeleteLinkNetwork, "\"delete-link-network\""),
+        (OperationalState::DeleteService, "\"delete-service\""),
+    ] {
+        let serialized = serde_json::to_string(&variant).unwrap();
+        assert_eq!(serialized, json);
+        let deserialized: OperationalState = serde_json::from_str(json).unwrap();
+        assert_eq!(deserialized, variant);
+    }
+}
+
+#[test]
+fn enum_roundtrip_connection_type() {
+    let json = "\"ipsec\"";
+    let serialized = serde_json::to_string(&ConnectionType::IPSec).unwrap();
+    assert_eq!(serialized, json);
+    let deserialized: ConnectionType = serde_json::from_str(json).unwrap();
+    assert_eq!(deserialized, ConnectionType::IPSec);
+}
+
+#[test]
+fn enum_roundtrip_tunnel_operational_state() {
+    for (variant, json) in [
+        (TunnelOperationalState::Uninitialized, "\"uninitialized\""),
+        (TunnelOperationalState::Created, "\"created\""),
+        (TunnelOperationalState::Connecting, "\"connecting\""),
+        (TunnelOperationalState::Established, "\"established\""),
+        (TunnelOperationalState::Rekeying, "\"rekeying\""),
+        (TunnelOperationalState::Rekeyed, "\"rekeyed\""),
+        (TunnelOperationalState::Deleting, "\"deleting\""),
+        (TunnelOperationalState::Destroying, "\"destroying\""),
+        (TunnelOperationalState::Unknown, "\"unknown\""),
+    ] {
+        let serialized = serde_json::to_string(&variant).unwrap();
+        assert_eq!(serialized, json);
+        let deserialized: TunnelOperationalState = serde_json::from_str(json).unwrap();
+        assert_eq!(deserialized, variant);
+    }
+}
+
+#[test]
+fn enum_roundtrip_route_type() {
+    let json = "\"static\"";
+    let serialized = serde_json::to_string(&RouteType::Static).unwrap();
+    assert_eq!(serialized, json);
+    let deserialized: RouteType = serde_json::from_str(json).unwrap();
+    assert_eq!(deserialized, RouteType::Static);
+}
+
+#[test]
+fn enum_roundtrip_ipsec_auth_type() {
+    let json = "\"psk\"";
+    let serialized = serde_json::to_string(&IPSecAuthType::PSK).unwrap();
+    assert_eq!(serialized, json);
+    let deserialized: IPSecAuthType = serde_json::from_str(json).unwrap();
+    assert_eq!(deserialized, IPSecAuthType::PSK);
+}
+
+#[test]
+fn enum_roundtrip_ipsec_algorithm() {
+    for (variant, json) in [
+        (IPSecAlgorithm::Aes128Gcm16, "\"aes128gcm16\""),
+        (IPSecAlgorithm::Aes128Gcm128, "\"aes128gcm128\""),
+        (IPSecAlgorithm::Aes192Gcm16, "\"aes192gcm16\""),
+        (IPSecAlgorithm::Aes192Gcm128, "\"aes192gcm128\""),
+        (IPSecAlgorithm::Aes256Gcm16, "\"aes256gcm16\""),
+        (IPSecAlgorithm::Aes256Gcm128, "\"aes256gcm128\""),
+        (IPSecAlgorithm::Aes128, "\"aes128\""),
+        (IPSecAlgorithm::Aes192, "\"aes192\""),
+        (IPSecAlgorithm::Aes256, "\"aes256\""),
+    ] {
+        let serialized = serde_json::to_string(&variant).unwrap();
+        assert_eq!(serialized, json);
+        let deserialized: IPSecAlgorithm = serde_json::from_str(json).unwrap();
+        assert_eq!(deserialized, variant);
+    }
+}
+
+#[test]
+fn enum_roundtrip_ipsec_integrity_algorithm() {
+    for (variant, json) in [
+        (IPSecIntegrityAlgorithm::Aes128Gmac, "\"aes128gmac\""),
+        (IPSecIntegrityAlgorithm::Aes256Gmac, "\"aes256gmac\""),
+        (IPSecIntegrityAlgorithm::Sha1, "\"sha1\""),
+        (IPSecIntegrityAlgorithm::Sha256, "\"sha256\""),
+        (IPSecIntegrityAlgorithm::Sha384, "\"sha384\""),
+        (IPSecIntegrityAlgorithm::Sha512, "\"sha512\""),
+    ] {
+        let serialized = serde_json::to_string(&variant).unwrap();
+        assert_eq!(serialized, json);
+        let deserialized: IPSecIntegrityAlgorithm = serde_json::from_str(json).unwrap();
+        assert_eq!(deserialized, variant);
+    }
+}
+
+// ─── New request type serialization tests ─────────────────────────────────────
+
+#[test]
+fn serialize_modify_connection_request() {
+    let req = ModifyConnectionRequest {
+        local_routes: Some(vec![RouteInput {
+            name: "modified-routes".to_string(),
+            static_network: "10.0.22.0/24".to_string(),
+            route_type: RouteType::Static,
+        }]),
+        ..Default::default()
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    let routes = json["local_routes"].as_array().unwrap();
+    assert_eq!(routes.len(), 1);
+    assert_eq!(routes[0]["name"], "modified-routes");
+    assert_eq!(routes[0]["type"], "static");
+    assert_eq!(routes[0]["static_network"], "10.0.22.0/24");
+    assert!(json.get("remote_routes").is_none());
+    assert!(json.get("tunnels").is_none());
+}
+
+#[test]
+fn serialize_modify_tunnel_request() {
+    let req = ModifyTunnelRequest {
+        remote_address: Some(TunnelAddress {
+            address: Some("100.10.0.222".to_string()),
+            name: None,
+        }),
+        ..Default::default()
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["remote_address"]["address"], "100.10.0.222");
+    assert!(json.get("name").is_none());
+    assert!(json.get("local_address").is_none());
+    assert!(json.get("ipsec").is_none());
 }
