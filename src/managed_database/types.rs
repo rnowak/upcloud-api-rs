@@ -5,19 +5,32 @@ use serde::{Deserialize, Serialize};
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "lowercase")]
+#[serde(rename_all = "kebab-case")]
 pub enum State {
-    Running,
+    Pending,
+    SetupNetwork,
+    CheckNetwork,
+    SetupPeer,
+    CheckPeer,
+    SetupService,
     Rebuilding,
     Rebalancing,
+    Running,
     Stopped,
-    Stopping,
-    Starting,
     Error,
-    Deleting,
-    Deleted,
-    PoweredOff,
-    Restarting,
+    CleanupService,
+    CleanupNetwork,
+    DeleteService,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum MetricPeriod {
+    Hour,
+    Day,
+    Week,
+    Month,
+    Year,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -29,6 +42,59 @@ pub enum UserType {
 }
 
 // ─── Types ────────────────────────────────────────────────────────────────────
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MaintenanceTime {
+    pub dow: String,
+    pub time: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Backup {
+    pub backup_name: String,
+    pub backup_time: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub data_size: Option<u64>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OpenSearchAccessControl {
+    pub access_control: Option<bool>,
+    pub extended_access_control: Option<bool>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OpenSearchAccessControlRule {
+    pub index: String,
+    pub permission: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OpenSearchIndex {
+    pub index_name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub create_time: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub docs: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub health: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub number_of_replicas: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub number_of_shards: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub read_only_allow_delete: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub size: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct UserOpenSearchAccessControl {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rules: Option<Vec<OpenSearchAccessControlRule>>,
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Database {
@@ -70,6 +136,10 @@ pub struct Database {
     pub labels: Option<Vec<crate::types::common::Label>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub termination_protection: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub backups: Option<Vec<Backup>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maintenance: Option<MaintenanceTime>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -215,6 +285,12 @@ pub struct CreateRequest {
     pub labels: Option<Vec<crate::types::common::Label>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub termination_protection: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub host_name_prefix: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maintenance: Option<MaintenanceTime>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_disk_space_gib: Option<u64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -295,6 +371,12 @@ pub struct TerminateQueriesRequest {
     pub terminate_after: Option<u32>,
 }
 
+#[derive(Debug, Clone, Serialize, Default)]
+pub struct GetMetricsRequest {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub period: Option<MetricPeriod>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CloneRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -307,10 +389,34 @@ pub struct CloneRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
     pub zone: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maintenance: Option<MaintenanceTime>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub properties: Option<serde_json::Value>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UpgradeVersionRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_version: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct ModifyAccessControlRequest {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub access_control: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extended_access_control: Option<bool>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct ModifyUserAccessControlRequest {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub opensearch_access_control: Option<UserOpenSearchAccessControl>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pg_access_control: Option<serde_json::Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub redis_access_control: Option<serde_json::Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub valkey_access_control: Option<serde_json::Value>,
 }

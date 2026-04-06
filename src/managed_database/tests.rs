@@ -830,3 +830,188 @@ fn deserialize_db_service_type_detail() {
     assert_eq!(version_enum.len(), 1);
     assert_eq!(version_enum[0], "8");
 }
+
+// ─── New type tests ──────────────────────────────────────────────────────
+
+#[test]
+fn deserialize_state_kebab_case() {
+    let cases = vec![
+        ("pending", State::Pending),
+        ("setup-network", State::SetupNetwork),
+        ("check-network", State::CheckNetwork),
+        ("setup-peer", State::SetupPeer),
+        ("check-peer", State::CheckPeer),
+        ("setup-service", State::SetupService),
+        ("rebuilding", State::Rebuilding),
+        ("rebalancing", State::Rebalancing),
+        ("running", State::Running),
+        ("stopped", State::Stopped),
+        ("error", State::Error),
+        ("cleanup-service", State::CleanupService),
+        ("cleanup-network", State::CleanupNetwork),
+        ("delete-service", State::DeleteService),
+    ];
+    for (json_val, expected) in cases {
+        let json = format!("\"{}\"", json_val);
+        let state: State = serde_json::from_str(&json).unwrap();
+        assert_eq!(state, expected, "failed for {json}");
+    }
+}
+
+#[test]
+fn serialize_state_kebab_case() {
+    assert_eq!(
+        serde_json::to_string(&State::SetupNetwork).unwrap(),
+        "\"setup-network\""
+    );
+    assert_eq!(
+        serde_json::to_string(&State::CleanupService).unwrap(),
+        "\"cleanup-service\""
+    );
+    assert_eq!(
+        serde_json::to_string(&State::Running).unwrap(),
+        "\"running\""
+    );
+}
+
+#[test]
+fn deserialize_maintenance_time() {
+    let json = r#"{"dow": "sunday", "time": "05:00:00"}"#;
+    let mt: MaintenanceTime = serde_json::from_str(json).unwrap();
+    assert_eq!(mt.dow, "sunday");
+    assert_eq!(mt.time, "05:00:00");
+}
+
+#[test]
+fn serialize_maintenance_time() {
+    let mt = MaintenanceTime {
+        dow: "monday".to_string(),
+        time: "03:00:00".to_string(),
+    };
+    let json = serde_json::to_string(&mt).unwrap();
+    assert!(json.contains("\"dow\":\"monday\""));
+    assert!(json.contains("\"time\":\"03:00:00\""));
+}
+
+#[test]
+fn deserialize_backup() {
+    let json = r#"{"backup_name": "daily-2022-01-21", "backup_time": "2022-01-21T03:00:00Z", "data_size": 1234567}"#;
+    let backup: Backup = serde_json::from_str(json).unwrap();
+    assert_eq!(backup.backup_name, "daily-2022-01-21");
+    assert_eq!(backup.backup_time, "2022-01-21T03:00:00Z");
+    assert_eq!(backup.data_size, Some(1234567));
+}
+
+#[test]
+fn deserialize_backup_without_data_size() {
+    let json = r#"{"backup_name": "daily-2022-01-21", "backup_time": "2022-01-21T03:00:00Z"}"#;
+    let backup: Backup = serde_json::from_str(json).unwrap();
+    assert_eq!(backup.backup_name, "daily-2022-01-21");
+    assert!(backup.data_size.is_none());
+}
+
+#[test]
+fn deserialize_opensearch_access_control() {
+    let json = r#"{"access_control": true, "extended_access_control": false}"#;
+    let acl: OpenSearchAccessControl = serde_json::from_str(json).unwrap();
+    assert_eq!(acl.access_control, Some(true));
+    assert_eq!(acl.extended_access_control, Some(false));
+}
+
+#[test]
+fn deserialize_opensearch_access_control_rule() {
+    let json = r#"{"index": "my-index-*", "permission": "readwrite"}"#;
+    let rule: OpenSearchAccessControlRule = serde_json::from_str(json).unwrap();
+    assert_eq!(rule.index, "my-index-*");
+    assert_eq!(rule.permission, "readwrite");
+}
+
+#[test]
+fn deserialize_opensearch_index() {
+    let json = r#"{
+  "create_time": "2022-06-01T00:00:00Z",
+  "docs": 500,
+  "health": "green",
+  "index_name": "test-index",
+  "number_of_replicas": 1,
+  "number_of_shards": 5,
+  "read_only_allow_delete": false,
+  "size": 1048576,
+  "status": "open"
+}"#;
+    let idx: OpenSearchIndex = serde_json::from_str(json).unwrap();
+    assert_eq!(idx.index_name, "test-index");
+    assert_eq!(idx.docs, Some(500));
+    assert_eq!(idx.health.as_deref(), Some("green"));
+    assert_eq!(idx.number_of_replicas, Some(1));
+    assert_eq!(idx.number_of_shards, Some(5));
+    assert_eq!(idx.read_only_allow_delete, Some(false));
+    assert_eq!(idx.size, Some(1048576));
+    assert_eq!(idx.status.as_deref(), Some("open"));
+}
+
+#[test]
+fn metric_period_serialization() {
+    assert_eq!(serde_json::to_string(&MetricPeriod::Hour).unwrap(), "\"hour\"");
+    assert_eq!(serde_json::to_string(&MetricPeriod::Day).unwrap(), "\"day\"");
+    assert_eq!(serde_json::to_string(&MetricPeriod::Week).unwrap(), "\"week\"");
+    assert_eq!(serde_json::to_string(&MetricPeriod::Month).unwrap(), "\"month\"");
+    assert_eq!(serde_json::to_string(&MetricPeriod::Year).unwrap(), "\"year\"");
+}
+
+#[test]
+fn deserialize_database_with_backups_and_maintenance() {
+    let json = r#"{
+  "uuid": "test-uuid",
+  "name": "test-db",
+  "title": "Test DB",
+  "plan": "1x1xCPU-2GB-25GB",
+  "zone": "de-fra1",
+  "type": "pg",
+  "state": "running",
+  "backups": [
+    {"backup_name": "daily-2022-01-21", "backup_time": "2022-01-21T03:00:00Z", "data_size": 100}
+  ],
+  "maintenance": {"dow": "sunday", "time": "05:00:00"}
+}"#;
+    let db: Database = serde_json::from_str(json).unwrap();
+    assert_eq!(db.uuid, "test-uuid");
+    assert_eq!(db.state, State::Running);
+
+    let backups = db.backups.as_ref().unwrap();
+    assert_eq!(backups.len(), 1);
+    assert_eq!(backups[0].backup_name, "daily-2022-01-21");
+    assert_eq!(backups[0].data_size, Some(100));
+
+    let maint = db.maintenance.as_ref().unwrap();
+    assert_eq!(maint.dow, "sunday");
+    assert_eq!(maint.time, "05:00:00");
+}
+
+#[test]
+fn deserialize_modify_access_control_request() {
+    let json = r#"{"access_control": true, "extended_access_control": false}"#;
+    let req: ModifyAccessControlRequest = serde_json::from_str(json).unwrap();
+    assert_eq!(req.access_control, Some(true));
+    assert_eq!(req.extended_access_control, Some(false));
+}
+
+#[test]
+fn deserialize_user_opensearch_access_control() {
+    let json = r#"{
+  "opensearch_access_control": {
+    "rules": [
+      {"index": "logs-*", "permission": "read"},
+      {"index": "events-*", "permission": "readwrite"}
+    ]
+  }
+}"#;
+    let req: ModifyUserAccessControlRequest = serde_json::from_str(json).unwrap();
+    let acl = req.opensearch_access_control.as_ref().unwrap();
+    let rules = acl.rules.as_ref().unwrap();
+    assert_eq!(rules.len(), 2);
+    assert_eq!(rules[0].index, "logs-*");
+    assert_eq!(rules[0].permission, "read");
+    assert_eq!(rules[1].index, "events-*");
+    assert_eq!(rules[1].permission, "readwrite");
+}

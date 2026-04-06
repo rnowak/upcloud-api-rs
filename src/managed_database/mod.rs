@@ -404,6 +404,129 @@ impl<'a> DatabaseHandler<'a> {
             .post(&format!("/1.3/database/{uuid}/upgrade"), req)
             .await
     }
+
+    // ─── OpenSearch Access Control ────────────────────────────────────────────
+
+    /// Returns access control settings for a managed database.
+    ///
+    /// `GET /1.3/database/{uuid}/access-control`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-access-control)
+    pub async fn get_access_control(
+        &self,
+        uuid: &str,
+    ) -> Result<OpenSearchAccessControl, Error> {
+        self.client
+            .get(&format!("/1.3/database/{uuid}/access-control"))
+            .await
+    }
+
+    /// Modifies access control settings for a managed database.
+    ///
+    /// `PUT /1.3/database/{uuid}/access-control`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#modify-managed-database-access-control)
+    pub async fn modify_access_control(
+        &self,
+        uuid: &str,
+        req: ModifyAccessControlRequest,
+    ) -> Result<OpenSearchAccessControl, Error> {
+        self.client
+            .put(&format!("/1.3/database/{uuid}/access-control"), &req)
+            .await
+    }
+
+    /// Modifies user-level access control for a managed database user.
+    ///
+    /// `PUT /1.3/database/{uuid}/users/{username}/access-control`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#modify-managed-database-user-access-control)
+    pub async fn modify_user_access_control(
+        &self,
+        uuid: &str,
+        username: &str,
+        req: ModifyUserAccessControlRequest,
+    ) -> Result<serde_json::Value, Error> {
+        self.client
+            .put(
+                &format!("/1.3/database/{uuid}/users/{username}/access-control"),
+                &req,
+            )
+            .await
+    }
+
+    // ─── OpenSearch Index Management ──────────────────────────────────────────
+
+    /// Returns a list of indices for a managed OpenSearch database.
+    ///
+    /// `GET /1.3/database/{uuid}/indices`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-indices)
+    pub async fn list_indices(
+        &self,
+        uuid: &str,
+    ) -> Result<Vec<OpenSearchIndex>, Error> {
+        self.client
+            .get(&format!("/1.3/database/{uuid}/indices"))
+            .await
+    }
+
+    /// Deletes an index from a managed OpenSearch database.
+    ///
+    /// `DELETE /1.3/database/{uuid}/indices/{index_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#delete-managed-database-index)
+    pub async fn delete_index(
+        &self,
+        uuid: &str,
+        index_name: &str,
+    ) -> Result<(), Error> {
+        self.client
+            .delete(&format!("/1.3/database/{uuid}/indices/{index_name}"))
+            .await
+    }
+
+    // ─── Session Management ───────────────────────────────────────────────────
+
+    /// Cancels or terminates a session in a managed database.
+    ///
+    /// `DELETE /1.3/database/{uuid}/sessions/{pid}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#cancel-managed-database-session)
+    pub async fn cancel_session(
+        &self,
+        uuid: &str,
+        pid: i64,
+    ) -> Result<(), Error> {
+        self.client
+            .delete(&format!("/1.3/database/{uuid}/sessions/{pid}"))
+            .await
+    }
+
+    // ─── State Polling ────────────────────────────────────────────────────────
+
+    /// Polls until the database reaches the desired state or the timeout expires.
+    pub async fn wait_for_state(
+        &self,
+        uuid: &str,
+        desired_state: State,
+        timeout: std::time::Duration,
+    ) -> Result<Database, Error> {
+        let start = std::time::Instant::now();
+        loop {
+            let details = self.get(uuid).await?;
+            if details.state == desired_state {
+                return Ok(details);
+            }
+            if start.elapsed() >= timeout {
+                return Err(Error::InvalidConfig(format!(
+                    "timeout waiting for database {} to reach state {:?}",
+                    uuid, desired_state
+                )));
+            }
+            tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+        }
+    }
 }
 
 #[cfg(test)]
