@@ -129,7 +129,9 @@ where
 /// Sort direction for list endpoints that support ordering.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SortOrder {
+    /// Ascending order.
     Asc,
+    /// Descending order.
     Desc,
 }
 

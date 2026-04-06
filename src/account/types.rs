@@ -25,6 +25,7 @@ pub enum TokenType {
 
 // ─── Account types ────────────────────────────────────────────────────────────
 
+/// An UpCloud account with profile, limits, and access settings.
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Account {
@@ -55,46 +56,61 @@ pub struct Account {
     pub email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub vat_number: Option<String>,
+    /// Whether network-level access is enabled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enable_network_access: Option<String>,
+    /// Resource quotas.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub resource_limits: Option<ResourceLimits>,
+    /// Account roles.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub roles: Option<AccountRoles>,
+    /// Server access control list.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub server_access: Option<ServerAccessList>,
+    /// Storage access control list.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub storage_access: Option<StorageAccessList>,
+    /// Network access control list.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub network_access: Option<NetworkAccessList>,
+    /// IP filter access control list.
     #[serde(skip_serializing_if = "Option::is_none", alias = "ip_filters")]
     pub ip_filter_access: Option<IpFilterList>,
+    /// Tag access control list.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tag_access: Option<serde_json::Value>,
+    /// Account credit balance.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub credits: Option<f64>,
+    /// Account type string.
     #[serde(rename = "type", skip_serializing_if = "Option::is_none", default)]
     pub account_type: Option<String>,
+    /// Username of the parent main account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub main_account: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub timezone: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub campaigns: Option<serde_json::Value>,
+    /// Whether API access is enabled.
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_api: Option<bool>,
+    /// Whether control panel access is enabled.
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_gui: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enable_3rd_party_services: Option<String>,
+    /// Whether simple backup is available.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub simple_backup: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<Label>>,
 }
 
+/// Maximum resource quotas for an account.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ResourceLimits {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -137,37 +153,45 @@ pub struct ResourceLimits {
     pub storage_total: Option<u64>,
 }
 
+/// Account roles wrapper.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AccountRoles {
+    /// List of role names.
     #[serde(default)]
     pub role: Vec<String>,
 }
 
+/// Server-level access control entry.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerAccessEntry {
     pub uuid: String,
+    /// Storage access mode for this server.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub storage: Option<String>,
 }
 
+/// List of server access entries.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerAccessList {
     #[serde(default)]
     pub server: Vec<ServerAccessEntry>,
 }
 
+/// List of storage UUIDs the account can access.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct StorageAccessList {
     #[serde(default)]
     pub storage: Vec<String>,
 }
 
+/// List of network UUIDs the account can access.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NetworkAccessList {
     #[serde(default)]
     pub network: Vec<String>,
 }
 
+/// IP filter allowlist for account access.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct IpFilterList {
     #[serde(default)]
@@ -186,6 +210,7 @@ pub struct AccountEntry {
     pub labels: Option<Vec<Label>>,
 }
 
+/// Request body for modifying account details.
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModifyAccountDetailsRequest {
@@ -243,6 +268,7 @@ pub struct ModifyAccountDetailsRequest {
     pub labels: Option<Vec<Label>>,
 }
 
+/// Request body for creating a subaccount.
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct CreateSubaccountRequest {
@@ -302,6 +328,7 @@ pub struct CreateSubaccountRequest {
 
 // ─── API Token types ──────────────────────────────────────────────────────────
 
+/// An API token.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ApiToken {
     pub id: String,
@@ -312,23 +339,31 @@ pub struct ApiToken {
     pub expires_at: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_used_at: Option<String>,
+    /// Whether this token can create other tokens.
     #[serde(default)]
     pub can_create_tokens: bool,
+    /// CIDRs allowed to use this token.
     #[serde(default)]
     pub allowed_ip_ranges: Vec<String>,
+    /// Whether this token grants control panel access.
     #[serde(default)]
     pub gui: bool,
 }
 
+/// Request body for creating an API token.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateTokenRequest {
     pub name: String,
+    /// Absolute expiry timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<String>,
+    /// Relative expiry duration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_in: Option<String>,
+    /// Allow token creation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_create_tokens: Option<bool>,
+    /// Allowed CIDRs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_ip_ranges: Option<Vec<String>>,
 }
@@ -380,6 +415,7 @@ pub struct DeprecatedBillingWrapper {
     pub billing: DeprecatedBillingSummary,
 }
 
+/// Billing summary from the deprecated endpoint.
 #[derive(Debug, Clone, Deserialize)]
 pub struct DeprecatedBillingSummary {
     #[serde(default)]
@@ -404,18 +440,23 @@ pub struct ResourceBillingWrapper {
     pub billing: ResourceBillingSummary,
 }
 
+/// Per-resource billing summary.
 #[derive(Debug, Clone, Deserialize)]
 pub struct ResourceBillingSummary {
+    /// Daily billing amounts.
     #[serde(default)]
     pub daily_sums: Option<serde_json::Value>,
+    /// Resource billing details.
     #[serde(default)]
     pub details: Option<ResourceBillingDetails>,
     #[serde(default)]
     pub total_amount: Option<f64>,
 }
 
+/// Details of a billed resource.
 #[derive(Debug, Clone, Deserialize)]
 pub struct ResourceBillingDetails {
+    /// Billed hours.
     #[serde(default)]
     pub hours: Option<u64>,
     #[serde(default)]
@@ -424,6 +465,7 @@ pub struct ResourceBillingDetails {
     pub resource_id: Option<String>,
     #[serde(default)]
     pub title: Option<String>,
+    /// Resource type.
     #[serde(rename = "type", default)]
     pub resource_type: Option<String>,
     #[serde(default)]
@@ -436,26 +478,35 @@ pub struct NetworkTransferStatsResponse {
     pub stats: NetworkTransferStatsWrapper,
 }
 
+/// Wrapper for network transfer statistics.
 #[derive(Debug, Clone, Deserialize)]
 pub struct NetworkTransferStatsWrapper {
+    /// Transfer statistics entries.
     #[serde(default)]
     pub stat: Vec<NetworkTransferStat>,
+    /// Current usage snapshot.
     #[serde(default)]
     pub current_network_usage: Option<CurrentNetworkUsage>,
 }
 
+/// A single network transfer statistics entry.
 #[derive(Debug, Clone, Deserialize)]
 pub struct NetworkTransferStat {
+    /// Accumulated bandwidth quota.
     #[serde(default)]
     pub accumulated_quota_bytes: Option<u64>,
+    /// Projected monthly quota.
     #[serde(default)]
     pub projected_monthly_quota_bytes: Option<u64>,
+    /// Quota increase.
     #[serde(default)]
     pub quota_increase_bytes: Option<u64>,
+    /// Bytes sent in period.
     #[serde(default)]
     pub sent_bytes: Option<u64>,
     #[serde(default)]
     pub start_time: Option<String>,
+    /// Total bytes sent.
     #[serde(default)]
     pub total_sent_bytes: Option<u64>,
 }
