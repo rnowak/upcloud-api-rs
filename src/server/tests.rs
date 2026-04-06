@@ -2130,17 +2130,18 @@ fn list_params_full_combination() {
 }
 
 // ─── Device availability ─────────────────────────────────────────────────
+// Uses realistic zone IDs and GPU model names from the UpCloud API docs
+// (server details show devices with model "NVIDIA L40S").
 
 const DEVICE_AVAILABILITY_JSON: &str = r#"{
   "fi-hel1": {
     "gpu_plans": {
-      "NVIDIA A100": { "amount": 5 },
-      "NVIDIA T4": { "amount": 10 }
+      "NVIDIA L40S": { "amount": 8 }
     }
   },
   "de-fra1": {
     "gpu_plans": {
-      "NVIDIA A100": { "amount": 3 }
+      "NVIDIA L40S": { "amount": 4 }
     }
   }
 }"#;
@@ -2151,7 +2152,6 @@ fn deserialize_device_availability() {
     assert_eq!(avail.len(), 2);
     assert!(avail.contains_key("fi-hel1"));
     assert!(avail.contains_key("de-fra1"));
-    assert_eq!(avail["fi-hel1"].gpu_plans["NVIDIA A100"].amount, 5);
-    assert_eq!(avail["fi-hel1"].gpu_plans["NVIDIA T4"].amount, 10);
-    assert_eq!(avail["de-fra1"].gpu_plans["NVIDIA A100"].amount, 3);
+    assert_eq!(avail["fi-hel1"].gpu_plans["NVIDIA L40S"].amount, 8);
+    assert_eq!(avail["de-fra1"].gpu_plans["NVIDIA L40S"].amount, 4);
 }

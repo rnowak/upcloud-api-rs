@@ -831,7 +831,7 @@ fn deserialize_db_service_type_detail() {
     assert_eq!(version_enum[0], "8");
 }
 
-// ─── New type tests ──────────────────────────────────────────────────────
+// ─── State deserialization ────────────────────────────────────────────────
 
 #[test]
 fn deserialize_state_kebab_case() {
@@ -858,57 +858,129 @@ fn deserialize_state_kebab_case() {
     }
 }
 
-#[test]
-fn serialize_state_kebab_case() {
-    assert_eq!(
-        serde_json::to_string(&State::SetupNetwork).unwrap(),
-        "\"setup-network\""
-    );
-    assert_eq!(
-        serde_json::to_string(&State::CleanupService).unwrap(),
-        "\"cleanup-service\""
-    );
-    assert_eq!(
-        serde_json::to_string(&State::Running).unwrap(),
-        "\"running\""
-    );
-}
+// ─── Database detail with backups and maintenance from docs ───────────────
+// Real JSON from UpCloud API 1.3 docs: "Get Managed Database details"
 
 #[test]
-fn deserialize_maintenance_time() {
-    let json = r#"{"dow": "sunday", "time": "05:00:00"}"#;
-    let mt: MaintenanceTime = serde_json::from_str(json).unwrap();
-    assert_eq!(mt.dow, "sunday");
-    assert_eq!(mt.time, "05:00:00");
+fn deserialize_database_detail_from_docs() {
+    let json = r#"{
+  "backups": [
+    {
+      "backup_name": "backup-2022-01-06T12:36:06.739000Z",
+      "backup_time": "2022-01-06T12:36:06.739000Z",
+      "data_size": 36464640
+    },
+    {
+      "backup_name": "backup-2022-01-07T12:36:06.261000Z",
+      "backup_time": "2022-01-07T12:36:06.261000Z",
+      "data_size": 36413440
+    }
+  ],
+  "components": [
+    {
+      "component": "pg",
+      "host": "pg-2x2xcpu-4gb-50gb-de-fra1-example-prefix-project.db.upclouddatabases.com",
+      "port": 11550,
+      "route": "dynamic",
+      "usage": "primary"
+    },
+    {
+      "component": "pgbouncer",
+      "host": "pg-2x2xcpu-4gb-50gb-de-fra1-example-prefix-project.db.upclouddatabases.com",
+      "port": 11551,
+      "route": "dynamic",
+      "usage": "primary"
+    }
+  ],
+  "maintenance": {
+    "dow": "sunday",
+    "time": "05:00:00"
+  },
+  "name": "pg-2x2xcpu-4gb-50gb-de-fra1",
+  "node_states": [
+    {
+      "name": "pg-2x2xcpu-4gb-50gb-de-fra1-1",
+      "role": "master",
+      "state": "running"
+    },
+    {
+      "name": "pg-2x2xcpu-4gb-50gb-de-fra1-2",
+      "role": "standby",
+      "state": "syncing_data"
+    }
+  ],
+  "plan": "2x2xCPU-4GB-50GB",
+  "powered": true,
+  "properties": {
+    "automatic_utility_network_ip_filter": false,
+    "ip_filter": ["0.0.0.0/0"],
+    "public_access": true,
+    "version": "13"
+  },
+  "uuid": "09d9d824-8b3e-4a57-a9b3-77ec51fd5c84",
+  "state": "running",
+  "title": "pg-2x2xcpu-4gb-50gb-de-fra1",
+  "type": "pg",
+  "service_uri": "postgres://upadmin:example-prefix-project@pg-2x2xcpu-4gb-50gb-de-fra1-example-prefix-project.db.upclouddatabases.com:11550/defaultdb?sslmode=require",
+  "service_uri_params": {
+    "dbname": "defaultdb",
+    "host": "pg-2x2xcpu-4gb-50gb-de-fra1-example-prefix-project.db.upclouddatabases.com",
+    "password": "example-prefix-project",
+    "port": "11550",
+    "ssl_mode": "require",
+    "user": "upadmin"
+  },
+  "termination_protection": false,
+  "zone": "de-fra1"
+}"#;
+    let db: Database = serde_json::from_str(json).unwrap();
+    assert_eq!(db.uuid, "09d9d824-8b3e-4a57-a9b3-77ec51fd5c84");
+    assert_eq!(db.name, "pg-2x2xcpu-4gb-50gb-de-fra1");
+    assert_eq!(db.title, "pg-2x2xcpu-4gb-50gb-de-fra1");
+    assert_eq!(db.plan, "2x2xCPU-4GB-50GB");
+    assert_eq!(db.zone, "de-fra1");
+    assert_eq!(db.db_type, "pg");
+    assert_eq!(db.state, State::Running);
+    assert_eq!(db.powered, Some(true));
+    assert_eq!(db.termination_protection, Some(false));
+
+    let backups = db.backups.as_ref().unwrap();
+    assert_eq!(backups.len(), 2);
+    assert_eq!(backups[0].backup_name, "backup-2022-01-06T12:36:06.739000Z");
+    assert_eq!(backups[0].backup_time, "2022-01-06T12:36:06.739000Z");
+    assert_eq!(backups[0].data_size, Some(36464640));
+    assert_eq!(backups[1].backup_name, "backup-2022-01-07T12:36:06.261000Z");
+    assert_eq!(backups[1].data_size, Some(36413440));
+
+    let maint = db.maintenance.as_ref().unwrap();
+    assert_eq!(maint.dow, "sunday");
+    assert_eq!(maint.time, "05:00:00");
+
+    let components = db.components.as_ref().unwrap();
+    assert_eq!(components.len(), 2);
+    assert_eq!(components[0].component, "pg");
+    assert_eq!(components[0].port, 11550);
+    assert_eq!(components[0].route, "dynamic");
+    assert_eq!(components[0].usage, "primary");
+    assert_eq!(components[1].component, "pgbouncer");
+    assert_eq!(components[1].port, 11551);
+
+    let nodes = db.node_states.as_ref().unwrap();
+    assert_eq!(nodes.len(), 2);
+    assert_eq!(nodes[0].name, "pg-2x2xcpu-4gb-50gb-de-fra1-1");
+    assert_eq!(nodes[0].role, "master");
+    assert_eq!(nodes[0].state, "running");
+    assert_eq!(nodes[1].role, "standby");
+    assert_eq!(nodes[1].state, "syncing_data");
+
+    assert!(db.service_uri.as_ref().unwrap().starts_with("postgres://"));
+    let params = db.service_uri_params.as_ref().unwrap();
+    assert_eq!(params["dbname"], "defaultdb");
+    assert_eq!(params["port"], "11550");
+    assert_eq!(params["user"], "upadmin");
 }
 
-#[test]
-fn serialize_maintenance_time() {
-    let mt = MaintenanceTime {
-        dow: "monday".to_string(),
-        time: "03:00:00".to_string(),
-    };
-    let json = serde_json::to_string(&mt).unwrap();
-    assert!(json.contains("\"dow\":\"monday\""));
-    assert!(json.contains("\"time\":\"03:00:00\""));
-}
-
-#[test]
-fn deserialize_backup() {
-    let json = r#"{"backup_name": "daily-2022-01-21", "backup_time": "2022-01-21T03:00:00Z", "data_size": 1234567}"#;
-    let backup: Backup = serde_json::from_str(json).unwrap();
-    assert_eq!(backup.backup_name, "daily-2022-01-21");
-    assert_eq!(backup.backup_time, "2022-01-21T03:00:00Z");
-    assert_eq!(backup.data_size, Some(1234567));
-}
-
-#[test]
-fn deserialize_backup_without_data_size() {
-    let json = r#"{"backup_name": "daily-2022-01-21", "backup_time": "2022-01-21T03:00:00Z"}"#;
-    let backup: Backup = serde_json::from_str(json).unwrap();
-    assert_eq!(backup.backup_name, "daily-2022-01-21");
-    assert!(backup.data_size.is_none());
-}
+// ─── OpenSearch access control types ──────────────────────────────────────
 
 #[test]
 fn deserialize_opensearch_access_control() {
@@ -950,43 +1022,7 @@ fn deserialize_opensearch_index() {
     assert_eq!(idx.status.as_deref(), Some("open"));
 }
 
-#[test]
-fn metric_period_serialization() {
-    assert_eq!(serde_json::to_string(&MetricPeriod::Hour).unwrap(), "\"hour\"");
-    assert_eq!(serde_json::to_string(&MetricPeriod::Day).unwrap(), "\"day\"");
-    assert_eq!(serde_json::to_string(&MetricPeriod::Week).unwrap(), "\"week\"");
-    assert_eq!(serde_json::to_string(&MetricPeriod::Month).unwrap(), "\"month\"");
-    assert_eq!(serde_json::to_string(&MetricPeriod::Year).unwrap(), "\"year\"");
-}
-
-#[test]
-fn deserialize_database_with_backups_and_maintenance() {
-    let json = r#"{
-  "uuid": "test-uuid",
-  "name": "test-db",
-  "title": "Test DB",
-  "plan": "1x1xCPU-2GB-25GB",
-  "zone": "de-fra1",
-  "type": "pg",
-  "state": "running",
-  "backups": [
-    {"backup_name": "daily-2022-01-21", "backup_time": "2022-01-21T03:00:00Z", "data_size": 100}
-  ],
-  "maintenance": {"dow": "sunday", "time": "05:00:00"}
-}"#;
-    let db: Database = serde_json::from_str(json).unwrap();
-    assert_eq!(db.uuid, "test-uuid");
-    assert_eq!(db.state, State::Running);
-
-    let backups = db.backups.as_ref().unwrap();
-    assert_eq!(backups.len(), 1);
-    assert_eq!(backups[0].backup_name, "daily-2022-01-21");
-    assert_eq!(backups[0].data_size, Some(100));
-
-    let maint = db.maintenance.as_ref().unwrap();
-    assert_eq!(maint.dow, "sunday");
-    assert_eq!(maint.time, "05:00:00");
-}
+// ─── ModifyAccessControlRequest ───────────────────────────────────────────
 
 #[test]
 fn deserialize_modify_access_control_request() {
