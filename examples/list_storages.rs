@@ -21,7 +21,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .map(|s| (s.uuid.as_str(), s.title.as_str()))
         .collect();
 
-    let storages = client.storages().list_private().await?;
+    // Build a storage UUID → title map so we can resolve backup names.
+    let all_storages = client.storages().list(&Default::default()).await?;
+    let storage_names: HashMap<&str, &str> = all_storages
+        .iter()
+        .map(|s| (s.uuid.as_str(), s.title.as_str()))
+        .collect();
+
+    let storages: Vec<_> = all_storages
+        .iter()
+        .filter(|s| s.access == upcloud_api::storage::Access::Private)
+        .collect();
 
     if storages.is_empty() {
         println!("No private storages found.");
@@ -94,10 +104,29 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 } else {
                     println!("│  Backups:   {} total", backups.len());
                     for uuid in backups.iter().take(5) {
-                        println!("│    - {uuid}");
+                        let name = storage_names.get(uuid.as_str()).copied().unwrap_or("—");
+                        println!("│    - {name} ({uuid})");
                     }
                     if backups.len() > 5 {
                         println!("│    … and {} more", backups.len() - 5);
+                    }
+                }
+
+                match &details.backup_rule {
+                    Some(rule)
+                        if rule.interval.is_some()
+                            || rule.time.is_some()
+                            || rule.retention.is_some() =>
+                    {
+                        let interval = rule.interval.as_deref().unwrap_or("—");
+                        let time = rule.time.as_deref().unwrap_or("—");
+                        let retention = rule.retention.as_deref().unwrap_or("—");
+                        println!(
+                            "│  Backup rule: every {interval} at {time} UTC, keep {retention}"
+                        );
+                    }
+                    _ => {
+                        println!("│  Backup rule: (none)");
                     }
                 }
             }
