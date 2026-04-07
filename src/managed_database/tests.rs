@@ -99,11 +99,11 @@ fn deserialize_managed_database_list() {
     let nodes = db.node_states.as_ref().unwrap();
     assert_eq!(nodes.len(), 2);
     assert_eq!(nodes[0].name, "pg-2x2xcpu-4gb-50gb-de-fra1-1");
-    assert_eq!(nodes[0].role, "master");
-    assert_eq!(nodes[0].state, "running");
+    assert_eq!(nodes[0].role, NodeRole::Master);
+    assert_eq!(nodes[0].state, State::Running);
     assert_eq!(nodes[1].name, "pg-2x2xcpu-4gb-50gb-de-fra1-2");
-    assert_eq!(nodes[1].role, "standby");
-    assert_eq!(nodes[1].state, "syncing_data");
+    assert_eq!(nodes[1].role, NodeRole::Standby);
+    assert_eq!(nodes[1].state, State::SyncingData);
 
     let props = db.properties.as_ref().unwrap();
     assert_eq!(props["automatic_utility_network_ip_filter"], false);
@@ -611,8 +611,8 @@ fn deserialize_db_details() {
     let nodes = db.node_states.as_ref().unwrap();
     assert_eq!(nodes.len(), 1);
     assert_eq!(nodes[0].name, "pg-1");
-    assert_eq!(nodes[0].role, "master");
-    assert_eq!(nodes[0].state, "running");
+    assert_eq!(nodes[0].role, NodeRole::Master);
+    assert_eq!(nodes[0].state, State::Running);
 
     assert_eq!(
         db.service_uri.as_deref(),
@@ -1295,10 +1295,10 @@ fn deserialize_database_detail_from_docs() {
     let nodes = db.node_states.as_ref().unwrap();
     assert_eq!(nodes.len(), 2);
     assert_eq!(nodes[0].name, "pg-2x2xcpu-4gb-50gb-de-fra1-1");
-    assert_eq!(nodes[0].role, "master");
-    assert_eq!(nodes[0].state, "running");
-    assert_eq!(nodes[1].role, "standby");
-    assert_eq!(nodes[1].state, "syncing_data");
+    assert_eq!(nodes[0].role, NodeRole::Master);
+    assert_eq!(nodes[0].state, State::Running);
+    assert_eq!(nodes[1].role, NodeRole::Standby);
+    assert_eq!(nodes[1].state, State::SyncingData);
 
     assert!(db.service_uri.as_ref().unwrap().starts_with("postgres://"));
     let params = db.service_uri_params.as_ref().unwrap();

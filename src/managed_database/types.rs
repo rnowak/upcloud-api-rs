@@ -30,6 +30,9 @@ pub enum State {
     Stopped,
     /// Database encountered an error.
     Error,
+    /// Node is synchronizing data (node-specific).
+    #[serde(rename = "syncing_data")]
+    SyncingData,
     /// Cleaning up the service.
     CleanupService,
     /// Cleaning up the network.
@@ -279,15 +282,25 @@ pub struct Component {
     pub usage: String,
 }
 
+/// Role of a database node.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum NodeRole {
+    /// Serves read and write requests.
+    Master,
+    /// Serves read-only requests; ready to assume master during failover.
+    Standby,
+}
+
 /// State of a single database node.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct NodeState {
     pub name: String,
-    /// Node role (e.g. `"master"`, `"standby"`).
-    pub role: String,
-    /// Current node state (e.g. `"running"`).
-    pub state: String,
+    /// Node role in the cluster.
+    pub role: NodeRole,
+    /// Current node lifecycle state.
+    pub state: State,
 }
 
 /// A network attached to a managed database.
