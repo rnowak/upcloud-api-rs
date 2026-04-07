@@ -353,7 +353,7 @@ fn deserialize_server_group_list() {
     assert_eq!(resp.server_groups.server_group.len(), 1);
     let g = &resp.server_groups.server_group[0];
     assert_eq!(g.title, "nameserver group");
-    assert_eq!(g.anti_affinity.as_deref(), Some("yes"));
+    assert_eq!(g.anti_affinity, Some(AntiAffinityPolicy::Yes));
     assert_eq!(g.servers.as_ref().map(|s| s.server.len()), Some(1));
 }
 
@@ -532,31 +532,31 @@ fn deserialize_create_server_from_template_request() {
     assert_eq!(sd[0].encrypted, Some(true));
     assert_eq!(sd[0].title.as_deref(), Some("Debian from a template"));
     assert_eq!(sd[0].size, Some(50));
-    assert_eq!(sd[0].tier.as_deref(), Some("maxiops"));
+    assert_eq!(sd[0].tier, Some(crate::storage::Tier::Maxiops));
     assert_eq!(sd[0].labels.as_ref().unwrap()[0].key, "foo");
     assert_eq!(sd[0].labels.as_ref().unwrap()[0].value, "bar");
     // networking interfaces
     let ifaces = &s.networking.unwrap().interfaces.interface;
     assert_eq!(ifaces.len(), 4);
-    assert_eq!(ifaces[0].interface_type, "public");
+    assert_eq!(ifaces[0].interface_type, NetworkType::Public);
     assert_eq!(
         ifaces[0].ip_addresses.as_ref().unwrap().ip_address[0].family,
-        "IPv4"
+        Family::IPv4
     );
-    assert_eq!(ifaces[1].interface_type, "utility");
-    assert_eq!(ifaces[2].interface_type, "public");
+    assert_eq!(ifaces[1].interface_type, NetworkType::Utility);
+    assert_eq!(ifaces[2].interface_type, NetworkType::Public);
     assert_eq!(
         ifaces[2].ip_addresses.as_ref().unwrap().ip_address[0].family,
-        "IPv6"
+        Family::IPv6
     );
-    assert_eq!(ifaces[3].interface_type, "private");
+    assert_eq!(ifaces[3].interface_type, NetworkType::Private);
     assert_eq!(
         ifaces[3].network.as_deref(),
         Some("03b5b0a0-ad4c-4817-9632-dafdb3ace5d9")
     );
     let priv_ips = &ifaces[3].ip_addresses.as_ref().unwrap().ip_address;
     assert_eq!(priv_ips.len(), 2);
-    assert_eq!(priv_ips[0].family, "IPv4");
+    assert_eq!(priv_ips[0].family, Family::IPv4);
     assert_eq!(priv_ips[0].address.as_deref(), Some("10.0.0.50"));
     assert_eq!(priv_ips[0].dhcp_provided.as_deref(), Some("yes"));
     assert_eq!(priv_ips[1].address.as_deref(), Some("10.0.0.60"));
@@ -675,25 +675,25 @@ fn deserialize_create_server_by_cloning_request() {
     // networking
     let ifaces = &s.networking.unwrap().interfaces.interface;
     assert_eq!(ifaces.len(), 4);
-    assert_eq!(ifaces[0].interface_type, "public");
+    assert_eq!(ifaces[0].interface_type, NetworkType::Public);
     assert_eq!(
         ifaces[0].ip_addresses.as_ref().unwrap().ip_address[0].family,
-        "IPv4"
+        Family::IPv4
     );
-    assert_eq!(ifaces[1].interface_type, "utility");
-    assert_eq!(ifaces[2].interface_type, "public");
+    assert_eq!(ifaces[1].interface_type, NetworkType::Utility);
+    assert_eq!(ifaces[2].interface_type, NetworkType::Public);
     assert_eq!(
         ifaces[2].ip_addresses.as_ref().unwrap().ip_address[0].family,
-        "IPv6"
+        Family::IPv6
     );
-    assert_eq!(ifaces[3].interface_type, "private");
+    assert_eq!(ifaces[3].interface_type, NetworkType::Private);
     assert_eq!(
         ifaces[3].network.as_deref(),
         Some("03b5b0a0-ad4c-4817-9632-dafdb3ace5d9")
     );
     let priv_ips = &ifaces[3].ip_addresses.as_ref().unwrap().ip_address;
     assert_eq!(priv_ips.len(), 1);
-    assert_eq!(priv_ips[0].family, "IPv4");
+    assert_eq!(priv_ips[0].family, Family::IPv4);
     assert_eq!(priv_ips[0].address.as_deref(), Some("10.0.0.50"));
 }
 
@@ -799,7 +799,7 @@ fn deserialize_create_server_from_scratch_request() {
     assert_eq!(sd.len(), 2);
     assert_eq!(sd[0].action, StorageDeviceAction::Create);
     assert_eq!(sd[0].size, Some(20));
-    assert_eq!(sd[0].tier.as_deref(), Some("maxiops"));
+    assert_eq!(sd[0].tier, Some(crate::storage::Tier::Maxiops));
     assert_eq!(sd[0].title.as_deref(), Some("Debian from scratch"));
     assert!(sd[0].storage.is_none());
     assert_eq!(sd[1].action, StorageDeviceAction::Attach);
@@ -812,25 +812,25 @@ fn deserialize_create_server_from_scratch_request() {
     // networking
     let ifaces = &s.networking.unwrap().interfaces.interface;
     assert_eq!(ifaces.len(), 4);
-    assert_eq!(ifaces[0].interface_type, "public");
+    assert_eq!(ifaces[0].interface_type, NetworkType::Public);
     assert_eq!(
         ifaces[0].ip_addresses.as_ref().unwrap().ip_address[0].family,
-        "IPv4"
+        Family::IPv4
     );
-    assert_eq!(ifaces[1].interface_type, "utility");
-    assert_eq!(ifaces[2].interface_type, "public");
+    assert_eq!(ifaces[1].interface_type, NetworkType::Utility);
+    assert_eq!(ifaces[2].interface_type, NetworkType::Public);
     assert_eq!(
         ifaces[2].ip_addresses.as_ref().unwrap().ip_address[0].family,
-        "IPv6"
+        Family::IPv6
     );
-    assert_eq!(ifaces[3].interface_type, "private");
+    assert_eq!(ifaces[3].interface_type, NetworkType::Private);
     assert_eq!(
         ifaces[3].network.as_deref(),
         Some("03b5b0a0-ad4c-4817-9632-dafdb3ace5d9")
     );
     let priv_ips = &ifaces[3].ip_addresses.as_ref().unwrap().ip_address;
     assert_eq!(priv_ips.len(), 1);
-    assert_eq!(priv_ips[0].family, "IPv4");
+    assert_eq!(priv_ips[0].family, Family::IPv4);
     assert_eq!(priv_ips[0].address.as_deref(), Some("10.0.0.50"));
 }
 
@@ -913,8 +913,8 @@ fn deserialize_create_server_response() {
     assert_eq!(s.plan, "2xCPU-4GB");
     assert_eq!(s.core_number, 2);
     assert_eq!(s.memory_amount, 4096);
-    assert_eq!(s.firewall.as_deref(), Some("on"));
-    assert_eq!(s.boot_order.as_deref(), Some("disk"));
+    assert_eq!(s.firewall, Some(true));
+    assert_eq!(s.boot_order, Some(BootOrder::Disk));
     assert_eq!(s.nic_model, Some(NicModel::Virtio));
     assert_eq!(s.timezone.as_deref(), Some("UTC"));
     assert_eq!(s.video_model, Some(VideoModel::Cirrus));
@@ -923,16 +923,16 @@ fn deserialize_create_server_response() {
     assert_eq!(s.plan_ipv6_bytes.as_deref(), Some("0"));
     assert_eq!(s.simple_backup.as_deref(), Some("0430,dailies"));
     assert_eq!(s.password.as_deref(), Some("aabbccdd"));
-    assert_eq!(s.remote_access_enabled.as_deref(), Some("no"));
+    assert_eq!(s.remote_access_enabled, Some(false));
     assert_eq!(s.remote_access_password.as_deref(), Some("aabbccdd"));
     // ip_addresses
     let ips = s.ip_addresses.as_ref().unwrap();
     assert_eq!(ips.ip_address.len(), 3);
-    assert_eq!(ips.ip_address[0].access, "utility");
+    assert_eq!(ips.ip_address[0].access, NetworkType::Utility);
     assert_eq!(ips.ip_address[0].address, "10.0.0.0");
-    assert_eq!(ips.ip_address[0].family, "IPv4");
-    assert_eq!(ips.ip_address[1].access, "public");
-    assert_eq!(ips.ip_address[2].family, "IPv6");
+    assert_eq!(ips.ip_address[0].family, Family::IPv4);
+    assert_eq!(ips.ip_address[1].access, NetworkType::Public);
+    assert_eq!(ips.ip_address[2].family, Family::IPv6);
     // storage_devices
     let sd = &s.storage_devices.as_ref().unwrap().storage_device;
     assert_eq!(sd.len(), 1);
@@ -943,12 +943,12 @@ fn deserialize_create_server_response() {
         Some("0169b4f8-051c-4a86-9484-f5b798249949")
     );
     assert_eq!(sd[0].storage_size, Some(1));
-    assert_eq!(sd[0].storage_tier.as_deref(), Some("maxiops"));
+    assert_eq!(sd[0].storage_tier, Some(crate::storage::Tier::Maxiops));
     assert_eq!(
         sd[0].storage_title.as_deref(),
         Some("Debian from a template")
     );
-    assert_eq!(sd[0].device_type.as_deref(), Some("disk"));
+    assert_eq!(sd[0].device_type, Some(StorageDeviceType::Disk));
     assert_eq!(sd[0].boot_disk.as_deref(), Some("0"));
     // tags
     assert!(s.tags.as_ref().unwrap().tag.is_empty());
@@ -1149,17 +1149,17 @@ fn deserialize_rebuild_server_response() {
     assert_eq!(s.core_number, 1);
     assert_eq!(s.memory_amount, 1024);
     assert_eq!(s.created, Some(1716400530));
-    assert_eq!(s.firewall.as_deref(), Some("off"));
-    assert_eq!(s.boot_order.as_deref(), Some("disk"));
+    assert_eq!(s.firewall, Some(false));
+    assert_eq!(s.boot_order, Some(BootOrder::Disk));
     assert_eq!(s.nic_model, Some(NicModel::Virtio));
     assert_eq!(s.timezone.as_deref(), Some("UTC"));
     assert_eq!(s.video_model, Some(VideoModel::Cirrus));
     assert_eq!(s.license, Some(0.0));
-    assert_eq!(s.metadata.as_deref(), Some("yes"));
+    assert_eq!(s.metadata, Some(true));
     assert_eq!(s.plan_ipv4_bytes.as_deref(), Some("0"));
     assert_eq!(s.plan_ipv6_bytes.as_deref(), Some("0"));
     assert_eq!(s.simple_backup.as_deref(), Some("no"));
-    assert_eq!(s.remote_access_enabled.as_deref(), Some("no"));
+    assert_eq!(s.remote_access_enabled, Some(false));
     assert_eq!(
         s.remote_access_password.as_deref(),
         Some("osd9xRqufdlqwe_1481-7")
@@ -1170,10 +1170,10 @@ fn deserialize_rebuild_server_response() {
     // ip_addresses
     let ips = s.ip_addresses.as_ref().unwrap();
     assert_eq!(ips.ip_address.len(), 2);
-    assert_eq!(ips.ip_address[0].access, "utility");
+    assert_eq!(ips.ip_address[0].access, NetworkType::Utility);
     assert_eq!(ips.ip_address[0].address, "10.10.15.1");
-    assert_eq!(ips.ip_address[0].family, "IPv4");
-    assert_eq!(ips.ip_address[1].access, "public");
+    assert_eq!(ips.ip_address[0].family, Family::IPv4);
+    assert_eq!(ips.ip_address[1].access, NetworkType::Public);
     assert_eq!(ips.ip_address[1].address, "150.127.16.103");
     assert_eq!(ips.ip_address[1].part_of_plan.as_deref(), Some("yes"));
     // networking interfaces
@@ -1181,7 +1181,7 @@ fn deserialize_rebuild_server_response() {
     assert_eq!(ifaces.len(), 2);
     assert_eq!(ifaces[0].index, 1);
     assert_eq!(ifaces[0].bootable, Some(false));
-    assert_eq!(ifaces[0].interface_type.as_deref(), Some("public"));
+    assert_eq!(ifaces[0].interface_type, Some(NetworkType::Public));
     assert_eq!(ifaces[0].mac.as_deref(), Some("de:10:ff:ff:17:79"));
     assert_eq!(
         ifaces[0].network.as_deref(),
@@ -1192,11 +1192,11 @@ fn deserialize_rebuild_server_response() {
     assert_eq!(iface0_ips.len(), 1);
     assert_eq!(iface0_ips[0].address, "150.127.16.103");
     assert_eq!(iface0_ips[0].dhcp_provided, Some(true));
-    assert_eq!(iface0_ips[0].family, "IPv4");
+    assert_eq!(iface0_ips[0].family, Family::IPv4);
     assert_eq!(iface0_ips[0].floating, Some(false));
     assert_eq!(iface0_ips[0].release_policy.as_deref(), Some("release"));
     assert_eq!(ifaces[1].index, 2);
-    assert_eq!(ifaces[1].interface_type.as_deref(), Some("utility"));
+    assert_eq!(ifaces[1].interface_type, Some(NetworkType::Utility));
     assert_eq!(ifaces[1].mac.as_deref(), Some("de:10:ff:ff:17:78"));
     // storage_devices
     let sd = &s.storage_devices.as_ref().unwrap().storage_device;
@@ -1210,12 +1210,12 @@ fn deserialize_rebuild_server_response() {
     );
     assert_eq!(sd[0].storage_encrypted.as_deref(), Some("yes"));
     assert_eq!(sd[0].storage_size, Some(25));
-    assert_eq!(sd[0].storage_tier.as_deref(), Some("maxiops"));
+    assert_eq!(sd[0].storage_tier, Some(crate::storage::Tier::Maxiops));
     assert_eq!(
         sd[0].storage_title.as_deref(),
         Some("my new re-installed os")
     );
-    assert_eq!(sd[0].device_type.as_deref(), Some("disk"));
+    assert_eq!(sd[0].device_type, Some(StorageDeviceType::Disk));
     assert_eq!(sd[0].labels.as_ref().unwrap().len(), 6);
     assert_eq!(sd[0].labels.as_ref().unwrap()[0].key, "_os_architecture");
     assert_eq!(sd[0].labels.as_ref().unwrap()[0].value, "64");
@@ -1329,24 +1329,24 @@ fn deserialize_start_server_response() {
     assert_eq!(s.core_number, 2);
     assert_eq!(s.memory_amount, 4096);
     assert_eq!(s.host, Some(8055964291));
-    assert_eq!(s.firewall.as_deref(), Some("on"));
-    assert_eq!(s.boot_order.as_deref(), Some("disk"));
+    assert_eq!(s.firewall, Some(true));
+    assert_eq!(s.boot_order, Some(BootOrder::Disk));
     assert_eq!(s.nic_model, Some(NicModel::Virtio));
     assert_eq!(s.timezone.as_deref(), Some("UTC"));
     assert_eq!(s.video_model, Some(VideoModel::Cirrus));
     assert_eq!(s.license, Some(0.0));
     assert_eq!(s.plan_ipv4_bytes.as_deref(), Some("435376546"));
     assert_eq!(s.plan_ipv6_bytes.as_deref(), Some("0"));
-    assert_eq!(s.remote_access_enabled.as_deref(), Some("no"));
+    assert_eq!(s.remote_access_enabled, Some(false));
     assert_eq!(s.remote_access_password.as_deref(), Some("aabbccdd"));
     // ip_addresses
     let ips = s.ip_addresses.as_ref().unwrap();
     assert_eq!(ips.ip_address.len(), 3);
-    assert_eq!(ips.ip_address[0].access, "utility");
+    assert_eq!(ips.ip_address[0].access, NetworkType::Utility);
     assert_eq!(ips.ip_address[0].address, "10.0.0.0");
-    assert_eq!(ips.ip_address[0].family, "IPv4");
-    assert_eq!(ips.ip_address[1].access, "public");
-    assert_eq!(ips.ip_address[2].family, "IPv6");
+    assert_eq!(ips.ip_address[0].family, Family::IPv4);
+    assert_eq!(ips.ip_address[1].access, NetworkType::Public);
+    assert_eq!(ips.ip_address[2].family, Family::IPv6);
     // storage_devices
     let sd = s.storage_devices.as_ref().unwrap();
     assert_eq!(sd.storage_device.len(), 1);
@@ -1357,14 +1357,14 @@ fn deserialize_start_server_response() {
     );
     assert_eq!(sd.storage_device[0].storage_size, Some(10));
     assert_eq!(
-        sd.storage_device[0].storage_tier.as_deref(),
-        Some("maxiops")
+        sd.storage_device[0].storage_tier,
+        Some(crate::storage::Tier::Maxiops)
     );
     assert_eq!(
         sd.storage_device[0].storage_title.as_deref(),
         Some("Debian from a template")
     );
-    assert_eq!(sd.storage_device[0].device_type.as_deref(), Some("disk"));
+    assert_eq!(sd.storage_device[0].device_type, Some(StorageDeviceType::Disk));
     assert_eq!(sd.storage_device[0].boot_disk.as_deref(), Some("0"));
     // tags & labels
     assert!(s.tags.as_ref().unwrap().tag.is_empty());
@@ -1477,22 +1477,22 @@ fn deserialize_stop_server_response() {
     assert_eq!(s.core_number, 2);
     assert_eq!(s.memory_amount, 4096);
     assert_eq!(s.host, Some(8055964291));
-    assert_eq!(s.firewall.as_deref(), Some("on"));
-    assert_eq!(s.boot_order.as_deref(), Some("disk"));
+    assert_eq!(s.firewall, Some(true));
+    assert_eq!(s.boot_order, Some(BootOrder::Disk));
     assert_eq!(s.nic_model, Some(NicModel::Virtio));
     assert_eq!(s.timezone.as_deref(), Some("UTC"));
     assert_eq!(s.video_model, Some(VideoModel::Cirrus));
     assert_eq!(s.license, Some(0.0));
     assert_eq!(s.plan_ipv4_bytes.as_deref(), Some("34543646754"));
     assert_eq!(s.plan_ipv6_bytes.as_deref(), Some("242432"));
-    assert_eq!(s.remote_access_enabled.as_deref(), Some("no"));
+    assert_eq!(s.remote_access_enabled, Some(false));
     assert_eq!(s.remote_access_password.as_deref(), Some("aabbccdd"));
     // ip_addresses
     let ips = s.ip_addresses.as_ref().unwrap();
     assert_eq!(ips.ip_address.len(), 3);
-    assert_eq!(ips.ip_address[0].access, "utility");
-    assert_eq!(ips.ip_address[0].family, "IPv4");
-    assert_eq!(ips.ip_address[1].access, "public");
+    assert_eq!(ips.ip_address[0].access, NetworkType::Utility);
+    assert_eq!(ips.ip_address[0].family, Family::IPv4);
+    assert_eq!(ips.ip_address[1].access, NetworkType::Public);
     // storage_devices
     let sd = s.storage_devices.as_ref().unwrap();
     assert_eq!(sd.storage_device.len(), 1);
@@ -1502,12 +1502,12 @@ fn deserialize_stop_server_response() {
         Some("0169b4f8-051c-4a86-9484-f5b798249949")
     );
     assert_eq!(sd.storage_device[0].storage_size, Some(10));
-    assert_eq!(sd.storage_device[0].storage_tier.as_deref(), Some("maxiops"));
+    assert_eq!(sd.storage_device[0].storage_tier, Some(crate::storage::Tier::Maxiops));
     assert_eq!(
         sd.storage_device[0].storage_title.as_deref(),
         Some("Debian from a template")
     );
-    assert_eq!(sd.storage_device[0].device_type.as_deref(), Some("disk"));
+    assert_eq!(sd.storage_device[0].device_type, Some(StorageDeviceType::Disk));
     assert_eq!(sd.storage_device[0].part_of_plan, Some(true));
     // tags & labels
     assert!(s.tags.as_ref().unwrap().tag.is_empty());
@@ -1624,24 +1624,24 @@ fn deserialize_restart_server_response() {
     assert_eq!(s.core_number, 2);
     assert_eq!(s.memory_amount, 4096);
     assert_eq!(s.host, Some(8055964291));
-    assert_eq!(s.firewall.as_deref(), Some("on"));
-    assert_eq!(s.boot_order.as_deref(), Some("disk"));
+    assert_eq!(s.firewall, Some(true));
+    assert_eq!(s.boot_order, Some(BootOrder::Disk));
     assert_eq!(s.nic_model, Some(NicModel::Virtio));
     assert_eq!(s.timezone.as_deref(), Some("UTC"));
     assert_eq!(s.video_model, Some(VideoModel::Cirrus));
     assert_eq!(s.license, Some(0.0));
     assert_eq!(s.plan_ipv4_bytes.as_deref(), Some("34543646754"));
     assert_eq!(s.plan_ipv6_bytes.as_deref(), Some("242432"));
-    assert_eq!(s.remote_access_enabled.as_deref(), Some("no"));
+    assert_eq!(s.remote_access_enabled, Some(false));
     assert_eq!(s.remote_access_password.as_deref(), Some("aabbccdd"));
     // ip_addresses
     let ips = s.ip_addresses.as_ref().unwrap();
     assert_eq!(ips.ip_address.len(), 3);
-    assert_eq!(ips.ip_address[0].access, "utility");
+    assert_eq!(ips.ip_address[0].access, NetworkType::Utility);
     assert_eq!(ips.ip_address[0].address, "10.0.0.0");
-    assert_eq!(ips.ip_address[0].family, "IPv4");
-    assert_eq!(ips.ip_address[1].access, "public");
-    assert_eq!(ips.ip_address[2].family, "IPv6");
+    assert_eq!(ips.ip_address[0].family, Family::IPv4);
+    assert_eq!(ips.ip_address[1].access, NetworkType::Public);
+    assert_eq!(ips.ip_address[2].family, Family::IPv6);
     // storage_devices (note: "plart_of_plan" typo in JSON is ignored by serde)
     let sd = s.storage_devices.as_ref().unwrap();
     assert_eq!(sd.storage_device.len(), 1);
@@ -1652,14 +1652,14 @@ fn deserialize_restart_server_response() {
     );
     assert_eq!(sd.storage_device[0].storage_size, Some(10));
     assert_eq!(
-        sd.storage_device[0].storage_tier.as_deref(),
-        Some("maxiops")
+        sd.storage_device[0].storage_tier,
+        Some(crate::storage::Tier::Maxiops)
     );
     assert_eq!(
         sd.storage_device[0].storage_title.as_deref(),
         Some("Debian from a template")
     );
-    assert_eq!(sd.storage_device[0].device_type.as_deref(), Some("disk"));
+    assert_eq!(sd.storage_device[0].device_type, Some(StorageDeviceType::Disk));
     // tags & labels
     assert!(s.tags.as_ref().unwrap().tag.is_empty());
     assert!(s.labels.as_ref().unwrap().label.is_empty());
@@ -1775,8 +1775,8 @@ fn deserialize_modify_server_response() {
     assert_eq!(s.core_number, 8);
     assert_eq!(s.memory_amount, 16384);
     assert_eq!(s.host, Some(8055964291));
-    assert_eq!(s.firewall.as_deref(), Some("on"));
-    assert_eq!(s.boot_order.as_deref(), Some("disk"));
+    assert_eq!(s.firewall, Some(true));
+    assert_eq!(s.boot_order, Some(BootOrder::Disk));
     assert_eq!(s.nic_model, Some(NicModel::Virtio));
     assert_eq!(s.timezone.as_deref(), Some("UTC"));
     assert_eq!(s.video_model, Some(VideoModel::Cirrus));
@@ -1784,16 +1784,16 @@ fn deserialize_modify_server_response() {
     assert_eq!(s.plan_ipv4_bytes.as_deref(), Some("0"));
     assert_eq!(s.plan_ipv6_bytes.as_deref(), Some("0"));
     assert_eq!(s.simple_backup.as_deref(), Some("no"));
-    assert_eq!(s.remote_access_enabled.as_deref(), Some("no"));
+    assert_eq!(s.remote_access_enabled, Some(false));
     assert_eq!(s.remote_access_password.as_deref(), Some("aabbccdd"));
     // ip_addresses
     let ips = s.ip_addresses.as_ref().unwrap();
     assert_eq!(ips.ip_address.len(), 3);
-    assert_eq!(ips.ip_address[0].access, "utility");
+    assert_eq!(ips.ip_address[0].access, NetworkType::Utility);
     assert_eq!(ips.ip_address[0].address, "10.0.0.0");
-    assert_eq!(ips.ip_address[0].family, "IPv4");
-    assert_eq!(ips.ip_address[1].access, "public");
-    assert_eq!(ips.ip_address[2].family, "IPv6");
+    assert_eq!(ips.ip_address[0].family, Family::IPv4);
+    assert_eq!(ips.ip_address[1].access, NetworkType::Public);
+    assert_eq!(ips.ip_address[2].family, Family::IPv6);
     // storage_devices
     let sd = s.storage_devices.as_ref().unwrap();
     assert_eq!(sd.storage_device.len(), 1);
@@ -1804,14 +1804,14 @@ fn deserialize_modify_server_response() {
     );
     assert_eq!(sd.storage_device[0].storage_size, Some(10));
     assert_eq!(
-        sd.storage_device[0].storage_tier.as_deref(),
-        Some("maxiops")
+        sd.storage_device[0].storage_tier,
+        Some(crate::storage::Tier::Maxiops)
     );
     assert_eq!(
         sd.storage_device[0].storage_title.as_deref(),
         Some("Debian from a template")
     );
-    assert_eq!(sd.storage_device[0].device_type.as_deref(), Some("disk"));
+    assert_eq!(sd.storage_device[0].device_type, Some(StorageDeviceType::Disk));
     assert_eq!(sd.storage_device[0].boot_disk.as_deref(), Some("0"));
     // tags & labels
     assert!(s.tags.as_ref().unwrap().tag.is_empty());
@@ -1861,7 +1861,7 @@ fn deserialize_server_group_details() {
     let g = resp.server_group;
     assert_eq!(g.uuid, "0b3d85b4-b3be-46ca-a1e2-3b5d30d60ab0");
     assert_eq!(g.title, "nameserver group");
-    assert_eq!(g.anti_affinity.as_deref(), Some("yes"));
+    assert_eq!(g.anti_affinity, Some(AntiAffinityPolicy::Yes));
     let statuses = g.anti_affinity_status.unwrap();
     assert_eq!(statuses.len(), 2);
     assert_eq!(statuses[0].status, "met");
@@ -1937,7 +1937,7 @@ fn deserialize_server_group_list_full() {
     let g0 = &resp.server_groups.server_group[0];
     assert_eq!(g0.uuid, "0b3d85b4-b3be-46ca-a1e2-3b5d30d60ab0");
     assert_eq!(g0.title, "nameserver group");
-    assert_eq!(g0.anti_affinity.as_deref(), Some("yes"));
+    assert_eq!(g0.anti_affinity, Some(AntiAffinityPolicy::Yes));
     let statuses0 = g0.anti_affinity_status.as_ref().unwrap();
     assert_eq!(statuses0.len(), 2);
     assert_eq!(statuses0[0].uuid, "0016dadf-eba4-4331-bd34-a361841f7af1");
@@ -1956,7 +1956,7 @@ fn deserialize_server_group_list_full() {
     let g1 = &resp.server_groups.server_group[1];
     assert_eq!(g1.uuid, "0bebfe54-7532-4ca4-b8c0-0fa294ea9b7a");
     assert_eq!(g1.title, "my group");
-    assert_eq!(g1.anti_affinity.as_deref(), Some("no"));
+    assert_eq!(g1.anti_affinity, Some(AntiAffinityPolicy::No));
     assert!(g1.anti_affinity_status.is_none());
     let labels1 = &g1.labels.as_ref().unwrap().label;
     assert_eq!(labels1.len(), 1);
@@ -2033,7 +2033,7 @@ fn deserialize_create_server_group_request() {
         title: Option<String>,
         #[serde(default)]
         servers: Option<GroupServers>,
-        anti_affinity: Option<String>,
+        anti_affinity: Option<AntiAffinityPolicy>,
         labels: Option<crate::types::common::Labels>,
     }
     let body: Wrapper = serde_json::from_str(CREATE_SERVER_GROUP_REQUEST_JSON)
@@ -2042,7 +2042,7 @@ fn deserialize_create_server_group_request() {
         body.server_group.title.as_deref(),
         Some("My brand new server group")
     );
-    assert_eq!(body.server_group.anti_affinity.as_deref(), Some("yes"));
+    assert_eq!(body.server_group.anti_affinity, Some(AntiAffinityPolicy::Yes));
     let servers = body.server_group.servers.unwrap().server;
     assert_eq!(servers.len(), 3);
     assert_eq!(servers[0], "00e2dc05-379d-6b90-a354-e5c3f9293918");
@@ -2077,7 +2077,7 @@ fn deserialize_modify_server_group_request() {
         title: Option<String>,
         #[serde(default)]
         servers: Option<GroupServers>,
-        anti_affinity: Option<String>,
+        anti_affinity: Option<AntiAffinityPolicy>,
         labels: Option<crate::types::common::Labels>,
     }
     let body: Wrapper = serde_json::from_str(MODIFY_SERVER_GROUP_REQUEST_JSON)
@@ -2086,7 +2086,7 @@ fn deserialize_modify_server_group_request() {
         body.server_group.title.as_deref(),
         Some("New fancy title for the group")
     );
-    assert_eq!(body.server_group.anti_affinity.as_deref(), Some("no"));
+    assert_eq!(body.server_group.anti_affinity, Some(AntiAffinityPolicy::No));
     let servers = body.server_group.servers.unwrap().server;
     assert_eq!(servers.len(), 2);
 }
@@ -2204,23 +2204,23 @@ fn deserialize_relocate_server_response() {
     assert_eq!(s.plan, "2xCPU-4GB");
     assert_eq!(s.core_number, 2);
     assert_eq!(s.memory_amount, 4096);
-    assert_eq!(s.firewall.as_deref(), Some("on"));
-    assert_eq!(s.boot_order.as_deref(), Some("disk"));
+    assert_eq!(s.firewall, Some(true));
+    assert_eq!(s.boot_order, Some(BootOrder::Disk));
     assert_eq!(s.nic_model, Some(NicModel::Virtio));
     assert_eq!(s.timezone.as_deref(), Some("UTC"));
     assert_eq!(s.video_model, Some(VideoModel::Cirrus));
     assert_eq!(s.license, Some(0.0));
     assert_eq!(s.plan_ipv4_bytes.as_deref(), Some("435376546"));
     assert_eq!(s.plan_ipv6_bytes.as_deref(), Some("0"));
-    assert_eq!(s.remote_access_enabled.as_deref(), Some("no"));
+    assert_eq!(s.remote_access_enabled, Some(false));
     assert_eq!(s.remote_access_password.as_deref(), Some("aabbccdd"));
     // ip_addresses
     let ips = s.ip_addresses.as_ref().unwrap();
     assert_eq!(ips.ip_address.len(), 3);
-    assert_eq!(ips.ip_address[0].access, "utility");
-    assert_eq!(ips.ip_address[0].family, "IPv4");
-    assert_eq!(ips.ip_address[1].access, "public");
-    assert_eq!(ips.ip_address[2].family, "IPv6");
+    assert_eq!(ips.ip_address[0].access, NetworkType::Utility);
+    assert_eq!(ips.ip_address[0].family, Family::IPv4);
+    assert_eq!(ips.ip_address[1].access, NetworkType::Public);
+    assert_eq!(ips.ip_address[2].family, Family::IPv6);
     // storage_devices
     let sd = s.storage_devices.as_ref().unwrap();
     assert_eq!(sd.storage_device.len(), 1);
@@ -2231,14 +2231,14 @@ fn deserialize_relocate_server_response() {
     );
     assert_eq!(sd.storage_device[0].storage_size, Some(10));
     assert_eq!(
-        sd.storage_device[0].storage_tier.as_deref(),
-        Some("maxiops")
+        sd.storage_device[0].storage_tier,
+        Some(crate::storage::Tier::Maxiops)
     );
     assert_eq!(
         sd.storage_device[0].storage_title.as_deref(),
         Some("Debian from a template")
     );
-    assert_eq!(sd.storage_device[0].device_type.as_deref(), Some("disk"));
+    assert_eq!(sd.storage_device[0].device_type, Some(StorageDeviceType::Disk));
     assert_eq!(sd.storage_device[0].boot_disk.as_deref(), Some("0"));
     // tags & labels
     assert!(s.tags.as_ref().unwrap().tag.is_empty());

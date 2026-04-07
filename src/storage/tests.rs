@@ -262,7 +262,7 @@ fn deserialize_storage_with_backup_rule() {
     assert_eq!(s.zone.as_deref(), Some("fi-hel1"));
     assert!(s.backups.as_ref().unwrap().backup.is_empty());
     let rule = s.backup_rule.unwrap();
-    assert_eq!(rule.interval.as_deref(), Some("daily"));
+    assert_eq!(rule.interval, Some(BackupInterval::Daily));
     assert_eq!(rule.time.as_deref(), Some("0430"));
     assert_eq!(rule.retention.as_deref(), Some("365"));
 }
@@ -306,7 +306,7 @@ fn deserialize_create_storage_request() {
     assert_eq!(s.title, "My data collection");
     assert_eq!(s.zone, "fi-hel1");
     let rule = s.backup_rule.unwrap();
-    assert_eq!(rule.interval.as_deref(), Some("daily"));
+    assert_eq!(rule.interval, Some(BackupInterval::Daily));
     assert_eq!(rule.time.as_deref(), Some("0430"));
     assert_eq!(rule.retention.as_deref(), Some("365"));
     let labels = s.labels.unwrap();
@@ -371,7 +371,7 @@ fn deserialize_create_storage_response_docs() {
     assert_eq!(s.labels.as_ref().unwrap()[0].value, "prod");
     let rule = s.backup_rule.unwrap();
     assert_eq!(rule.time.as_deref(), Some("0430")); // deserialized from "hour" via alias
-    assert_eq!(rule.interval.as_deref(), Some("daily"));
+    assert_eq!(rule.interval, Some(BackupInterval::Daily));
     assert_eq!(rule.retention.as_deref(), Some("365"));
 }
 
@@ -521,7 +521,7 @@ fn deserialize_attach_storage_server_api_request() {
     let w: Wrapper =
         serde_json::from_str(ATTACH_STORAGE_SERVER_API_REQUEST_JSON).unwrap();
     let sd = w.storage_device;
-    assert_eq!(sd.device_type.as_deref(), Some("disk"));
+    assert_eq!(sd.device_type, Some(crate::server::StorageDeviceType::Disk));
     assert_eq!(sd.address.as_deref(), Some("scsi"));
     assert_eq!(sd.storage, "00798b85-efdc-41ca-8021-f6ef457b8531");
     assert_eq!(sd.boot_disk.as_deref(), Some("0"));
@@ -600,9 +600,9 @@ fn deserialize_attach_storage_server_api_response() {
     let server = &resp.server;
     assert_eq!(server.uuid, "00c78863-db86-44ea-af70-d6edc4d162bf");
     assert_eq!(server.state, crate::server::State::Started);
-    assert_eq!(server.boot_order.as_deref(), Some("disk"));
+    assert_eq!(server.boot_order, Some(crate::server::BootOrder::Disk));
     assert_eq!(server.core_number, 4);
-    assert_eq!(server.firewall.as_deref(), Some("on"));
+    assert_eq!(server.firewall, Some(true));
     assert_eq!(server.hostname, "debian.example.com");
     assert_eq!(server.host, Some(8055964291));
     let ips = &server.ip_addresses.as_ref().unwrap().ip_address;
@@ -626,7 +626,7 @@ fn deserialize_attach_storage_server_api_response() {
         Some("00798b85-efdc-41ca-8021-f6ef457b8531")
     );
     assert_eq!(devices[0].storage_encrypted.as_deref(), Some("yes"));
-    assert_eq!(devices[0].device_type.as_deref(), Some("disk"));
+    assert_eq!(devices[0].device_type, Some(crate::server::StorageDeviceType::Disk));
     assert_eq!(devices[0].address, "scsi:0:0");
     assert_eq!(devices[0].storage_size, Some(10));
     assert_eq!(
@@ -794,9 +794,9 @@ fn deserialize_detach_storage_server_api_response() {
     let server = &resp.server;
     assert_eq!(server.uuid, "00c78863-db86-44ea-af70-d6edc4d162bf");
     assert_eq!(server.state, crate::server::State::Stopped);
-    assert_eq!(server.boot_order.as_deref(), Some("disk"));
+    assert_eq!(server.boot_order, Some(crate::server::BootOrder::Disk));
     assert_eq!(server.core_number, 4);
-    assert_eq!(server.firewall.as_deref(), Some("on"));
+    assert_eq!(server.firewall, Some(true));
     assert_eq!(server.hostname, "debian.example.com");
     assert_eq!(server.host, Some(8055964291));
     let ips = &server.ip_addresses.as_ref().unwrap().ip_address;
@@ -951,9 +951,9 @@ fn deserialize_load_cdrom_response() {
     }
     let resp: Wrapper = serde_json::from_str(LOAD_CDROM_RESPONSE_JSON).unwrap();
     let server = &resp.server;
-    assert_eq!(server.boot_order.as_deref(), Some("cdrom,disk"));
+    assert_eq!(server.boot_order, Some(crate::server::BootOrder::CdromDisk));
     assert_eq!(server.core_number, 0);
-    assert_eq!(server.firewall.as_deref(), Some("on"));
+    assert_eq!(server.firewall, Some(true));
     assert_eq!(server.hostname, "test.example.com");
     assert_eq!(server.host, Some(8055964291));
     let ips = &server.ip_addresses.as_ref().unwrap().ip_address;
@@ -970,12 +970,12 @@ fn deserialize_load_cdrom_response() {
     assert_eq!(server.zone, "fi-hel1");
     let devices = &server.storage_devices.as_ref().unwrap().storage_device;
     assert_eq!(devices.len(), 2);
-    assert_eq!(devices[0].device_type.as_deref(), Some("cdrom"));
+    assert_eq!(devices[0].device_type, Some(crate::server::StorageDeviceType::Cdrom));
     assert_eq!(
         devices[0].storage.as_deref(),
         Some("01000000-0000-4000-8000-000060010101")
     );
-    assert_eq!(devices[1].device_type.as_deref(), Some("disk"));
+    assert_eq!(devices[1].device_type, Some(crate::server::StorageDeviceType::Disk));
     assert_eq!(devices[1].address, "ide:0:0");
     assert_eq!(
         devices[1].storage.as_deref(),
@@ -1055,11 +1055,11 @@ fn deserialize_eject_cdrom_response() {
     let devices = &server.storage_devices.as_ref().unwrap().storage_device;
     assert_eq!(devices.len(), 2);
     // CD-ROM storage is empty after eject
-    assert_eq!(devices[0].device_type.as_deref(), Some("cdrom"));
+    assert_eq!(devices[0].device_type, Some(crate::server::StorageDeviceType::Cdrom));
     assert_eq!(devices[0].storage.as_deref(), Some(""));
-    assert_eq!(server.boot_order.as_deref(), Some("cdrom,disk"));
+    assert_eq!(server.boot_order, Some(crate::server::BootOrder::CdromDisk));
     assert_eq!(server.core_number, 1);
-    assert_eq!(server.firewall.as_deref(), Some("on"));
+    assert_eq!(server.firewall, Some(true));
     assert_eq!(server.hostname, "test.example.com");
     let ips = &server.ip_addresses.as_ref().unwrap().ip_address;
     assert_eq!(ips.len(), 3);
@@ -1073,7 +1073,7 @@ fn deserialize_eject_cdrom_response() {
     assert_eq!(server.uuid, "00798b85-efdc-41ca-8021-f6ef457b8531");
     assert_eq!(server.video_model, Some(crate::server::VideoModel::Cirrus));
     assert_eq!(server.zone, "fi-hel1");
-    assert_eq!(devices[1].device_type.as_deref(), Some("disk"));
+    assert_eq!(devices[1].device_type, Some(crate::server::StorageDeviceType::Disk));
     assert_eq!(devices[1].address, "ide:0:0");
     assert_eq!(
         devices[1].storage.as_deref(),
@@ -1298,7 +1298,7 @@ fn deserialize_create_import_request() {
     }
     let w: Wrapper = serde_json::from_str(CREATE_IMPORT_REQUEST_JSON).unwrap();
     let si = w.storage_import;
-    assert_eq!(si.source, "http_import");
+    assert_eq!(si.source, ImportSource::HttpImport);
     assert!(si.source_location.as_deref().unwrap().contains("debian"));
     assert_eq!(
         si.source_location.as_deref(),
@@ -1333,7 +1333,7 @@ fn deserialize_create_import_http_response() {
     let resp: StorageImportResponse =
         serde_json::from_str(CREATE_IMPORT_HTTP_RESPONSE_JSON).unwrap();
     let si = resp.storage_import;
-    assert_eq!(si.source.as_deref(), Some("http_import"));
+    assert_eq!(si.source, Some(ImportSource::HttpImport));
     assert_eq!(si.state, Some(StorageImportState::Prepared));
     assert_eq!(
         si.uuid.as_deref(),
@@ -1385,7 +1385,7 @@ fn deserialize_create_import_direct_response() {
     let resp: StorageImportResponse =
         serde_json::from_str(CREATE_IMPORT_DIRECT_RESPONSE_JSON).unwrap();
     let si = resp.storage_import;
-    assert_eq!(si.source.as_deref(), Some("direct_upload"));
+    assert_eq!(si.source, Some(ImportSource::DirectUpload));
     assert_eq!(
         si.direct_upload_url.as_deref(),
         Some(
@@ -1448,7 +1448,7 @@ fn deserialize_get_import_details_response() {
     assert_eq!(si.md5sum.as_deref(), Some(""));
     assert_eq!(si.read_bytes, Some(0));
     assert_eq!(si.sha256sum.as_deref(), Some(""));
-    assert_eq!(si.source.as_deref(), Some("http_import"));
+    assert_eq!(si.source, Some(ImportSource::HttpImport));
     assert_eq!(
         si.source_location.as_deref(),
         Some(
@@ -1499,7 +1499,7 @@ fn deserialize_cancel_import_response() {
     assert_eq!(si.md5sum.as_deref(), Some(""));
     assert_eq!(si.read_bytes, Some(0));
     assert_eq!(si.sha256sum.as_deref(), Some(""));
-    assert_eq!(si.source.as_deref(), Some("http_import"));
+    assert_eq!(si.source, Some(ImportSource::HttpImport));
     assert_eq!(
         si.source_location.as_deref(),
         Some(
@@ -1627,7 +1627,7 @@ fn delete_storage_backups_mode_serde_round_trip() {
 fn serialize_attach_storage_request_with_boot_disk() {
     let req = crate::server::AttachStorageRequest {
         storage: "00798b85-efdc-41ca-8021-f6ef457b8531".into(),
-        device_type: Some("disk".into()),
+        device_type: Some(crate::server::StorageDeviceType::Disk),
         address: None,
         boot_disk: Some("0".into()),
     };

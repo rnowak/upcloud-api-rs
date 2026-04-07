@@ -356,18 +356,18 @@ fn deserialize_assign_tag_server_response() {
 
     let ips = &s.ip_addresses.as_ref().unwrap().ip_address;
     assert_eq!(ips.len(), 3);
-    assert_eq!(ips[0].access, "utility");
+    assert_eq!(ips[0].access, crate::server::NetworkType::Utility);
     assert_eq!(ips[0].address, "10.0.0.0");
-    assert_eq!(ips[0].family, "IPv4");
-    assert_eq!(ips[1].access, "public");
+    assert_eq!(ips[0].family, crate::server::Family::IPv4);
+    assert_eq!(ips[1].access, crate::server::NetworkType::Public);
     assert_eq!(ips[1].address, "x.x.x.x");
-    assert_eq!(ips[1].family, "IPv4");
-    assert_eq!(ips[2].access, "public");
-    assert_eq!(ips[2].family, "IPv6");
+    assert_eq!(ips[1].family, crate::server::Family::IPv4);
+    assert_eq!(ips[2].access, crate::server::NetworkType::Public);
+    assert_eq!(ips[2].family, crate::server::Family::IPv6);
 
-    assert_eq!(s.boot_order.as_deref(), Some("disk"));
+    assert_eq!(s.boot_order, Some(crate::server::BootOrder::Disk));
     assert_eq!(s.core_number, 2);
-    assert_eq!(s.firewall.as_deref(), Some("on"));
+    assert_eq!(s.firewall, Some(true));
     assert_eq!(s.license, Some(0.0));
     assert_eq!(s.memory_amount, 4096);
     assert_eq!(s.nic_model, Some(crate::server::NicModel::Virtio));
@@ -391,7 +391,7 @@ fn deserialize_assign_tag_server_response() {
         storages[0].storage_title.as_deref(),
         Some("Debian from a template")
     );
-    assert_eq!(storages[0].device_type.as_deref(), Some("disk"));
+    assert_eq!(storages[0].device_type, Some(crate::server::StorageDeviceType::Disk));
 }
 
 // Source: https://developers.upcloud.com/1.3/12-tags/#remove-tag-from-server
@@ -475,9 +475,9 @@ fn deserialize_remove_tag_server_response() {
     assert_eq!(tags[0], "DEV");
     assert_eq!(tags[1], "RHEL");
 
-    assert_eq!(s.boot_order.as_deref(), Some("disk"));
+    assert_eq!(s.boot_order, Some(crate::server::BootOrder::Disk));
     assert_eq!(s.core_number, 2);
-    assert_eq!(s.firewall.as_deref(), Some("on"));
+    assert_eq!(s.firewall, Some(true));
     assert_eq!(s.hostname, "debian.example.com");
     assert_eq!(s.state, crate::server::State::Started);
     assert_eq!(s.plan, "2xCPU-4GB");

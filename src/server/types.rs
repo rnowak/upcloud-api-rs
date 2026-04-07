@@ -3,6 +3,7 @@
 use serde::{Deserialize, Serialize};
 use serde_with::{DisplayFromStr, PickFirst, serde_as};
 
+pub use crate::types::common::{Family, NetworkType, OnOff};
 use crate::types::common::YesNo;
 
 // ─── Enums ────────────────────────────────────────────────────────────────────
@@ -109,6 +110,28 @@ pub enum StorageDeviceType {
     Cdrom,
 }
 
+/// Boot device order.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum BootOrder {
+    Disk,
+    Cdrom,
+    Network,
+    #[serde(rename = "disk,cdrom")]
+    DiskCdrom,
+    #[serde(rename = "cdrom,disk")]
+    CdromDisk,
+}
+
+/// Server group anti-affinity policy.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum AntiAffinityPolicy {
+    Yes,
+    No,
+    Strict,
+}
+
 /// Remote console access protocol.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -150,12 +173,12 @@ pub struct StorageDevice {
     /// Title of the storage.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub storage_title: Option<String>,
-    /// Storage tier (`"hdd"` or `"maxiops"`).
+    /// Storage tier.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub storage_tier: Option<String>,
-    /// Device type (`"disk"` or `"cdrom"`).
+    pub storage_tier: Option<crate::storage::Tier>,
+    /// Device type.
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub device_type: Option<String>,
+    pub device_type: Option<StorageDeviceType>,
     /// `"1"` if this is the boot disk.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boot_disk: Option<String>,
@@ -179,12 +202,12 @@ pub struct StorageDevice {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct IpAddressEntry {
-    /// Access type (`"public"`, `"private"`, or `"utility"`).
-    pub access: String,
+    /// Access type.
+    pub access: NetworkType,
     /// IP address string.
     pub address: String,
-    /// Address family (`"IPv4"` or `"IPv6"`).
-    pub family: String,
+    /// Address family.
+    pub family: Family,
     /// Whether the IP is included in the server's plan.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub part_of_plan: Option<String>,
@@ -214,9 +237,9 @@ pub struct Interface {
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_ip_filtering: Option<bool>,
-    /// Interface type (`"public"`, `"private"`, or `"utility"`).
+    /// Interface type.
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub interface_type: Option<String>,
+    pub interface_type: Option<NetworkType>,
 }
 
 /// Wrapper for IP addresses on a network interface.
@@ -238,8 +261,8 @@ pub struct InterfaceIpAddress {
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dhcp_provided: Option<bool>,
-    /// Address family (`"IPv4"` or `"IPv6"`).
-    pub family: String,
+    /// Address family.
+    pub family: Family,
     /// Whether this is a floating IP.
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -389,12 +412,13 @@ pub struct ServerDetails {
     /// Base server fields (flattened).
     #[serde(flatten)]
     pub server: Server,
-    /// Firewall state (`"on"` or `"off"`).
+    /// Firewall state.
+    #[serde_as(as = "Option<OnOff>")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub firewall: Option<String>,
-    /// Boot device order (e.g. `"disk"`, `"cdrom"`, `"network"`).
+    pub firewall: Option<bool>,
+    /// Boot device order.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub boot_order: Option<String>,
+    pub boot_order: Option<BootOrder>,
     /// Private cloud host ID, if applicable.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub host: Option<i64>,
@@ -422,12 +446,14 @@ pub struct ServerDetails {
     /// Labels assigned to the server.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<crate::types::common::Labels>,
-    /// Whether the metadata service is enabled (`"yes"` or `"no"`).
+    /// Whether the metadata service is enabled.
+    #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<String>,
-    /// Whether remote access is enabled (`"yes"` or `"no"`).
+    pub metadata: Option<bool>,
+    /// Whether remote access is enabled.
+    #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub remote_access_enabled: Option<String>,
+    pub remote_access_enabled: Option<bool>,
     /// Remote access type (e.g. `"vnc"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_access_type: Option<String>,
@@ -536,9 +562,9 @@ pub struct CreateRequest {
     #[serde_as(as = "Option<DisplayFromStr>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub memory_amount: Option<u64>,
-    /// Boot device order (e.g. `"disk"`, `"cdrom"`, `"network"`).
+    /// Boot device order.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub boot_order: Option<String>,
+    pub boot_order: Option<BootOrder>,
     /// Storage devices to attach during creation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub storage_devices: Option<CreateServerStorageDevices>,
@@ -551,9 +577,10 @@ pub struct CreateRequest {
     /// How to deliver the root password (`none`/`email`/`sms`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub password_delivery: Option<PasswordDelivery>,
-    /// Firewall state (`"on"` or `"off"`).
+    /// Firewall state.
+    #[serde_as(as = "Option<OnOff>")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub firewall: Option<String>,
+    pub firewall: Option<bool>,
     /// Whether the metadata service is enabled.
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -614,9 +641,9 @@ pub struct CreateServerStorageDevice {
     /// Short descriptive title for the storage.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
-    /// Storage tier (e.g. `"maxiops"`).
+    /// Storage tier.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tier: Option<String>,
+    pub tier: Option<crate::storage::Tier>,
     /// Device type (`disk` or `cdrom`).
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
     pub device_type: Option<StorageDeviceType>,
@@ -665,9 +692,9 @@ pub struct CreateServerInterfaces {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct CreateServerInterface {
-    /// Interface type (`"public"`, `"private"`, or `"utility"`).
+    /// Interface type.
     #[serde(rename = "type")]
-    pub interface_type: String,
+    pub interface_type: NetworkType,
     /// UUID of an existing network (required for private interfaces).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub network: Option<String>,
@@ -696,8 +723,8 @@ pub struct CreateServerInterfaceIpAddresses {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct CreateServerInterfaceIpAddress {
-    /// Address family (`"IPv4"` or `"IPv6"`).
-    pub family: String,
+    /// Address family.
+    pub family: Family,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
     /// Whether the address should be assigned via DHCP.
@@ -728,10 +755,11 @@ pub struct ModifyRequest {
     pub memory_amount: Option<u64>,
     /// Boot device order.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub boot_order: Option<String>,
-    /// Firewall state (`"on"` or `"off"`).
+    pub boot_order: Option<BootOrder>,
+    /// Firewall state.
+    #[serde_as(as = "Option<OnOff>")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub firewall: Option<String>,
+    pub firewall: Option<bool>,
     /// Whether the metadata service is enabled.
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -805,9 +833,9 @@ pub struct RestartRequest {
 pub struct AttachStorageRequest {
     /// UUID of the storage to attach.
     pub storage: String,
-    /// Device type (`"disk"` or `"cdrom"`).
+    /// Device type.
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub device_type: Option<String>,
+    pub device_type: Option<StorageDeviceType>,
     /// Target device address (e.g. `"virtio:1"`); auto-assigned if omitted.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
@@ -868,9 +896,9 @@ pub struct Group {
     pub uuid: String,
     /// Server group title.
     pub title: String,
-    /// Anti-affinity policy (`"yes"`, `"no"`, or `"strict"`).
+    /// Anti-affinity policy.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub anti_affinity: Option<String>,
+    pub anti_affinity: Option<AntiAffinityPolicy>,
     /// Per-server anti-affinity status within the group.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub anti_affinity_status: Option<Vec<AntiAffinityStatus>>,
@@ -905,9 +933,9 @@ pub struct GroupServers {
 pub struct CreateGroupRequest {
     /// Server group title.
     pub title: String,
-    /// Anti-affinity policy (`"yes"`, `"no"`, or `"strict"`).
+    /// Anti-affinity policy.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub anti_affinity: Option<String>,
+    pub anti_affinity: Option<AntiAffinityPolicy>,
     /// Labels to assign to the group.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<crate::types::common::Labels>,
@@ -922,9 +950,9 @@ pub struct ModifyGroupRequest {
     /// New group title.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
-    /// Anti-affinity policy (`"strict"`, `"yes"`, or `"no"`).
+    /// Anti-affinity policy.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub anti_affinity: Option<String>,
+    pub anti_affinity: Option<AntiAffinityPolicy>,
     /// Labels to assign to the group.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<crate::types::common::Labels>,
