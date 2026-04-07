@@ -2180,8 +2180,7 @@ fn deserialize_node() {
     assert_eq!(node.networks[1].ip_addresses[1].address, "172.16.1.45");
 }
 
-// ─── Issue 1: IP address management ──────────────────────────────────────────
-
+// Source: Synthetic test fixture
 const IP_ADDRESS_LIST_JSON: &str = r#"
     [
         {
@@ -2223,8 +2222,7 @@ fn serialize_add_ip_address_request_empty() {
     assert_eq!(json, "{}");
 }
 
-// ─── Issue 2: DNS challenge domain ───────────────────────────────────────────
-
+// Source: Synthetic test fixture
 const DNS_CHALLENGE_JSON: &str = r#"
     {
         "domain": "_acme-challenge.lb.upcloud.com"
@@ -2236,8 +2234,6 @@ fn deserialize_dns_challenge_domain() {
     let d: DnsChallengeDomain = serde_json::from_str(DNS_CHALLENGE_JSON).unwrap();
     assert_eq!(d.domain, "_acme-challenge.lb.upcloud.com");
 }
-
-// ─── Issue 4: ModifyBackendRequest ───────────────────────────────────────────
 
 #[test]
 fn serialize_modify_backend_request_partial() {

@@ -1169,7 +1169,7 @@ fn deserialize_current_network_usage() {
 #[test]
 fn create_subaccount_serializes_with_sub_account_key() {
     // The Body struct used by create_subaccount must wrap the request under
-    // the "sub_account" key, matching the Go SDK / UpCloud API.
+    // the "sub_account" key.
     #[derive(serde::Serialize)]
     struct Body {
         sub_account: CreateSubaccountRequest,

@@ -278,7 +278,6 @@ pub struct ModifyRequest {
     pub backup_rule: Option<BackupRule>,
     /// Storage labels.
     ///
-    /// Uses nullable semantics matching the Go SDK's `*[]Label`:
     /// - `None`          → field omitted (don't modify labels)
     /// - `Some(vec![])`  → serializes as `"labels": []` (clear all labels)
     /// - `Some(vec![…])` → replaces labels with the given list

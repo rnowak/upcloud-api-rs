@@ -51,7 +51,7 @@ impl<'a> TagHandler<'a> {
     ///
     /// `GET /1.3/tag/{name}`
     ///
-    /// [UpCloud API docs](https://developers.upcloud.com/1.3/11-tags/#get-tag-details)
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/12-tags/#get-tag-details)
     pub async fn get(&self, name: &str) -> Result<Tag, Error> {
         let resp: TagResponse = self.client.get(&format!("/1.3/tag/{name}")).await?;
         Ok(resp.tag)

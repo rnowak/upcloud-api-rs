@@ -1282,8 +1282,7 @@ fn serialize_modify_user_access_key_request() {
     assert_eq!(json2["status"], "Active");
 }
 
-// ─── ReplaceRequest tests ────────────────────────────────────────────────
-
+// Source: Synthetic test fixture
 const MOS_REPLACE_REQUEST_JSON: &str = r#"
     {
         "configured_status": "started",
@@ -1355,8 +1354,7 @@ fn serialize_replace_request_minimal() {
     assert_eq!(json["networks"], serde_json::json!([]));
 }
 
-// ─── BucketMetrics tests ─────────────────────────────────────────────────
-
+// Source: Synthetic test fixture
 const MOS_BUCKET_METRICS_JSON: &str = r#"
     [
         {
@@ -1383,8 +1381,6 @@ fn deserialize_bucket_metrics() {
     assert_eq!(metrics[1].bytes, Some(0));
     assert_eq!(metrics[1].objects, Some(0));
 }
-
-// ─── Custom domain with type field tests ─────────────────────────────────
 
 #[test]
 fn deserialize_create_custom_domain_request_with_type() {
