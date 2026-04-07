@@ -67,6 +67,7 @@ fn deserialize_partner_account_list() {
     assert_eq!(accounts[1].phone.as_deref(), Some("+358.97654321"));
     assert_eq!(accounts[1].vat_number.as_deref(), Some(""));
 }
+
 // Source: https://developers.upcloud.com/1.3/23-partner-api/#create-new-account
 const PARTNER_ACCOUNT_CREATE_JSON: &str = r#"
     {
@@ -101,6 +102,7 @@ fn deserialize_partner_account_create_response() {
     assert_eq!(account.phone.as_deref(), Some("+358.91111111"));
     assert_eq!(account.vat_number.as_deref(), Some(""));
 }
+
 // Source: https://developers.upcloud.com/1.3/23-partner-api/#create-new-account
 const CREATE_REQUEST_WITH_CONTACT_JSON: &str = r#"
     {
@@ -152,6 +154,7 @@ fn deserialize_create_request_with_contact_details() {
     assert!(cd.state.is_none());
     assert!(cd.vat_number.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/23-partner-api/#create-new-account
 const CREATE_REQUEST_WITHOUT_CONTACT_JSON: &str = r#"
     {
@@ -220,6 +223,7 @@ fn deserialize_partner_account_detail() {
     assert_eq!(account.phone.as_deref(), Some("+358.91234567"));
     assert_eq!(account.vat_number.as_deref(), Some(""));
 }
+
 // Source: https://developers.upcloud.com/1.3/23-partner-api/#create-new-account
 const MODIFY_PARTNER_ACCOUNT_REQUEST_JSON: &str = r#"
     {
@@ -246,6 +250,7 @@ fn deserialize_modify_partner_account_request() {
     assert!(req.phone.is_none());
     assert!(req.vat_number.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/23-partner-api/#create-new-account
 const MODIFY_PARTNER_ACCOUNT_RESPONSE_JSON: &str = r#"
     {

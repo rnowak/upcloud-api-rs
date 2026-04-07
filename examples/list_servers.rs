@@ -23,7 +23,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let tags = s
             .tags
             .as_ref()
-            .map(|t| t.tag.iter().map(|t| t.as_str()).collect::<Vec<_>>().join(", "))
+            .map(|t| {
+                t.tag
+                    .iter()
+                    .map(|t| t.as_str())
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            })
             .filter(|t| !t.is_empty())
             .unwrap_or_else(|| "(none)".into());
 

@@ -154,6 +154,7 @@ fn deserialize_ip_address_list() {
     assert_eq!(ips[4].zone.as_deref(), Some("nl-ams1"));
     assert!(ips[4].part_of_plan.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/10-ip-addresses/#get-ip-address-details
 const GET_IP_ADDRESS_JSON: &str = r#"
     {
@@ -235,6 +236,7 @@ fn deserialize_assign_attached_floating_ip_request() {
     assert_eq!(ip["mac"], "mm:mm:mm:mm:mm:m1");
     assert_eq!(ip["release_policy"], "release");
 }
+
 // Source: https://developers.upcloud.com/1.3/10-ip-addresses/#assign-ip-address
 const ASSIGN_ATTACHED_FLOATING_IP_RESPONSE_JSON: &str = r#"
     {
@@ -298,6 +300,7 @@ fn deserialize_assign_detached_floating_ip_request() {
     assert_eq!(ip["zone"], "fi-hel2");
     assert!(ip.get("mac").is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/10-ip-addresses/#assign-ip-address
 const ASSIGN_DETACHED_FLOATING_IP_RESPONSE_JSON: &str = r#"
     {
@@ -359,6 +362,7 @@ fn deserialize_modify_ip_address_request() {
     assert_eq!(req.ptr_record.as_deref(), Some("hostname.example.com"));
     assert_eq!(req.release_policy, Some(ReleasePolicy::Release));
 }
+
 // Source: https://developers.upcloud.com/1.3/10-ip-addresses/#modify-ip-address
 const MODIFY_IP_ADDRESS_RESPONSE_JSON: &str = r#"
     {

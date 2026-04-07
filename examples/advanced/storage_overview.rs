@@ -40,8 +40,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     for s in &storages {
         let zone = s.zone.as_deref().unwrap_or("unknown");
-        let tier = s.tier.as_ref().map(|t| format!("{t:?}")).unwrap_or_else(|| "—".into());
-        let encrypted = s.encrypted.map(|e| if e { "yes" } else { "no" }).unwrap_or("—");
+        let tier = s
+            .tier
+            .as_ref()
+            .map(|t| format!("{t:?}"))
+            .unwrap_or_else(|| "—".into());
+        let encrypted = s
+            .encrypted
+            .map(|e| if e { "yes" } else { "no" })
+            .unwrap_or("—");
 
         let labels = s
             .labels
@@ -74,8 +81,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         ss.server
                             .iter()
                             .map(|uuid| {
-                                let name =
-                                    server_names.get(uuid.as_str()).copied().unwrap_or("unknown");
+                                let name = server_names
+                                    .get(uuid.as_str())
+                                    .copied()
+                                    .unwrap_or("unknown");
                                 format!("{name} ({uuid})")
                             })
                             .collect()

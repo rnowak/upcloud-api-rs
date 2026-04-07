@@ -40,6 +40,7 @@ fn deserialize_token_list() {
     assert_eq!(tokens[0].allowed_ip_ranges, vec!["1.2.3.4"]);
     assert!(tokens[1].last_used_at.is_some());
 }
+
 // Source: https://developers.upcloud.com/1.3/24-api-tokens/#create-token
 const TOKEN_CREATE_JSON: &str = r#"
     {
@@ -65,6 +66,7 @@ fn deserialize_token_create() {
     assert!(resp.can_create_tokens);
     assert_eq!(resp.allowed_ip_ranges.len(), 2);
 }
+
 // Source: https://developers.upcloud.com/1.3/24-api-tokens/#get-token-details
 const TOKEN_DETAIL_JSON: &str = r#"
     {
@@ -94,6 +96,7 @@ fn deserialize_token_detail() {
     assert!(token.can_create_tokens);
     assert_eq!(token.allowed_ip_ranges.len(), 2);
 }
+
 // Source: https://developers.upcloud.com/1.3/24-api-tokens/#create-token
 const CREATE_TOKEN_REQUEST_JSON: &str = r#"
     {

@@ -72,6 +72,7 @@ fn deserialize_gpu_plan_null_storage_tier() {
     assert_eq!(gpu_plan.gpu_amount, Some(2));
     assert_eq!(gpu_plan.gpu_model.as_deref(), Some("NVIDIA L40S"));
 }
+
 // Source: https://developers.upcloud.com/1.3/8-servers/#list-server-configurations
 const SERVER_SIZE_LIST_JSON: &str = r#"
     {

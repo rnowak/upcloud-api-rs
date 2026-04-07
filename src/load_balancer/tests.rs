@@ -38,6 +38,7 @@ fn deserialize_lb_plan_list() {
     assert_eq!(plans[1].max_backend_count, None);
     assert_eq!(plans[1].max_frontend_count, None);
 }
+
 // Source: https://developers.upcloud.com/1.3/35-load-balancers/#list-services
 const LB_LIST_JSON: &str = r#"
     [
@@ -378,8 +379,7 @@ fn deserialize_lb_list() {
 // ─── Test 1: Plan detail ──────────────────────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/35-load-balancers/#create-service
-const LB_PLAN_DETAIL_JSON: &str =
-    r#"
+const LB_PLAN_DETAIL_JSON: &str = r#"
     {
         "name": "development",
         "per_server_max_sessions": 10000,
@@ -773,8 +773,7 @@ fn deserialize_lb_service_details() {
 // ─── Test 4: Modify LB request ────────────────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/35-load-balancers/#modify-service
-const MODIFY_LB_REQUEST_JSON: &str =
-    r#"
+const MODIFY_LB_REQUEST_JSON: &str = r#"
     {
         "name": "example-service",
         "plan": "development",

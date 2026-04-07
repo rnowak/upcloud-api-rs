@@ -110,6 +110,7 @@ fn deserialize_file_storage_list() {
     assert_eq!(labels[0].key, "environment");
     assert_eq!(labels[0].value, "production");
 }
+
 // Source: https://developers.upcloud.com/1.3/25-file-storage/#get-service-details
 const FS_DETAIL_JSON: &str = r#"
     {
@@ -198,6 +199,7 @@ fn deserialize_file_storage_detail() {
     assert_eq!(labels[0].key, "environment");
     assert_eq!(labels[0].value, "production");
 }
+
 // Source: https://developers.upcloud.com/1.3/25-file-storage/#list-networks
 const FS_NETWORK_LIST_JSON: &str = r#"
     [
@@ -221,6 +223,7 @@ fn deserialize_file_storage_network_list() {
     assert!(nets[0].network_type.is_none());
     assert!(nets[0].dns_name.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/25-file-storage/#list-shares
 const FS_SHARE_LIST_JSON: &str = r#"
     [

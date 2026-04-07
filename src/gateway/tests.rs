@@ -293,6 +293,7 @@ fn deserialize_gateway_list() {
         ]
     );
 }
+
 // Source: https://developers.upcloud.com/1.3/19-network-gateways/#list-plans
 const GATEWAY_PLAN_LIST_JSON: &str = r#"
     [
@@ -346,6 +347,7 @@ fn deserialize_gateway_plan_list() {
     assert_eq!(features_1.len(), 1);
     assert_eq!(features_1[0], Feature::Nat);
 }
+
 // Source: https://developers.upcloud.com/1.3/19-network-gateways/#get-plan-details
 const GATEWAY_PLAN_DETAIL_JSON: &str = r#"
     {
@@ -374,6 +376,7 @@ fn deserialize_gateway_plan_detail() {
     assert_eq!(features[1], Feature::Vpn);
     assert_eq!(plan.vpn_tunnel_amount, Some(10));
 }
+
 // Source: https://developers.upcloud.com/1.3/19-network-gateways/#get-service-details
 const GATEWAY_DETAIL_JSON: &str = r#"
     {
@@ -653,6 +656,7 @@ fn deserialize_gateway_detail() {
         ]
     );
 }
+
 // Source: https://developers.upcloud.com/1.3/19-network-gateways/#create-service
 const GATEWAY_CREATE_REQ_JSON: &str = r#"
     {
@@ -809,6 +813,7 @@ fn deserialize_create_gateway_request() {
     assert!(ipsec.phase2_dh_group_numbers.is_none());
     assert!(ipsec.phase2_integrity_algorithms.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/19-network-gateways/#modify-service
 const GATEWAY_MODIFY_REQ_JSON: &str = r#"
     {
@@ -837,6 +842,7 @@ fn deserialize_modify_gateway_request() {
     assert!(req.connections.is_none());
     assert!(req.automatic_tunnel_internal_ip_allocation.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/19-network-gateways/#create-connection
 const CONNECTION_CREATE_REQ_JSON: &str = r#"
     {
@@ -935,6 +941,7 @@ fn deserialize_create_connection_request() {
     assert!(ipsec.phase2_dh_group_numbers.is_none());
     assert!(ipsec.phase2_integrity_algorithms.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/19-network-gateways/#get-connection-details
 const CONNECTION_DETAIL_JSON: &str = r#"
     {
@@ -1139,6 +1146,7 @@ fn deserialize_connection_detail() {
         ]
     );
 }
+
 // Source: https://developers.upcloud.com/1.3/19-network-gateways/#modify-connection
 const CONNECTION_MODIFY_REQ_JSON: &str = r#"
     {
@@ -1163,6 +1171,7 @@ fn deserialize_modify_connection_request() {
     assert!(req.remote_routes.is_none());
     assert!(req.tunnels.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/19-network-gateways/#list-tunnels
 const TUNNEL_LIST_JSON: &str = r#"
     [
@@ -1397,6 +1406,7 @@ fn deserialize_tunnel_detail() {
         ]
     );
 }
+
 // Source: https://developers.upcloud.com/1.3/19-network-gateways/#create-tunnel
 const TUNNEL_CREATE_REQ_JSON: &str = r#"
     {
@@ -1450,6 +1460,7 @@ fn deserialize_create_tunnel_request() {
     assert!(ipsec.phase2_dh_group_numbers.is_none());
     assert!(ipsec.phase2_integrity_algorithms.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/19-network-gateways/#modify-tunnel
 const TUNNEL_MODIFY_REQ_JSON: &str = r#"
     {
@@ -1469,6 +1480,7 @@ fn deserialize_modify_tunnel_request() {
     assert!(remote.name.is_none());
     assert!(req.ipsec.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/19-network-gateways/#modify-service
 const GATEWAY_REPLACE_REQ_JSON: &str = r#"
     {
@@ -1488,6 +1500,7 @@ fn deserialize_replace_gateway_request() {
     assert!(req.connections.is_none());
     assert!(req.automatic_tunnel_internal_ip_allocation.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/19-network-gateways/
 const GATEWAY_LABEL_LIST_JSON: &str = r#"
     [
@@ -1512,6 +1525,7 @@ fn deserialize_gateway_label_list() {
     assert_eq!(labels[1].key, "foo");
     assert_eq!(labels[1].value, "bar");
 }
+
 // Source: https://developers.upcloud.com/1.3/19-network-gateways/
 const GATEWAY_LABEL_DETAIL_JSON: &str = r#"
     {
@@ -1527,6 +1541,7 @@ fn deserialize_gateway_label_detail() {
     assert_eq!(label.key, "env");
     assert_eq!(label.value, "staging");
 }
+
 // Source: https://developers.upcloud.com/1.3/19-network-gateways/
 const GATEWAY_LABEL_CREATE_JSON: &str = r#"
     {
@@ -1542,6 +1557,7 @@ fn deserialize_gateway_label_create() {
     assert_eq!(label.key, "env");
     assert_eq!(label.value, "production");
 }
+
 // Source: https://developers.upcloud.com/1.3/19-network-gateways/#list-connections
 const CONNECTION_LIST_JSON: &str = r#"
     [

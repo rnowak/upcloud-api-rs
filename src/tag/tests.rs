@@ -54,6 +54,7 @@ fn deserialize_tag_list() {
     assert_eq!(tags[2].description.as_deref(), Some("Production servers"));
     assert!(tags[2].servers.server.is_empty());
 }
+
 // Source: https://developers.upcloud.com/1.3/12-tags/#create-a-new-tag
 const CREATE_TAG_RESPONSE_JSON: &str = r#"
     {

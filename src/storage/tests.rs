@@ -146,6 +146,7 @@ fn deserialize_storage_list() {
     assert!(storages[3].created.is_none());
     assert!(storages[3].progress.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/9-storages/#get-storage-details
 const GET_STORAGE_JSON: &str = r#"
     {
@@ -205,6 +206,7 @@ fn deserialize_storage_detail_empty_backup_rule() {
     assert_eq!(s.storage_type, Kind::Normal);
     assert_eq!(s.zone.as_deref(), Some("fi-hel1"));
 }
+
 // Source: https://developers.upcloud.com/1.3/9-storages/#create-storage
 const CREATE_STORAGE_RESPONSE_JSON: &str = r#"
     {
@@ -305,6 +307,7 @@ fn deserialize_create_storage_request() {
     assert_eq!(s["labels"][0]["key"], "env");
     assert_eq!(s["labels"][0]["value"], "prod");
 }
+
 // Source: https://developers.upcloud.com/1.3/9-storages/#create-storage
 const CREATE_STORAGE_RESPONSE_DOCS_JSON: &str = r#"
     {
@@ -390,6 +393,7 @@ fn deserialize_modify_storage_request() {
     assert_eq!(req.title.as_deref(), Some("A larger storage"));
     assert!(req.backup_rule.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/9-storages/#modify-storage
 const MODIFY_STORAGE_RESPONSE_JSON: &str = r#"
     {
@@ -512,6 +516,7 @@ fn deserialize_attach_storage_server_api_request() {
     assert_eq!(sd["storage"], "00798b85-efdc-41ca-8021-f6ef457b8531");
     assert_eq!(sd["boot_disk"], "0");
 }
+
 // Source: https://developers.upcloud.com/1.3/9-storages/
 const ATTACH_STORAGE_SERVER_API_RESPONSE_JSON: &str = r#"
     {
@@ -649,6 +654,7 @@ fn deserialize_attach_storage_storage_api_request() {
     assert_eq!(sd["address"], "scsi");
     assert_eq!(sd["boot_disk"], "0");
 }
+
 // Source: https://developers.upcloud.com/1.3/9-storages/
 const ATTACH_STORAGE_STORAGE_API_RESPONSE_JSON: &str = r#"
     {
@@ -715,6 +721,7 @@ fn deserialize_detach_storage_request() {
     let v: serde_json::Value = serde_json::from_str(DETACH_STORAGE_REQUEST_JSON).unwrap();
     assert_eq!(v["storage_device"]["address"], "scsi:0:0");
 }
+
 // Source: https://developers.upcloud.com/1.3/9-storages/
 const DETACH_STORAGE_SERVER_API_RESPONSE_JSON: &str = r#"
     {
@@ -808,6 +815,7 @@ fn deserialize_detach_storage_server_api_response() {
         .unwrap();
     assert!(devices.is_empty());
 }
+
 // Source: https://developers.upcloud.com/1.3/9-storages/
 const DETACH_STORAGE_STORAGE_API_RESPONSE_JSON: &str = r#"
     {
@@ -871,6 +879,7 @@ fn deserialize_load_cdrom_request() {
         "01000000-0000-4000-8000-000060010101"
     );
 }
+
 // Source: https://developers.upcloud.com/1.3/9-storages/
 const LOAD_CDROM_RESPONSE_JSON: &str = r#"
     {
@@ -1100,6 +1109,7 @@ fn deserialize_clone_storage_request() {
     assert_eq!(s["title"], "Clone of operating system disk");
     assert_eq!(s["encrypted"], "yes");
 }
+
 // Source: https://developers.upcloud.com/1.3/9-storages/#clone-storage
 const CLONE_STORAGE_RESPONSE_JSON: &str = r#"
     {
@@ -1160,6 +1170,7 @@ fn deserialize_templatize_storage_request() {
     let req = w.storage;
     assert_eq!(req.title, "My server template");
 }
+
 // Source: https://developers.upcloud.com/1.3/9-storages/#list-storages
 const TEMPLATIZE_STORAGE_RESPONSE_JSON: &str = r#"
     {
@@ -1216,6 +1227,7 @@ fn deserialize_create_backup_request() {
     let req = w.storage;
     assert_eq!(req.title.as_deref(), Some("Manually created backup"));
 }
+
 // Source: https://developers.upcloud.com/1.3/9-storages/#create-backup
 const CREATE_BACKUP_RESPONSE_JSON: &str = r#"
     {
@@ -1291,6 +1303,7 @@ fn deserialize_create_import_request() {
         "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.4.0-amd64-netinst.iso"
     );
 }
+
 // Source: https://developers.upcloud.com/1.3/9-storages/#create-import
 const CREATE_IMPORT_HTTP_RESPONSE_JSON: &str = r#"
     {
@@ -1342,6 +1355,7 @@ fn deserialize_create_import_http_response() {
     assert_eq!(si.written_bytes, Some(0));
     assert!(si.direct_upload_url.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/9-storages/#create-import
 const CREATE_IMPORT_DIRECT_RESPONSE_JSON: &str = r#"
     {

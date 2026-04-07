@@ -93,6 +93,7 @@ fn deserialize_host_list() {
     );
     assert_eq!(hosts[1].stats.stat[1].value, serde_json::json!(61));
 }
+
 // Source: https://developers.upcloud.com/1.3/14-hosts/#get-host-details
 const GET_HOST_JSON: &str = r#"
     {

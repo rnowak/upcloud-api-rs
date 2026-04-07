@@ -30,6 +30,7 @@ fn deserialize_k8s_plan_list() {
     assert!(plans[1].description.is_none());
     assert!(plans[1].server_plan.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#list-clusters
 const K8S_CLUSTER_LIST_JSON: &str = r#"
     [
@@ -165,6 +166,7 @@ fn deserialize_k8s_cluster_list() {
     assert!(c2.version.is_none());
     assert!(c2.created_at.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#get-cluster-details
 const K8S_CLUSTER_DETAIL_JSON: &str = r#"
     {
@@ -266,6 +268,7 @@ fn deserialize_k8s_cluster_detail() {
     assert!(groups[0].anti_affinity_status.is_none());
     assert!(groups[0].nodes.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#list-node-groups
 const NODE_GROUP_LIST_JSON: &str = r#"
     [
@@ -461,6 +464,7 @@ fn deserialize_create_cluster_request() {
     assert!(ng.utility_network_access.is_none());
     assert!(ng.storage.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#create-cluster
 const CREATE_CLUSTER_RESPONSE_JSON: &str = r#"
     {
@@ -557,6 +561,7 @@ fn deserialize_create_cluster_response() {
     assert!(groups[0].anti_affinity_status.is_none());
     assert!(groups[0].nodes.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#modify-cluster
 const MODIFY_CLUSTER_REQUEST_JSON: &str = r#"
     {
@@ -591,6 +596,7 @@ fn deserialize_modify_cluster_request() {
     assert_eq!(labels[1]["key"].as_str().unwrap(), "app");
     assert_eq!(labels[1]["value"].as_str().unwrap(), "dogs-dating-app");
 }
+
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#modify-cluster
 const MODIFY_CLUSTER_RESPONSE_JSON: &str = r#"
     {
@@ -692,6 +698,7 @@ fn deserialize_modify_cluster_response() {
     assert!(groups[0].anti_affinity_status.is_none());
     assert!(groups[0].nodes.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/
 const AVAILABLE_UPGRADES_JSON: &str = r#"
     {
@@ -707,6 +714,7 @@ fn deserialize_available_upgrades() {
     assert_eq!(resp.versions.len(), 1);
     assert_eq!(resp.versions[0], "1.31");
 }
+
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/
 const UPGRADE_CLUSTER_REQUEST_JSON: &str = r#"
     {
@@ -744,6 +752,7 @@ fn deserialize_upgrade_cluster_response() {
     let strategy = resp.strategy.as_ref().unwrap();
     assert_eq!(strategy.strategy_type, "manual");
 }
+
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#get-kubeconfig
 const KUBECONFIG_RESPONSE_JSON: &str = r#"
     {
@@ -763,6 +772,7 @@ fn deserialize_kubeconfig_response() {
     assert!(resp.kubeconfig.contains("client-certificate-data: BASE64"));
     assert!(resp.kubeconfig.contains("client-key-data: BASE64"));
 }
+
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#create-node-group
 const CREATE_NODE_GROUP_REQUEST_JSON: &str = r#"
     {
@@ -826,6 +836,7 @@ fn deserialize_create_kubernetes_node_group_request() {
     assert_eq!(taints[0].key, "team");
     assert_eq!(taints[0].value, "qa");
 }
+
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#create-node-group
 const CREATE_NODE_GROUP_RESPONSE_JSON: &str = r#"
     {
@@ -893,6 +904,7 @@ fn deserialize_create_kubernetes_node_group_response() {
     assert!(group.anti_affinity_status.is_none());
     assert!(group.nodes.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#get-node-group-details
 const NODE_GROUP_DETAIL_JSON: &str = r#"
     {
@@ -983,6 +995,7 @@ fn deserialize_node_group_detail() {
     assert_eq!(nodes[1].state, NodeState::Running);
     assert_eq!(nodes[1].kubelet_version.as_deref(), Some("1.30"));
 }
+
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#modify-node-group
 const MODIFY_NODE_GROUP_REQUEST_JSON: &str = r#"
     {
@@ -996,6 +1009,7 @@ fn deserialize_modify_kubernetes_node_group_request() {
     assert_eq!(req.count, Some(15));
     assert!(req.labels.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#modify-node-group
 const MODIFY_NODE_GROUP_RESPONSE_JSON: &str = r#"
     {
@@ -1100,6 +1114,7 @@ fn deserialize_modify_cluster_request_typed() {
     assert!(req.ip_filter.is_none());
     assert!(req.plan.is_none());
 }
+
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#list-versions
 const KUBERNETES_VERSIONS_JSON: &str = r#"
     [
