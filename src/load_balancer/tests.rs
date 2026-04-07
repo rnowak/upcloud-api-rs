@@ -2179,3 +2179,113 @@ fn deserialize_node() {
     assert_eq!(node.networks[1].ip_addresses[0].address, "172.16.1.44");
     assert_eq!(node.networks[1].ip_addresses[1].address, "172.16.1.45");
 }
+
+// ─── Issue 1: IP address management ──────────────────────────────────────────
+
+const IP_ADDRESS_LIST_JSON: &str = r#"
+    [
+        {
+            "address": "100.127.5.146",
+            "listen_only": false
+        },
+        {
+            "address": "172.16.1.44",
+            "listen_only": true
+        }
+    ]
+"#;
+
+#[test]
+fn deserialize_ip_address_list() {
+    let addrs: Vec<IPAddress> = serde_json::from_str(IP_ADDRESS_LIST_JSON).unwrap();
+    assert_eq!(addrs.len(), 2);
+    assert_eq!(addrs[0].address, "100.127.5.146");
+    assert_eq!(addrs[0].listen_only, Some(false));
+    assert_eq!(addrs[1].address, "172.16.1.44");
+    assert_eq!(addrs[1].listen_only, Some(true));
+}
+
+#[test]
+fn serialize_add_ip_address_request_full() {
+    let req = AddIPAddressRequest {
+        address: Some("10.0.0.1".to_string()),
+        network_name: Some("my-network".to_string()),
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["address"], "10.0.0.1");
+    assert_eq!(json["network_name"], "my-network");
+}
+
+#[test]
+fn serialize_add_ip_address_request_empty() {
+    let req = AddIPAddressRequest::default();
+    let json = serde_json::to_string(&req).unwrap();
+    assert_eq!(json, "{}");
+}
+
+// ─── Issue 2: DNS challenge domain ───────────────────────────────────────────
+
+const DNS_CHALLENGE_JSON: &str = r#"
+    {
+        "domain": "_acme-challenge.lb.upcloud.com"
+    }
+"#;
+
+#[test]
+fn deserialize_dns_challenge_domain() {
+    let d: DnsChallengeDomain = serde_json::from_str(DNS_CHALLENGE_JSON).unwrap();
+    assert_eq!(d.domain, "_acme-challenge.lb.upcloud.com");
+}
+
+// ─── Issue 4: ModifyBackendRequest ───────────────────────────────────────────
+
+#[test]
+fn serialize_modify_backend_request_partial() {
+    let req = ModifyBackendRequest {
+        name: Some("new-name".to_string()),
+        ..Default::default()
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["name"], "new-name");
+    assert!(json.get("resolver").is_none());
+    assert!(json.get("properties").is_none());
+}
+
+#[test]
+fn serialize_modify_backend_request_empty() {
+    let req = ModifyBackendRequest::default();
+    let json = serde_json::to_string(&req).unwrap();
+    assert_eq!(json, "{}");
+}
+
+// ─── Issue 5: CreateTLSConfigRequest with certificate_bundle_uuid ────────────
+
+#[test]
+fn serialize_create_tls_config_with_bundle_uuid() {
+    let req = CreateTLSConfigRequest {
+        name: "my-tls".to_string(),
+        certificate_chain: None,
+        private_key: None,
+        name_match: None,
+        certificate_bundle_uuid: Some("bundle-uuid-123".to_string()),
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["name"], "my-tls");
+    assert_eq!(json["certificate_bundle_uuid"], "bundle-uuid-123");
+    assert!(json.get("certificate_chain").is_none());
+}
+
+#[test]
+fn serialize_create_tls_config_without_bundle_uuid() {
+    let req = CreateTLSConfigRequest {
+        name: "my-tls".to_string(),
+        certificate_chain: Some("PEM-CERT".to_string()),
+        private_key: Some("PEM-KEY".to_string()),
+        name_match: None,
+        certificate_bundle_uuid: None,
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["name"], "my-tls");
+    assert_eq!(json["certificate_chain"], "PEM-CERT");
+    assert!(json.get("certificate_bundle_uuid").is_none());
+}

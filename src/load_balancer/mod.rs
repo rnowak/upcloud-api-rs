@@ -143,7 +143,7 @@ impl<'a> LoadBalancerHandler<'a> {
         &self,
         lb_uuid: &str,
         name: &str,
-        req: serde_json::Value,
+        req: ModifyBackendRequest,
     ) -> Result<Backend, Error> {
         self.client
             .patch(
@@ -590,6 +590,26 @@ impl<'a> LoadBalancerHandler<'a> {
             .await
     }
 
+    /// Modifies a backend TLS config.
+    ///
+    /// `PATCH /1.3/load-balancer/{uuid}/backends/{backend_name}/tls-configs/{config_name}`
+    pub async fn modify_backend_tls_config(
+        &self,
+        lb_uuid: &str,
+        backend_name: &str,
+        config_name: &str,
+        req: CreateTLSConfigRequest,
+    ) -> Result<TLSConfig, Error> {
+        self.client
+            .patch(
+                &format!(
+                    "/1.3/load-balancer/{lb_uuid}/backends/{backend_name}/tls-configs/{config_name}"
+                ),
+                &req,
+            )
+            .await
+    }
+
     // ─── Frontend TLS configs ─────────────────────────────────────────────────
 
     /// Returns a list of TLS configs for a frontend.
@@ -661,6 +681,26 @@ impl<'a> LoadBalancerHandler<'a> {
             .delete(&format!(
                 "/1.3/load-balancer/{lb_uuid}/frontends/{frontend_name}/tls-configs/{config_name}"
             ))
+            .await
+    }
+
+    /// Modifies a frontend TLS config.
+    ///
+    /// `PATCH /1.3/load-balancer/{uuid}/frontends/{frontend_name}/tls-configs/{config_name}`
+    pub async fn modify_frontend_tls_config(
+        &self,
+        lb_uuid: &str,
+        frontend_name: &str,
+        config_name: &str,
+        req: CreateTLSConfigRequest,
+    ) -> Result<TLSConfig, Error> {
+        self.client
+            .patch(
+                &format!(
+                    "/1.3/load-balancer/{lb_uuid}/frontends/{frontend_name}/tls-configs/{config_name}"
+                ),
+                &req,
+            )
             .await
     }
 
@@ -765,6 +805,59 @@ impl<'a> LoadBalancerHandler<'a> {
                 &format!("/1.3/load-balancer/{lb_uuid}/networks/{network_name}"),
                 &req,
             )
+            .await
+    }
+
+    // ─── IP Addresses ─────────────────────────────────────────────────────────
+
+    /// Returns a list of IP addresses assigned to a load balancer.
+    ///
+    /// `GET /1.3/load-balancer/{uuid}/ip-addresses`
+    pub async fn list_ip_addresses(&self, lb_uuid: &str) -> Result<Vec<IPAddress>, Error> {
+        self.client
+            .get(&format!("/1.3/load-balancer/{lb_uuid}/ip-addresses"))
+            .await
+    }
+
+    /// Adds an IP address to a load balancer.
+    ///
+    /// `POST /1.3/load-balancer/{uuid}/ip-addresses`
+    pub async fn add_ip_address(
+        &self,
+        lb_uuid: &str,
+        req: AddIPAddressRequest,
+    ) -> Result<IPAddress, Error> {
+        self.client
+            .post(
+                &format!("/1.3/load-balancer/{lb_uuid}/ip-addresses"),
+                &req,
+            )
+            .await
+    }
+
+    /// Removes an IP address from a load balancer.
+    ///
+    /// `DELETE /1.3/load-balancer/{uuid}/ip-addresses/{address}`
+    pub async fn remove_ip_address(
+        &self,
+        lb_uuid: &str,
+        address: &str,
+    ) -> Result<(), Error> {
+        self.client
+            .delete(&format!(
+                "/1.3/load-balancer/{lb_uuid}/ip-addresses/{address}"
+            ))
+            .await
+    }
+
+    // ─── DNS Challenge ────────────────────────────────────────────────────────
+
+    /// Returns the DNS challenge domain for load balancer certificate validation.
+    ///
+    /// `GET /1.3/load-balancer/dns-challenge`
+    pub async fn get_dns_challenge_domain(&self) -> Result<DnsChallengeDomain, Error> {
+        self.client
+            .get("/1.3/load-balancer/dns-challenge")
             .await
     }
 }

@@ -1,4 +1,23 @@
+use std::fmt;
+
 use serde::{Deserialize, Serialize};
+
+/// Export format for audit log data.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum ExportFormat {
+    Csv,
+    Json,
+}
+
+impl fmt::Display for ExportFormat {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            ExportFormat::Csv => write!(f, "csv"),
+            ExportFormat::Json => write!(f, "json"),
+        }
+    }
+}
 
 /// A single audit log event.
 #[derive(Debug, Clone, Serialize, Deserialize)]

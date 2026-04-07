@@ -112,3 +112,17 @@ fn deserialize_audit_filter_options() {
     assert_eq!(opts.origins[1], "gui");
     assert_eq!(opts.origins[2], "upcloud_internal");
 }
+
+#[test]
+fn export_format_serialization() {
+    assert_eq!(ExportFormat::Csv.to_string(), "csv");
+    assert_eq!(ExportFormat::Json.to_string(), "json");
+
+    let csv: ExportFormat = serde_json::from_str(r#""csv""#).unwrap();
+    assert_eq!(csv, ExportFormat::Csv);
+    let json: ExportFormat = serde_json::from_str(r#""json""#).unwrap();
+    assert_eq!(json, ExportFormat::Json);
+
+    assert_eq!(serde_json::to_string(&ExportFormat::Csv).unwrap(), r#""csv""#);
+    assert_eq!(serde_json::to_string(&ExportFormat::Json).unwrap(), r#""json""#);
+}

@@ -559,6 +559,9 @@ pub struct CreateTLSConfigRequest {
     /// Server name patterns to match for TLS SNI routing.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name_match: Option<Vec<String>>,
+    /// UUID of a certificate bundle to use instead of inline cert/key.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub certificate_bundle_uuid: Option<String>,
 }
 
 /// Request to modify an existing frontend.
@@ -698,6 +701,36 @@ pub struct ModifyCertificateBundleRequest {
     /// Bundle type (e.g. `"manual"`, `"dynamic"`, `"authority"`).
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
     pub bundle_type: Option<String>,
+}
+
+/// Request to modify an existing backend.
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct ModifyBackendRequest {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Name of the DNS resolver for backend members.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub resolver: Option<String>,
+    /// Additional backend properties as free-form JSON.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub properties: Option<serde_json::Value>,
+}
+
+/// Request to add an IP address to a load balancer.
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct AddIPAddressRequest {
+    /// IP address to assign (leave empty for automatic assignment).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<String>,
+    /// Name of the network to bind the address to.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub network_name: Option<String>,
+}
+
+/// DNS challenge domain returned by the load balancer API.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DnsChallengeDomain {
+    pub domain: String,
 }
 
 /// Request to modify a load balancer network attachment.

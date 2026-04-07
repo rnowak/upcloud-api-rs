@@ -1,4 +1,4 @@
-//! Audit Logs — `GET /1.3/audit-logs`, `GET /1.3/audit-logs/filter-options`
+//! Audit Logs — `GET /1.3/audit-logs`, `GET /1.3/audit-logs/filter-options`, `GET /1.3/audit-logs/export`
 
 mod types;
 
@@ -59,6 +59,36 @@ impl<'a> AuditLogHandler<'a> {
             events: parsed.audit_logs,
             total_count,
         })
+    }
+
+    /// Exports audit log data in the specified format.
+    ///
+    /// Returns the raw response body as a `String` (CSV or JSON text).
+    ///
+    /// `GET /1.3/audit-logs/export?format={csv|json}`
+    pub async fn export(&self, format: ExportFormat) -> Result<String, Error> {
+        let req = self
+            .client
+            .request(reqwest::Method::GET, "/1.3/audit-logs/export")
+            .query(&[("format", format.to_string())]);
+        let resp = req.send().await?;
+        let status = resp.status();
+        if !status.is_success() {
+            let body = resp.bytes().await?;
+            if let Ok(env) = serde_json::from_slice::<crate::error::ErrorEnvelope>(&body) {
+                return Err(crate::error::Error::Api(crate::error::ApiError {
+                    error_code: crate::error::ErrorCode::from(env.error.error_code),
+                    error_message: env.error.error_message,
+                    status: status.as_u16(),
+                }));
+            }
+            return Err(crate::error::Error::Api(crate::error::ApiError {
+                error_code: crate::error::ErrorCode::Unknown("UNKNOWN".to_string()),
+                error_message: format!("HTTP {}", status.as_u16()),
+                status: status.as_u16(),
+            }));
+        }
+        Ok(resp.text().await?)
     }
 
     /// Returns the available filter option values for audit events.

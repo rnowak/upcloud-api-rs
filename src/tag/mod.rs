@@ -47,6 +47,16 @@ impl<'a> TagHandler<'a> {
         Ok(resp.tags.tag)
     }
 
+    /// Returns details for a specific tag.
+    ///
+    /// `GET /1.3/tag/{name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/11-tags/#get-tag-details)
+    pub async fn get(&self, name: &str) -> Result<Tag, Error> {
+        let resp: TagResponse = self.client.get(&format!("/1.3/tag/{name}")).await?;
+        Ok(resp.tag)
+    }
+
     /// Creates a new tag.
     ///
     /// `POST /1.3/tag`

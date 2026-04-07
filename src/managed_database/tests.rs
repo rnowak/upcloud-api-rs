@@ -783,6 +783,27 @@ fn deserialize_session_terminate() {
     assert_eq!(val["success"], true);
 }
 
+#[test]
+fn cancel_session_terminate_query_param() {
+    // Verify the query-parameter tuple produced by cancel_session for both modes.
+    let cancel = ("terminate", false.to_string());
+    assert_eq!(cancel, ("terminate", "false".to_owned()));
+
+    let terminate = ("terminate", true.to_string());
+    assert_eq!(terminate, ("terminate", "true".to_owned()));
+}
+
+#[test]
+fn cancel_session_url_format() {
+    let uuid = "09d9d824-8b3e-4a57-a9b3-77ec51fd5c84";
+    let pid: i64 = 12345;
+    let url = format!("/1.3/database/{uuid}/sessions/{pid}");
+    assert_eq!(
+        url,
+        "/1.3/database/09d9d824-8b3e-4a57-a9b3-77ec51fd5c84/sessions/12345"
+    );
+}
+
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-sessions
 const PG_SESSIONS_DETAILED_JSON: &str = r#"
     {

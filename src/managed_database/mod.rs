@@ -445,13 +445,27 @@ impl<'a> DatabaseHandler<'a> {
 
     /// Cancels or terminates a session in a managed database.
     ///
-    /// `DELETE /1.3/database/{uuid}/sessions/{pid}`
+    /// When `terminate` is `false`, the current query is cancelled (PostgreSQL
+    /// `pg_cancel_backend`).  When `true` the entire connection is forcefully
+    /// terminated (`pg_terminate_backend`).
+    ///
+    /// `DELETE /1.3/database/{uuid}/sessions/{pid}?terminate={terminate}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#cancel-managed-database-session)
-    pub async fn cancel_session(&self, uuid: &str, pid: i64) -> Result<(), Error> {
-        self.client
-            .delete(&format!("/1.3/database/{uuid}/sessions/{pid}"))
-            .await
+    pub async fn cancel_session(
+        &self,
+        uuid: &str,
+        pid: i64,
+        terminate: bool,
+    ) -> Result<(), Error> {
+        let req = self
+            .client
+            .request(
+                reqwest::Method::DELETE,
+                &format!("/1.3/database/{uuid}/sessions/{pid}"),
+            )
+            .query(&[("terminate", terminate.to_string())]);
+        self.client.send_empty(req).await
     }
 
     // ─── State Polling ────────────────────────────────────────────────────────
