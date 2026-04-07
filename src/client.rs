@@ -6,7 +6,7 @@ use serde::{Serialize, de::DeserializeOwned};
 
 use crate::{
     config::{AuthMode, ClientConfig},
-    error::{ApiError, Error, ErrorEnvelope},
+    error::{ApiError, Error, ErrorCode, ErrorEnvelope},
 };
 
 /// The main UpCloud API client.
@@ -286,14 +286,14 @@ async fn map_error_response(status: StatusCode, resp: Response) -> Error {
     let body = resp.bytes().await.unwrap_or_default();
     if let Ok(env) = serde_json::from_slice::<ErrorEnvelope>(&body) {
         Error::Api(ApiError {
-            error_code: env.error.error_code,
+            error_code: ErrorCode::from(env.error.error_code),
             error_message: env.error.error_message,
             status: code,
         })
     } else {
         let message = String::from_utf8_lossy(&body).into_owned();
         Error::Api(ApiError {
-            error_code: "UNKNOWN".to_string(),
+            error_code: ErrorCode::Unknown("UNKNOWN".to_string()),
             error_message: if message.is_empty() {
                 format!("HTTP {code}")
             } else {

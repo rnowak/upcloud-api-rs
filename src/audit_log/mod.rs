@@ -42,13 +42,13 @@ impl<'a> AuditLogHandler<'a> {
             let body = resp.bytes().await?;
             if let Ok(env) = serde_json::from_slice::<crate::error::ErrorEnvelope>(&body) {
                 return Err(crate::error::Error::Api(crate::error::ApiError {
-                    error_code: env.error.error_code,
+                    error_code: crate::error::ErrorCode::from(env.error.error_code),
                     error_message: env.error.error_message,
                     status: status.as_u16(),
                 }));
             }
             return Err(crate::error::Error::Api(crate::error::ApiError {
-                error_code: "UNKNOWN".into(),
+                error_code: crate::error::ErrorCode::Unknown("UNKNOWN".to_string()),
                 error_message: format!("HTTP {}", status.as_u16()),
                 status: status.as_u16(),
             }));
