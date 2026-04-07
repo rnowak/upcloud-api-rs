@@ -44,14 +44,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         // Fetch full details to find server attachment.
         match client.storages().get(&s.uuid).await {
             Ok(details) => {
-                let attached: Vec<&str> = details
+                let attached: Vec<String> = details
                     .servers
                     .as_ref()
                     .map(|ss| {
                         ss.server
                             .iter()
                             .map(|uuid| {
-                                server_names.get(uuid.as_str()).copied().unwrap_or(uuid.as_str())
+                                let name =
+                                    server_names.get(uuid.as_str()).copied().unwrap_or("unknown");
+                                format!("{name} ({uuid})")
                             })
                             .collect()
                     })
@@ -60,7 +62,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if attached.is_empty() {
                     println!("│  Attached:  (detached)");
                 } else {
-                    println!("│  Attached:  {}", attached.join(", "));
+                    for (i, entry) in attached.iter().enumerate() {
+                        if i == 0 {
+                            println!("│  Attached:  {entry}");
+                        } else {
+                            println!("│             {entry}");
+                        }
+                    }
                 }
             }
             Err(e) => {
