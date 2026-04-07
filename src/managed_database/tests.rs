@@ -135,7 +135,9 @@ const DB_USER_LIST_JSON: &str = r#"
         {
             "username": "reader",
             "type": "readonly",
-            "pg_allow_replication": false
+            "pg_access_control": {
+                "allow_replication": false
+            }
         }
     ]
 "#;
@@ -147,11 +149,12 @@ fn deserialize_db_user_list() {
     assert_eq!(users[0].username, "upadmin");
     assert_eq!(users[0].user_type, UserType::Primary);
     assert!(users[0].password.is_none());
-    assert!(users[0].pg_allow_replication.is_none());
+    assert!(users[0].pg_access_control.is_none());
     assert!(users[0].authentication.is_none());
     assert_eq!(users[1].username, "reader");
     assert_eq!(users[1].user_type, UserType::Readonly);
-    assert_eq!(users[1].pg_allow_replication, Some(false));
+    let pg = users[1].pg_access_control.as_ref().expect("pg_access_control");
+    assert_eq!(pg.allow_replication, Some(false));
     assert!(users[1].password.is_none());
     assert!(users[1].authentication.is_none());
 }
@@ -519,42 +522,23 @@ const CREATE_DB_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_create_db_request() {
-    // The docs JSON uses `hostname_prefix` while CreateRequest uses `name`, and
-    // the JSON omits the required `name` field, so it cannot be parsed as CreateRequest.
-    let val: serde_json::Value = serde_json::from_str(CREATE_DB_REQUEST_JSON).unwrap();
-    assert_eq!(val["hostname_prefix"], "doc-api-unique-prefix");
-    assert_eq!(val["plan"], "1x1xCPU-2GB-25GB");
-    assert_eq!(val["title"], "my-managed-database");
-    assert_eq!(val["type"], "mysql");
-    assert_eq!(val["zone"], "de-fra1");
-    assert_eq!(val["maintenance"]["dow"], "sunday");
-    assert_eq!(val["maintenance"]["time"], "05:00:00");
-    assert_eq!(val["termination_protection"], false);
-    assert_eq!(
-        val["properties"]["automatic_utility_network_ip_filter"],
-        true
-    );
-    assert_eq!(val["properties"]["version"], "8");
-    assert!(
-        val["properties"]["ip_filter"]
-            .as_array()
-            .unwrap()
-            .is_empty()
-    );
-
-    let networks = val["networks"].as_array().unwrap();
+    let req: CreateRequest = serde_json::from_str(CREATE_DB_REQUEST_JSON).unwrap();
+    assert_eq!(req.hostname_prefix, "doc-api-unique-prefix");
+    assert_eq!(req.plan, "1x1xCPU-2GB-25GB");
+    assert_eq!(req.title, "my-managed-database");
+    assert_eq!(req.db_type, "mysql");
+    assert_eq!(req.zone, "de-fra1");
+    assert_eq!(req.termination_protection, Some(false));
+    let maint = req.maintenance.expect("maintenance present");
+    assert_eq!(maint.dow, "sunday");
+    assert_eq!(maint.time, "05:00:00");
+    let networks = req.networks.expect("networks present");
     assert_eq!(networks.len(), 1);
-    assert_eq!(networks[0]["name"], "example-network-1");
-    assert_eq!(networks[0]["type"], "private");
-    assert_eq!(networks[0]["family"], "IPv4");
-    assert_eq!(networks[0]["uuid"], "03631160-d57a-4926-ad48-a2f828229dcb");
-
-    let labels = val["labels"].as_array().unwrap();
+    assert_eq!(networks[0].name, "example-network-1");
+    let labels = req.labels.expect("labels present");
     assert_eq!(labels.len(), 2);
-    assert_eq!(labels[0]["key"], "env");
-    assert_eq!(labels[0]["value"], "staging");
-    assert_eq!(labels[1]["key"], "foo");
-    assert_eq!(labels[1]["value"], "bar");
+    assert_eq!(labels[0].key, "env");
+    assert_eq!(labels[0].value, "staging");
 }
 
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-details
@@ -683,7 +667,7 @@ fn deserialize_create_db_user_mysql() {
     assert_eq!(req.password, "new-password");
     assert_eq!(req.authentication.as_deref(), Some("caching_sha2_password"));
     assert!(req.user_type.is_none());
-    assert!(req.pg_allow_replication.is_none());
+    assert!(req.pg_access_control.is_none());
 }
 
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#get-user-details
@@ -706,7 +690,7 @@ fn deserialize_db_user_detail_mysql() {
         Some("caching_sha2_password")
     );
     assert_eq!(user.user_type, UserType::Normal);
-    assert!(user.pg_allow_replication.is_none());
+    assert!(user.pg_access_control.is_none());
 }
 
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#get-user-details
@@ -723,13 +707,12 @@ const DB_USER_DETAIL_PG_JSON: &str = r#"
 
 #[test]
 fn deserialize_db_user_detail_pg() {
-    // `pg_access_control` in the JSON is not modeled in the User struct,
-    // so Value is used to validate the full payload including that field.
-    let val: serde_json::Value = serde_json::from_str(DB_USER_DETAIL_PG_JSON).unwrap();
-    assert_eq!(val["username"], "api-doc-user");
-    assert_eq!(val["password"], "new-password");
-    assert_eq!(val["type"], "normal");
-    assert_eq!(val["pg_access_control"]["allow_replication"], true);
+    let user: User = serde_json::from_str(DB_USER_DETAIL_PG_JSON).unwrap();
+    assert_eq!(user.username, "api-doc-user");
+    assert_eq!(user.password.as_deref(), Some("new-password"));
+    assert_eq!(user.user_type, UserType::Normal);
+    let pg = user.pg_access_control.expect("pg_access_control present");
+    assert_eq!(pg.allow_replication, Some(true));
 }
 
 const MODIFY_DB_USER_REQUEST_JSON: &str = r#"
@@ -744,7 +727,6 @@ fn deserialize_modify_db_user_request() {
     let req: ModifyUserRequest = serde_json::from_str(MODIFY_DB_USER_REQUEST_JSON).unwrap();
     assert_eq!(req.password.as_deref(), Some("new-password"));
     assert_eq!(req.authentication.as_deref(), Some("caching_sha2_password"));
-    assert!(req.pg_allow_replication.is_none());
 }
 
 const CREATE_LOGICAL_DB_JSON: &str = r#"

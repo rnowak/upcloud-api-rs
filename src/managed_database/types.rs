@@ -143,6 +143,39 @@ pub struct UserOpenSearchAccessControl {
     pub rules: Option<Vec<OpenSearchAccessControlRule>>,
 }
 
+/// Per-user PostgreSQL access control settings.
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct PgAccessControl {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_replication: Option<bool>,
+}
+
+/// Per-user Redis access control settings.
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct RedisAccessControl {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub categories: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub channels: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub commands: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub keys: Option<Vec<String>>,
+}
+
+/// Per-user Valkey access control settings.
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct ValkeyAccessControl {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub categories: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub channels: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub commands: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub keys: Option<Vec<String>>,
+}
+
 /// A managed database instance.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
@@ -274,12 +307,21 @@ pub struct User {
     pub user_type: UserType,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
-    /// Allow PostgreSQL replication.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub pg_allow_replication: Option<bool>,
     /// Authentication method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub authentication: Option<String>,
+    /// PostgreSQL access control.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pg_access_control: Option<PgAccessControl>,
+    /// Redis access control.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub redis_access_control: Option<RedisAccessControl>,
+    /// Valkey access control.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub valkey_access_control: Option<ValkeyAccessControl>,
+    /// OpenSearch access control.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub opensearch_access_control: Option<UserOpenSearchAccessControl>,
 }
 
 /// A logical database within a managed database service.
@@ -382,7 +424,8 @@ pub struct NetworkInput {
 /// Request body for creating a managed database.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateRequest {
-    pub name: String,
+    /// Hostname prefix for the database service.
+    pub hostname_prefix: String,
     pub title: String,
     pub plan: String,
     pub zone: String,
@@ -404,9 +447,6 @@ pub struct CreateRequest {
     /// Enable termination protection.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub termination_protection: Option<bool>,
-    /// Custom hostname prefix.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub host_name_prefix: Option<String>,
     /// Preferred maintenance window.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maintenance: Option<MaintenanceTime>,
@@ -443,12 +483,21 @@ pub struct CreateUserRequest {
     /// Privilege level.
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
     pub user_type: Option<UserType>,
-    /// Allow replication (PostgreSQL).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub pg_allow_replication: Option<bool>,
     /// Authentication method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub authentication: Option<String>,
+    /// PostgreSQL access control.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pg_access_control: Option<PgAccessControl>,
+    /// Redis access control.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub redis_access_control: Option<RedisAccessControl>,
+    /// Valkey access control.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub valkey_access_control: Option<ValkeyAccessControl>,
+    /// OpenSearch access control.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub opensearch_access_control: Option<UserOpenSearchAccessControl>,
 }
 
 /// Request body for modifying a database user.
@@ -456,8 +505,7 @@ pub struct CreateUserRequest {
 pub struct ModifyUserRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub pg_allow_replication: Option<bool>,
+    /// Authentication method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub authentication: Option<String>,
 }
@@ -568,13 +616,13 @@ pub struct ModifyUserAccessControlRequest {
     /// OpenSearch ACL rules.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub opensearch_access_control: Option<UserOpenSearchAccessControl>,
-    /// PostgreSQL ACL rules.
+    /// PostgreSQL access control.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pg_access_control: Option<serde_json::Value>,
-    /// Redis ACL rules.
+    pub pg_access_control: Option<PgAccessControl>,
+    /// Redis access control.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub redis_access_control: Option<serde_json::Value>,
-    /// Valkey ACL rules.
+    pub redis_access_control: Option<RedisAccessControl>,
+    /// Valkey access control.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub valkey_access_control: Option<serde_json::Value>,
+    pub valkey_access_control: Option<ValkeyAccessControl>,
 }
