@@ -88,6 +88,17 @@ impl<'a> ObjectStorageHandler<'a> {
             .await
     }
 
+    /// Replaces (full update) a managed object storage service.
+    ///
+    /// `PUT /1.3/object-storage-2/{uuid}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/#modify-service)
+    pub async fn replace(&self, uuid: &str, req: ReplaceRequest) -> Result<Service, Error> {
+        self.client
+            .put(&format!("/1.3/object-storage-2/{uuid}"), &req)
+            .await
+    }
+
     /// Deletes a managed object storage service.
     ///
     /// `DELETE /1.3/object-storage-2/{uuid}`
@@ -97,6 +108,22 @@ impl<'a> ObjectStorageHandler<'a> {
         self.client
             .delete(&format!("/1.3/object-storage-2/{uuid}"))
             .await
+    }
+
+    /// Deletes a managed object storage service, optionally forcing deletion.
+    ///
+    /// When `force` is `true`, appends `?force=true` to bypass termination protection.
+    ///
+    /// `DELETE /1.3/object-storage-2/{uuid}?force=true`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/#delete-service)
+    pub async fn delete_with_force(&self, uuid: &str, force: bool) -> Result<(), Error> {
+        if force {
+            let path = format!("/1.3/object-storage-2/{uuid}?force=true");
+            self.client.delete(&path).await
+        } else {
+            self.delete(uuid).await
+        }
     }
 
     /// Returns usage statistics for a managed object storage service.
@@ -238,6 +265,19 @@ impl<'a> ObjectStorageHandler<'a> {
             .await
     }
 
+    /// Returns details for a specific policy.
+    ///
+    /// `GET /1.3/object-storage-2/{uuid}/policies/{policy_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/#create-policy)
+    pub async fn get_policy(&self, uuid: &str, policy_name: &str) -> Result<Policy, Error> {
+        self.client
+            .get(&format!(
+                "/1.3/object-storage-2/{uuid}/policies/{policy_name}"
+            ))
+            .await
+    }
+
     /// Deletes a policy.
     ///
     /// `DELETE /1.3/object-storage-2/{uuid}/policies/{policy_name}`
@@ -359,6 +399,19 @@ impl<'a> ObjectStorageHandler<'a> {
             .await
     }
 
+    /// Returns details for a specific network.
+    ///
+    /// `GET /1.3/object-storage-2/{uuid}/networks/{network_name}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/)
+    pub async fn get_network(&self, uuid: &str, network_name: &str) -> Result<Network, Error> {
+        self.client
+            .get(&format!(
+                "/1.3/object-storage-2/{uuid}/networks/{network_name}"
+            ))
+            .await
+    }
+
     /// Deletes a network from a managed object storage service.
     ///
     /// `DELETE /1.3/object-storage-2/{uuid}/networks/{network_name}`
@@ -382,6 +435,17 @@ impl<'a> ObjectStorageHandler<'a> {
     pub async fn get_usage(&self, uuid: &str) -> Result<Usage, Error> {
         self.client
             .get(&format!("/1.3/object-storage-2/{uuid}/metrics"))
+            .await
+    }
+
+    /// Returns per-bucket metrics for a managed object storage service.
+    ///
+    /// `GET /1.3/object-storage-2/{uuid}/bucket-metrics`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/21-managed-object-storage/)
+    pub async fn list_bucket_metrics(&self, uuid: &str) -> Result<Vec<BucketMetrics>, Error> {
+        self.client
+            .get(&format!("/1.3/object-storage-2/{uuid}/bucket-metrics"))
             .await
     }
 

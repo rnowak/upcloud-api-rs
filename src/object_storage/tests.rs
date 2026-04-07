@@ -1198,22 +1198,43 @@ fn deserialize_policy_version_list() {
 fn serialize_create_custom_domain_request() {
     let req = CreateCustomDomainRequest {
         domain_name: "objects.example-company.com".to_string(),
+        domain_type: None,
     };
     let json: serde_json::Value = serde_json::to_value(&req).unwrap();
     assert_eq!(json["domain_name"], "objects.example-company.com");
+    assert!(json.get("type").is_none());
+
+    let req2 = CreateCustomDomainRequest {
+        domain_name: "objects.example-company.com".to_string(),
+        domain_type: Some("public".to_string()),
+    };
+    let json2: serde_json::Value = serde_json::to_value(&req2).unwrap();
+    assert_eq!(json2["domain_name"], "objects.example-company.com");
+    assert_eq!(json2["type"], "public");
 }
 
 #[test]
 fn serialize_modify_custom_domain_request() {
     let req = ModifyCustomDomainRequest {
         domain_name: Some("static.example-company.com".to_string()),
+        domain_type: None,
     };
     let json: serde_json::Value = serde_json::to_value(&req).unwrap();
     assert_eq!(json["domain_name"], "static.example-company.com");
+    assert!(json.get("type").is_none());
 
     let empty_req = ModifyCustomDomainRequest::default();
     let json2: serde_json::Value = serde_json::to_value(&empty_req).unwrap();
     assert!(json2.get("domain_name").is_none());
+    assert!(json2.get("type").is_none());
+
+    let typed_req = ModifyCustomDomainRequest {
+        domain_name: None,
+        domain_type: Some("private".to_string()),
+    };
+    let json3: serde_json::Value = serde_json::to_value(&typed_req).unwrap();
+    assert!(json3.get("domain_name").is_none());
+    assert_eq!(json3["type"], "private");
 }
 
 #[test]
@@ -1231,9 +1252,19 @@ fn serialize_create_policy_version_request() {
     let doc = "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Action%22%3A%5B%22%2A%22%5D%2C%22Effect%22%3A%22Deny%22%2C%22Resource%22%3A%22%2A%22%7D%5D%7D";
     let req = CreatePolicyVersionRequest {
         document: doc.to_string(),
+        is_default: None,
     };
     let json: serde_json::Value = serde_json::to_value(&req).unwrap();
     assert_eq!(json["document"], doc);
+    assert!(json.get("is_default").is_none());
+
+    let req2 = CreatePolicyVersionRequest {
+        document: doc.to_string(),
+        is_default: Some(true),
+    };
+    let json2: serde_json::Value = serde_json::to_value(&req2).unwrap();
+    assert_eq!(json2["document"], doc);
+    assert_eq!(json2["is_default"], true);
 }
 
 #[test]
@@ -1249,4 +1280,124 @@ fn serialize_modify_user_access_key_request() {
     };
     let json2: serde_json::Value = serde_json::to_value(&req2).unwrap();
     assert_eq!(json2["status"], "Active");
+}
+
+// ─── ReplaceRequest tests ────────────────────────────────────────────────
+
+const MOS_REPLACE_REQUEST_JSON: &str = r#"
+    {
+        "configured_status": "started",
+        "name": "my-updated-service",
+        "networks": [
+            {
+                "name": "example-public-network",
+                "type": "public",
+                "family": "IPv4"
+            }
+        ],
+        "labels": [
+            {
+                "key": "env",
+                "value": "prod"
+            }
+        ]
+    }
+"#;
+
+#[test]
+fn deserialize_replace_request() {
+    let req: ReplaceRequest = serde_json::from_str(MOS_REPLACE_REQUEST_JSON).unwrap();
+    assert_eq!(req.configured_status, "started");
+    assert_eq!(req.name.as_deref(), Some("my-updated-service"));
+    assert_eq!(req.networks.len(), 1);
+    assert_eq!(req.networks[0].name, "example-public-network");
+    assert_eq!(req.networks[0].network_type, "public");
+    assert_eq!(req.networks[0].family, "IPv4");
+    let labels = req.labels.as_ref().unwrap();
+    assert_eq!(labels.len(), 1);
+    assert_eq!(labels[0].key, "env");
+    assert_eq!(labels[0].value, "prod");
+}
+
+#[test]
+fn serialize_replace_request() {
+    let req = ReplaceRequest {
+        configured_status: "started".to_string(),
+        name: Some("my-service".to_string()),
+        labels: None,
+        networks: vec![NetworkInput {
+            family: "IPv4".to_string(),
+            name: "pub-net".to_string(),
+            network_type: "public".to_string(),
+            uuid: None,
+        }],
+    };
+    let json: serde_json::Value = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["configured_status"], "started");
+    assert_eq!(json["name"], "my-service");
+    assert!(json.get("labels").is_none());
+    assert_eq!(json["networks"][0]["name"], "pub-net");
+    assert_eq!(json["networks"][0]["type"], "public");
+}
+
+#[test]
+fn serialize_replace_request_minimal() {
+    let req = ReplaceRequest {
+        configured_status: "stopped".to_string(),
+        name: None,
+        labels: None,
+        networks: vec![],
+    };
+    let json: serde_json::Value = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["configured_status"], "stopped");
+    assert!(json.get("name").is_none());
+    assert!(json.get("labels").is_none());
+    assert_eq!(json["networks"], serde_json::json!([]));
+}
+
+// ─── BucketMetrics tests ─────────────────────────────────────────────────
+
+const MOS_BUCKET_METRICS_JSON: &str = r#"
+    [
+        {
+            "name": "my-bucket-1",
+            "bytes": 1048576,
+            "objects": 42
+        },
+        {
+            "name": "my-bucket-2",
+            "bytes": 0,
+            "objects": 0
+        }
+    ]
+"#;
+
+#[test]
+fn deserialize_bucket_metrics() {
+    let metrics: Vec<BucketMetrics> = serde_json::from_str(MOS_BUCKET_METRICS_JSON).unwrap();
+    assert_eq!(metrics.len(), 2);
+    assert_eq!(metrics[0].name, "my-bucket-1");
+    assert_eq!(metrics[0].bytes, Some(1048576));
+    assert_eq!(metrics[0].objects, Some(42));
+    assert_eq!(metrics[1].name, "my-bucket-2");
+    assert_eq!(metrics[1].bytes, Some(0));
+    assert_eq!(metrics[1].objects, Some(0));
+}
+
+// ─── Custom domain with type field tests ─────────────────────────────────
+
+#[test]
+fn deserialize_create_custom_domain_request_with_type() {
+    let json = r#"{"domain_name": "cdn.example.com", "type": "public"}"#;
+    let req: CreateCustomDomainRequest = serde_json::from_str(json).unwrap();
+    assert_eq!(req.domain_name, "cdn.example.com");
+    assert_eq!(req.domain_type.as_deref(), Some("public"));
+}
+
+#[test]
+fn deserialize_modify_custom_domain_request_with_type() {
+    let json = r#"{"domain_name": "cdn2.example.com", "type": "private"}"#;
+    let req: ModifyCustomDomainRequest = serde_json::from_str(json).unwrap();
+    assert_eq!(req.domain_name.as_deref(), Some("cdn2.example.com"));
+    assert_eq!(req.domain_type.as_deref(), Some("private"));
 }

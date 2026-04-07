@@ -367,6 +367,19 @@ pub struct ModifyRequest {
     pub networks: Option<Vec<NetworkInput>>,
 }
 
+/// Request body for replacing (PUT) an object storage service.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ReplaceRequest {
+    /// Desired status (required).
+    pub configured_status: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub labels: Option<Vec<crate::types::common::Label>>,
+    /// Networks to attach.
+    pub networks: Vec<NetworkInput>,
+}
+
 /// Request body for creating an object storage user.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateUserRequest {
@@ -388,6 +401,9 @@ pub struct CreatePolicyRequest {
 pub struct CreateCustomDomainRequest {
     /// The custom domain name.
     pub domain_name: String,
+    /// Domain type (e.g. "public").
+    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
+    pub domain_type: Option<String>,
 }
 
 /// Request body for modifying a custom domain.
@@ -395,6 +411,9 @@ pub struct CreateCustomDomainRequest {
 pub struct ModifyCustomDomainRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub domain_name: Option<String>,
+    /// Domain type (e.g. "public").
+    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
+    pub domain_type: Option<String>,
 }
 
 /// Request body for creating a bucket.
@@ -408,6 +427,9 @@ pub struct CreateBucketRequest {
 pub struct CreatePolicyVersionRequest {
     /// JSON policy document.
     pub document: String,
+    /// Whether this version should become the default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_default: Option<bool>,
 }
 
 /// Request body for modifying an access key status.
