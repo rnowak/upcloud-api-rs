@@ -1,7 +1,7 @@
-//! List private storages and show which servers they are attached to.
+//! Overview of private storages — attachments, backups, labels, and rules.
 //!
 //! Usage:
-//!   UPCLOUD_TOKEN=ucat_... cargo run --example list_storages
+//!   UPCLOUD_TOKEN=ucat_... cargo run --example storage_overview
 
 use std::collections::HashMap;
 
