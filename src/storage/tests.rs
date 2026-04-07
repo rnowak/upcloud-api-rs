@@ -272,7 +272,7 @@ fn deserialize_storage_with_backup_rule() {
 const CREATE_STORAGE_REQUEST_JSON: &str = r#"
     {
         "storage": {
-            "encrypted": "yes",
+            "encrypted": true,
             "size": "10",
             "tier": "maxiops",
             "title": "My data collection",
@@ -294,18 +294,24 @@ const CREATE_STORAGE_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_create_storage_request() {
-    let v: serde_json::Value = serde_json::from_str(CREATE_STORAGE_REQUEST_JSON).unwrap();
-    let s = &v["storage"];
-    assert_eq!(s["encrypted"], "yes");
-    assert_eq!(s["size"], "10");
-    assert_eq!(s["tier"], "maxiops");
-    assert_eq!(s["title"], "My data collection");
-    assert_eq!(s["zone"], "fi-hel1");
-    assert_eq!(s["backup_rule"]["interval"], "daily");
-    assert_eq!(s["backup_rule"]["time"], "0430");
-    assert_eq!(s["backup_rule"]["retention"], "365");
-    assert_eq!(s["labels"][0]["key"], "env");
-    assert_eq!(s["labels"][0]["value"], "prod");
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        storage: CreateRequest,
+    }
+    let w: Wrapper = serde_json::from_str(CREATE_STORAGE_REQUEST_JSON).unwrap();
+    let s = w.storage;
+    assert_eq!(s.encrypted, Some(true));
+    assert_eq!(s.size, 10);
+    assert_eq!(s.tier, Tier::Maxiops);
+    assert_eq!(s.title, "My data collection");
+    assert_eq!(s.zone, "fi-hel1");
+    let rule = s.backup_rule.unwrap();
+    assert_eq!(rule.interval.as_deref(), Some("daily"));
+    assert_eq!(rule.time.as_deref(), Some("0430"));
+    assert_eq!(rule.retention.as_deref(), Some("365"));
+    let labels = s.labels.unwrap();
+    assert_eq!(labels[0].key, "env");
+    assert_eq!(labels[0].value, "prod");
 }
 
 // Source: https://developers.upcloud.com/1.3/9-storages/#create-storage
@@ -581,54 +587,49 @@ const ATTACH_STORAGE_SERVER_API_RESPONSE_JSON: &str = r#"
 
 #[test]
 fn deserialize_attach_storage_server_api_response() {
-    let v: serde_json::Value =
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        server: crate::server::ServerDetails,
+    }
+    let resp: Wrapper =
         serde_json::from_str(ATTACH_STORAGE_SERVER_API_RESPONSE_JSON).unwrap();
-    let server = &v["server"];
-    assert_eq!(server["uuid"], "00c78863-db86-44ea-af70-d6edc4d162bf");
-    assert_eq!(server["state"], "started");
-    assert_eq!(server["boot_order"], "disk");
-    assert_eq!(server["core_number"], "4");
-    assert_eq!(server["firewall"], "on");
-    assert_eq!(server["hostname"], "debian.example.com");
-    assert_eq!(server["host"], 8055964291_u64);
-    assert_eq!(
-        server["ip_addresses"]["ip_address"]
-            .as_array()
-            .unwrap()
-            .len(),
-        3
-    );
-    assert_eq!(
-        server["ip_addresses"]["ip_address"][0]["address"],
-        "10.0.0.0"
-    );
-    assert_eq!(server["license"], 0);
-    assert_eq!(server["memory_amount"], "8192");
-    assert_eq!(server["nic_model"], "virtio");
-    assert_eq!(server["plan"], "custom");
-    assert_eq!(server["plan_ipv4_bytes"], "0");
-    assert_eq!(server["plan_ipv6_bytes"], "0");
-    assert!(server["tags"]["tag"].as_array().unwrap().is_empty());
-    assert_eq!(server["timezone"], "UTC");
-    assert_eq!(server["title"], "My Debian server");
-    assert_eq!(server["video_model"], "cirrus");
-    assert_eq!(server["vnc_password"], "aabbccdd");
-    assert_eq!(server["vnc"], "off");
-    assert_eq!(server["zone"], "fi-hel1");
-    let devices = server["storage_devices"]["storage_device"]
-        .as_array()
-        .unwrap();
+    let server = &resp.server;
+    assert_eq!(server.uuid, "00c78863-db86-44ea-af70-d6edc4d162bf");
+    assert_eq!(server.state, crate::server::State::Started);
+    assert_eq!(server.boot_order.as_deref(), Some("disk"));
+    assert_eq!(server.core_number, 4);
+    assert_eq!(server.firewall.as_deref(), Some("on"));
+    assert_eq!(server.hostname, "debian.example.com");
+    assert_eq!(server.host, Some(8055964291));
+    let ips = &server.ip_addresses.as_ref().unwrap().ip_address;
+    assert_eq!(ips.len(), 3);
+    assert_eq!(ips[0].address, "10.0.0.0");
+    assert_eq!(server.license, Some(0.0));
+    assert_eq!(server.memory_amount, 8192);
+    assert_eq!(server.nic_model, Some(crate::server::NicModel::Virtio));
+    assert_eq!(server.plan, "custom");
+    assert_eq!(server.plan_ipv4_bytes.as_deref(), Some("0"));
+    assert_eq!(server.plan_ipv6_bytes.as_deref(), Some("0"));
+    assert!(server.tags.as_ref().unwrap().tag.is_empty());
+    assert_eq!(server.timezone.as_deref(), Some("UTC"));
+    assert_eq!(server.title, "My Debian server");
+    assert_eq!(server.video_model, Some(crate::server::VideoModel::Cirrus));
+    assert_eq!(server.zone, "fi-hel1");
+    let devices = &server.storage_devices.as_ref().unwrap().storage_device;
     assert_eq!(devices.len(), 1);
     assert_eq!(
-        devices[0]["storage"],
-        "00798b85-efdc-41ca-8021-f6ef457b8531"
+        devices[0].storage.as_deref(),
+        Some("00798b85-efdc-41ca-8021-f6ef457b8531")
     );
-    assert_eq!(devices[0]["storage_encrypted"], "yes");
-    assert_eq!(devices[0]["type"], "disk");
-    assert_eq!(devices[0]["address"], "scsi:0:0");
-    assert_eq!(devices[0]["storage_size"], "10");
-    assert_eq!(devices[0]["storage_title"], "Debian from a template");
-    assert_eq!(devices[0]["boot_disk"], "0");
+    assert_eq!(devices[0].storage_encrypted.as_deref(), Some("yes"));
+    assert_eq!(devices[0].device_type.as_deref(), Some("disk"));
+    assert_eq!(devices[0].address, "scsi:0:0");
+    assert_eq!(devices[0].storage_size, Some(10));
+    assert_eq!(
+        devices[0].storage_title.as_deref(),
+        Some("Debian from a template")
+    );
+    assert_eq!(devices[0].boot_disk.as_deref(), Some("0"));
 }
 
 // ── Attach storage via Storage API (docs: POST /1.3/storage/{uuid}/attach) ──
@@ -776,43 +777,35 @@ const DETACH_STORAGE_SERVER_API_RESPONSE_JSON: &str = r#"
 
 #[test]
 fn deserialize_detach_storage_server_api_response() {
-    let v: serde_json::Value =
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        server: crate::server::ServerDetails,
+    }
+    let resp: Wrapper =
         serde_json::from_str(DETACH_STORAGE_SERVER_API_RESPONSE_JSON).unwrap();
-    let server = &v["server"];
-    assert_eq!(server["uuid"], "00c78863-db86-44ea-af70-d6edc4d162bf");
-    assert_eq!(server["state"], "stopped");
-    assert_eq!(server["boot_order"], "disk");
-    assert_eq!(server["core_number"], "4");
-    assert_eq!(server["firewall"], "on");
-    assert_eq!(server["hostname"], "debian.example.com");
-    assert_eq!(server["host"], 8055964291_u64);
-    assert_eq!(
-        server["ip_addresses"]["ip_address"]
-            .as_array()
-            .unwrap()
-            .len(),
-        3
-    );
-    assert_eq!(
-        server["ip_addresses"]["ip_address"][0]["address"],
-        "10.0.0.0"
-    );
-    assert_eq!(server["license"], 0);
-    assert_eq!(server["memory_amount"], "8192");
-    assert_eq!(server["nic_model"], "virtio");
-    assert_eq!(server["plan"], "custom");
-    assert_eq!(server["plan_ipv4_bytes"], "0");
-    assert_eq!(server["plan_ipv6_bytes"], "0");
-    assert!(server["tags"]["tag"].as_array().unwrap().is_empty());
-    assert_eq!(server["timezone"], "UTC");
-    assert_eq!(server["title"], "My Debian server");
-    assert_eq!(server["video_model"], "cirrus");
-    assert_eq!(server["vnc"], "off");
-    assert_eq!(server["vnc_password"], "aabbccdd");
-    assert_eq!(server["zone"], "fi-hel1");
-    let devices = server["storage_devices"]["storage_device"]
-        .as_array()
-        .unwrap();
+    let server = &resp.server;
+    assert_eq!(server.uuid, "00c78863-db86-44ea-af70-d6edc4d162bf");
+    assert_eq!(server.state, crate::server::State::Stopped);
+    assert_eq!(server.boot_order.as_deref(), Some("disk"));
+    assert_eq!(server.core_number, 4);
+    assert_eq!(server.firewall.as_deref(), Some("on"));
+    assert_eq!(server.hostname, "debian.example.com");
+    assert_eq!(server.host, Some(8055964291));
+    let ips = &server.ip_addresses.as_ref().unwrap().ip_address;
+    assert_eq!(ips.len(), 3);
+    assert_eq!(ips[0].address, "10.0.0.0");
+    assert_eq!(server.license, Some(0.0));
+    assert_eq!(server.memory_amount, 8192);
+    assert_eq!(server.nic_model, Some(crate::server::NicModel::Virtio));
+    assert_eq!(server.plan, "custom");
+    assert_eq!(server.plan_ipv4_bytes.as_deref(), Some("0"));
+    assert_eq!(server.plan_ipv6_bytes.as_deref(), Some("0"));
+    assert!(server.tags.as_ref().unwrap().tag.is_empty());
+    assert_eq!(server.timezone.as_deref(), Some("UTC"));
+    assert_eq!(server.title, "My Debian server");
+    assert_eq!(server.video_model, Some(crate::server::VideoModel::Cirrus));
+    assert_eq!(server.zone, "fi-hel1");
+    let devices = &server.storage_devices.as_ref().unwrap().storage_device;
     assert!(devices.is_empty());
 }
 
@@ -911,6 +904,7 @@ const LOAD_CDROM_RESPONSE_JSON: &str = r#"
             "license": 0,
             "memory_amount": "512",
             "nic_model": "virtio",
+            "plan": "custom",
             "state": "started",
             "storage_devices": {
                 "storage_device": [
@@ -942,46 +936,41 @@ const LOAD_CDROM_RESPONSE_JSON: &str = r#"
 
 #[test]
 fn deserialize_load_cdrom_response() {
-    let v: serde_json::Value = serde_json::from_str(LOAD_CDROM_RESPONSE_JSON).unwrap();
-    let server = &v["server"];
-    assert_eq!(server["boot_order"], "cdrom,disk");
-    assert_eq!(server["core_number"], "0");
-    assert_eq!(server["firewall"], "on");
-    assert_eq!(server["hostname"], "test.example.com");
-    assert_eq!(server["host"], 8055964291_u64);
-    assert_eq!(
-        server["ip_addresses"]["ip_address"]
-            .as_array()
-            .unwrap()
-            .len(),
-        3
-    );
-    assert_eq!(server["license"], 0);
-    assert_eq!(server["memory_amount"], "512");
-    assert_eq!(server["nic_model"], "virtio");
-    assert_eq!(server["state"], "started");
-    assert!(server["tags"]["tag"].as_array().unwrap().is_empty());
-    assert_eq!(server["timezone"], "UTC");
-    assert_eq!(server["title"], "Example server");
-    assert_eq!(server["uuid"], "00798b85-efdc-41ca-8021-f6ef457b8531");
-    assert_eq!(server["video_model"], "cirrus");
-    assert_eq!(server["vnc_password"], "aabbccdd");
-    assert_eq!(server["vnc"], "off");
-    assert_eq!(server["zone"], "fi-hel1");
-    let devices = server["storage_devices"]["storage_device"]
-        .as_array()
-        .unwrap();
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        server: crate::server::ServerDetails,
+    }
+    let resp: Wrapper = serde_json::from_str(LOAD_CDROM_RESPONSE_JSON).unwrap();
+    let server = &resp.server;
+    assert_eq!(server.boot_order.as_deref(), Some("cdrom,disk"));
+    assert_eq!(server.core_number, 0);
+    assert_eq!(server.firewall.as_deref(), Some("on"));
+    assert_eq!(server.hostname, "test.example.com");
+    assert_eq!(server.host, Some(8055964291));
+    let ips = &server.ip_addresses.as_ref().unwrap().ip_address;
+    assert_eq!(ips.len(), 3);
+    assert_eq!(server.license, Some(0.0));
+    assert_eq!(server.memory_amount, 512);
+    assert_eq!(server.nic_model, Some(crate::server::NicModel::Virtio));
+    assert_eq!(server.state, crate::server::State::Started);
+    assert!(server.tags.as_ref().unwrap().tag.is_empty());
+    assert_eq!(server.timezone.as_deref(), Some("UTC"));
+    assert_eq!(server.title, "Example server");
+    assert_eq!(server.uuid, "00798b85-efdc-41ca-8021-f6ef457b8531");
+    assert_eq!(server.video_model, Some(crate::server::VideoModel::Cirrus));
+    assert_eq!(server.zone, "fi-hel1");
+    let devices = &server.storage_devices.as_ref().unwrap().storage_device;
     assert_eq!(devices.len(), 2);
-    assert_eq!(devices[0]["type"], "cdrom");
+    assert_eq!(devices[0].device_type.as_deref(), Some("cdrom"));
     assert_eq!(
-        devices[0]["storage"],
-        "01000000-0000-4000-8000-000060010101"
+        devices[0].storage.as_deref(),
+        Some("01000000-0000-4000-8000-000060010101")
     );
-    assert_eq!(devices[1]["type"], "disk");
-    assert_eq!(devices[1]["address"], "ide:0:0");
+    assert_eq!(devices[1].device_type.as_deref(), Some("disk"));
+    assert_eq!(devices[1].address, "ide:0:0");
     assert_eq!(
-        devices[1]["storage"],
-        "01d4fcd4-e446-433b-8a9c-551a1284952e"
+        devices[1].storage.as_deref(),
+        Some("01d4fcd4-e446-433b-8a9c-551a1284952e")
     );
 }
 
@@ -1016,6 +1005,7 @@ const EJECT_CDROM_RESPONSE_JSON: &str = r#"
             "license": 0,
             "memory_amount": "512",
             "nic_model": "virtio",
+            "plan": "custom",
             "state": "started",
             "storage_devices": {
                 "storage_device": [
@@ -1047,43 +1037,38 @@ const EJECT_CDROM_RESPONSE_JSON: &str = r#"
 
 #[test]
 fn deserialize_eject_cdrom_response() {
-    let v: serde_json::Value = serde_json::from_str(EJECT_CDROM_RESPONSE_JSON).unwrap();
-    let server = &v["server"];
-    let devices = server["storage_devices"]["storage_device"]
-        .as_array()
-        .unwrap();
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        server: crate::server::ServerDetails,
+    }
+    let resp: Wrapper = serde_json::from_str(EJECT_CDROM_RESPONSE_JSON).unwrap();
+    let server = &resp.server;
+    let devices = &server.storage_devices.as_ref().unwrap().storage_device;
     assert_eq!(devices.len(), 2);
     // CD-ROM storage is empty after eject
-    assert_eq!(devices[0]["type"], "cdrom");
-    assert_eq!(devices[0]["storage"], "");
-    assert_eq!(server["boot_order"], "cdrom,disk");
-    assert_eq!(server["core_number"], "1");
-    assert_eq!(server["firewall"], "on");
-    assert_eq!(server["hostname"], "test.example.com");
+    assert_eq!(devices[0].device_type.as_deref(), Some("cdrom"));
+    assert_eq!(devices[0].storage.as_deref(), Some(""));
+    assert_eq!(server.boot_order.as_deref(), Some("cdrom,disk"));
+    assert_eq!(server.core_number, 1);
+    assert_eq!(server.firewall.as_deref(), Some("on"));
+    assert_eq!(server.hostname, "test.example.com");
+    let ips = &server.ip_addresses.as_ref().unwrap().ip_address;
+    assert_eq!(ips.len(), 3);
+    assert_eq!(server.license, Some(0.0));
+    assert_eq!(server.memory_amount, 512);
+    assert_eq!(server.nic_model, Some(crate::server::NicModel::Virtio));
+    assert_eq!(server.state, crate::server::State::Started);
+    assert!(server.tags.as_ref().unwrap().tag.is_empty());
+    assert_eq!(server.timezone.as_deref(), Some("UTC"));
+    assert_eq!(server.title, "Example server");
+    assert_eq!(server.uuid, "00798b85-efdc-41ca-8021-f6ef457b8531");
+    assert_eq!(server.video_model, Some(crate::server::VideoModel::Cirrus));
+    assert_eq!(server.zone, "fi-hel1");
+    assert_eq!(devices[1].device_type.as_deref(), Some("disk"));
+    assert_eq!(devices[1].address, "ide:0:0");
     assert_eq!(
-        server["ip_addresses"]["ip_address"]
-            .as_array()
-            .unwrap()
-            .len(),
-        3
-    );
-    assert_eq!(server["license"], 0);
-    assert_eq!(server["memory_amount"], "512");
-    assert_eq!(server["nic_model"], "virtio");
-    assert_eq!(server["state"], "started");
-    assert!(server["tags"]["tag"].as_array().unwrap().is_empty());
-    assert_eq!(server["timezone"], "UTC");
-    assert_eq!(server["title"], "Example server");
-    assert_eq!(server["uuid"], "00798b85-efdc-41ca-8021-f6ef457b8531");
-    assert_eq!(server["video_model"], "cirrus");
-    assert_eq!(server["vnc"], "off");
-    assert_eq!(server["vnc_password"], "aabbccdd");
-    assert_eq!(server["zone"], "fi-hel1");
-    assert_eq!(devices[1]["type"], "disk");
-    assert_eq!(devices[1]["address"], "ide:0:0");
-    assert_eq!(
-        devices[1]["storage"],
-        "01d4fcd4-e446-433b-8a9c-551a1284952e"
+        devices[1].storage.as_deref(),
+        Some("01d4fcd4-e446-433b-8a9c-551a1284952e")
     );
 }
 
@@ -1095,19 +1080,23 @@ const CLONE_STORAGE_REQUEST_JSON: &str = r#"
             "zone": "fi-hel1",
             "tier": "maxiops",
             "title": "Clone of operating system disk",
-            "encrypted": "yes"
+            "encrypted": true
         }
     }
 "#;
 
 #[test]
 fn deserialize_clone_storage_request() {
-    let v: serde_json::Value = serde_json::from_str(CLONE_STORAGE_REQUEST_JSON).unwrap();
-    let s = &v["storage"];
-    assert_eq!(s["zone"], "fi-hel1");
-    assert_eq!(s["tier"], "maxiops");
-    assert_eq!(s["title"], "Clone of operating system disk");
-    assert_eq!(s["encrypted"], "yes");
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        storage: CloneRequest,
+    }
+    let w: Wrapper = serde_json::from_str(CLONE_STORAGE_REQUEST_JSON).unwrap();
+    let s = w.storage;
+    assert_eq!(s.zone, "fi-hel1");
+    assert_eq!(s.tier, Some(Tier::Maxiops));
+    assert_eq!(s.title, "Clone of operating system disk");
+    assert_eq!(s.encrypted, Some(true));
 }
 
 // Source: https://developers.upcloud.com/1.3/9-storages/#clone-storage
@@ -1294,13 +1283,17 @@ const CREATE_IMPORT_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_create_import_request() {
-    let v: serde_json::Value = serde_json::from_str(CREATE_IMPORT_REQUEST_JSON).unwrap();
-    let si = &v["storage_import"];
-    assert_eq!(si["source"], "http_import");
-    assert!(si["source_location"].as_str().unwrap().contains("debian"));
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        storage_import: CreateImportRequest,
+    }
+    let w: Wrapper = serde_json::from_str(CREATE_IMPORT_REQUEST_JSON).unwrap();
+    let si = w.storage_import;
+    assert_eq!(si.source, "http_import");
+    assert!(si.source_location.as_deref().unwrap().contains("debian"));
     assert_eq!(
-        si["source_location"],
-        "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.4.0-amd64-netinst.iso"
+        si.source_location.as_deref(),
+        Some("https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.4.0-amd64-netinst.iso")
     );
 }
 

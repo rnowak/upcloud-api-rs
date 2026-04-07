@@ -207,6 +207,8 @@ const ASSIGN_IP_ADDRESS_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_assign_ip_address_request() {
+    // JSON from API docs omits the required `access` field and uses "yes"/"no"
+    // strings for `floating`, so it cannot be parsed as AssignRequest.
     let v: serde_json::Value = serde_json::from_str(ASSIGN_IP_ADDRESS_REQUEST_JSON).unwrap();
     let ip = &v["ip_address"];
     assert_eq!(ip["family"], "IPv4");
@@ -228,6 +230,8 @@ const ASSIGN_ATTACHED_FLOATING_IP_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_assign_attached_floating_ip_request() {
+    // JSON from API docs omits the required `access` field and uses "yes"/"no"
+    // strings for `floating`, so it cannot be parsed as AssignRequest.
     let v: serde_json::Value =
         serde_json::from_str(ASSIGN_ATTACHED_FLOATING_IP_REQUEST_JSON).unwrap();
     let ip = &v["ip_address"];
@@ -292,6 +296,8 @@ const ASSIGN_DETACHED_FLOATING_IP_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_assign_detached_floating_ip_request() {
+    // JSON from API docs omits the required `access` field and uses "yes"/"no"
+    // strings for `floating`, so it cannot be parsed as AssignRequest.
     let v: serde_json::Value =
         serde_json::from_str(ASSIGN_DETACHED_FLOATING_IP_REQUEST_JSON).unwrap();
     let ip = &v["ip_address"];

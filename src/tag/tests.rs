@@ -264,62 +264,68 @@ const ASSIGN_TAG_SERVER_JSON: &str = r#"
     }
 "#;
 
+use crate::server::ServerDetails;
+
 // ─── Assign tag to server response ──────────────────────────────────────
 
 #[test]
 fn deserialize_assign_tag_server_response() {
-    let v: serde_json::Value = serde_json::from_str(ASSIGN_TAG_SERVER_JSON).unwrap();
-    let server = &v["server"];
-    assert_eq!(server["hostname"], "debian.example.com");
-    assert_eq!(server["uuid"], "00c78863-db86-44ea-af70-d6edc4d162bf");
-    assert_eq!(server["state"], "started");
-    assert_eq!(server["plan"], "2xCPU-4GB");
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        server: ServerDetails,
+    }
+    let resp: Wrapper =
+        serde_json::from_str(ASSIGN_TAG_SERVER_JSON).expect("deserialize assign tag response");
+    let s = resp.server;
+    assert_eq!(s.hostname, "debian.example.com");
+    assert_eq!(s.uuid, "00c78863-db86-44ea-af70-d6edc4d162bf");
+    assert_eq!(s.state, crate::server::State::Started);
+    assert_eq!(s.plan, "2xCPU-4GB");
 
-    let tags = server["tags"]["tag"].as_array().unwrap();
+    let tags = &s.tags.as_ref().unwrap().tag;
     assert_eq!(tags.len(), 3);
     assert_eq!(tags[0], "DEV");
     assert_eq!(tags[1], "private");
     assert_eq!(tags[2], "RHEL");
 
-    let ips = server["ip_addresses"]["ip_address"].as_array().unwrap();
+    let ips = &s.ip_addresses.as_ref().unwrap().ip_address;
     assert_eq!(ips.len(), 3);
-    assert_eq!(ips[0]["access"], "utility");
-    assert_eq!(ips[0]["address"], "10.0.0.0");
-    assert_eq!(ips[0]["family"], "IPv4");
-    assert_eq!(ips[1]["access"], "public");
-    assert_eq!(ips[1]["address"], "x.x.x.x");
-    assert_eq!(ips[1]["family"], "IPv4");
-    assert_eq!(ips[2]["access"], "public");
-    assert_eq!(ips[2]["family"], "IPv6");
+    assert_eq!(ips[0].access, "utility");
+    assert_eq!(ips[0].address, "10.0.0.0");
+    assert_eq!(ips[0].family, "IPv4");
+    assert_eq!(ips[1].access, "public");
+    assert_eq!(ips[1].address, "x.x.x.x");
+    assert_eq!(ips[1].family, "IPv4");
+    assert_eq!(ips[2].access, "public");
+    assert_eq!(ips[2].family, "IPv6");
 
-    assert_eq!(server["boot_order"], "disk");
-    assert_eq!(server["core_number"], "2");
-    assert_eq!(server["firewall"], "on");
-    assert_eq!(server["license"], 0);
-    assert_eq!(server["memory_amount"], "4096");
-    assert_eq!(server["nic_model"], "virtio");
-    assert_eq!(server["plan_ipv4_bytes"], "345346754423");
-    assert_eq!(server["plan_ipv6_bytes"], "676300234");
-    assert_eq!(server["timezone"], "UTC");
-    assert_eq!(server["title"], "My Debian server");
-    assert_eq!(server["video_model"], "cirrus");
-    assert_eq!(server["vnc"], "off");
-    assert_eq!(server["vnc_password"], "aabbccdd");
-    assert_eq!(server["zone"], "fi-hel1");
+    assert_eq!(s.boot_order.as_deref(), Some("disk"));
+    assert_eq!(s.core_number, 2);
+    assert_eq!(s.firewall.as_deref(), Some("on"));
+    assert_eq!(s.license, Some(0.0));
+    assert_eq!(s.memory_amount, 4096);
+    assert_eq!(s.nic_model, Some(crate::server::NicModel::Virtio));
+    assert_eq!(s.plan_ipv4_bytes.as_deref(), Some("345346754423"));
+    assert_eq!(s.plan_ipv6_bytes.as_deref(), Some("676300234"));
+    assert_eq!(s.timezone.as_deref(), Some("UTC"));
+    assert_eq!(s.title, "My Debian server");
+    assert_eq!(s.video_model, Some(crate::server::VideoModel::Cirrus));
+    assert_eq!(s.zone, "fi-hel1");
 
-    let storages = server["storage_devices"]["storage_device"]
-        .as_array()
-        .unwrap();
+    let storages = &s.storage_devices.as_ref().unwrap().storage_device;
     assert_eq!(storages.len(), 1);
-    assert_eq!(storages[0]["storage_size"], 50);
-    assert_eq!(storages[0]["address"], "virtio:0");
-    assert_eq!(storages[0]["part_of_plan"], "yes");
+    assert_eq!(storages[0].storage_size, Some(50));
+    assert_eq!(storages[0].address, "virtio:0");
+    assert_eq!(storages[0].part_of_plan, Some(true));
     assert_eq!(
-        storages[0]["storage"],
-        "0169b4f8-051c-4a86-9484-f5b798249949"
+        storages[0].storage.as_deref(),
+        Some("0169b4f8-051c-4a86-9484-f5b798249949")
     );
-    assert_eq!(storages[0]["storage_title"], "Debian from a template");
-    assert_eq!(storages[0]["type"], "disk");
+    assert_eq!(
+        storages[0].storage_title.as_deref(),
+        Some("Debian from a template")
+    );
+    assert_eq!(storages[0].device_type.as_deref(), Some("disk"));
 }
 
 // Source: https://developers.upcloud.com/1.3/12-tags/#remove-tag-from-server
@@ -389,39 +395,40 @@ const REMOVE_TAG_SERVER_JSON: &str = r#"
 
 #[test]
 fn deserialize_remove_tag_server_response() {
-    let v: serde_json::Value = serde_json::from_str(REMOVE_TAG_SERVER_JSON).unwrap();
-    let server = &v["server"];
-    assert_eq!(server["uuid"], "00c78863-db86-44ea-af70-d6edc4d162bf");
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        server: ServerDetails,
+    }
+    let resp: Wrapper =
+        serde_json::from_str(REMOVE_TAG_SERVER_JSON).expect("deserialize remove tag response");
+    let s = resp.server;
+    assert_eq!(s.uuid, "00c78863-db86-44ea-af70-d6edc4d162bf");
 
-    let tags = server["tags"]["tag"].as_array().unwrap();
+    let tags = &s.tags.as_ref().unwrap().tag;
     assert_eq!(tags.len(), 2);
     assert_eq!(tags[0], "DEV");
     assert_eq!(tags[1], "RHEL");
 
-    assert_eq!(server["boot_order"], "disk");
-    assert_eq!(server["core_number"], "2");
-    assert_eq!(server["firewall"], "on");
-    assert_eq!(server["hostname"], "debian.example.com");
-    assert_eq!(server["state"], "started");
-    assert_eq!(server["plan"], "2xCPU-4GB");
-    assert_eq!(server["license"], 0);
-    assert_eq!(server["memory_amount"], "4096");
-    assert_eq!(server["nic_model"], "virtio");
-    assert_eq!(server["plan_ipv4_bytes"], "345346754423");
-    assert_eq!(server["plan_ipv6_bytes"], "676300234");
-    assert_eq!(server["timezone"], "UTC");
-    assert_eq!(server["title"], "My Debian server");
-    assert_eq!(server["video_model"], "cirrus");
-    assert_eq!(server["vnc"], "off");
-    assert_eq!(server["vnc_password"], "aabbccdd");
-    assert_eq!(server["zone"], "fi-hel1");
+    assert_eq!(s.boot_order.as_deref(), Some("disk"));
+    assert_eq!(s.core_number, 2);
+    assert_eq!(s.firewall.as_deref(), Some("on"));
+    assert_eq!(s.hostname, "debian.example.com");
+    assert_eq!(s.state, crate::server::State::Started);
+    assert_eq!(s.plan, "2xCPU-4GB");
+    assert_eq!(s.license, Some(0.0));
+    assert_eq!(s.memory_amount, 4096);
+    assert_eq!(s.nic_model, Some(crate::server::NicModel::Virtio));
+    assert_eq!(s.plan_ipv4_bytes.as_deref(), Some("345346754423"));
+    assert_eq!(s.plan_ipv6_bytes.as_deref(), Some("676300234"));
+    assert_eq!(s.timezone.as_deref(), Some("UTC"));
+    assert_eq!(s.title, "My Debian server");
+    assert_eq!(s.video_model, Some(crate::server::VideoModel::Cirrus));
+    assert_eq!(s.zone, "fi-hel1");
 
-    let ips = server["ip_addresses"]["ip_address"].as_array().unwrap();
+    let ips = &s.ip_addresses.as_ref().unwrap().ip_address;
     assert_eq!(ips.len(), 3);
 
-    let storages = server["storage_devices"]["storage_device"]
-        .as_array()
-        .unwrap();
+    let storages = &s.storage_devices.as_ref().unwrap().storage_device;
     assert_eq!(storages.len(), 1);
-    assert_eq!(storages[0]["storage_size"], 50);
+    assert_eq!(storages[0].storage_size, Some(50));
 }

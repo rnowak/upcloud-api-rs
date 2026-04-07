@@ -428,25 +428,6 @@ const CREATE_LB_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_create_lb_request() {
-    let val: serde_json::Value = serde_json::from_str(CREATE_LB_REQUEST_JSON).unwrap();
-    assert_eq!(val["name"], "example-service");
-    assert_eq!(val["plan"], "development");
-    assert_eq!(val["zone"], "fi-hel1");
-    assert_eq!(val["configured_status"], "started");
-    assert_eq!(val["networks"].as_array().unwrap().len(), 2);
-    assert_eq!(val["networks"][0]["name"], "example-network-1");
-    assert_eq!(val["networks"][0]["type"], "public");
-    assert_eq!(val["networks"][0]["family"], "IPv4");
-    assert!(val["networks"][0].get("uuid").is_none());
-    assert_eq!(val["networks"][1]["name"], "example-network-2");
-    assert_eq!(val["networks"][1]["type"], "private");
-    assert_eq!(val["networks"][1]["family"], "IPv4");
-    assert_eq!(
-        val["networks"][1]["uuid"],
-        "03631160-d57a-4926-ad48-a2f828229dcb"
-    );
-
-    // Also parse as CreateRequest
     let req: CreateRequest = serde_json::from_str(CREATE_LB_REQUEST_JSON).unwrap();
     assert_eq!(req.name, "example-service");
     assert_eq!(req.plan, "development");
@@ -783,11 +764,6 @@ const MODIFY_LB_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_modify_lb_request() {
-    let val: serde_json::Value = serde_json::from_str(MODIFY_LB_REQUEST_JSON).unwrap();
-    assert_eq!(val["name"], "example-service");
-    assert_eq!(val["plan"], "development");
-    assert_eq!(val["configured_status"], "started");
-
     let req: ModifyRequest = serde_json::from_str(MODIFY_LB_REQUEST_JSON).unwrap();
     assert_eq!(req.name.as_deref(), Some("example-service"));
     assert_eq!(req.plan.as_deref(), Some("development"));
@@ -1635,18 +1611,16 @@ const CREATE_BACKEND_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_create_backend_request() {
-    let val: serde_json::Value = serde_json::from_str(CREATE_BACKEND_REQUEST_JSON).unwrap();
-    assert_eq!(val["name"], "example-backend-2");
-    assert_eq!(val["resolver"], "example-resolver");
-    assert_eq!(val["members"].as_array().unwrap().len(), 1);
-    assert_eq!(val["members"][0]["name"], "member1.example.com");
-    assert_eq!(val["members"][0]["type"], "dynamic");
-    assert_eq!(val["members"][0]["port"], 8000);
-    assert_eq!(val["members"][0]["max_sessions"], 1000);
-    assert_eq!(val["members"][0]["weight"], 100);
-    assert_eq!(val["members"][0]["enabled"], true);
-    assert_eq!(val["properties"]["health_check_type"], "tcp");
-    assert_eq!(val["properties"]["timeout_server"], 30);
+    // `members` in the JSON is not part of CreateBackendRequest (members are
+    // managed via separate API calls); serde silently ignores unknown fields.
+    let req: CreateBackendRequest = serde_json::from_str(CREATE_BACKEND_REQUEST_JSON).unwrap();
+    assert_eq!(req.name, "example-backend-2");
+    assert_eq!(req.resolver.as_deref(), Some("example-resolver"));
+    assert!(req.mode.is_none());
+    assert!(req.health_check.is_none());
+    let props = req.properties.as_ref().unwrap();
+    assert_eq!(props["health_check_type"], "tcp");
+    assert_eq!(props["timeout_server"], 30);
 }
 
 // Source: https://developers.upcloud.com/1.3/35-load-balancers/#create-frontend
@@ -1795,13 +1769,8 @@ const CREATE_TLS_CONFIG_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_create_tls_config_request() {
-    let val: serde_json::Value = serde_json::from_str(CREATE_TLS_CONFIG_REQUEST_JSON).unwrap();
-    assert_eq!(val["name"], "example-tls-config");
-    assert_eq!(
-        val["certificate_bundle_uuid"],
-        "0aded5c1-c7a3-498a-b9c8-a871611c47a2"
-    );
-
+    // JSON includes `certificate_bundle_uuid` which is not modeled in
+    // CreateTLSConfigRequest; serde silently ignores it.
     let req: CreateTLSConfigRequest = serde_json::from_str(CREATE_TLS_CONFIG_REQUEST_JSON).unwrap();
     assert_eq!(req.name, "example-tls-config");
     assert!(req.certificate_chain.is_none());

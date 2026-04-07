@@ -460,25 +460,29 @@ const MOS_REPLACE_SERVICE_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_mos_replace_service_request() {
-    let v: serde_json::Value = serde_json::from_str(MOS_REPLACE_SERVICE_REQUEST_JSON).unwrap();
-    assert_eq!(v["name"], "example-service");
-    assert_eq!(v["configured_status"], "started");
-    assert_eq!(v["termination_protection"], false);
+    let req: ModifyRequest = serde_json::from_str(MOS_REPLACE_SERVICE_REQUEST_JSON).unwrap();
+    assert_eq!(req.name.as_deref(), Some("example-service"));
+    assert_eq!(req.configured_status.as_deref(), Some("started"));
+    assert_eq!(req.termination_protection, Some(false));
 
-    let networks = v["networks"].as_array().unwrap();
+    let networks = req.networks.as_ref().unwrap();
     assert_eq!(networks.len(), 2);
-    assert_eq!(networks[0]["name"], "example-public-network");
-    assert_eq!(networks[0]["type"], "public");
-    assert_eq!(networks[0]["family"], "IPv4");
-    assert_eq!(networks[1]["name"], "example-private-network");
-    assert_eq!(networks[1]["type"], "private");
-    assert_eq!(networks[1]["family"], "IPv4");
-    assert_eq!(networks[1]["uuid"], "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4");
+    assert_eq!(networks[0].name, "example-public-network");
+    assert_eq!(networks[0].network_type, "public");
+    assert_eq!(networks[0].family, "IPv4");
+    assert!(networks[0].uuid.is_none());
+    assert_eq!(networks[1].name, "example-private-network");
+    assert_eq!(networks[1].network_type, "private");
+    assert_eq!(networks[1].family, "IPv4");
+    assert_eq!(
+        networks[1].uuid.as_deref(),
+        Some("03aa7245-2ff9-49c8-9f0e-7ca0270d71a4")
+    );
 
-    let labels = v["labels"].as_array().unwrap();
+    let labels = req.labels.as_ref().unwrap();
     assert_eq!(labels.len(), 1);
-    assert_eq!(labels[0]["key"], "example-label-key");
-    assert_eq!(labels[0]["value"], "example-label-value");
+    assert_eq!(labels[0].key, "example-label-key");
+    assert_eq!(labels[0].value, "example-label-value");
 }
 
 // Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#modify-service
@@ -501,18 +505,22 @@ const MOS_MODIFY_SERVICE_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_mos_modify_service_request() {
-    let v: serde_json::Value = serde_json::from_str(MOS_MODIFY_SERVICE_REQUEST_JSON).unwrap();
-    assert_eq!(v["name"], "example-service");
-    assert_eq!(v["configured_status"], "started");
-    assert_eq!(v["termination_protection"], false);
-    assert!(v["labels"].is_null());
+    let req: ModifyRequest = serde_json::from_str(MOS_MODIFY_SERVICE_REQUEST_JSON).unwrap();
+    assert_eq!(req.name.as_deref(), Some("example-service"));
+    assert_eq!(req.configured_status.as_deref(), Some("started"));
+    assert_eq!(req.termination_protection, Some(false));
+    // JSON has `"labels": null` which deserializes to None
+    assert!(req.labels.is_none());
 
-    let networks = v["networks"].as_array().unwrap();
+    let networks = req.networks.as_ref().unwrap();
     assert_eq!(networks.len(), 1);
-    assert_eq!(networks[0]["name"], "example-private-network");
-    assert_eq!(networks[0]["type"], "private");
-    assert_eq!(networks[0]["family"], "IPv4");
-    assert_eq!(networks[0]["uuid"], "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4");
+    assert_eq!(networks[0].name, "example-private-network");
+    assert_eq!(networks[0].network_type, "private");
+    assert_eq!(networks[0].family, "IPv4");
+    assert_eq!(
+        networks[0].uuid.as_deref(),
+        Some("03aa7245-2ff9-49c8-9f0e-7ca0270d71a4")
+    );
 }
 
 // Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
@@ -615,10 +623,11 @@ const MOS_PUBLIC_NETWORK_JSON: &str = r#"
 
 #[test]
 fn deserialize_mos_public_network_value() {
-    let v: serde_json::Value = serde_json::from_str(MOS_PUBLIC_NETWORK_JSON).unwrap();
-    assert_eq!(v["name"], "example-public-network");
-    assert_eq!(v["type"], "public");
-    assert_eq!(v["family"], "IPv4");
+    let n: Network = serde_json::from_str(MOS_PUBLIC_NETWORK_JSON).unwrap();
+    assert_eq!(n.name, "example-public-network");
+    assert_eq!(n.network_type, "public");
+    assert_eq!(n.family, "IPv4");
+    assert!(n.uuid.is_none());
 }
 
 // Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
@@ -663,6 +672,7 @@ const MOS_METRICS_SERIES_JSON: &str = r#"
 
 #[test]
 fn deserialize_mos_metrics_series() {
+    // Time-series metrics data has no matching typed struct; kept as untyped JSON.
     let series: Vec<serde_json::Value> = serde_json::from_str(MOS_METRICS_SERIES_JSON).unwrap();
     assert_eq!(series.len(), 1);
     let m = &series[0];

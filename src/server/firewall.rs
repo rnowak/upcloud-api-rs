@@ -437,23 +437,28 @@ mod tests {
         assert_eq!(req.comment.as_deref(), Some("Allow SSH from this network"));
 
         // Also verify the full wrapped JSON
-        let v: serde_json::Value = serde_json::from_str(CREATE_FIREWALL_RULE_REQUEST_JSON).unwrap();
-        let fr = &v["firewall_rule"];
-        assert_eq!(fr["position"], "1");
-        assert_eq!(fr["direction"], "in");
-        assert_eq!(fr["family"], "IPv4");
-        assert_eq!(fr["protocol"], "tcp");
-        assert_eq!(fr["source_address_start"], "192.168.1.1");
-        assert_eq!(fr["source_address_end"], "192.168.1.255");
-        assert_eq!(fr["source_port_start"], "");
-        assert_eq!(fr["source_port_end"], "");
-        assert_eq!(fr["destination_address_start"], "");
-        assert_eq!(fr["destination_address_end"], "");
-        assert_eq!(fr["destination_port_start"], "22");
-        assert_eq!(fr["destination_port_end"], "22");
-        assert_eq!(fr["icmp_type"], "");
-        assert_eq!(fr["action"], "accept");
-        assert_eq!(fr["comment"], "Allow SSH from this network");
+        #[derive(Debug, Deserialize)]
+        struct Wrapper {
+            firewall_rule: CreateRuleRequest,
+        }
+        let wrapped: Wrapper =
+            serde_json::from_str(CREATE_FIREWALL_RULE_REQUEST_JSON).unwrap();
+        let fr = wrapped.firewall_rule;
+        assert_eq!(fr.position, Some(1));
+        assert_eq!(fr.direction, Direction::In);
+        assert_eq!(fr.family, Some(Family::IPv4));
+        assert_eq!(fr.protocol, Some(Protocol::Tcp));
+        assert_eq!(fr.source_address_start.as_deref(), Some("192.168.1.1"));
+        assert_eq!(fr.source_address_end.as_deref(), Some("192.168.1.255"));
+        assert_eq!(fr.source_port_start.as_deref(), Some(""));
+        assert_eq!(fr.source_port_end.as_deref(), Some(""));
+        assert_eq!(fr.destination_address_start.as_deref(), Some(""));
+        assert_eq!(fr.destination_address_end.as_deref(), Some(""));
+        assert_eq!(fr.destination_port_start.as_deref(), Some("22"));
+        assert_eq!(fr.destination_port_end.as_deref(), Some("22"));
+        assert_eq!(fr.icmp_type.as_deref(), Some(""));
+        assert_eq!(fr.action, Action::Accept);
+        assert_eq!(fr.comment.as_deref(), Some("Allow SSH from this network"));
     }
 
     #[test]
@@ -514,66 +519,51 @@ mod tests {
 
     #[test]
     fn deserialize_create_multiple_firewall_rules_request() {
-        // Verify the full JSON structure
-        let v: serde_json::Value =
+        #[derive(Debug, Deserialize)]
+        struct Wrapper {
+            firewall_rules: Inner,
+        }
+        #[derive(Debug, Deserialize)]
+        struct Inner {
+            firewall_rule: Vec<CreateRuleRequest>,
+        }
+        let body: Wrapper =
             serde_json::from_str(CREATE_MULTIPLE_FIREWALL_RULES_REQUEST_JSON).unwrap();
-        let rules = v["firewall_rules"]["firewall_rule"].as_array().unwrap();
+        let rules = body.firewall_rules.firewall_rule;
         assert_eq!(rules.len(), 2);
-        assert_eq!(rules[0]["comment"], "Allow SSH to this network");
-        assert_eq!(rules[1]["comment"], "Allow HTTP to this network");
 
-        // Verify each rule deserializes as CreateRuleRequest
-        for rule_value in rules {
-            let rule: CreateRuleRequest = serde_json::from_value(rule_value.clone()).unwrap();
+        // Verify common fields on both rules
+        for rule in &rules {
             assert_eq!(rule.direction, Direction::In);
             assert_eq!(rule.family, Some(Family::IPv4));
             assert_eq!(rule.protocol, Some(Protocol::Tcp));
+            assert_eq!(rule.action, Action::Accept);
         }
 
-        // Assert all raw JSON fields for rule 0
-        assert_eq!(rules[0]["direction"], "in");
-        assert_eq!(rules[0]["family"], "IPv4");
-        assert_eq!(rules[0]["protocol"], "tcp");
-        assert_eq!(rules[0]["destination_port_start"], "22");
-        assert_eq!(rules[0]["destination_port_end"], "22");
-        assert_eq!(rules[0]["action"], "accept");
-        assert_eq!(rules[0]["comment"], "Allow SSH to this network");
+        // Assert all fields for rule 0
+        assert_eq!(rules[0].comment.as_deref(), Some("Allow SSH to this network"));
+        assert_eq!(rules[0].destination_port_start.as_deref(), Some("22"));
+        assert_eq!(rules[0].destination_port_end.as_deref(), Some("22"));
+        assert!(rules[0].destination_address_start.is_none());
+        assert!(rules[0].destination_address_end.is_none());
+        assert!(rules[0].icmp_type.is_none());
+        assert!(rules[0].position.is_none());
+        assert!(rules[0].source_address_start.is_none());
+        assert!(rules[0].source_address_end.is_none());
+        assert!(rules[0].source_port_start.is_none());
+        assert!(rules[0].source_port_end.is_none());
 
-        // Assert all raw JSON fields for rule 1
-        assert_eq!(rules[1]["direction"], "in");
-        assert_eq!(rules[1]["family"], "IPv4");
-        assert_eq!(rules[1]["protocol"], "tcp");
-        assert_eq!(rules[1]["destination_port_start"], "80");
-        assert_eq!(rules[1]["destination_port_end"], "80");
-        assert_eq!(rules[1]["action"], "accept");
-        assert_eq!(rules[1]["comment"], "Allow HTTP to this network");
-
-        let rule0: CreateRuleRequest = serde_json::from_value(rules[0].clone()).unwrap();
-        assert_eq!(rule0.action, Action::Accept);
-        assert_eq!(rule0.comment.as_deref(), Some("Allow SSH to this network"));
-        assert_eq!(rule0.destination_port_start.as_deref(), Some("22"));
-        assert_eq!(rule0.destination_port_end.as_deref(), Some("22"));
-        assert!(rule0.destination_address_start.is_none());
-        assert!(rule0.destination_address_end.is_none());
-        assert!(rule0.icmp_type.is_none());
-        assert!(rule0.position.is_none());
-        assert!(rule0.source_address_start.is_none());
-        assert!(rule0.source_address_end.is_none());
-        assert!(rule0.source_port_start.is_none());
-        assert!(rule0.source_port_end.is_none());
-
-        let rule1: CreateRuleRequest = serde_json::from_value(rules[1].clone()).unwrap();
-        assert_eq!(rule1.action, Action::Accept);
-        assert_eq!(rule1.comment.as_deref(), Some("Allow HTTP to this network"));
-        assert_eq!(rule1.destination_port_start.as_deref(), Some("80"));
-        assert_eq!(rule1.destination_port_end.as_deref(), Some("80"));
-        assert!(rule1.destination_address_start.is_none());
-        assert!(rule1.destination_address_end.is_none());
-        assert!(rule1.icmp_type.is_none());
-        assert!(rule1.position.is_none());
-        assert!(rule1.source_address_start.is_none());
-        assert!(rule1.source_address_end.is_none());
-        assert!(rule1.source_port_start.is_none());
-        assert!(rule1.source_port_end.is_none());
+        // Assert all fields for rule 1
+        assert_eq!(rules[1].comment.as_deref(), Some("Allow HTTP to this network"));
+        assert_eq!(rules[1].destination_port_start.as_deref(), Some("80"));
+        assert_eq!(rules[1].destination_port_end.as_deref(), Some("80"));
+        assert!(rules[1].destination_address_start.is_none());
+        assert!(rules[1].destination_address_end.is_none());
+        assert!(rules[1].icmp_type.is_none());
+        assert!(rules[1].position.is_none());
+        assert!(rules[1].source_address_start.is_none());
+        assert!(rules[1].source_address_end.is_none());
+        assert!(rules[1].source_port_start.is_none());
+        assert!(rules[1].source_port_end.is_none());
     }
 }

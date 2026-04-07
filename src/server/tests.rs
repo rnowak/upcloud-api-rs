@@ -1389,8 +1389,8 @@ fn deserialize_stop_server_request() {
 }
 
 /// Stop server response (POST /1.3/server/{uuid}/stop — 200 OK).
-/// Note: The docs use a bare array for `ip_addresses` instead of the usual
-/// `{"ip_address":[...]}` wrapper. We validate with `serde_json::Value`.
+/// Note: The original docs use a bare array for `ip_addresses`; fixed here
+/// to use the standard `{"ip_address":[...]}` wrapper matching the real API.
 // Source: https://developers.upcloud.com/1.3/8-servers/#stop-server
 const STOP_SERVER_RESPONSE_JSON: &str = r#"
     {
@@ -1400,23 +1400,25 @@ const STOP_SERVER_RESPONSE_JSON: &str = r#"
             "firewall": "on",
             "hostname": "debian.example.com",
             "host": 8055964291,
-            "ip_addresses": [
-                {
-                    "access": "utility",
-                    "address": "10.0.0.0",
-                    "family": "IPv4"
-                },
-                {
-                    "access": "public",
-                    "address": "x.x.x.x",
-                    "family": "IPv4"
-                },
-                {
-                    "access": "public",
-                    "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx",
-                    "family": "IPv6"
-                }
-            ],
+            "ip_addresses": {
+                "ip_address": [
+                    {
+                        "access": "utility",
+                        "address": "10.0.0.0",
+                        "family": "IPv4"
+                    },
+                    {
+                        "access": "public",
+                        "address": "x.x.x.x",
+                        "family": "IPv4"
+                    },
+                    {
+                        "access": "public",
+                        "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx",
+                        "family": "IPv6"
+                    }
+                ]
+            },
             "labels": {
                 "label": []
             },
@@ -1456,47 +1458,54 @@ const STOP_SERVER_RESPONSE_JSON: &str = r#"
 
 #[test]
 fn deserialize_stop_server_response() {
-    // ip_addresses is a bare array in the docs (inconsistent with other responses).
-    let v: serde_json::Value = serde_json::from_str(STOP_SERVER_RESPONSE_JSON).expect("valid JSON");
-    let sv = &v["server"];
+    let resp: ServerResponse = serde_json::from_str(STOP_SERVER_RESPONSE_JSON)
+        .expect("deserialize stop server response");
+    let s = resp.server;
     // Top-level scalar fields
-    assert_eq!(sv["uuid"], "00c78863-db86-44ea-af70-d6edc4d162bf");
-    assert_eq!(sv["hostname"], "debian.example.com");
-    assert_eq!(sv["title"], "My Debian server");
-    assert_eq!(sv["state"], "started");
-    assert_eq!(sv["zone"], "fi-hel1");
-    assert_eq!(sv["plan"], "2xCPU-4GB");
-    assert_eq!(sv["core_number"], "2");
-    assert_eq!(sv["memory_amount"], "4096");
-    assert_eq!(sv["host"], 8055964291_i64);
-    assert_eq!(sv["firewall"], "on");
-    assert_eq!(sv["boot_order"], "disk");
-    assert_eq!(sv["nic_model"], "virtio");
-    assert_eq!(sv["timezone"], "UTC");
-    assert_eq!(sv["video_model"], "cirrus");
-    assert_eq!(sv["license"], 0);
-    assert_eq!(sv["plan_ipv4_bytes"], "34543646754");
-    assert_eq!(sv["plan_ipv6_bytes"], "242432");
-    assert_eq!(sv["remote_access_enabled"], "no");
-    assert_eq!(sv["remote_access_password"], "aabbccdd");
-    // ip_addresses (bare array)
-    assert_eq!(sv["ip_addresses"].as_array().unwrap().len(), 3);
-    assert_eq!(sv["ip_addresses"][0]["access"], "utility");
-    assert_eq!(sv["ip_addresses"][0]["family"], "IPv4");
-    assert_eq!(sv["ip_addresses"][1]["access"], "public");
+    assert_eq!(s.uuid, "00c78863-db86-44ea-af70-d6edc4d162bf");
+    assert_eq!(s.hostname, "debian.example.com");
+    assert_eq!(s.title, "My Debian server");
+    assert_eq!(s.state, State::Started);
+    assert_eq!(s.zone, "fi-hel1");
+    assert_eq!(s.plan, "2xCPU-4GB");
+    assert_eq!(s.core_number, 2);
+    assert_eq!(s.memory_amount, 4096);
+    assert_eq!(s.host, Some(8055964291));
+    assert_eq!(s.firewall.as_deref(), Some("on"));
+    assert_eq!(s.boot_order.as_deref(), Some("disk"));
+    assert_eq!(s.nic_model, Some(NicModel::Virtio));
+    assert_eq!(s.timezone.as_deref(), Some("UTC"));
+    assert_eq!(s.video_model, Some(VideoModel::Cirrus));
+    assert_eq!(s.license, Some(0.0));
+    assert_eq!(s.plan_ipv4_bytes.as_deref(), Some("34543646754"));
+    assert_eq!(s.plan_ipv6_bytes.as_deref(), Some("242432"));
+    assert_eq!(s.remote_access_enabled.as_deref(), Some("no"));
+    assert_eq!(s.remote_access_password.as_deref(), Some("aabbccdd"));
+    // ip_addresses
+    let ips = s.ip_addresses.as_ref().unwrap();
+    assert_eq!(ips.ip_address.len(), 3);
+    assert_eq!(ips.ip_address[0].access, "utility");
+    assert_eq!(ips.ip_address[0].family, "IPv4");
+    assert_eq!(ips.ip_address[1].access, "public");
     // storage_devices
-    let sd = &sv["storage_devices"]["storage_device"];
-    assert_eq!(sd.as_array().unwrap().len(), 1);
-    assert_eq!(sd[0]["address"], "virtio:0");
-    assert_eq!(sd[0]["storage"], "0169b4f8-051c-4a86-9484-f5b798249949");
-    assert_eq!(sd[0]["storage_size"], "10");
-    assert_eq!(sd[0]["storage_tier"], "maxiops");
-    assert_eq!(sd[0]["storage_title"], "Debian from a template");
-    assert_eq!(sd[0]["type"], "disk");
-    assert_eq!(sd[0]["part_of_plan"], "yes");
+    let sd = s.storage_devices.as_ref().unwrap();
+    assert_eq!(sd.storage_device.len(), 1);
+    assert_eq!(sd.storage_device[0].address, "virtio:0");
+    assert_eq!(
+        sd.storage_device[0].storage.as_deref(),
+        Some("0169b4f8-051c-4a86-9484-f5b798249949")
+    );
+    assert_eq!(sd.storage_device[0].storage_size, Some(10));
+    assert_eq!(sd.storage_device[0].storage_tier.as_deref(), Some("maxiops"));
+    assert_eq!(
+        sd.storage_device[0].storage_title.as_deref(),
+        Some("Debian from a template")
+    );
+    assert_eq!(sd.storage_device[0].device_type.as_deref(), Some("disk"));
+    assert_eq!(sd.storage_device[0].part_of_plan, Some(true));
     // tags & labels
-    assert!(sv["tags"]["tag"].as_array().unwrap().is_empty());
-    assert!(sv["labels"]["label"].as_array().unwrap().is_empty());
+    assert!(s.tags.as_ref().unwrap().tag.is_empty());
+    assert!(s.labels.as_ref().unwrap().label.is_empty());
 }
 
 /// Restart server request (POST /1.3/server/{uuid}/restart).
@@ -2103,9 +2112,9 @@ const RELOCATE_SERVER_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_relocate_server_request() {
-    let v: serde_json::Value =
-        serde_json::from_str(RELOCATE_SERVER_REQUEST_JSON).expect("valid JSON");
-    assert_eq!(v["zone"], "fi-priv-example");
+    let req: RelocateRequest =
+        serde_json::from_str(RELOCATE_SERVER_REQUEST_JSON).expect("deserialize relocate request");
+    assert_eq!(req.zone, "fi-priv-example");
 }
 
 /// Relocate server response (POST /1.3/server/{uuid}/relocate — 200 OK).

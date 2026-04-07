@@ -583,18 +583,18 @@ const MODIFY_CLUSTER_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_modify_cluster_request() {
-    let val: serde_json::Value = serde_json::from_str(MODIFY_CLUSTER_REQUEST_JSON).unwrap();
-    assert!(val.get("control_plane_ip_filter").is_some());
-    assert!(val.get("labels").is_some());
-    let filters = val["control_plane_ip_filter"].as_array().unwrap();
+    let req: ModifyClusterRequest = serde_json::from_str(MODIFY_CLUSTER_REQUEST_JSON).unwrap();
+    let filters = req.control_plane_ip_filter.as_ref().unwrap();
     assert_eq!(filters.len(), 1);
-    assert_eq!(filters[0].as_str().unwrap(), "0.0.0.0/0");
-    let labels = val["labels"].as_array().unwrap();
+    assert_eq!(filters[0], "0.0.0.0/0");
+    let labels = req.labels.as_ref().unwrap();
     assert_eq!(labels.len(), 2);
-    assert_eq!(labels[0]["key"].as_str().unwrap(), "env");
-    assert_eq!(labels[0]["value"].as_str().unwrap(), "production");
-    assert_eq!(labels[1]["key"].as_str().unwrap(), "app");
-    assert_eq!(labels[1]["value"].as_str().unwrap(), "dogs-dating-app");
+    assert_eq!(labels[0].key, "env");
+    assert_eq!(labels[0].value, "production");
+    assert_eq!(labels[1].key, "app");
+    assert_eq!(labels[1].value, "dogs-dating-app");
+    assert!(req.ip_filter.is_none());
+    assert!(req.plan.is_none());
 }
 
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#modify-cluster

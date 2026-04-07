@@ -389,6 +389,8 @@ const REPLACE_FS_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_replace_file_storage_request() {
+    // JSON includes `networks` which is not in ModifyRequest, and lacks required
+    // fields (`zone`, `shares`) for CreateRequest, so it cannot be parsed as either.
     let val: serde_json::Value = serde_json::from_str(REPLACE_FS_REQUEST_JSON).unwrap();
     assert_eq!(val["name"], "test-name");
     assert_eq!(val["configured_status"], "started");

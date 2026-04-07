@@ -436,6 +436,8 @@ const DB_SERVICE_TYPES_JSON: &str = r#"
 
 #[test]
 fn deserialize_db_service_types() {
+    // API returns a map keyed by service name with nested service_plans/properties
+    // that don't match the typed DatabaseType struct; kept as untyped JSON.
     let val: serde_json::Value = serde_json::from_str(DB_SERVICE_TYPES_JSON).unwrap();
     assert!(val.is_object());
     let obj = val.as_object().unwrap();
@@ -517,7 +519,8 @@ const CREATE_DB_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_create_db_request() {
-    // The docs use hostname_prefix but our type uses name; parse as Value first
+    // The docs JSON uses `hostname_prefix` while CreateRequest uses `name`, and
+    // the JSON omits the required `name` field, so it cannot be parsed as CreateRequest.
     let val: serde_json::Value = serde_json::from_str(CREATE_DB_REQUEST_JSON).unwrap();
     assert_eq!(val["hostname_prefix"], "doc-api-unique-prefix");
     assert_eq!(val["plan"], "1x1xCPU-2GB-25GB");
@@ -595,11 +598,6 @@ const DB_DETAILS_JSON: &str = r#"
 
 #[test]
 fn deserialize_db_details() {
-    // Parse as Value to verify full JSON validity
-    let val: serde_json::Value = serde_json::from_str(DB_DETAILS_JSON).unwrap();
-    assert_eq!(val["uuid"], "09d9d824-8b3e-4a57-a9b3-77ec51fd5c84");
-
-    // Parse as Database
     let db: Database = serde_json::from_str(DB_DETAILS_JSON).unwrap();
     assert_eq!(db.uuid, "09d9d824-8b3e-4a57-a9b3-77ec51fd5c84");
     assert_eq!(db.name, "pg-2x2xcpu-4gb-50gb-de-fra1");
@@ -725,7 +723,8 @@ const DB_USER_DETAIL_PG_JSON: &str = r#"
 
 #[test]
 fn deserialize_db_user_detail_pg() {
-    // pg_access_control is not in User; parse as Value
+    // `pg_access_control` in the JSON is not modeled in the User struct,
+    // so Value is used to validate the full payload including that field.
     let val: serde_json::Value = serde_json::from_str(DB_USER_DETAIL_PG_JSON).unwrap();
     assert_eq!(val["username"], "api-doc-user");
     assert_eq!(val["password"], "new-password");
@@ -773,6 +772,7 @@ const SESSION_TERMINATE_JSON: &str = r#"
 
 #[test]
 fn deserialize_session_terminate() {
+    // API returns `{"success": true}` with no matching typed struct.
     let val: serde_json::Value = serde_json::from_str(SESSION_TERMINATE_JSON).unwrap();
     assert_eq!(val["success"], true);
 }
@@ -801,6 +801,7 @@ const PG_SESSIONS_DETAILED_JSON: &str = r#"
 
 #[test]
 fn deserialize_pg_sessions_detailed() {
+    // API returns untyped JSON (get_current_queries → Value).
     let val: serde_json::Value = serde_json::from_str(PG_SESSIONS_DETAILED_JSON).unwrap();
     let sessions = val["pg"].as_array().unwrap();
     assert_eq!(sessions.len(), 1);
@@ -842,6 +843,7 @@ const QUERY_STATISTICS_JSON: &str = r#"
 
 #[test]
 fn deserialize_query_statistics() {
+    // API returns untyped JSON (get_query_statistics → Value).
     let val: serde_json::Value = serde_json::from_str(QUERY_STATISTICS_JSON).unwrap();
     let stats = val["pg"].as_array().unwrap();
     assert_eq!(stats.len(), 1);
@@ -890,6 +892,7 @@ const DB_METRICS_JSON: &str = r#"
 
 #[test]
 fn deserialize_db_metrics() {
+    // API returns untyped JSON (get_metrics → Value).
     let val: serde_json::Value = serde_json::from_str(DB_METRICS_JSON).unwrap();
     let cpu = &val["cpu_usage"];
     let cols = cpu["data"]["cols"].as_array().unwrap();
@@ -923,6 +926,7 @@ const DB_LOGS_JSON: &str = r#"
 
 #[test]
 fn deserialize_db_logs() {
+    // API returns untyped JSON (get_logs → Value).
     let val: serde_json::Value = serde_json::from_str(DB_LOGS_JSON).unwrap();
     assert_eq!(val["first_log_offset"], "1642770443687");
     assert_eq!(val["offset"], "1642770443687");
@@ -1063,6 +1067,8 @@ const DB_SERVICE_TYPE_DETAIL_JSON: &str = r#"
 
 #[test]
 fn deserialize_db_service_type_detail() {
+    // API returns a map keyed by service name with nested plans/properties/zones
+    // that don't match any typed struct; kept as untyped JSON.
     let val: serde_json::Value = serde_json::from_str(DB_SERVICE_TYPE_DETAIL_JSON).unwrap();
     assert!(val.is_object());
     let obj = val.as_object().unwrap();
