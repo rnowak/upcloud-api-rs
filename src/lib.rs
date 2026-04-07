@@ -40,7 +40,7 @@ pub mod prelude {
     pub use crate::client::{Client, ClientBuilder};
     pub use crate::config::AuthMode;
     pub use crate::error::{ApiError, Error, ErrorCode, Result};
-    pub use crate::types::common::{Label, Labels, PageParams, SortOrder};
+    pub use crate::types::{Label, Labels, PageParams, SortOrder};
 
     // Primary resource types from each domain module
     pub use crate::account::Account;

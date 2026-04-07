@@ -23,7 +23,7 @@ cargo doc --no-deps                               # Must produce zero warnings
 
 **Response envelope unwrapping**: The UpCloud API wraps responses in envelopes like `{"servers": {"server": [...]}}`. Each handler defines private `#[derive(Deserialize)]` wrapper structs inside `mod.rs` to unwrap these, then returns the inner type.
 
-**Serde quirks**: The API has several non-standard JSON patterns handled by custom helpers in `src/types/common.rs`:
+**Serde quirks**: The API has several non-standard JSON patterns handled by custom helpers in `src/types.rs`:
 - `YesNo` / `YesNoOpt` — booleans serialized as `"yes"`/`"no"` strings
 - `StringNumber` — numbers returned as strings (e.g. `"1024"`)
 - `#[serde_as(as = "DisplayFromStr")]` — for numeric fields that come as strings

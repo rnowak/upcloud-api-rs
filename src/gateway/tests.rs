@@ -1209,7 +1209,7 @@ fn deserialize_replace_gateway_request() {
 
 #[test]
 fn deserialize_gateway_label_list() {
-    let labels: Vec<crate::types::common::Label> =
+    let labels: Vec<crate::types::Label> =
         serde_json::from_str(GATEWAY_LABEL_LIST_JSON).unwrap();
     assert_eq!(labels.len(), 2);
     assert_eq!(labels[0].key, "env");
@@ -1220,7 +1220,7 @@ fn deserialize_gateway_label_list() {
 
 #[test]
 fn deserialize_gateway_label_detail() {
-    let label: crate::types::common::Label =
+    let label: crate::types::Label =
         serde_json::from_str(GATEWAY_LABEL_DETAIL_JSON).unwrap();
     assert_eq!(label.key, "env");
     assert_eq!(label.value, "staging");
@@ -1228,7 +1228,7 @@ fn deserialize_gateway_label_detail() {
 
 #[test]
 fn deserialize_gateway_label_create() {
-    let label: crate::types::common::Label =
+    let label: crate::types::Label =
         serde_json::from_str(GATEWAY_LABEL_CREATE_JSON).unwrap();
     assert_eq!(label.key, "env");
     assert_eq!(label.value, "production");

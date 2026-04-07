@@ -210,7 +210,7 @@ pub struct Gateway {
     pub connections: Vec<Connection>,
     /// Key-value labels attached to the gateway.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::common::Label>>,
+    pub labels: Option<Vec<crate::types::Label>>,
     /// Whether internal tunnel IPs are automatically allocated.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub automatic_tunnel_internal_ip_allocation: Option<bool>,
@@ -382,7 +382,7 @@ pub struct CreateRequest {
     pub addresses: Option<Vec<AddressInput>>,
     /// Key-value labels to attach.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::common::Label>>,
+    pub labels: Option<Vec<crate::types::Label>>,
     /// Whether to automatically allocate internal tunnel IPs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub automatic_tunnel_internal_ip_allocation: Option<bool>,
@@ -410,7 +410,7 @@ pub struct ModifyRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configured_status: Option<ConfiguredStatus>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::common::Label>>,
+    pub labels: Option<Vec<crate::types::Label>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<Feature>>,
     #[serde(skip_serializing_if = "Option::is_none")]

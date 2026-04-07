@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
-use crate::types::common::YesNo;
+use crate::types::YesNo;
 
 /// An UpCloud data center zone.
 #[serde_as]

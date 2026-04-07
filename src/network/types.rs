@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
-use crate::types::common::YesNo;
+use crate::types::YesNo;
 
 // ─── Network types ────────────────────────────────────────────────────────────
 
@@ -122,7 +122,7 @@ pub struct Network {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub servers: Option<NetworkServers>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::common::Label>>,
+    pub labels: Option<Vec<crate::types::Label>>,
     /// UUID of the router attached to this network.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub router: Option<String>,
@@ -147,7 +147,7 @@ pub struct CreateNetworkRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub router: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::common::Label>>,
+    pub labels: Option<Vec<crate::types::Label>>,
 }
 
 /// Request to modify an existing SDN network.
@@ -159,7 +159,7 @@ pub struct ModifyNetworkRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_networks: Option<NetworkIpNetworks>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::common::Label>>,
+    pub labels: Option<Vec<crate::types::Label>>,
     /// UUID of a router to attach (or detach by omitting).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub router: Option<String>,
@@ -294,7 +294,7 @@ pub struct Router {
     #[serde(default)]
     pub static_routes: Vec<StaticRoute>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::common::Label>>,
+    pub labels: Option<Vec<crate::types::Label>>,
 }
 
 /// Request to create a new router.
@@ -305,7 +305,7 @@ pub struct CreateRouterRequest {
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub static_routes: Vec<StaticRoute>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::common::Label>>,
+    pub labels: Option<Vec<crate::types::Label>>,
 }
 
 /// Request to modify an existing router.
@@ -317,7 +317,7 @@ pub struct ModifyRouterRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub static_routes: Option<Vec<StaticRoute>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::common::Label>>,
+    pub labels: Option<Vec<crate::types::Label>>,
 }
 
 // ─── Network Peering types ────────────────────────────────────────────────────
@@ -385,7 +385,7 @@ pub struct NetworkPeering {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub peer_network: Option<PeeringNetwork>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::common::Label>>,
+    pub labels: Option<Vec<crate::types::Label>>,
 }
 
 /// Request to create a new network peering.
@@ -399,7 +399,7 @@ pub struct CreatePeeringRequest {
     /// Remote (peer) network for the peering.
     pub peer_network: PeeringNetworkInput,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::common::Label>>,
+    pub labels: Option<Vec<crate::types::Label>>,
 }
 
 /// Network UUID input for creating a peering.
@@ -418,7 +418,7 @@ pub struct ModifyPeeringRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configured_status: Option<PeeringConfiguredStatus>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::common::Label>>,
+    pub labels: Option<Vec<crate::types::Label>>,
 }
 
 /// IP network address family for network peering filters.

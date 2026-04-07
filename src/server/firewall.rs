@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 use serde_with::{DisplayFromStr, serde_as};
 
-use crate::types::common::deserialize_empty_string_as_none;
+use crate::types::deserialize_empty_string_as_none;
 
 // ─── Enums ────────────────────────────────────────────────────────────────────
 

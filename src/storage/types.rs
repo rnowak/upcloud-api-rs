@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 use serde_with::{DisplayFromStr, PickFirst, serde_as};
 
-use crate::types::common::YesNo;
+use crate::types::YesNo;
 
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
@@ -122,7 +122,7 @@ pub struct Storage {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub license: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::common::Label>>,
+    pub labels: Option<Vec<crate::types::Label>>,
     /// Template type (e.g. `"linux"`, `"windows"`); set for templates.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub template_type: Option<String>,
@@ -145,7 +145,7 @@ pub struct StorageDetails {
     #[serde(
         default,
         skip_serializing_if = "Option::is_none",
-        deserialize_with = "crate::types::common::deserialize_empty_string_as_none"
+        deserialize_with = "crate::types::deserialize_empty_string_as_none"
     )]
     pub backup_rule: Option<BackupRule>,
     /// UUIDs of backups created from this storage.
@@ -257,7 +257,7 @@ pub struct CreateRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub encrypted: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::common::Label>>,
+    pub labels: Option<Vec<crate::types::Label>>,
 }
 
 /// Request to modify an existing storage resource.
@@ -273,7 +273,7 @@ pub struct ModifyRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub backup_rule: Option<BackupRule>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::common::Label>>,
+    pub labels: Option<Vec<crate::types::Label>>,
 }
 
 /// Request to clone an existing storage.

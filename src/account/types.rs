@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
-use crate::types::common::{Label, YesNo};
+use crate::types::{Label, YesNo};
 
 // ─── Enums ───────────────────────────────────────────────────────────────────
 

@@ -105,7 +105,7 @@ let filtered = client.servers().list(
     &ListParams::new()
         .state(State::Started)
         .label("env", "prod")
-        .order_by(OrderBy::Title, upcloud_api::types::common::SortOrder::Asc)
+        .order_by(OrderBy::Title, upcloud_api::types::SortOrder::Asc)
         .limit(25)
 ).await?;
 
@@ -317,7 +317,7 @@ upcloud_api/
 │   ├── client.rs                  # Client, ClientBuilder, handler factories
 │   ├── config.rs                  # ClientConfig, AuthMode
 │   ├── error.rs                   # Error, ApiError
-│   ├── types/common.rs            # Shared helpers (YesNo, StringNumber, Label, …)
+│   ├── types.rs                   # Shared helpers (YesNo, StringNumber, Label, …)
 │   │
 │   ├── server/                    # Servers, server groups, firewall rules
 │   ├── storage/                   # Block storages, backups, imports

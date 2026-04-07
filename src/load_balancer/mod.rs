@@ -6,7 +6,7 @@ pub use types::*;
 
 use crate::client::Client;
 use crate::error::Error;
-use crate::types::common::PageParams;
+use crate::types::PageParams;
 
 /// Handler for load balancer operations.
 pub struct LoadBalancerHandler<'a> {
