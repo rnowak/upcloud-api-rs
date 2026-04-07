@@ -33,6 +33,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let tier = s.tier.as_ref().map(|t| format!("{t:?}")).unwrap_or_else(|| "—".into());
         let encrypted = s.encrypted.map(|e| if e { "yes" } else { "no" }).unwrap_or("—");
 
+        let labels = s
+            .labels
+            .as_ref()
+            .map(|ls| {
+                ls.iter()
+                    .map(|l| format!("{}={}", l.key, l.value))
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            })
+            .filter(|l| !l.is_empty())
+            .unwrap_or_else(|| "(none)".into());
+
         println!("┌─ {} ({})", s.title, s.uuid);
         println!("│  Type:      {:?}", s.storage_type);
         println!("│  State:     {:?}", s.state);
@@ -40,8 +52,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("│  Tier:      {}", tier);
         println!("│  Zone:      {}", zone);
         println!("│  Encrypted: {}", encrypted);
+        println!("│  Labels:    {}", labels);
 
-        // Fetch full details to find server attachment.
+        // Fetch full details to find server attachment and backups.
         match client.storages().get(&s.uuid).await {
             Ok(details) => {
                 let attached: Vec<String> = details
@@ -68,6 +81,23 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         } else {
                             println!("│             {entry}");
                         }
+                    }
+                }
+
+                let backups = details
+                    .backups
+                    .as_ref()
+                    .map(|b| &b.backup[..])
+                    .unwrap_or(&[]);
+                if backups.is_empty() {
+                    println!("│  Backups:   (none)");
+                } else {
+                    println!("│  Backups:   {} total", backups.len());
+                    for uuid in backups.iter().take(5) {
+                        println!("│    - {uuid}");
+                    }
+                    if backups.len() > 5 {
+                        println!("│    … and {} more", backups.len() - 5);
                     }
                 }
             }
