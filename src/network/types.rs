@@ -5,19 +5,8 @@ use serde_with::serde_as;
 
 use crate::types::common::YesNo;
 
-// ─── Network types ────────────────────────────────────────────────────────────
-
-/// The type of an UpCloud SDN network.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum NetworkType {
-    /// Public internet network.
-    Public,
-    /// UpCloud utility network (shared private).
-    Utility,
-    /// Private SDN network.
-    Private,
-}
+// Re-export the shared NetworkType enum so existing `network::NetworkType` paths work.
+pub use crate::types::common::NetworkType;
 
 /// An IP network (subnet) within an SDN network.
 #[derive(Debug, Clone, Serialize, Deserialize)]

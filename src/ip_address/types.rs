@@ -5,16 +5,10 @@ use serde_with::serde_as;
 
 use crate::types::common::YesNo;
 
-// ─── Enums ────────────────────────────────────────────────────────────────────
+// Re-export the shared Family enum so existing `ip_address::Family` paths work.
+pub use crate::types::common::Family;
 
-/// IP address family.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-pub enum Family {
-    /// IPv4 address.
-    IPv4,
-    /// IPv6 address.
-    IPv6,
-}
+// ─── Enums ────────────────────────────────────────────────────────────────────
 
 /// Network access type.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

@@ -1,16 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-// ─── Enums ────────────────────────────────────────────────────────────────────
+// Re-export the shared ConfiguredStatus enum.
+pub use crate::types::common::ConfiguredStatus;
 
-/// Desired file storage service status.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum ConfiguredStatus {
-    /// Service should be running.
-    Started,
-    /// Service should be stopped.
-    Stopped,
-}
+// ─── Enums ────────────────────────────────────────────────────────────────────
 
 /// Access permission for a file storage share ACL entry.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

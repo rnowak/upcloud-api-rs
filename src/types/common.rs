@@ -130,6 +130,63 @@ where
     }
 }
 
+// ─── Shared enums ─────────────────────────────────────────────────────────────
+
+/// IP address family.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum Family {
+    IPv4,
+    IPv6,
+}
+
+/// Network access / interface type.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum NetworkType {
+    /// Public internet network.
+    Public,
+    /// UpCloud utility network (shared private).
+    Utility,
+    /// Private SDN network.
+    Private,
+}
+
+/// Desired service status for managed services (load balancers, gateways,
+/// file storage, object storage).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum ConfiguredStatus {
+    /// Service should be running.
+    Started,
+    /// Service should be stopped.
+    Stopped,
+}
+
+// ─── OnOff ────────────────────────────────────────────────────────────────────
+
+/// Serde helper for fields that UpCloud encodes as the strings `"on"` or `"off"`.
+///
+/// Use with `#[serde_as(as = "OnOff")]`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct OnOff;
+
+impl SerializeAs<bool> for OnOff {
+    fn serialize_as<S: Serializer>(val: &bool, s: S) -> Result<S::Ok, S::Error> {
+        s.serialize_str(if *val { "on" } else { "off" })
+    }
+}
+
+impl<'de> DeserializeAs<'de, bool> for OnOff {
+    fn deserialize_as<D: Deserializer<'de>>(d: D) -> Result<bool, D::Error> {
+        let s: &str = Deserialize::deserialize(d)?;
+        match s {
+            "on" => Ok(true),
+            "off" => Ok(false),
+            other => Err(serde::de::Error::unknown_variant(other, &["on", "off"])),
+        }
+    }
+}
+
 // ─── Sort order ───────────────────────────────────────────────────────────────
 
 /// Sort direction for list endpoints that support ordering.

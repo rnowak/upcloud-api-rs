@@ -15,14 +15,7 @@ pub enum Feature {
 }
 
 /// Desired gateway status.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum ConfiguredStatus {
-    /// The gateway should be running.
-    Started,
-    /// The gateway should be stopped.
-    Stopped,
-}
+pub use crate::types::common::ConfiguredStatus;
 
 /// Gateway lifecycle state.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

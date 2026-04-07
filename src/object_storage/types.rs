@@ -29,14 +29,7 @@ pub enum OperationalState {
 }
 
 /// Desired service status.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum ConfiguredStatus {
-    /// Service should be running.
-    Started,
-    /// Service should be stopped.
-    Stopped,
-}
+pub use crate::types::common::ConfiguredStatus;
 
 /// Status of a user access key.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
