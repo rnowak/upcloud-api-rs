@@ -11,13 +11,13 @@ use crate::types::common::YesNo;
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum State {
-    /// Server is running.
+    /// The server is running.
     Started,
-    /// Server is powered off.
+    /// The server is stopped.
     Stopped,
-    /// Server is in maintenance mode.
+    /// The server is in maintenance mode.
     Maintenance,
-    /// Server is in an error state.
+    /// The server has encountered an error and is inaccessible.
     Error,
 }
 
@@ -147,6 +147,7 @@ pub struct StorageDevice {
     #[serde_as(as = "Option<PickFirst<(DisplayFromStr, _)>>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub storage_size: Option<u64>,
+    /// Title of the storage.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub storage_title: Option<String>,
     /// Storage tier (`"hdd"` or `"maxiops"`).
@@ -162,12 +163,14 @@ pub struct StorageDevice {
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub part_of_plan: Option<bool>,
+    /// Whether the storage is encrypted at rest.
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub encrypted: Option<bool>,
     /// String representation of the encrypted flag.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub storage_encrypted: Option<String>,
+    /// Labels attached to the storage.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
 }
@@ -176,8 +179,9 @@ pub struct StorageDevice {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct IpAddressEntry {
-    /// Access type (`"public"` or `"private"`).
+    /// Access type (`"public"`, `"private"`, or `"utility"`).
     pub access: String,
+    /// IP address string.
     pub address: String,
     /// Address family (`"IPv4"` or `"IPv6"`).
     pub family: String,
@@ -191,14 +195,16 @@ pub struct IpAddressEntry {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Interface {
+    /// Whether to try booting through the interface.
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bootable: Option<bool>,
     /// Interface index (position order).
     pub index: u32,
+    /// IP addresses assigned to this interface.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_addresses: Option<InterfaceIpAddresses>,
-    /// MAC address.
+    /// MAC address of the interface.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mac: Option<String>,
     /// UUID of the network this interface belongs to.
@@ -226,6 +232,7 @@ pub struct InterfaceIpAddresses {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct InterfaceIpAddress {
+    /// IP address string.
     pub address: String,
     /// Whether the address was provided by DHCP.
     #[serde_as(as = "Option<YesNo>")]
@@ -237,7 +244,7 @@ pub struct InterfaceIpAddress {
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub floating: Option<bool>,
-    /// When the IP is released (`"delete"` or `"unassign"`).
+    /// IP release policy (e.g. `"release"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub release_policy: Option<String>,
 }
@@ -246,11 +253,13 @@ pub struct InterfaceIpAddress {
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[non_exhaustive]
 pub struct LoginUser {
-    /// Set to `1` to auto-generate a password for the user.
+    /// Whether to auto-generate a one-time password (`"yes"` or `"no"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub create_password: Option<u8>,
+    /// Login username (defaults to `"root"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
+    /// SSH public keys for the login user.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ssh_keys: Option<SshKeys>,
 }
@@ -276,11 +285,17 @@ pub struct GpuInfo {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct GpuDetail {
+    /// GPU model name.
     pub model: String,
+    /// Number of GPU cores.
     pub cores: u64,
+    /// GPU firmware version.
     pub firmware: String,
+    /// GPU memory in GiB.
     pub memory_gib: u64,
+    /// GPU part number.
     pub part: String,
+    /// GPU serial number.
     pub serial: String,
 }
 
@@ -298,13 +313,16 @@ pub struct ServerDevices {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct ServerDevice {
+    /// Device model name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub model: Option<String>,
     /// Device type (e.g. `"gpu"`).
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
     pub device_type: Option<String>,
+    /// Device serial number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub serial: Option<String>,
+    /// Hardware metadata for the device.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ServerDeviceMetadata>,
 }
@@ -313,12 +331,13 @@ pub struct ServerDevice {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct ServerDeviceMetadata {
+    /// Device serial number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub serial: Option<String>,
     /// Number of GPU cores.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cores: Option<u64>,
-    /// Device memory in MiB.
+    /// Device memory in GiB.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub memory: Option<u64>,
 }
@@ -330,9 +349,13 @@ pub struct ServerDeviceMetadata {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Server {
+    /// Unique server identifier.
     pub uuid: String,
+    /// Server hostname (FQDN).
     pub hostname: String,
+    /// Short descriptive title.
     pub title: String,
+    /// Current server state.
     pub state: State,
     /// Data center zone (e.g. `"de-fra1"`).
     pub zone: String,
@@ -344,13 +367,14 @@ pub struct Server {
     pub memory_amount: u64,
     /// Preconfigured plan name, or `"custom"`.
     pub plan: String,
-    /// Licensing cost (per-hour).
+    /// Sum of all attached storages' license costs (credits/hour/core).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub license: Option<f64>,
     /// Provisioning progress percentage (0–100).
     #[serde_as(as = "Option<PickFirst<(DisplayFromStr, _)>>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub progress: Option<u32>,
+    /// Server tags.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tags: Option<ServerTags>,
 }
@@ -374,21 +398,28 @@ pub struct ServerDetails {
     /// Private cloud host ID, if applicable.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub host: Option<i64>,
+    /// Network interface card model.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nic_model: Option<NicModel>,
+    /// Video adapter model.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub video_model: Option<VideoModel>,
+    /// Server timezone identifier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub timezone: Option<String>,
     /// UUID of the server group this server belongs to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub server_group: Option<String>,
+    /// IP addresses assigned to the server.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_addresses: Option<ServerIpAddresses>,
+    /// Storage devices attached to the server.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub storage_devices: Option<ServerStorageDevices>,
+    /// Network interface configuration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networking: Option<ServerNetworking>,
+    /// Labels assigned to the server.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<crate::types::common::Labels>,
     /// Whether the metadata service is enabled (`"yes"` or `"no"`).
@@ -397,8 +428,10 @@ pub struct ServerDetails {
     /// Whether remote access is enabled (`"yes"` or `"no"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_access_enabled: Option<String>,
+    /// Remote access type (e.g. `"vnc"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_access_type: Option<String>,
+    /// Remote access password.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_access_password: Option<String>,
     /// Remote access hostname.
@@ -490,6 +523,7 @@ pub struct CreateRequest {
     pub zone: String,
     /// Fully qualified domain name.
     pub hostname: String,
+    /// Short descriptive title for the server.
     pub title: String,
     /// Preconfigured plan name (alternative to `core_number` + `memory_amount`).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -505,12 +539,16 @@ pub struct CreateRequest {
     /// Boot device order (e.g. `"disk"`, `"cdrom"`, `"network"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boot_order: Option<String>,
+    /// Storage devices to attach during creation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub storage_devices: Option<CreateServerStorageDevices>,
+    /// Network interface configuration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networking: Option<CreateServerNetworking>,
+    /// Login user configuration (username, SSH keys).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub login_user: Option<LoginUser>,
+    /// How to deliver the root password (`none`/`email`/`sms`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub password_delivery: Option<PasswordDelivery>,
     /// Firewall state (`"on"` or `"off"`).
@@ -520,10 +558,13 @@ pub struct CreateRequest {
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<bool>,
+    /// Network interface card model.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nic_model: Option<NicModel>,
+    /// Video adapter model.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub video_model: Option<VideoModel>,
+    /// Server timezone identifier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub timezone: Option<String>,
     /// UUID of a server group to join.
@@ -532,9 +573,10 @@ pub struct CreateRequest {
     /// Simple backup schedule string (e.g. `"0300,dailies"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub simple_backup: Option<String>,
-    /// Base64-encoded or plaintext cloud-init user data.
+    /// Cloud-init user data (URL or script body).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_data: Option<String>,
+    /// Labels to assign to the server.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<crate::types::common::Labels>,
     /// Host ID to avoid for scheduling (private cloud).
@@ -543,11 +585,14 @@ pub struct CreateRequest {
     /// Preferred host ID for scheduling (private cloud).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub host: Option<i64>,
+    /// Whether to enable remote access.
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_access_enabled: Option<bool>,
+    /// Remote access type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_access_type: Option<RemoteAccessType>,
+    /// Remote access password.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_access_password: Option<String>,
 }
@@ -557,6 +602,7 @@ pub struct CreateRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct CreateServerStorageDevice {
+    /// Method to create/attach storage (`create`/`clone`/`attach`).
     pub action: StorageDeviceAction,
     /// UUID of the storage to clone or attach.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -565,24 +611,29 @@ pub struct CreateServerStorageDevice {
     #[serde_as(as = "Option<DisplayFromStr>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub size: Option<u64>,
+    /// Short descriptive title for the storage.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
     /// Storage tier (e.g. `"maxiops"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tier: Option<String>,
+    /// Device type (`disk` or `cdrom`).
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
     pub device_type: Option<StorageDeviceType>,
     /// Device address (e.g. `"virtio:0"`); auto-assigned if omitted.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
+    /// Whether to encrypt the storage at rest.
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub encrypted: Option<bool>,
     /// `"1"` to mark as the boot disk.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boot_disk: Option<String>,
+    /// Backup rule for the storage.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub backup_rule: Option<crate::storage::BackupRule>,
+    /// Labels to assign to the storage.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
 }
@@ -620,12 +671,15 @@ pub struct CreateServerInterface {
     /// UUID of an existing network (required for private interfaces).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub network: Option<String>,
+    /// Whether to try booting through this interface.
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bootable: Option<bool>,
+    /// Whether source IP filtering is enabled.
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_ip_filtering: Option<bool>,
+    /// IP addresses to assign to the interface.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_addresses: Option<CreateServerInterfaceIpAddresses>,
 }
@@ -655,10 +709,13 @@ pub struct CreateServerInterfaceIpAddress {
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModifyRequest {
+    /// New hostname.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
+    /// New title.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
+    /// New pricing plan.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<String>,
     /// Number of CPU cores.
@@ -669,6 +726,7 @@ pub struct ModifyRequest {
     #[serde_as(as = "Option<DisplayFromStr>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub memory_amount: Option<u64>,
+    /// Boot device order.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boot_order: Option<String>,
     /// Firewall state (`"on"` or `"off"`).
@@ -678,21 +736,29 @@ pub struct ModifyRequest {
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<bool>,
+    /// Network interface card model.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nic_model: Option<NicModel>,
+    /// Video adapter model.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub video_model: Option<VideoModel>,
+    /// Server timezone identifier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub timezone: Option<String>,
+    /// Simple backup schedule string.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub simple_backup: Option<String>,
+    /// Labels to assign to the server.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<crate::types::common::Labels>,
+    /// Whether to enable remote access.
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_access_enabled: Option<bool>,
+    /// Remote access type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_access_type: Option<RemoteAccessType>,
+    /// Remote access password.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_access_password: Option<String>,
 }
@@ -711,6 +777,7 @@ pub struct StartRequest {
 /// Request to stop a server.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct StopRequest {
+    /// Stop type (`soft` or `hard`).
     pub stop_type: StopType,
     /// Timeout in seconds before the `timeout_action` is taken.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -720,10 +787,12 @@ pub struct StopRequest {
 /// Request to restart a server.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct RestartRequest {
+    /// Stop type (`soft` or `hard`).
     pub stop_type: StopType,
     /// Timeout in seconds before the `timeout_action` is taken.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+    /// Action to take when timeout expires (`destroy` or `ignore`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub timeout_action: Option<TimeoutAction>,
     /// Host ID to restart on (private cloud).
@@ -770,18 +839,21 @@ pub struct RebuildRequest {
     /// Title for the newly cloned storage.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub storage_title: Option<String>,
-    /// Address of the disk to detach during rebuild.
+    /// UUID of the disk to detach during rebuild.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub detach_disk: Option<String>,
     /// Whether to delete the detached disk.
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delete_detached_disk: Option<bool>,
+    /// Password delivery method (`none`/`email`/`sms`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub password_delivery: Option<String>,
+    /// Whether to encrypt the new storage.
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub encrypted: Option<bool>,
+    /// Login user configuration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub login_user: Option<LoginUser>,
 }
@@ -792,7 +864,9 @@ pub struct RebuildRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Group {
+    /// Unique server group identifier.
     pub uuid: String,
+    /// Server group title.
     pub title: String,
     /// Anti-affinity policy (`"yes"`, `"no"`, or `"strict"`).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -803,6 +877,7 @@ pub struct Group {
     /// Server UUIDs belonging to this group.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub servers: Option<GroupServers>,
+    /// Labels assigned to the group.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<crate::types::common::Labels>,
 }
@@ -828,10 +903,12 @@ pub struct GroupServers {
 /// Request to create a server group.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateGroupRequest {
+    /// Server group title.
     pub title: String,
     /// Anti-affinity policy (`"yes"`, `"no"`, or `"strict"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub anti_affinity: Option<String>,
+    /// Labels to assign to the group.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<crate::types::common::Labels>,
     /// Initial server UUIDs to add to the group.
@@ -842,12 +919,16 @@ pub struct CreateGroupRequest {
 /// Request to modify a server group.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModifyGroupRequest {
+    /// New group title.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
+    /// Anti-affinity policy (`"strict"`, `"yes"`, or `"no"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub anti_affinity: Option<String>,
+    /// Labels to assign to the group.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<crate::types::common::Labels>,
+    /// Server UUIDs to set in the group.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub servers: Option<GroupServers>,
 }
