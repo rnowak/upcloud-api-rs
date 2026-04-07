@@ -1,6 +1,65 @@
 use serde::{Deserialize, Serialize};
 
+pub use crate::types::common::{ConfiguredStatus, Family, NetworkType};
+
 // ─── Enums ────────────────────────────────────────────────────────────────────
+
+/// Frontend/Backend protocol mode.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum Mode {
+    Tcp,
+    Http,
+}
+
+/// Backend member type.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum MemberType {
+    Static,
+    Dynamic,
+}
+
+/// Health check protocol.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum HealthCheckType {
+    Tcp,
+    Http,
+}
+
+/// Frontend rule matching condition.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum MatchingCondition {
+    And,
+    Or,
+}
+
+/// Certificate bundle type.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum CertificateBundleType {
+    Manual,
+    Dynamic,
+    Authority,
+}
+
+/// Certificate key type.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum KeyType {
+    Rsa,
+    Ecdsa,
+}
+
+/// Outbound proxy protocol version.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum ProxyProtocolVersion {
+    V1,
+    V2,
+}
 
 /// Load balancer operational state.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -88,12 +147,12 @@ pub struct IPAddress {
 #[non_exhaustive]
 pub struct Network {
     pub name: String,
-    /// Network type (e.g. `"public"`, `"private"`, `"utility"`).
+    /// Network type.
     #[serde(rename = "type")]
-    pub network_type: String,
-    /// Address family (`"IPv4"` or `"IPv6"`).
+    pub network_type: NetworkType,
+    /// Address family.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub family: Option<String>,
+    pub family: Option<Family>,
     /// UUID of the SDN private network (required when type is `"private"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub uuid: Option<String>,
@@ -136,9 +195,9 @@ pub struct LoadBalancer {
     /// ISO 8601 last update timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
-    /// Desired service status (`"started"` or `"stopped"`).
+    /// Desired service status.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub configured_status: Option<String>,
+    pub configured_status: Option<ConfiguredStatus>,
     /// Auto-generated DNS name for the load balancer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dns_name: Option<String>,
@@ -163,9 +222,9 @@ pub struct LoadBalancer {
 #[non_exhaustive]
 pub struct NodeNetwork {
     pub name: String,
-    /// Network type (e.g. `"public"`, `"private"`).
+    /// Network type.
     #[serde(rename = "type")]
-    pub network_type: String,
+    pub network_type: NetworkType,
     /// IP addresses assigned on this network.
     #[serde(default)]
     pub ip_addresses: Vec<IPAddress>,
@@ -197,9 +256,9 @@ pub struct CertificateBundle {
     /// PEM-encoded intermediate CA certificates.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub intermediates: Option<String>,
-    /// Key type (e.g. `"RSA"`, `"ECDSA"`).
+    /// Key type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub key_type: Option<String>,
+    pub key_type: Option<KeyType>,
     /// Operational state of the certificate bundle.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub operational_state: Option<String>,
@@ -209,9 +268,9 @@ pub struct CertificateBundle {
     /// Certificate validity start date (ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub not_before: Option<String>,
-    /// Bundle type (e.g. `"manual"`, `"dynamic"`, `"authority"`).
+    /// Bundle type.
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub bundle_type: Option<String>,
+    pub bundle_type: Option<CertificateBundleType>,
     /// ISO 8601 creation timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
@@ -228,9 +287,9 @@ pub struct CertificateBundle {
 pub struct HealthCheck {
     /// Interval between health checks in seconds.
     pub interval: u32,
-    /// Health check type (e.g. `"tcp"`, `"http"`).
+    /// Health check type.
     #[serde(rename = "type")]
-    pub check_type: String,
+    pub check_type: HealthCheckType,
     /// Timeout for a single health check in seconds.
     pub timeout: u32,
     /// Number of consecutive failures before marking a member as down.
@@ -260,9 +319,9 @@ pub struct BackendMember {
     pub weight: u32,
     /// Maximum concurrent sessions for this member.
     pub max_sessions: u32,
-    /// Member type (e.g. `"static"`, `"dynamic"`).
+    /// Member type.
     #[serde(rename = "type")]
-    pub member_type: String,
+    pub member_type: MemberType,
     /// Whether this member is a backup (only receives traffic when primary members are down).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub backup: Option<bool>,
@@ -303,15 +362,15 @@ pub struct Backend {
     pub name: String,
     /// Name of the DNS resolver used for backend member hostnames.
     pub resolver: Option<String>,
-    /// Backend mode (e.g. `"tcp"`, `"http"`).
+    /// Backend mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mode: Option<String>,
+    pub mode: Option<Mode>,
     /// Cookie name used for cookie-based session persistence.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub http_cookie_name: Option<String>,
-    /// PROXY protocol version for outbound connections (e.g. `"v1"`, `"v2"`).
+    /// PROXY protocol version for outbound connections.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub outbound_proxy_protocol: Option<String>,
+    pub outbound_proxy_protocol: Option<ProxyProtocolVersion>,
     /// Health check configuration for backend members.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub health_check: Option<HealthCheck>,
@@ -354,9 +413,9 @@ pub struct FrontendRule {
     /// Actions to execute when matchers are satisfied.
     #[serde(default)]
     pub actions: Vec<serde_json::Value>,
-    /// How multiple matchers combine (`"and"` or `"or"`).
+    /// How multiple matchers combine.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub matching_condition: Option<String>,
+    pub matching_condition: Option<MatchingCondition>,
     /// ISO 8601 creation timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
@@ -372,8 +431,8 @@ pub struct Frontend {
     pub name: String,
     /// Port the frontend listens on.
     pub port: u16,
-    /// Frontend mode (e.g. `"tcp"`, `"http"`).
-    pub mode: String,
+    /// Frontend mode.
+    pub mode: Mode,
     /// Name of the backend that receives traffic by default.
     pub default_backend: String,
     /// Traffic rules applied to this frontend.
@@ -437,9 +496,9 @@ pub struct CreateRequest {
     /// Networks to attach to the load balancer.
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub networks: Vec<NetworkInput>,
-    /// Desired service status (`"started"` or `"stopped"`).
+    /// Desired service status.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub configured_status: Option<String>,
+    pub configured_status: Option<ConfiguredStatus>,
     /// Key-value labels.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
@@ -450,12 +509,12 @@ pub struct CreateRequest {
 #[non_exhaustive]
 pub struct NetworkInput {
     pub name: String,
-    /// Network type (e.g. `"public"`, `"private"`, `"utility"`).
+    /// Network type.
     #[serde(rename = "type")]
-    pub network_type: String,
-    /// Address family (`"IPv4"` or `"IPv6"`).
+    pub network_type: NetworkType,
+    /// Address family.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub family: Option<String>,
+    pub family: Option<Family>,
     /// UUID of an existing network to attach.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub uuid: Option<String>,
@@ -469,9 +528,9 @@ pub struct ModifyRequest {
     /// New service plan name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<String>,
-    /// Desired service status (`"started"` or `"stopped"`).
+    /// Desired service status.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub configured_status: Option<String>,
+    pub configured_status: Option<ConfiguredStatus>,
     /// Key-value labels.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
@@ -484,9 +543,9 @@ pub struct CreateBackendRequest {
     /// Name of the DNS resolver for backend member hostnames.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub resolver: Option<String>,
-    /// Backend mode (e.g. `"tcp"`, `"http"`).
+    /// Backend mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mode: Option<String>,
+    pub mode: Option<Mode>,
     /// Health check configuration for backend members.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub health_check: Option<HealthCheck>,
@@ -512,9 +571,9 @@ pub struct CreateBackendMemberRequest {
     /// Whether the member accepts traffic.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// Member type (e.g. `"static"`, `"dynamic"`).
+    /// Member type.
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub member_type: Option<String>,
+    pub member_type: Option<MemberType>,
 }
 
 /// Request to create a new frontend.
@@ -523,8 +582,8 @@ pub struct CreateFrontendRequest {
     pub name: String,
     /// Port the frontend listens on.
     pub port: u16,
-    /// Frontend mode (e.g. `"tcp"`, `"http"`).
-    pub mode: String,
+    /// Frontend mode.
+    pub mode: Mode,
     /// Name of the backend that receives traffic by default.
     pub default_backend: String,
     /// Networks to attach to the frontend.
@@ -598,9 +657,9 @@ pub struct ModifyFrontendRequest {
     /// Name of the backend that receives traffic by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_backend: Option<String>,
-    /// Frontend mode (e.g. `"tcp"`, `"http"`).
+    /// Frontend mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mode: Option<String>,
+    pub mode: Option<Mode>,
     /// Networks to attach to the frontend.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<Vec<FrontendNetwork>>,
@@ -670,9 +729,9 @@ pub struct ModifyFrontendRuleRequest {
     /// Actions to execute when matchers are satisfied.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub actions: Option<Vec<serde_json::Value>>,
-    /// How multiple matchers combine (`"and"` or `"or"`).
+    /// How multiple matchers combine.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub matching_condition: Option<String>,
+    pub matching_condition: Option<MatchingCondition>,
 }
 
 /// Request to fully replace a frontend rule.
@@ -687,9 +746,9 @@ pub struct ReplaceFrontendRuleRequest {
     /// Actions to execute when matchers are satisfied.
     #[serde(default)]
     pub actions: Vec<serde_json::Value>,
-    /// How multiple matchers combine (`"and"` or `"or"`).
+    /// How multiple matchers combine.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub matching_condition: Option<String>,
+    pub matching_condition: Option<MatchingCondition>,
 }
 
 /// Request to create a new certificate bundle.
@@ -705,9 +764,9 @@ pub struct CreateCertificateBundleRequest {
     /// PEM-encoded private key.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub private_key: Option<String>,
-    /// Bundle type (e.g. `"manual"`, `"dynamic"`, `"authority"`).
+    /// Bundle type.
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub bundle_type: Option<String>,
+    pub bundle_type: Option<CertificateBundleType>,
 }
 
 /// Request to modify an existing certificate bundle.
@@ -724,9 +783,9 @@ pub struct ModifyCertificateBundleRequest {
     /// PEM-encoded private key.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub private_key: Option<String>,
-    /// Bundle type (e.g. `"manual"`, `"dynamic"`, `"authority"`).
+    /// Bundle type.
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub bundle_type: Option<String>,
+    pub bundle_type: Option<CertificateBundleType>,
 }
 
 /// Request to modify an existing backend.

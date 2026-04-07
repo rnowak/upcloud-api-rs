@@ -34,7 +34,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("│  Frontends:");
             for fe in &frontends {
                 println!(
-                    "│    - {} (mode={}, port={}, default_backend={})",
+                    "│    - {} (mode={:?}, port={}, default_backend={})",
                     fe.name, fe.mode, fe.port, fe.default_backend
                 );
             }
@@ -56,7 +56,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 for m in &members {
                     let ip = if m.ip.is_empty() { "(dynamic)" } else { &m.ip };
                     println!(
-                        "│        {} [{}] {}:{} weight={} enabled={}",
+                        "│        {} [{:?}] {}:{} weight={} enabled={}",
                         m.name,
                         m.member_type,
                         ip,

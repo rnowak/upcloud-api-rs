@@ -31,7 +31,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         .iter()
                         .map(|s| {
                             format!(
-                                "{} ({})",
+                                "{} ({:?})",
                                 s.address,
                                 s.family,
                             )

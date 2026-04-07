@@ -196,7 +196,7 @@ fn deserialize_lb_list() {
     assert_eq!(lb.plan, "development");
     assert_eq!(lb.zone, "fi-hel1");
     assert_eq!(lb.state, OperationalState::Pending);
-    assert_eq!(lb.configured_status.as_deref(), Some("started"));
+    assert_eq!(lb.configured_status, Some(ConfiguredStatus::Started));
     assert_eq!(
         lb.created_at.as_deref(),
         Some("2022-10-04T16:11:14.569638Z")
@@ -246,7 +246,7 @@ fn deserialize_lb_list() {
     assert_eq!(m0.port, 8000);
     assert_eq!(m0.weight, 100);
     assert_eq!(m0.max_sessions, 1000);
-    assert_eq!(m0.member_type, "static");
+    assert_eq!(m0.member_type, MemberType::Static);
     assert_eq!(m0.backup, Some(false));
     assert_eq!(
         m0.created_at.as_deref(),
@@ -279,7 +279,7 @@ fn deserialize_lb_list() {
     assert_eq!(m1.port, 8000);
     assert_eq!(m1.weight, 100);
     assert_eq!(m1.max_sessions, 1000);
-    assert_eq!(m1.member_type, "dynamic");
+    assert_eq!(m1.member_type, MemberType::Dynamic);
     assert!(m1.backup.is_none());
     assert!(m1.created_at.is_none());
     assert!(m1.updated_at.is_none());
@@ -289,7 +289,7 @@ fn deserialize_lb_list() {
     let fe = &lb.frontends[0];
     assert_eq!(fe.name, "example-frontend");
     assert_eq!(fe.port, 443);
-    assert_eq!(fe.mode, "http");
+    assert_eq!(fe.mode, Mode::Http);
     assert_eq!(fe.default_backend, "example-backend-1");
     assert_eq!(
         fe.created_at.as_deref(),
@@ -333,16 +333,16 @@ fn deserialize_lb_list() {
     // Networks
     assert_eq!(lb.networks.len(), 2);
     assert_eq!(lb.networks[0].name, "example-network-1");
-    assert_eq!(lb.networks[0].network_type, "public");
-    assert_eq!(lb.networks[0].family.as_deref(), Some("IPv4"));
+    assert_eq!(lb.networks[0].network_type, NetworkType::Public);
+    assert_eq!(lb.networks[0].family, Some(Family::IPv4));
     assert_eq!(
         lb.networks[0].dns_name.as_deref(),
         Some("lb-0a498284629e4629a55d0415a6e89dda-1.upcloudlb.com")
     );
     assert!(lb.networks[0].uuid.is_none());
     assert_eq!(lb.networks[1].name, "example-network-2");
-    assert_eq!(lb.networks[1].network_type, "private");
-    assert_eq!(lb.networks[1].family.as_deref(), Some("IPv4"));
+    assert_eq!(lb.networks[1].network_type, NetworkType::Private);
+    assert_eq!(lb.networks[1].family, Some(Family::IPv4));
     assert_eq!(
         lb.networks[1].dns_name.as_deref(),
         Some("lb-0a498284629e4629a55d0415a6e89dda-2.upcloudlb.com")
@@ -432,16 +432,16 @@ fn deserialize_create_lb_request() {
     assert_eq!(req.name, "example-service");
     assert_eq!(req.plan, "development");
     assert_eq!(req.zone, "fi-hel1");
-    assert_eq!(req.configured_status.as_deref(), Some("started"));
+    assert_eq!(req.configured_status, Some(ConfiguredStatus::Started));
     assert!(req.labels.is_none());
     assert_eq!(req.networks.len(), 2);
     assert_eq!(req.networks[0].name, "example-network-1");
-    assert_eq!(req.networks[0].network_type, "public");
-    assert_eq!(req.networks[0].family.as_deref(), Some("IPv4"));
+    assert_eq!(req.networks[0].network_type, NetworkType::Public);
+    assert_eq!(req.networks[0].family, Some(Family::IPv4));
     assert!(req.networks[0].uuid.is_none());
     assert_eq!(req.networks[1].name, "example-network-2");
-    assert_eq!(req.networks[1].network_type, "private");
-    assert_eq!(req.networks[1].family.as_deref(), Some("IPv4"));
+    assert_eq!(req.networks[1].network_type, NetworkType::Private);
+    assert_eq!(req.networks[1].family, Some(Family::IPv4));
     assert_eq!(
         req.networks[1].uuid.as_deref(),
         Some("03631160-d57a-4926-ad48-a2f828229dcb")
@@ -592,7 +592,7 @@ fn deserialize_lb_service_details() {
     assert_eq!(lb.plan, "development");
     assert_eq!(lb.zone, "fi-hel1");
     assert_eq!(lb.state, OperationalState::Pending);
-    assert_eq!(lb.configured_status.as_deref(), Some("started"));
+    assert_eq!(lb.configured_status, Some(ConfiguredStatus::Started));
     assert_eq!(
         lb.dns_name.as_deref(),
         Some("lb-0a498284629e4629a55d0415a6e89dda-1.upcloudlb.com")
@@ -639,7 +639,7 @@ fn deserialize_lb_service_details() {
     assert_eq!(m.port, 8000);
     assert_eq!(m.weight, 100);
     assert_eq!(m.max_sessions, 1000);
-    assert_eq!(m.member_type, "static");
+    assert_eq!(m.member_type, MemberType::Static);
     assert_eq!(m.backup, Some(false));
     assert_eq!(m.created_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
     assert_eq!(m.updated_at.as_deref(), Some("2022-10-04T16:11:14.569638Z"));
@@ -649,7 +649,7 @@ fn deserialize_lb_service_details() {
     let fe = &lb.frontends[0];
     assert_eq!(fe.name, "example-frontend");
     assert_eq!(fe.port, 443);
-    assert_eq!(fe.mode, "http");
+    assert_eq!(fe.mode, Mode::Http);
     assert_eq!(fe.default_backend, "example-backend-1");
     assert_eq!(
         fe.created_at.as_deref(),
@@ -710,16 +710,16 @@ fn deserialize_lb_service_details() {
     // Networks
     assert_eq!(lb.networks.len(), 2);
     assert_eq!(lb.networks[0].name, "example-network-1");
-    assert_eq!(lb.networks[0].network_type, "public");
-    assert_eq!(lb.networks[0].family.as_deref(), Some("IPv4"));
+    assert_eq!(lb.networks[0].network_type, NetworkType::Public);
+    assert_eq!(lb.networks[0].family, Some(Family::IPv4));
     assert_eq!(
         lb.networks[0].dns_name.as_deref(),
         Some("lb-1.upcloudlb.com")
     );
     assert!(lb.networks[0].uuid.is_none());
     assert_eq!(lb.networks[1].name, "example-network-2");
-    assert_eq!(lb.networks[1].network_type, "private");
-    assert_eq!(lb.networks[1].family.as_deref(), Some("IPv4"));
+    assert_eq!(lb.networks[1].network_type, NetworkType::Private);
+    assert_eq!(lb.networks[1].family, Some(Family::IPv4));
     assert_eq!(
         lb.networks[1].dns_name.as_deref(),
         Some("lb-2.upcloudlb.com")
@@ -767,7 +767,7 @@ fn deserialize_modify_lb_request() {
     let req: ModifyRequest = serde_json::from_str(MODIFY_LB_REQUEST_JSON).unwrap();
     assert_eq!(req.name.as_deref(), Some("example-service"));
     assert_eq!(req.plan.as_deref(), Some("development"));
-    assert_eq!(req.configured_status.as_deref(), Some("started"));
+    assert_eq!(req.configured_status, Some(ConfiguredStatus::Started));
     assert!(req.labels.is_none());
 }
 
@@ -829,7 +829,7 @@ fn deserialize_lb_backend_list() {
     assert_eq!(be.tls_configs.len(), 0);
     assert_eq!(be.members.len(), 1);
     assert_eq!(be.members[0].name, "member.example.com");
-    assert_eq!(be.members[0].member_type, "dynamic");
+    assert_eq!(be.members[0].member_type, MemberType::Dynamic);
     assert_eq!(be.members[0].ip, "");
     assert!(be.members[0].enabled);
     assert_eq!(be.members[0].port, 8000);
@@ -908,7 +908,7 @@ fn deserialize_lb_backend_detail() {
     let m = &be.members[0];
     assert_eq!(m.name, "example-member-1");
     assert_eq!(m.ip, "172.16.1.4");
-    assert_eq!(m.member_type, "static");
+    assert_eq!(m.member_type, MemberType::Static);
     assert!(m.enabled);
     assert_eq!(m.port, 8000);
     assert_eq!(m.weight, 100);
@@ -979,7 +979,7 @@ fn deserialize_lb_member_list() {
     let members: Vec<BackendMember> = serde_json::from_str(LB_MEMBER_LIST_JSON).unwrap();
     assert_eq!(members.len(), 2);
     assert_eq!(members[0].name, "member.example.com");
-    assert_eq!(members[0].member_type, "dynamic");
+    assert_eq!(members[0].member_type, MemberType::Dynamic);
     assert_eq!(members[0].ip, "");
     assert!(members[0].enabled);
     assert_eq!(members[0].port, 8000);
@@ -995,7 +995,7 @@ fn deserialize_lb_member_list() {
         Some("2022-02-11T17:33:08.490581Z")
     );
     assert_eq!(members[1].name, "example-member-1");
-    assert_eq!(members[1].member_type, "static");
+    assert_eq!(members[1].member_type, MemberType::Static);
     assert_eq!(members[1].ip, "172.16.1.4");
     assert!(members[1].enabled);
     assert_eq!(members[1].port, 8000);
@@ -1039,7 +1039,7 @@ fn deserialize_lb_member_detail() {
     assert_eq!(m.port, 8000);
     assert_eq!(m.weight, 100);
     assert_eq!(m.max_sessions, 1000);
-    assert_eq!(m.member_type, "static");
+    assert_eq!(m.member_type, MemberType::Static);
     assert_eq!(m.backup, Some(false));
     assert_eq!(m.created_at.as_deref(), Some("2021-12-07T13:58:30.817272Z"));
     assert_eq!(m.updated_at.as_deref(), Some("2022-02-11T17:33:08.490581Z"));
@@ -1110,7 +1110,7 @@ fn deserialize_lb_frontend_list() {
     let fe = &frontends[0];
     assert_eq!(fe.name, "example-frontend");
     assert_eq!(fe.port, 443);
-    assert_eq!(fe.mode, "http");
+    assert_eq!(fe.mode, Mode::Http);
     assert_eq!(fe.default_backend, "example-backend-1");
     assert_eq!(
         fe.created_at.as_deref(),
@@ -1129,7 +1129,7 @@ fn deserialize_lb_frontend_list() {
     assert_eq!(fe.rules.len(), 1);
     assert_eq!(fe.rules[0].name, "example-rule-1");
     assert_eq!(fe.rules[0].priority, 100);
-    assert_eq!(fe.rules[0].matching_condition.as_deref(), Some("and"));
+    assert_eq!(fe.rules[0].matching_condition, Some(MatchingCondition::And));
     assert_eq!(
         fe.rules[0].created_at.as_deref(),
         Some("2021-12-07T13:58:30.817272Z")
@@ -1229,7 +1229,7 @@ fn deserialize_lb_frontend_detail() {
     let fe: Frontend = serde_json::from_str(LB_FRONTEND_DETAIL_JSON).unwrap();
     assert_eq!(fe.name, "example-frontend");
     assert_eq!(fe.port, 443);
-    assert_eq!(fe.mode, "http");
+    assert_eq!(fe.mode, Mode::Http);
     assert_eq!(fe.default_backend, "example-backend-1");
     assert_eq!(
         fe.created_at.as_deref(),
@@ -1246,7 +1246,7 @@ fn deserialize_lb_frontend_detail() {
     assert_eq!(fe.rules.len(), 1);
     assert_eq!(fe.rules[0].name, "example-rule-1");
     assert_eq!(fe.rules[0].priority, 100);
-    assert_eq!(fe.rules[0].matching_condition.as_deref(), Some("and"));
+    assert_eq!(fe.rules[0].matching_condition, Some(MatchingCondition::And));
     assert_eq!(
         fe.rules[0].created_at.as_deref(),
         Some("2021-12-07T13:58:30.817272Z")
@@ -1409,7 +1409,7 @@ fn deserialize_lb_rule_list() {
     assert_eq!(rules.len(), 1);
     assert_eq!(rules[0].name, "example-rule-1");
     assert_eq!(rules[0].priority, 100);
-    assert_eq!(rules[0].matching_condition.as_deref(), Some("and"));
+    assert_eq!(rules[0].matching_condition, Some(MatchingCondition::And));
     assert_eq!(
         rules[0].created_at.as_deref(),
         Some("2021-12-07T13:58:30.817272Z")
@@ -1465,7 +1465,7 @@ fn deserialize_lb_rule_detail() {
     let rule: FrontendRule = serde_json::from_str(LB_RULE_DETAIL_JSON).unwrap();
     assert_eq!(rule.name, "example-rule-1");
     assert_eq!(rule.priority, 100);
-    assert_eq!(rule.matching_condition.as_deref(), Some("and"));
+    assert_eq!(rule.matching_condition, Some(MatchingCondition::And));
     assert_eq!(
         rule.created_at.as_deref(),
         Some("2021-12-07T13:58:30.817272Z")
@@ -1647,7 +1647,7 @@ const CREATE_FRONTEND_REQUEST_JSON: &str = r#"
 fn deserialize_create_frontend_request() {
     let req: CreateFrontendRequest = serde_json::from_str(CREATE_FRONTEND_REQUEST_JSON).unwrap();
     assert_eq!(req.name, "example-frontend");
-    assert_eq!(req.mode, "http");
+    assert_eq!(req.mode, Mode::Http);
     assert_eq!(req.port, 443);
     assert_eq!(req.default_backend, "example-backend");
     assert_eq!(req.networks.len(), 1);
@@ -1813,11 +1813,11 @@ fn deserialize_certificate_bundle_detail() {
         cb.intermediates.as_deref(),
         Some("LS0tS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0t")
     );
-    assert_eq!(cb.key_type.as_deref(), Some("rsa"));
+    assert_eq!(cb.key_type, Some(KeyType::Rsa));
     assert_eq!(cb.operational_state.as_deref(), Some("idle"));
     assert_eq!(cb.not_after.as_deref(), Some("2022-02-13T05:33:43Z"));
     assert_eq!(cb.not_before.as_deref(), Some("2022-02-12T05:32:43Z"));
-    assert_eq!(cb.bundle_type.as_deref(), Some("dynamic"));
+    assert_eq!(cb.bundle_type, Some(CertificateBundleType::Dynamic));
     assert_eq!(
         cb.created_at.as_deref(),
         Some("2022-02-11T17:31:38.202398Z")
@@ -1874,8 +1874,8 @@ fn deserialize_certificate_bundle_list() {
     assert_eq!(bundles.len(), 2);
     assert_eq!(bundles[0].uuid, "bf571589-7378-41f8-879e-5505613b070d");
     assert_eq!(bundles[0].name, "example-manual-certificate");
-    assert_eq!(bundles[0].bundle_type.as_deref(), Some("manual"));
-    assert_eq!(bundles[0].key_type.as_deref(), Some("ecdsa"));
+    assert_eq!(bundles[0].bundle_type, Some(CertificateBundleType::Manual));
+    assert_eq!(bundles[0].key_type, Some(KeyType::Ecdsa));
     assert_eq!(
         bundles[0].not_after.as_deref(),
         Some("2031-10-20T12:10:36Z")
@@ -1884,8 +1884,8 @@ fn deserialize_certificate_bundle_list() {
     assert!(bundles[0].intermediates.is_none());
     assert_eq!(bundles[1].uuid, "0aded5c1-c7a3-498a-b9c8-a871611c47a2");
     assert_eq!(bundles[1].name, "example-dynamic-certificate");
-    assert_eq!(bundles[1].bundle_type.as_deref(), Some("dynamic"));
-    assert_eq!(bundles[1].key_type.as_deref(), Some("rsa"));
+    assert_eq!(bundles[1].bundle_type, Some(CertificateBundleType::Dynamic));
+    assert_eq!(bundles[1].key_type, Some(KeyType::Rsa));
     assert!(bundles[1].intermediates.is_some());
 }
 
@@ -1950,7 +1950,7 @@ fn deserialize_frontend_detail_from_docs() {
     let fe: Frontend = serde_json::from_str(FRONTEND_DETAIL_FROM_DOCS_JSON).unwrap();
     assert_eq!(fe.name, "example-frontend");
     assert_eq!(fe.port, 443);
-    assert_eq!(fe.mode, "http");
+    assert_eq!(fe.mode, Mode::Http);
     assert_eq!(fe.default_backend, "example-backend-1");
     assert_eq!(
         fe.created_at.as_deref(),
@@ -1967,7 +1967,7 @@ fn deserialize_frontend_detail_from_docs() {
     assert_eq!(fe.rules.len(), 1);
     assert_eq!(fe.rules[0].name, "example-rule-1");
     assert_eq!(fe.rules[0].priority, 100);
-    assert_eq!(fe.rules[0].matching_condition.as_deref(), Some("and"));
+    assert_eq!(fe.rules[0].matching_condition, Some(MatchingCondition::And));
     assert_eq!(fe.rules[0].matchers.len(), 1);
     assert_eq!(fe.rules[0].actions.len(), 1);
     assert_eq!(fe.tls_configs.len(), 1);
@@ -2008,7 +2008,7 @@ fn serialize_modify_frontend_request() {
     let req = ModifyFrontendRequest {
         name: Some("example-frontend".to_string()),
         default_backend: Some("example-backend".to_string()),
-        mode: Some("http".to_string()),
+        mode: Some(Mode::Http),
         networks: Some(vec![FrontendNetwork {
             name: "example-network-2".to_string(),
         }]),
@@ -2064,7 +2064,7 @@ fn serialize_replace_frontend_rule_request() {
             "type": "use_backend",
             "action_use_backend": {"backend": "example-backend-2"}
         })],
-        matching_condition: Some("and".to_string()),
+        matching_condition: Some(MatchingCondition::And),
     };
     let json = serde_json::to_value(&req).unwrap();
     assert_eq!(json["name"], "example-rule-1");
@@ -2084,7 +2084,7 @@ fn serialize_create_certificate_bundle_request() {
         certificate: Some("LS0LS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0t".to_string()),
         intermediates: Some("LS0tS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0t".to_string()),
         private_key: Some("LS0tL1CRUdJTiBQUklWQVRFIEtFWS0tLS0t".to_string()),
-        bundle_type: Some("manual".to_string()),
+        bundle_type: Some(CertificateBundleType::Manual),
     };
     let json = serde_json::to_value(&req).unwrap();
     assert_eq!(json["name"], "example-manual-certificate");
@@ -2170,11 +2170,11 @@ fn deserialize_node() {
     assert_eq!(node.operational_state.as_deref(), Some("running"));
     assert_eq!(node.networks.len(), 2);
     assert_eq!(node.networks[0].name, "example-network-1");
-    assert_eq!(node.networks[0].network_type, "public");
+    assert_eq!(node.networks[0].network_type, NetworkType::Public);
     assert_eq!(node.networks[0].ip_addresses.len(), 1);
     assert_eq!(node.networks[0].ip_addresses[0].address, "100.127.5.146");
     assert_eq!(node.networks[1].name, "example-network-2");
-    assert_eq!(node.networks[1].network_type, "private");
+    assert_eq!(node.networks[1].network_type, NetworkType::Private);
     assert_eq!(node.networks[1].ip_addresses.len(), 2);
     assert_eq!(node.networks[1].ip_addresses[0].address, "172.16.1.44");
     assert_eq!(node.networks[1].ip_addresses[1].address, "172.16.1.45");

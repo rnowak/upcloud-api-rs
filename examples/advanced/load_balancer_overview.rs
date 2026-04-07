@@ -33,7 +33,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("║  DNS:        {}", svc.dns_name.as_deref().unwrap_or("—"));
         println!(
             "║  Status:     {}",
-            svc.configured_status.as_deref().unwrap_or("—")
+            svc.configured_status
+                .map(|s| format!("{:?}", s))
+                .as_deref()
+                .unwrap_or("—")
         );
 
         if let (Some(dow), Some(time)) = (&svc.maintenance_dow, &svc.maintenance_time) {
@@ -46,9 +49,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         } else {
             println!("║  Networks:");
             for net in &svc.networks {
-                let family = net.family.as_deref().unwrap_or("—");
+                let family = net.family.map(|f| format!("{:?}", f));
+                let family = family.as_deref().unwrap_or("—");
                 let dns = net.dns_name.as_deref().unwrap_or("—");
-                println!("║    ▸ {} [{}] family={} dns={}", net.name, net.network_type, family, dns);
+                println!("║    ▸ {} [{:?}] family={} dns={}", net.name, net.network_type, family, dns);
             }
         }
 
@@ -74,7 +78,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         let ips: Vec<&str> =
                             net.ip_addresses.iter().map(|ip| ip.address.as_str()).collect();
                         println!(
-                            "║      {} [{}]: {}",
+                            "║      {} [{:?}]: {}",
                             net.name,
                             net.network_type,
                             if ips.is_empty() {
@@ -112,7 +116,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("║  Frontends:");
             for fe in &frontends {
                 println!(
-                    "║  ┌─ {} (mode={}, port={}, → backend={})",
+                    "║  ┌─ {} (mode={:?}, port={}, → backend={})",
                     fe.name, fe.mode, fe.port, fe.default_backend
                 );
 
@@ -135,7 +139,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if !fe.rules.is_empty() {
                     println!("║  │  Rules:");
                     for rule in &fe.rules {
-                        let cond = rule.matching_condition.as_deref().unwrap_or("and");
+                        let cond = rule.matching_condition
+                            .map(|c| format!("{:?}", c));
+                        let cond = cond.as_deref().unwrap_or("and");
                         println!(
                             "║  │    ▸ {} (priority={}, match={}, {} matcher(s), {} action(s))",
                             rule.name,
@@ -159,7 +165,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("║");
             println!("║  Backends:");
             for be in &backends {
-                let mode = be.mode.as_deref().unwrap_or("—");
+                let mode = be.mode.map(|m| format!("{:?}", m));
+                let mode = mode.as_deref().unwrap_or("—");
                 let resolver = be.resolver.as_deref().unwrap_or("—");
 
                 println!("║  ┌─ {} (mode={}, resolver={})", be.name, mode, resolver);
@@ -167,7 +174,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if let Some(hc) = &be.health_check {
                     let path = hc.http_path.as_deref().unwrap_or("—");
                     println!(
-                        "║  │  Health check: type={}, interval={}s, timeout={}s, \
+                        "║  │  Health check: type={:?}, interval={}s, timeout={}s, \
                          healthy={}, unhealthy={}, path={}",
                         hc.check_type,
                         hc.interval,
@@ -207,7 +214,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         let status = if m.enabled { "✓" } else { "✗" };
 
                         println!(
-                            "║  │    {} {} [{}] {}:{} w={} max_sess={}{backup}",
+                            "║  │    {} {} [{:?}] {}:{} w={} max_sess={}{backup}",
                             status, m.name, m.member_type, ip, m.port, m.weight, m.max_sessions,
                         );
 
