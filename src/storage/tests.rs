@@ -719,8 +719,12 @@ const DETACH_STORAGE_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_detach_storage_request() {
-    let v: serde_json::Value = serde_json::from_str(DETACH_STORAGE_REQUEST_JSON).unwrap();
-    assert_eq!(v["storage_device"]["address"], "scsi:0:0");
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        storage_device: crate::server::DetachStorageRequest,
+    }
+    let req: Wrapper = serde_json::from_str(DETACH_STORAGE_REQUEST_JSON).unwrap();
+    assert_eq!(req.storage_device.address, "scsi:0:0");
 }
 
 // Source: https://developers.upcloud.com/1.3/9-storages/
@@ -866,11 +870,12 @@ const LOAD_CDROM_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_load_cdrom_request() {
-    let v: serde_json::Value = serde_json::from_str(LOAD_CDROM_REQUEST_JSON).unwrap();
-    assert_eq!(
-        v["storage_device"]["storage"],
-        "01000000-0000-4000-8000-000060010101"
-    );
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        storage_device: crate::server::LoadCdromRequest,
+    }
+    let req: Wrapper = serde_json::from_str(LOAD_CDROM_REQUEST_JSON).unwrap();
+    assert_eq!(req.storage_device.storage, "01000000-0000-4000-8000-000060010101");
 }
 
 // Source: https://developers.upcloud.com/1.3/9-storages/
