@@ -1,5 +1,4 @@
 use super::*;
-
 // Source: https://developers.upcloud.com/1.3/12-tags/#list-existing-tags
 const LIST_TAGS_JSON: &str = r#"
     {
@@ -33,21 +32,6 @@ const LIST_TAGS_JSON: &str = r#"
     }
 "#;
 
-// Source: https://developers.upcloud.com/1.3/12-tags/#create-a-new-tag
-const CREATE_TAG_RESPONSE_JSON: &str = r#"
-    {
-        "tag": {
-            "name": "DEV",
-            "description": "Development servers",
-            "servers": {
-                "server": [
-                    "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
-                ]
-            }
-        }
-    }
-"#;
-
 #[test]
 fn deserialize_tag_list() {
     let resp: TagListResponse = serde_json::from_str(LIST_TAGS_JSON).unwrap();
@@ -70,6 +54,20 @@ fn deserialize_tag_list() {
     assert_eq!(tags[2].description.as_deref(), Some("Production servers"));
     assert!(tags[2].servers.server.is_empty());
 }
+// Source: https://developers.upcloud.com/1.3/12-tags/#create-a-new-tag
+const CREATE_TAG_RESPONSE_JSON: &str = r#"
+    {
+        "tag": {
+            "name": "DEV",
+            "description": "Development servers",
+            "servers": {
+                "server": [
+                    "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
+                ]
+            }
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_tag_detail() {
@@ -83,8 +81,6 @@ fn deserialize_tag_detail() {
     );
     assert_eq!(tag.description.as_deref(), Some("Development servers"));
 }
-
-// ─── Create tag request ─────────────────────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/12-tags/#create-a-new-tag
 const CREATE_TAG_REQUEST_JSON: &str = r#"
@@ -101,6 +97,8 @@ const CREATE_TAG_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// ─── Create tag request ─────────────────────────────────────────────────
+
 #[test]
 fn deserialize_create_tag_request() {
     let resp: TagResponse = serde_json::from_str(CREATE_TAG_REQUEST_JSON).unwrap();
@@ -113,8 +111,6 @@ fn deserialize_create_tag_request() {
         "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
     );
 }
-
-// ─── Create tag response ────────────────────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/12-tags/#create-a-new-tag
 const CREATE_TAG_RESP_JSON: &str = r#"
@@ -131,6 +127,8 @@ const CREATE_TAG_RESP_JSON: &str = r#"
     }
 "#;
 
+// ─── Create tag response ────────────────────────────────────────────────
+
 #[test]
 fn deserialize_create_tag_response() {
     let resp: TagResponse = serde_json::from_str(CREATE_TAG_RESP_JSON).unwrap();
@@ -142,8 +140,6 @@ fn deserialize_create_tag_response() {
     );
     assert_eq!(resp.tag.description.as_deref(), Some("Development servers"));
 }
-
-// ─── Modify tag request ─────────────────────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/12-tags/#modify-existing-tag
 const MODIFY_TAG_REQUEST_JSON: &str = r#"
@@ -160,6 +156,8 @@ const MODIFY_TAG_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// ─── Modify tag request ─────────────────────────────────────────────────
+
 #[test]
 fn deserialize_modify_tag_request() {
     let resp: TagResponse = serde_json::from_str(MODIFY_TAG_REQUEST_JSON).unwrap();
@@ -171,8 +169,6 @@ fn deserialize_modify_tag_request() {
         "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
     );
 }
-
-// ─── Modify tag response ────────────────────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/12-tags/#modify-existing-tag
 const MODIFY_TAG_RESP_JSON: &str = r#"
@@ -189,6 +185,8 @@ const MODIFY_TAG_RESP_JSON: &str = r#"
     }
 "#;
 
+// ─── Modify tag response ────────────────────────────────────────────────
+
 #[test]
 fn deserialize_modify_tag_response() {
     let resp: TagResponse = serde_json::from_str(MODIFY_TAG_RESP_JSON).unwrap();
@@ -200,8 +198,6 @@ fn deserialize_modify_tag_response() {
         "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
     );
 }
-
-// ─── Assign tag to server response ──────────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/12-tags/#assign-tag-to-a-server
 const ASSIGN_TAG_SERVER_JSON: &str = r#"
@@ -267,6 +263,8 @@ const ASSIGN_TAG_SERVER_JSON: &str = r#"
     }
 "#;
 
+// ─── Assign tag to server response ──────────────────────────────────────
+
 #[test]
 fn deserialize_assign_tag_server_response() {
     let v: serde_json::Value = serde_json::from_str(ASSIGN_TAG_SERVER_JSON).unwrap();
@@ -322,8 +320,6 @@ fn deserialize_assign_tag_server_response() {
     assert_eq!(storages[0]["storage_title"], "Debian from a template");
     assert_eq!(storages[0]["type"], "disk");
 }
-
-// ─── Remove tag from server response ────────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/12-tags/#remove-tag-from-server
 const REMOVE_TAG_SERVER_JSON: &str = r#"
@@ -387,6 +383,8 @@ const REMOVE_TAG_SERVER_JSON: &str = r#"
         }
     }
 "#;
+
+// ─── Remove tag from server response ────────────────────────────────────
 
 #[test]
 fn deserialize_remove_tag_server_response() {

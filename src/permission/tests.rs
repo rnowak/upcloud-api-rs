@@ -1,5 +1,4 @@
 use super::*;
-
 // Source: https://developers.upcloud.com/1.3/18-permissions/#get-permissions
 const PERMISSION_LIST_JSON: &str = r#"
     {
@@ -124,8 +123,6 @@ struct RevokePermissionBody {
     permission: RevokeRequest,
 }
 
-// ─── Additional deserialization tests ──────────────────────────────────
-
 // Source: https://developers.upcloud.com/1.3/18-permissions/#get-permissions
 const PERMISSION_LIST_FULL_JSON: &str = r#"
     {
@@ -199,6 +196,8 @@ const PERMISSION_LIST_FULL_JSON: &str = r#"
     }
 "#;
 
+// ─── Additional deserialization tests ──────────────────────────────────
+
 #[test]
 fn deserialize_permission_list_full() {
     let resp: PermissionListResponse = serde_json::from_str(PERMISSION_LIST_FULL_JSON).unwrap();
@@ -266,7 +265,6 @@ fn deserialize_permission_list_full() {
     assert_eq!(perms[11].target_identifier, "*");
     assert_eq!(perms[11].user, "main_account_user1");
 }
-
 // Source: https://developers.upcloud.com/1.3/18-permissions/#get-permissions
 const PERMISSION_LIST_SUBACCOUNT_JSON: &str = r#"
     {
@@ -324,7 +322,6 @@ fn deserialize_permission_list_subaccount() {
     assert!(perms[2].options.is_some());
     assert_eq!(perms[2].options.as_ref().unwrap()["storage"], "yes");
 }
-
 // Source: https://developers.upcloud.com/1.3/18-permissions/#grant-permission
 const GRANT_PERMISSION_REQUEST_JSON: &str = r#"
     {
@@ -349,7 +346,6 @@ fn deserialize_grant_permission_request() {
     assert_eq!(perm.user, "sub_account_user1");
     assert!(perm.options.is_some());
 }
-
 // Source: https://developers.upcloud.com/1.3/18-permissions/#grant-permission
 const GRANT_PERMISSION_RESPONSE_JSON: &str = r#"
     {
@@ -374,7 +370,6 @@ fn deserialize_grant_permission_response() {
     assert_eq!(perm.user, "sub_account_user1");
     assert!(perm.options.is_some());
 }
-
 // Source: https://developers.upcloud.com/1.3/18-permissions/#revoke-permission
 const REVOKE_PERMISSION_REQUEST_JSON: &str = r#"
     {
@@ -397,7 +392,6 @@ fn deserialize_revoke_permission_request() {
     assert_eq!(perm.target_type, TargetType::ManagedLoadbalancer);
     assert_eq!(perm.user, "sub_account_user1");
 }
-
 // Source: https://developers.upcloud.com/1.3/18-permissions/#get-permissions
 const EMPTY_PERMISSION_LIST_JSON: &str = r#"
     {

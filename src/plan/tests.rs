@@ -1,5 +1,4 @@
 use super::*;
-
 // Source: https://developers.upcloud.com/1.3/7-plans/#list-available-plans
 const PLAN_LIST_JSON: &str = r#"
     {
@@ -30,24 +29,6 @@ const PLAN_LIST_JSON: &str = r#"
                     "storage_size": "0",
                     "storage_tier": null,
                     "gpu_model": "NVIDIA L40S"
-                }
-            ]
-        }
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/8-servers/#list-server-configurations
-const SERVER_SIZE_LIST_JSON: &str = r#"
-    {
-        "server_sizes": {
-            "server_size": [
-                {
-                    "core_number": "1",
-                    "memory_amount": "1024"
-                },
-                {
-                    "core_number": "2",
-                    "memory_amount": "2048"
                 }
             ]
         }
@@ -91,6 +72,23 @@ fn deserialize_gpu_plan_null_storage_tier() {
     assert_eq!(gpu_plan.gpu_amount, Some(2));
     assert_eq!(gpu_plan.gpu_model.as_deref(), Some("NVIDIA L40S"));
 }
+// Source: https://developers.upcloud.com/1.3/8-servers/#list-server-configurations
+const SERVER_SIZE_LIST_JSON: &str = r#"
+    {
+        "server_sizes": {
+            "server_size": [
+                {
+                    "core_number": "1",
+                    "memory_amount": "1024"
+                },
+                {
+                    "core_number": "2",
+                    "memory_amount": "2048"
+                }
+            ]
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_server_size_list() {

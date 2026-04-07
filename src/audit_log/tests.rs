@@ -1,5 +1,4 @@
 use super::*;
-
 // Source: https://developers.upcloud.com/1.3/22-audit-logs/#list-audit-logs
 const AUDIT_LOG_LIST_JSON: &str = r#"
     {
@@ -26,31 +25,6 @@ const AUDIT_LOG_LIST_JSON: &str = r#"
                 "ip_address": "",
                 "resource_id": "00000000-0000-0000-0000-000000000000"
             }
-        ]
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/22-audit-logs/#list-options-to-filter-by
-const AUDIT_FILTER_OPTIONS_JSON: &str = r#"
-    {
-        "resource_types": [
-            "account",
-            "auth",
-            "server",
-            "storage"
-        ],
-        "actions": [
-            "create",
-            "read",
-            "update",
-            "delete",
-            "login",
-            "logout"
-        ],
-        "origins": [
-            "api",
-            "gui",
-            "upcloud_internal"
         ]
     }
 "#;
@@ -90,6 +64,30 @@ fn deserialize_audit_log_list() {
     );
     assert!(second.request_id.is_none());
 }
+// Source: https://developers.upcloud.com/1.3/22-audit-logs/#list-options-to-filter-by
+const AUDIT_FILTER_OPTIONS_JSON: &str = r#"
+    {
+        "resource_types": [
+            "account",
+            "auth",
+            "server",
+            "storage"
+        ],
+        "actions": [
+            "create",
+            "read",
+            "update",
+            "delete",
+            "login",
+            "logout"
+        ],
+        "origins": [
+            "api",
+            "gui",
+            "upcloud_internal"
+        ]
+    }
+"#;
 
 #[test]
 fn deserialize_audit_filter_options() {

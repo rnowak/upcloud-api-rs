@@ -50,6 +50,8 @@ struct CreateRequestBody {
     server: CreateRequest,
 }
 
+/// Full "Get server details" response from the UpCloud 1.3 docs,
+/// including GPU devices, storage_encrypted, remote_access_host/port.
 // Source: https://developers.upcloud.com/1.3/8-servers/#get-server-details
 const GET_SERVER_DETAILS_JSON: &str = r#"
     {
@@ -184,8 +186,6 @@ const GET_SERVER_DETAILS_JSON: &str = r#"
     }
 "#;
 
-/// Full "Get server details" response from the UpCloud 1.3 docs,
-/// including GPU devices, storage_encrypted, remote_access_host/port.
 #[test]
 fn deserialize_get_server_details() {
     let resp: ServerResponse =
@@ -236,6 +236,7 @@ fn deserialize_get_server_details() {
     assert_eq!(labels.label[0].key, "env");
 }
 
+/// List servers response from docs.
 // Source: https://developers.upcloud.com/1.3/8-servers/#list-servers
 const LIST_SERVERS_JSON: &str = r#"
     {
@@ -293,7 +294,6 @@ const LIST_SERVERS_JSON: &str = r#"
     }
 "#;
 
-/// List servers response from docs.
 #[test]
 fn deserialize_list_servers() {
     let resp: ServerListResponse =
@@ -331,6 +331,7 @@ fn deserialize_list_servers() {
     assert_eq!(tags1[1], "Ubuntu");
 }
 
+/// Minimal server (only required fields) still deserializes.
 // Fixture: hand-crafted test data
 const MINIMAL_SERVER_JSON: &str = r#"
     {
@@ -347,7 +348,6 @@ const MINIMAL_SERVER_JSON: &str = r#"
     }
 "#;
 
-/// Minimal server (only required fields) still deserializes.
 #[test]
 fn deserialize_minimal_server() {
     let resp: ServerResponse =
@@ -361,6 +361,7 @@ fn deserialize_minimal_server() {
     assert!(s.storage_devices.is_none());
 }
 
+/// Server group list response from docs.
 // Source: https://developers.upcloud.com/1.3/8-servers/#list-all-server-groups
 const SERVER_GROUP_LIST_JSON: &str = r#"
     {
@@ -395,7 +396,6 @@ const SERVER_GROUP_LIST_JSON: &str = r#"
     }
 "#;
 
-/// Server group list response from docs.
 #[test]
 fn deserialize_server_group_list() {
     let resp: ServerGroupListResponse =
@@ -409,6 +409,7 @@ fn deserialize_server_group_list() {
 
 // ─── NEW TESTS: every JSON example from the UpCloud 1.3 Servers docs ──────
 
+/// Get server GPUs response (GET /1.3/server/{uuid}/gpus).
 // Source: https://developers.upcloud.com/1.3/8-servers/#get-server-gpus
 const GET_SERVER_GPUS_JSON: &str = r#"
     {
@@ -433,7 +434,6 @@ const GET_SERVER_GPUS_JSON: &str = r#"
     }
 "#;
 
-/// Get server GPUs response (GET /1.3/server/{uuid}/gpus).
 #[test]
 fn deserialize_get_server_gpus() {
     let resp: GpusResponse = serde_json::from_str(GET_SERVER_GPUS_JSON).expect("deserialize gpus");
@@ -445,6 +445,7 @@ fn deserialize_get_server_gpus() {
     assert_eq!(resp.gpus[1].serial, "1723382930206");
 }
 
+/// Create server from template request (POST /1.3/server).
 // Source: https://developers.upcloud.com/1.3/8-servers/#create-server
 const CREATE_SERVER_FROM_TEMPLATE_REQUEST_JSON: &str = r#"
     {
@@ -545,7 +546,6 @@ const CREATE_SERVER_FROM_TEMPLATE_REQUEST_JSON: &str = r#"
     }
 "#;
 
-/// Create server from template request (POST /1.3/server).
 #[test]
 fn deserialize_create_server_from_template_request() {
     let body: CreateRequestBody = serde_json::from_str(CREATE_SERVER_FROM_TEMPLATE_REQUEST_JSON)
@@ -613,6 +613,7 @@ fn deserialize_create_server_from_template_request() {
     assert_eq!(ssh[1], "ssh-dss AAAAB3NzaC1kc3MAA user@example.com");
 }
 
+/// Create server by cloning request (POST /1.3/server).
 // Source: https://developers.upcloud.com/1.3/8-servers/#create-server
 const CREATE_SERVER_BY_CLONING_REQUEST_JSON: &str = r#"
     {
@@ -683,7 +684,6 @@ const CREATE_SERVER_BY_CLONING_REQUEST_JSON: &str = r#"
     }
 "#;
 
-/// Create server by cloning request (POST /1.3/server).
 #[test]
 fn deserialize_create_server_by_cloning_request() {
     let body: CreateRequestBody = serde_json::from_str(CREATE_SERVER_BY_CLONING_REQUEST_JSON)
@@ -735,6 +735,7 @@ fn deserialize_create_server_by_cloning_request() {
     assert_eq!(priv_ips[0].address.as_deref(), Some("10.0.0.50"));
 }
 
+/// Create server from scratch request (POST /1.3/server).
 // Source: https://developers.upcloud.com/1.3/8-servers/#create-server
 const CREATE_SERVER_FROM_SCRATCH_REQUEST_JSON: &str = r#"
     {
@@ -813,7 +814,6 @@ const CREATE_SERVER_FROM_SCRATCH_REQUEST_JSON: &str = r#"
     }
 "#;
 
-/// Create server from scratch request (POST /1.3/server).
 #[test]
 fn deserialize_create_server_from_scratch_request() {
     let body: CreateRequestBody = serde_json::from_str(CREATE_SERVER_FROM_SCRATCH_REQUEST_JSON)
@@ -868,6 +868,7 @@ fn deserialize_create_server_from_scratch_request() {
     assert_eq!(priv_ips[0].address.as_deref(), Some("10.0.0.50"));
 }
 
+/// Create server response (POST /1.3/server — 202 Accepted).
 // Source: https://developers.upcloud.com/1.3/8-servers/#create-server
 const CREATE_SERVER_RESPONSE_JSON: &str = r#"
     {
@@ -932,7 +933,6 @@ const CREATE_SERVER_RESPONSE_JSON: &str = r#"
     }
 "#;
 
-/// Create server response (POST /1.3/server — 202 Accepted).
 #[test]
 fn deserialize_create_server_response() {
     let resp: ServerResponse = serde_json::from_str(CREATE_SERVER_RESPONSE_JSON)
@@ -988,6 +988,7 @@ fn deserialize_create_server_response() {
     assert!(s.tags.as_ref().unwrap().tag.is_empty());
 }
 
+/// Rebuild server request (POST /1.3/server/{uuid}/rebuild).
 // Source: https://developers.upcloud.com/1.3/8-servers/#rebuild-server
 const REBUILD_SERVER_REQUEST_JSON: &str = r#"
     {
@@ -1011,7 +1012,6 @@ const REBUILD_SERVER_REQUEST_JSON: &str = r#"
     }
 "#;
 
-/// Rebuild server request (POST /1.3/server/{uuid}/rebuild).
 #[test]
 fn deserialize_rebuild_server_request() {
     let body: RebuildRequestBody =
@@ -1026,6 +1026,7 @@ fn deserialize_rebuild_server_request() {
     assert_eq!(lu.ssh_keys.unwrap().ssh_key.len(), 1);
 }
 
+/// Rebuild server response (POST /1.3/server/{uuid}/rebuild — 202 Accepted).
 // Source: https://developers.upcloud.com/1.3/8-servers/#rebuild-server
 const REBUILD_SERVER_RESPONSE_JSON: &str = r#"
     {
@@ -1163,7 +1164,6 @@ const REBUILD_SERVER_RESPONSE_JSON: &str = r#"
     }
 "#;
 
-/// Rebuild server response (POST /1.3/server/{uuid}/rebuild — 202 Accepted).
 #[test]
 fn deserialize_rebuild_server_response() {
     let resp: ServerResponse =
@@ -1254,6 +1254,7 @@ fn deserialize_rebuild_server_response() {
     assert!(s.labels.as_ref().unwrap().label.is_empty());
 }
 
+/// Start server request (POST /1.3/server/{uuid}/start).
 // Source: https://developers.upcloud.com/1.3/8-servers/#start-server
 const START_SERVER_REQUEST_JSON: &str = r#"
     {
@@ -1263,13 +1264,13 @@ const START_SERVER_REQUEST_JSON: &str = r#"
     }
 "#;
 
-/// Start server request (POST /1.3/server/{uuid}/start).
 #[test]
 fn deserialize_start_server_request() {
     let v: serde_json::Value = serde_json::from_str(START_SERVER_REQUEST_JSON).expect("valid JSON");
     assert_eq!(v["server"]["host"], 8055964291_i64);
 }
 
+/// Start server response (POST /1.3/server/{uuid}/start — 200 OK).
 // Source: https://developers.upcloud.com/1.3/8-servers/#start-server
 const START_SERVER_RESPONSE_JSON: &str = r#"
     {
@@ -1336,7 +1337,6 @@ const START_SERVER_RESPONSE_JSON: &str = r#"
     }
 "#;
 
-/// Start server response (POST /1.3/server/{uuid}/start — 200 OK).
 #[test]
 fn deserialize_start_server_response() {
     // Note: docs have a typo "plart_of_plan" (instead of "part_of_plan") — serde ignores unknown fields.
@@ -1395,6 +1395,7 @@ fn deserialize_start_server_response() {
     assert!(s.labels.as_ref().unwrap().label.is_empty());
 }
 
+/// Stop server request (POST /1.3/server/{uuid}/stop).
 // Source: https://developers.upcloud.com/1.3/8-servers/#stop-server
 const STOP_SERVER_REQUEST_JSON: &str = r#"
     {
@@ -1405,7 +1406,6 @@ const STOP_SERVER_REQUEST_JSON: &str = r#"
     }
 "#;
 
-/// Stop server request (POST /1.3/server/{uuid}/stop).
 #[test]
 fn deserialize_stop_server_request() {
     let body: StopRequestBody =
@@ -1414,6 +1414,9 @@ fn deserialize_stop_server_request() {
     assert_eq!(body.stop_server.timeout.as_deref(), Some("60"));
 }
 
+/// Stop server response (POST /1.3/server/{uuid}/stop — 200 OK).
+/// Note: The docs use a bare array for `ip_addresses` instead of the usual
+/// `{"ip_address":[...]}` wrapper. We validate with `serde_json::Value`.
 // Source: https://developers.upcloud.com/1.3/8-servers/#stop-server
 const STOP_SERVER_RESPONSE_JSON: &str = r#"
     {
@@ -1477,9 +1480,6 @@ const STOP_SERVER_RESPONSE_JSON: &str = r#"
     }
 "#;
 
-/// Stop server response (POST /1.3/server/{uuid}/stop — 200 OK).
-/// Note: The docs use a bare array for `ip_addresses` instead of the usual
-/// `{"ip_address":[...]}` wrapper. We validate with `serde_json::Value`.
 #[test]
 fn deserialize_stop_server_response() {
     // ip_addresses is a bare array in the docs (inconsistent with other responses).
@@ -1525,6 +1525,7 @@ fn deserialize_stop_server_response() {
     assert!(sv["labels"]["label"].as_array().unwrap().is_empty());
 }
 
+/// Restart server request (POST /1.3/server/{uuid}/restart).
 // Source: https://developers.upcloud.com/1.3/8-servers/#restart-server
 const RESTART_SERVER_REQUEST_JSON: &str = r#"
     {
@@ -1536,7 +1537,6 @@ const RESTART_SERVER_REQUEST_JSON: &str = r#"
     }
 "#;
 
-/// Restart server request (POST /1.3/server/{uuid}/restart).
 #[test]
 fn deserialize_restart_server_request() {
     let body: RestartRequestBody =
@@ -1549,6 +1549,7 @@ fn deserialize_restart_server_request() {
     );
 }
 
+/// Restart server response (POST /1.3/server/{uuid}/restart — 200 OK).
 // Source: https://developers.upcloud.com/1.3/8-servers/#restart-server
 const RESTART_SERVER_RESPONSE_JSON: &str = r#"
     {
@@ -1614,7 +1615,6 @@ const RESTART_SERVER_RESPONSE_JSON: &str = r#"
     }
 "#;
 
-/// Restart server response (POST /1.3/server/{uuid}/restart — 200 OK).
 #[test]
 fn deserialize_restart_server_response() {
     // Note: docs typo "plart_of_plan" — serde ignores unknown fields.
@@ -1672,6 +1672,7 @@ fn deserialize_restart_server_response() {
     assert!(s.labels.as_ref().unwrap().label.is_empty());
 }
 
+/// Modify server request (PUT /1.3/server/{uuid}).
 // Source: https://developers.upcloud.com/1.3/8-servers/#modify-server
 const MODIFY_SERVER_REQUEST_JSON: &str = r#"
     {
@@ -1683,7 +1684,6 @@ const MODIFY_SERVER_REQUEST_JSON: &str = r#"
     }
 "#;
 
-/// Modify server request (PUT /1.3/server/{uuid}).
 #[test]
 fn deserialize_modify_server_request() {
     let body: ModifyRequestBody =
@@ -1694,6 +1694,7 @@ fn deserialize_modify_server_request() {
     assert_eq!(s.plan.as_deref(), Some("custom"));
 }
 
+/// Modify server response (PUT /1.3/server/{uuid} — 202 Accepted).
 // Source: https://developers.upcloud.com/1.3/8-servers/#modify-server
 const MODIFY_SERVER_RESPONSE_JSON: &str = r#"
     {
@@ -1761,7 +1762,6 @@ const MODIFY_SERVER_RESPONSE_JSON: &str = r#"
     }
 "#;
 
-/// Modify server response (PUT /1.3/server/{uuid} — 202 Accepted).
 #[test]
 fn deserialize_modify_server_response() {
     // Note: docs typo "plart_of_plan" — serde ignores unknown fields.
@@ -1821,6 +1821,7 @@ fn deserialize_modify_server_response() {
     assert!(s.labels.as_ref().unwrap().label.is_empty());
 }
 
+/// Server group details response (GET /1.3/server-group/{uuid}).
 // Source: https://developers.upcloud.com/1.3/8-servers/#show-server-group-details
 const SERVER_GROUP_DETAILS_JSON: &str = r#"
     {
@@ -1856,7 +1857,6 @@ const SERVER_GROUP_DETAILS_JSON: &str = r#"
     }
 "#;
 
-/// Server group details response (GET /1.3/server-group/{uuid}).
 #[test]
 fn deserialize_server_group_details() {
     let resp: ServerGroupResponse =
@@ -1872,6 +1872,7 @@ fn deserialize_server_group_details() {
     assert_eq!(servers.len(), 2);
 }
 
+/// Full server group list from docs (2 groups, second has anti_affinity_status: null).
 // Source: https://developers.upcloud.com/1.3/8-servers/#list-all-server-groups
 const SERVER_GROUP_LIST_FULL_JSON: &str = r#"
     {
@@ -1930,7 +1931,6 @@ const SERVER_GROUP_LIST_FULL_JSON: &str = r#"
     }
 "#;
 
-/// Full server group list from docs (2 groups, second has anti_affinity_status: null).
 #[test]
 fn deserialize_server_group_list_full() {
     let resp: ServerGroupListResponse = serde_json::from_str(SERVER_GROUP_LIST_FULL_JSON)
@@ -1970,6 +1970,7 @@ fn deserialize_server_group_list_full() {
     assert_eq!(servers1[0], "001789da-3aa4-4431-bd34-b4ad841f23e2");
 }
 
+/// List servers in a group response (GET /1.3/server-group/{uuid}/servers).
 // Source: https://developers.upcloud.com/1.3/8-servers/
 const LIST_SERVERS_IN_GROUP_JSON: &str = r#"
     {
@@ -1982,7 +1983,6 @@ const LIST_SERVERS_IN_GROUP_JSON: &str = r#"
     }
 "#;
 
-/// List servers in a group response (GET /1.3/server-group/{uuid}/servers).
 #[test]
 fn deserialize_list_servers_in_group() {
     let resp: GroupServersResponse =
@@ -1994,6 +1994,7 @@ fn deserialize_list_servers_in_group() {
     );
 }
 
+/// Create server group request (POST /1.3/server-group).
 // Source: https://developers.upcloud.com/1.3/8-servers/#create-a-new-server-group
 const CREATE_SERVER_GROUP_REQUEST_JSON: &str = r#"
     {
@@ -2019,7 +2020,6 @@ const CREATE_SERVER_GROUP_REQUEST_JSON: &str = r#"
     }
 "#;
 
-/// Create server group request (POST /1.3/server-group).
 #[test]
 fn deserialize_create_server_group_request() {
     let body: GroupRequestBody = serde_json::from_str(CREATE_SERVER_GROUP_REQUEST_JSON)
@@ -2034,6 +2034,7 @@ fn deserialize_create_server_group_request() {
     assert_eq!(servers[0], "00e2dc05-379d-6b90-a354-e5c3f9293918");
 }
 
+/// Modify server group request (PATCH /1.3/server-group/{uuid}).
 // Source: https://developers.upcloud.com/1.3/8-servers/#modify-server-group
 const MODIFY_SERVER_GROUP_REQUEST_JSON: &str = r#"
     {
@@ -2050,7 +2051,6 @@ const MODIFY_SERVER_GROUP_REQUEST_JSON: &str = r#"
     }
 "#;
 
-/// Modify server group request (PATCH /1.3/server-group/{uuid}).
 #[test]
 fn deserialize_modify_server_group_request() {
     let body: GroupRequestBody = serde_json::from_str(MODIFY_SERVER_GROUP_REQUEST_JSON)
@@ -2064,6 +2064,7 @@ fn deserialize_modify_server_group_request() {
     assert_eq!(servers.len(), 2);
 }
 
+/// Add server to group request (POST /1.3/server-group/{uuid}/servers).
 // Source: https://developers.upcloud.com/1.3/8-servers/
 const ADD_SERVER_TO_GROUP_REQUEST_JSON: &str = r#"
     {
@@ -2073,7 +2074,6 @@ const ADD_SERVER_TO_GROUP_REQUEST_JSON: &str = r#"
     }
 "#;
 
-/// Add server to group request (POST /1.3/server-group/{uuid}/servers).
 #[test]
 fn deserialize_add_server_to_group_request() {
     let v: serde_json::Value =
@@ -2081,6 +2081,7 @@ fn deserialize_add_server_to_group_request() {
     assert_eq!(v["server"]["uuid"], "00235adf-add4-66f1-ef34-e331516bb6a1");
 }
 
+/// Relocate server request (POST /1.3/server/{uuid}/relocate).
 // Source: https://developers.upcloud.com/1.3/8-servers/#relocate-server
 const RELOCATE_SERVER_REQUEST_JSON: &str = r#"
     {
@@ -2088,7 +2089,6 @@ const RELOCATE_SERVER_REQUEST_JSON: &str = r#"
     }
 "#;
 
-/// Relocate server request (POST /1.3/server/{uuid}/relocate).
 #[test]
 fn deserialize_relocate_server_request() {
     let v: serde_json::Value =
@@ -2096,6 +2096,7 @@ fn deserialize_relocate_server_request() {
     assert_eq!(v["zone"], "fi-priv-example");
 }
 
+/// Relocate server response (POST /1.3/server/{uuid}/relocate — 200 OK).
 // Source: https://developers.upcloud.com/1.3/8-servers/#relocate-server
 const RELOCATE_SERVER_RESPONSE_JSON: &str = r#"
     {
@@ -2161,7 +2162,6 @@ const RELOCATE_SERVER_RESPONSE_JSON: &str = r#"
     }
 "#;
 
-/// Relocate server response (POST /1.3/server/{uuid}/relocate — 200 OK).
 #[test]
 fn deserialize_relocate_server_response() {
     // Note: docs typo "plart_of_plan" — serde ignores unknown fields.
@@ -2218,6 +2218,7 @@ fn deserialize_relocate_server_response() {
     assert!(s.labels.as_ref().unwrap().label.is_empty());
 }
 
+/// Metadata service JSON response (curl http://169.254.169.254/metadata/v1.json).
 // Source: https://developers.upcloud.com/1.3/8-servers/
 const METADATA_SERVICE_RESPONSE_JSON: &str = r#"
     {
@@ -2315,7 +2316,6 @@ const METADATA_SERVICE_RESPONSE_JSON: &str = r#"
     }
 "#;
 
-/// Metadata service JSON response (curl http://169.254.169.254/metadata/v1.json).
 #[test]
 fn deserialize_metadata_service_response() {
     let v: serde_json::Value =
@@ -2506,7 +2506,6 @@ fn list_params_full_combination() {
 // ─── Device availability ─────────────────────────────────────────────────
 // Uses realistic zone IDs and GPU model names from the UpCloud API docs
 // (server details show devices with model "NVIDIA L40S").
-
 // Fixture: hand-crafted test data
 const DEVICE_AVAILABILITY_JSON: &str = r#"
     {

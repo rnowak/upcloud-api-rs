@@ -1,5 +1,4 @@
 use super::*;
-
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#list-plans
 const K8S_PLAN_LIST_JSON: &str = r#"
     [
@@ -16,6 +15,21 @@ const K8S_PLAN_LIST_JSON: &str = r#"
     ]
 "#;
 
+#[test]
+fn deserialize_k8s_plan_list() {
+    let plans: Vec<Plan> = serde_json::from_str(K8S_PLAN_LIST_JSON).unwrap();
+    assert_eq!(plans.len(), 2);
+    assert_eq!(plans[0].name, "dev-md");
+    assert_eq!(plans[0].max_nodes, Some(30));
+    assert_eq!(plans[0].deprecated, Some(false));
+    assert!(plans[0].description.is_none());
+    assert!(plans[0].server_plan.is_none());
+    assert_eq!(plans[1].name, "prod-md");
+    assert_eq!(plans[1].max_nodes, Some(120));
+    assert_eq!(plans[1].deprecated, Some(false));
+    assert!(plans[1].description.is_none());
+    assert!(plans[1].server_plan.is_none());
+}
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#list-clusters
 const K8S_CLUSTER_LIST_JSON: &str = r#"
     [
@@ -78,128 +92,6 @@ const K8S_CLUSTER_LIST_JSON: &str = r#"
         }
     ]
 "#;
-
-// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#get-cluster-details
-const K8S_CLUSTER_DETAIL_JSON: &str = r#"
-    {
-        "control_plane_ip_filter": [
-            "0.0.0.0/0"
-        ],
-        "labels": [
-            {
-                "key": "env",
-                "value": "staging"
-            },
-            {
-                "key": "app",
-                "value": "cats-dating-app"
-            }
-        ],
-        "name": "example-cluster-1",
-        "network": "03a85f64-5717-4562-b3fc-2c963f66afa6",
-        "network_cidr": "172.16.0.0/24",
-        "node_groups": [
-            {
-                "count": 3,
-                "kubelet_args": [],
-                "labels": [
-                    {
-                        "key": "team",
-                        "value": "development"
-                    }
-                ],
-                "name": "example-node-group-1",
-                "plan": "4xCPU-8GB",
-                "ssh_keys": [
-                    "ssh-rsa AAAAB3NzaC1yc2EAA"
-                ],
-                "state": "running",
-                "storage": "01000000-0000-4000-8000-000160010100",
-                "taints": [],
-                "anti_affinity": false,
-                "utility_network_access": true
-            }
-        ],
-        "state": "running",
-        "plan": "dev-md",
-        "private_node_groups": false,
-        "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "zone": "fi-hel2"
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#list-node-groups
-const NODE_GROUP_LIST_JSON: &str = r#"
-    [
-        {
-            "anti_affinity": false,
-            "count": 3,
-            "kubelet_args": [],
-            "labels": [
-                {
-                    "key": "team",
-                    "value": "development"
-                }
-            ],
-            "name": "example-node-group-1",
-            "plan": "4xCPU-8GB",
-            "ssh_keys": [
-                "ssh-rsa AAAAB3NzaC1yc2EAA"
-            ],
-            "state": "running",
-            "storage": "01000000-0000-4000-8000-000160010100",
-            "taints": [],
-            "utility_network_access": true
-        },
-        {
-            "anti_affinity": true,
-            "count": 9,
-            "kubelet_args": [
-                {
-                    "key": "log-flush-frequency",
-                    "value": "5s"
-                }
-            ],
-            "labels": [
-                {
-                    "key": "team",
-                    "value": "qa"
-                }
-            ],
-            "name": "example-node-group-2",
-            "plan": "4xCPU-8GB",
-            "ssh_keys": [
-                "ssh-rsa AAAAB3NzaC1yc2EAA"
-            ],
-            "state": "running",
-            "storage": "01000000-0000-4000-8000-000160010100",
-            "taints": [
-                {
-                    "effect": "NoSchedule",
-                    "key": "team",
-                    "value": "qa"
-                }
-            ],
-            "utility_network_access": false
-        }
-    ]
-"#;
-
-#[test]
-fn deserialize_k8s_plan_list() {
-    let plans: Vec<Plan> = serde_json::from_str(K8S_PLAN_LIST_JSON).unwrap();
-    assert_eq!(plans.len(), 2);
-    assert_eq!(plans[0].name, "dev-md");
-    assert_eq!(plans[0].max_nodes, Some(30));
-    assert_eq!(plans[0].deprecated, Some(false));
-    assert!(plans[0].description.is_none());
-    assert!(plans[0].server_plan.is_none());
-    assert_eq!(plans[1].name, "prod-md");
-    assert_eq!(plans[1].max_nodes, Some(120));
-    assert_eq!(plans[1].deprecated, Some(false));
-    assert!(plans[1].description.is_none());
-    assert!(plans[1].server_plan.is_none());
-}
 
 #[test]
 fn deserialize_k8s_cluster_list() {
@@ -273,6 +165,54 @@ fn deserialize_k8s_cluster_list() {
     assert!(c2.version.is_none());
     assert!(c2.created_at.is_none());
 }
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#get-cluster-details
+const K8S_CLUSTER_DETAIL_JSON: &str = r#"
+    {
+        "control_plane_ip_filter": [
+            "0.0.0.0/0"
+        ],
+        "labels": [
+            {
+                "key": "env",
+                "value": "staging"
+            },
+            {
+                "key": "app",
+                "value": "cats-dating-app"
+            }
+        ],
+        "name": "example-cluster-1",
+        "network": "03a85f64-5717-4562-b3fc-2c963f66afa6",
+        "network_cidr": "172.16.0.0/24",
+        "node_groups": [
+            {
+                "count": 3,
+                "kubelet_args": [],
+                "labels": [
+                    {
+                        "key": "team",
+                        "value": "development"
+                    }
+                ],
+                "name": "example-node-group-1",
+                "plan": "4xCPU-8GB",
+                "ssh_keys": [
+                    "ssh-rsa AAAAB3NzaC1yc2EAA"
+                ],
+                "state": "running",
+                "storage": "01000000-0000-4000-8000-000160010100",
+                "taints": [],
+                "anti_affinity": false,
+                "utility_network_access": true
+            }
+        ],
+        "state": "running",
+        "plan": "dev-md",
+        "private_node_groups": false,
+        "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "zone": "fi-hel2"
+    }
+"#;
 
 #[test]
 fn deserialize_k8s_cluster_detail() {
@@ -326,6 +266,62 @@ fn deserialize_k8s_cluster_detail() {
     assert!(groups[0].anti_affinity_status.is_none());
     assert!(groups[0].nodes.is_none());
 }
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#list-node-groups
+const NODE_GROUP_LIST_JSON: &str = r#"
+    [
+        {
+            "anti_affinity": false,
+            "count": 3,
+            "kubelet_args": [],
+            "labels": [
+                {
+                    "key": "team",
+                    "value": "development"
+                }
+            ],
+            "name": "example-node-group-1",
+            "plan": "4xCPU-8GB",
+            "ssh_keys": [
+                "ssh-rsa AAAAB3NzaC1yc2EAA"
+            ],
+            "state": "running",
+            "storage": "01000000-0000-4000-8000-000160010100",
+            "taints": [],
+            "utility_network_access": true
+        },
+        {
+            "anti_affinity": true,
+            "count": 9,
+            "kubelet_args": [
+                {
+                    "key": "log-flush-frequency",
+                    "value": "5s"
+                }
+            ],
+            "labels": [
+                {
+                    "key": "team",
+                    "value": "qa"
+                }
+            ],
+            "name": "example-node-group-2",
+            "plan": "4xCPU-8GB",
+            "ssh_keys": [
+                "ssh-rsa AAAAB3NzaC1yc2EAA"
+            ],
+            "state": "running",
+            "storage": "01000000-0000-4000-8000-000160010100",
+            "taints": [
+                {
+                    "effect": "NoSchedule",
+                    "key": "team",
+                    "value": "qa"
+                }
+            ],
+            "utility_network_access": false
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_node_group_list() {
@@ -427,6 +423,44 @@ const CREATE_CLUSTER_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// ─── New test functions ───────────────────────────────────────────────────
+
+#[test]
+fn deserialize_create_cluster_request() {
+    let req: CreateClusterRequest = serde_json::from_str(CREATE_CLUSTER_REQUEST_JSON).unwrap();
+    assert_eq!(req.name, "example-cluster-1");
+    assert_eq!(req.zone, "fi-hel2");
+    assert_eq!(req.network, "03a85f64-5717-4562-b3fc-2c963f66afa6");
+    assert_eq!(req.network_cidr, "172.16.0.0/24");
+    assert_eq!(req.node_groups.len(), 1);
+    assert_eq!(req.plan.as_deref(), Some("dev-md"));
+    assert_eq!(req.private_node_groups, Some(false));
+    assert!(req.version.is_none());
+    assert!(req.control_plane_ip_filter.as_ref().unwrap().is_empty());
+    let labels = req.labels.as_ref().unwrap();
+    assert_eq!(labels.len(), 2);
+    assert_eq!(labels[0].key, "env");
+    assert_eq!(labels[0].value, "staging");
+    assert_eq!(labels[1].key, "app");
+    assert_eq!(labels[1].value, "cats-dating-app");
+
+    let ng = &req.node_groups[0];
+    assert_eq!(ng.name, "example-node-group-1");
+    assert_eq!(ng.plan, "4xCPU-8GB");
+    assert_eq!(ng.count, 3);
+    let ng_labels = ng.labels.as_ref().unwrap();
+    assert_eq!(ng_labels.len(), 1);
+    assert_eq!(ng_labels[0].key, "team");
+    assert_eq!(ng_labels[0].value, "development");
+    let ng_ssh = ng.ssh_keys.as_ref().unwrap();
+    assert_eq!(ng_ssh.len(), 1);
+    assert_eq!(ng_ssh[0], "ssh-rsa AAAAB3NzaC1yc2EAA");
+    assert!(ng.anti_affinity.is_none());
+    assert!(ng.taints.is_none());
+    assert!(ng.kubelet_args.is_none());
+    assert!(ng.utility_network_access.is_none());
+    assert!(ng.storage.is_none());
+}
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#create-cluster
 const CREATE_CLUSTER_RESPONSE_JSON: &str = r#"
     {
@@ -473,299 +507,6 @@ const CREATE_CLUSTER_RESPONSE_JSON: &str = r#"
         "zone": "fi-hel2"
     }
 "#;
-
-// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#modify-cluster
-const MODIFY_CLUSTER_REQUEST_JSON: &str = r#"
-    {
-        "control_plane_ip_filter": [
-            "0.0.0.0/0"
-        ],
-        "labels": [
-            {
-                "key": "env",
-                "value": "production"
-            },
-            {
-                "key": "app",
-                "value": "dogs-dating-app"
-            }
-        ]
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#modify-cluster
-const MODIFY_CLUSTER_RESPONSE_JSON: &str = r#"
-    {
-        "control_plane_ip_filter": [
-            "0.0.0.0/0"
-        ],
-        "labels": [
-            {
-                "key": "env",
-                "value": "production"
-            },
-            {
-                "key": "app",
-                "value": "dogs-dating-app"
-            }
-        ],
-        "name": "example-cluster-1",
-        "network": "03a85f64-5717-4562-b3fc-2c963f66afa6",
-        "network_cidr": "172.16.0.0/24",
-        "node_groups": [
-            {
-                "count": 3,
-                "kubelet_args": [],
-                "labels": [
-                    {
-                        "key": "team",
-                        "value": "development"
-                    }
-                ],
-                "name": "example-node-group-1",
-                "plan": "4xCPU-8GB",
-                "ssh_keys": [
-                    "ssh-rsa AAAAB3NzaC1yc2EAA"
-                ],
-                "state": "running",
-                "storage": "01000000-0000-4000-8000-000160010100",
-                "taints": [],
-                "anti_affinity": false,
-                "utility_network_access": true
-            }
-        ],
-        "state": "running",
-        "plan": "dev-md",
-        "private_node_groups": false,
-        "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "zone": "fi-hel2"
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/
-const AVAILABLE_UPGRADES_JSON: &str = r#"
-    {
-        "versions": [
-            "1.31"
-        ]
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/
-const UPGRADE_CLUSTER_REQUEST_JSON: &str = r#"
-    {
-        "version": "1.31",
-        "strategy": {
-            "type": "manual"
-        }
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#get-kubeconfig
-const KUBECONFIG_RESPONSE_JSON: &str = r#"
-    {
-        "kubeconfig": "apiVersion: v1\nclusters:\n  - cluster:\n      certificate-authority-data: BASE64\n      server: https://server:6443\n    name: example-cluster-1\ncontexts:\n  - context:\n      cluster: example-cluster-1\n      user: example-cluster-1-admin\n    name: example-cluster-1-admin@example-cluster-1\ncurrent-context: example-cluster-1-admin@example-cluster-1\nkind: Config\npreferences: {}\nusers:\n  - name: example-cluster-1-admin\n    user:\n      client-certificate-data: BASE64\n      client-key-data: BASE64\n"
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#create-node-group
-const CREATE_NODE_GROUP_REQUEST_JSON: &str = r#"
-    {
-        "anti_affinity": true,
-        "count": 9,
-        "kubelet_args": [
-            {
-                "key": "log-flush-frequency",
-                "value": "5s"
-            }
-        ],
-        "labels": [
-            {
-                "key": "team",
-                "value": "qa"
-            }
-        ],
-        "name": "example-node-group-2",
-        "plan": "4xCPU-8GB",
-        "ssh_keys": [
-            "ssh-rsa AAAAB3NzaC1yc2EAA"
-        ],
-        "storage": "01000000-0000-4000-8000-000160010100",
-        "taints": [
-            {
-                "effect": "NoSchedule",
-                "key": "team",
-                "value": "qa"
-            }
-        ],
-        "utility_network_access": true
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#create-node-group
-const CREATE_NODE_GROUP_RESPONSE_JSON: &str = r#"
-    {
-        "anti_affinity": true,
-        "count": 9,
-        "kubelet_args": [
-            {
-                "key": "log-flush-frequency",
-                "value": "5s"
-            }
-        ],
-        "labels": [
-            {
-                "key": "team",
-                "value": "qa"
-            }
-        ],
-        "name": "example-node-group-2",
-        "plan": "4xCPU-8GB",
-        "ssh_keys": [
-            "ssh-rsa AAAAB3NzaC1yc2EAA"
-        ],
-        "state": "pending",
-        "storage": "01000000-0000-4000-8000-000160010100",
-        "taints": [
-            {
-                "effect": "NoSchedule",
-                "key": "team",
-                "value": "qa"
-            }
-        ],
-        "utility_network_access": true
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#get-node-group-details
-const NODE_GROUP_DETAIL_JSON: &str = r#"
-    {
-        "anti_affinity_status": true,
-        "count": 2,
-        "kubelet_args": [
-            {
-                "key": "log-flush-frequency",
-                "value": "5s"
-            }
-        ],
-        "labels": [
-            {
-                "key": "team",
-                "value": "qa"
-            }
-        ],
-        "name": "example-node-group-2",
-        "plan": "4xCPU-8GB",
-        "ssh_keys": [
-            "ssh-rsa AAAAB3NzaC1yc2EAA"
-        ],
-        "state": "running",
-        "storage": "01000000-0000-4000-8000-000160010100",
-        "taints": [
-            {
-                "effect": "NoSchedule",
-                "key": "team",
-                "value": "qa"
-            }
-        ],
-        "utility_network_access": true,
-        "nodes": [
-            {
-                "uuid": "564c8cd9-bc16-4f89-a328-daf3f138cc44",
-                "name": "example-fzwwt-8smpz",
-                "state": "running",
-                "kubelet_version": "1.30"
-            },
-            {
-                "uuid": "2e8039c6-95d4-41a9-92ca-46808f560abb",
-                "name": "example-fzwwt-zmjfs",
-                "state": "running",
-                "kubelet_version": "1.30"
-            }
-        ]
-    }
-"#;
-
-// ─── New test functions ───────────────────────────────────────────────────
-
-// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#modify-node-group
-const MODIFY_NODE_GROUP_REQUEST_JSON: &str = r#"
-    {
-        "count": 15
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#modify-node-group
-const MODIFY_NODE_GROUP_RESPONSE_JSON: &str = r#"
-    {
-        "anti_affinity": true,
-        "count": 15,
-        "kubelet_args": [
-            {
-                "key": "log-flush-frequency",
-                "value": "5s"
-            }
-        ],
-        "labels": [
-            {
-                "key": "team",
-                "value": "qa"
-            }
-        ],
-        "name": "example-node-group-2",
-        "plan": "4xCPU-8GB",
-        "ssh_keys": [
-            "ssh-rsa AAAAB3NzaC1yc2EAA"
-        ],
-        "state": "running",
-        "storage": "01000000-0000-4000-8000-000160010100",
-        "taints": [
-            {
-                "effect": "NoSchedule",
-                "key": "team",
-                "value": "qa"
-            }
-        ],
-        "utility_network_access": true
-    }
-"#;
-
-#[test]
-fn deserialize_create_cluster_request() {
-    let req: CreateClusterRequest = serde_json::from_str(CREATE_CLUSTER_REQUEST_JSON).unwrap();
-    assert_eq!(req.name, "example-cluster-1");
-    assert_eq!(req.zone, "fi-hel2");
-    assert_eq!(req.network, "03a85f64-5717-4562-b3fc-2c963f66afa6");
-    assert_eq!(req.network_cidr, "172.16.0.0/24");
-    assert_eq!(req.node_groups.len(), 1);
-    assert_eq!(req.plan.as_deref(), Some("dev-md"));
-    assert_eq!(req.private_node_groups, Some(false));
-    assert!(req.version.is_none());
-    assert!(req.control_plane_ip_filter.as_ref().unwrap().is_empty());
-    let labels = req.labels.as_ref().unwrap();
-    assert_eq!(labels.len(), 2);
-    assert_eq!(labels[0].key, "env");
-    assert_eq!(labels[0].value, "staging");
-    assert_eq!(labels[1].key, "app");
-    assert_eq!(labels[1].value, "cats-dating-app");
-
-    let ng = &req.node_groups[0];
-    assert_eq!(ng.name, "example-node-group-1");
-    assert_eq!(ng.plan, "4xCPU-8GB");
-    assert_eq!(ng.count, 3);
-    let ng_labels = ng.labels.as_ref().unwrap();
-    assert_eq!(ng_labels.len(), 1);
-    assert_eq!(ng_labels[0].key, "team");
-    assert_eq!(ng_labels[0].value, "development");
-    let ng_ssh = ng.ssh_keys.as_ref().unwrap();
-    assert_eq!(ng_ssh.len(), 1);
-    assert_eq!(ng_ssh[0], "ssh-rsa AAAAB3NzaC1yc2EAA");
-    assert!(ng.anti_affinity.is_none());
-    assert!(ng.taints.is_none());
-    assert!(ng.kubelet_args.is_none());
-    assert!(ng.utility_network_access.is_none());
-    assert!(ng.storage.is_none());
-}
 
 #[test]
 fn deserialize_create_cluster_response() {
@@ -816,6 +557,24 @@ fn deserialize_create_cluster_response() {
     assert!(groups[0].anti_affinity_status.is_none());
     assert!(groups[0].nodes.is_none());
 }
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#modify-cluster
+const MODIFY_CLUSTER_REQUEST_JSON: &str = r#"
+    {
+        "control_plane_ip_filter": [
+            "0.0.0.0/0"
+        ],
+        "labels": [
+            {
+                "key": "env",
+                "value": "production"
+            },
+            {
+                "key": "app",
+                "value": "dogs-dating-app"
+            }
+        ]
+    }
+"#;
 
 #[test]
 fn deserialize_modify_cluster_request() {
@@ -832,6 +591,54 @@ fn deserialize_modify_cluster_request() {
     assert_eq!(labels[1]["key"].as_str().unwrap(), "app");
     assert_eq!(labels[1]["value"].as_str().unwrap(), "dogs-dating-app");
 }
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#modify-cluster
+const MODIFY_CLUSTER_RESPONSE_JSON: &str = r#"
+    {
+        "control_plane_ip_filter": [
+            "0.0.0.0/0"
+        ],
+        "labels": [
+            {
+                "key": "env",
+                "value": "production"
+            },
+            {
+                "key": "app",
+                "value": "dogs-dating-app"
+            }
+        ],
+        "name": "example-cluster-1",
+        "network": "03a85f64-5717-4562-b3fc-2c963f66afa6",
+        "network_cidr": "172.16.0.0/24",
+        "node_groups": [
+            {
+                "count": 3,
+                "kubelet_args": [],
+                "labels": [
+                    {
+                        "key": "team",
+                        "value": "development"
+                    }
+                ],
+                "name": "example-node-group-1",
+                "plan": "4xCPU-8GB",
+                "ssh_keys": [
+                    "ssh-rsa AAAAB3NzaC1yc2EAA"
+                ],
+                "state": "running",
+                "storage": "01000000-0000-4000-8000-000160010100",
+                "taints": [],
+                "anti_affinity": false,
+                "utility_network_access": true
+            }
+        ],
+        "state": "running",
+        "plan": "dev-md",
+        "private_node_groups": false,
+        "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "zone": "fi-hel2"
+    }
+"#;
 
 #[test]
 fn deserialize_modify_cluster_response() {
@@ -885,6 +692,14 @@ fn deserialize_modify_cluster_response() {
     assert!(groups[0].anti_affinity_status.is_none());
     assert!(groups[0].nodes.is_none());
 }
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/
+const AVAILABLE_UPGRADES_JSON: &str = r#"
+    {
+        "versions": [
+            "1.31"
+        ]
+    }
+"#;
 
 #[test]
 fn deserialize_available_upgrades() {
@@ -892,6 +707,15 @@ fn deserialize_available_upgrades() {
     assert_eq!(resp.versions.len(), 1);
     assert_eq!(resp.versions[0], "1.31");
 }
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/
+const UPGRADE_CLUSTER_REQUEST_JSON: &str = r#"
+    {
+        "version": "1.31",
+        "strategy": {
+            "type": "manual"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_upgrade_cluster_request() {
@@ -900,8 +724,6 @@ fn deserialize_upgrade_cluster_request() {
     let strategy = req.strategy.as_ref().unwrap();
     assert_eq!(strategy.strategy_type, "manual");
 }
-
-// ─── Upgrade cluster response (official docs, page 20) ───────────────────
 
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/
 const UPGRADE_CLUSTER_RESPONSE_JSON: &str = r#"
@@ -913,6 +735,8 @@ const UPGRADE_CLUSTER_RESPONSE_JSON: &str = r#"
     }
 "#;
 
+// ─── Upgrade cluster response (official docs, page 20) ───────────────────
+
 #[test]
 fn deserialize_upgrade_cluster_response() {
     let resp: UpgradeClusterRequest = serde_json::from_str(UPGRADE_CLUSTER_RESPONSE_JSON).unwrap();
@@ -920,6 +744,12 @@ fn deserialize_upgrade_cluster_response() {
     let strategy = resp.strategy.as_ref().unwrap();
     assert_eq!(strategy.strategy_type, "manual");
 }
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#get-kubeconfig
+const KUBECONFIG_RESPONSE_JSON: &str = r#"
+    {
+        "kubeconfig": "apiVersion: v1\nclusters:\n  - cluster:\n      certificate-authority-data: BASE64\n      server: https://server:6443\n    name: example-cluster-1\ncontexts:\n  - context:\n      cluster: example-cluster-1\n      user: example-cluster-1-admin\n    name: example-cluster-1-admin@example-cluster-1\ncurrent-context: example-cluster-1-admin@example-cluster-1\nkind: Config\npreferences: {}\nusers:\n  - name: example-cluster-1-admin\n    user:\n      client-certificate-data: BASE64\n      client-key-data: BASE64\n"
+    }
+"#;
 
 #[test]
 fn deserialize_kubeconfig_response() {
@@ -933,6 +763,39 @@ fn deserialize_kubeconfig_response() {
     assert!(resp.kubeconfig.contains("client-certificate-data: BASE64"));
     assert!(resp.kubeconfig.contains("client-key-data: BASE64"));
 }
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#create-node-group
+const CREATE_NODE_GROUP_REQUEST_JSON: &str = r#"
+    {
+        "anti_affinity": true,
+        "count": 9,
+        "kubelet_args": [
+            {
+                "key": "log-flush-frequency",
+                "value": "5s"
+            }
+        ],
+        "labels": [
+            {
+                "key": "team",
+                "value": "qa"
+            }
+        ],
+        "name": "example-node-group-2",
+        "plan": "4xCPU-8GB",
+        "ssh_keys": [
+            "ssh-rsa AAAAB3NzaC1yc2EAA"
+        ],
+        "storage": "01000000-0000-4000-8000-000160010100",
+        "taints": [
+            {
+                "effect": "NoSchedule",
+                "key": "team",
+                "value": "qa"
+            }
+        ],
+        "utility_network_access": true
+    }
+"#;
 
 #[test]
 fn deserialize_create_kubernetes_node_group_request() {
@@ -963,6 +826,40 @@ fn deserialize_create_kubernetes_node_group_request() {
     assert_eq!(taints[0].key, "team");
     assert_eq!(taints[0].value, "qa");
 }
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#create-node-group
+const CREATE_NODE_GROUP_RESPONSE_JSON: &str = r#"
+    {
+        "anti_affinity": true,
+        "count": 9,
+        "kubelet_args": [
+            {
+                "key": "log-flush-frequency",
+                "value": "5s"
+            }
+        ],
+        "labels": [
+            {
+                "key": "team",
+                "value": "qa"
+            }
+        ],
+        "name": "example-node-group-2",
+        "plan": "4xCPU-8GB",
+        "ssh_keys": [
+            "ssh-rsa AAAAB3NzaC1yc2EAA"
+        ],
+        "state": "pending",
+        "storage": "01000000-0000-4000-8000-000160010100",
+        "taints": [
+            {
+                "effect": "NoSchedule",
+                "key": "team",
+                "value": "qa"
+            }
+        ],
+        "utility_network_access": true
+    }
+"#;
 
 #[test]
 fn deserialize_create_kubernetes_node_group_response() {
@@ -996,6 +893,54 @@ fn deserialize_create_kubernetes_node_group_response() {
     assert!(group.anti_affinity_status.is_none());
     assert!(group.nodes.is_none());
 }
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#get-node-group-details
+const NODE_GROUP_DETAIL_JSON: &str = r#"
+    {
+        "anti_affinity_status": true,
+        "count": 2,
+        "kubelet_args": [
+            {
+                "key": "log-flush-frequency",
+                "value": "5s"
+            }
+        ],
+        "labels": [
+            {
+                "key": "team",
+                "value": "qa"
+            }
+        ],
+        "name": "example-node-group-2",
+        "plan": "4xCPU-8GB",
+        "ssh_keys": [
+            "ssh-rsa AAAAB3NzaC1yc2EAA"
+        ],
+        "state": "running",
+        "storage": "01000000-0000-4000-8000-000160010100",
+        "taints": [
+            {
+                "effect": "NoSchedule",
+                "key": "team",
+                "value": "qa"
+            }
+        ],
+        "utility_network_access": true,
+        "nodes": [
+            {
+                "uuid": "564c8cd9-bc16-4f89-a328-daf3f138cc44",
+                "name": "example-fzwwt-8smpz",
+                "state": "running",
+                "kubelet_version": "1.30"
+            },
+            {
+                "uuid": "2e8039c6-95d4-41a9-92ca-46808f560abb",
+                "name": "example-fzwwt-zmjfs",
+                "state": "running",
+                "kubelet_version": "1.30"
+            }
+        ]
+    }
+"#;
 
 #[test]
 fn deserialize_node_group_detail() {
@@ -1038,6 +983,12 @@ fn deserialize_node_group_detail() {
     assert_eq!(nodes[1].state, NodeState::Running);
     assert_eq!(nodes[1].kubelet_version.as_deref(), Some("1.30"));
 }
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#modify-node-group
+const MODIFY_NODE_GROUP_REQUEST_JSON: &str = r#"
+    {
+        "count": 15
+    }
+"#;
 
 #[test]
 fn deserialize_modify_kubernetes_node_group_request() {
@@ -1045,6 +996,40 @@ fn deserialize_modify_kubernetes_node_group_request() {
     assert_eq!(req.count, Some(15));
     assert!(req.labels.is_none());
 }
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#modify-node-group
+const MODIFY_NODE_GROUP_RESPONSE_JSON: &str = r#"
+    {
+        "anti_affinity": true,
+        "count": 15,
+        "kubelet_args": [
+            {
+                "key": "log-flush-frequency",
+                "value": "5s"
+            }
+        ],
+        "labels": [
+            {
+                "key": "team",
+                "value": "qa"
+            }
+        ],
+        "name": "example-node-group-2",
+        "plan": "4xCPU-8GB",
+        "ssh_keys": [
+            "ssh-rsa AAAAB3NzaC1yc2EAA"
+        ],
+        "state": "running",
+        "storage": "01000000-0000-4000-8000-000160010100",
+        "taints": [
+            {
+                "effect": "NoSchedule",
+                "key": "team",
+                "value": "qa"
+            }
+        ],
+        "utility_network_access": true
+    }
+"#;
 
 #[test]
 fn deserialize_modify_kubernetes_node_group_response() {
@@ -1115,7 +1100,6 @@ fn deserialize_modify_cluster_request_typed() {
     assert!(req.ip_filter.is_none());
     assert!(req.plan.is_none());
 }
-
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#list-versions
 const KUBERNETES_VERSIONS_JSON: &str = r#"
     [
@@ -1139,8 +1123,6 @@ fn deserialize_kubernetes_versions() {
     assert_eq!(versions[1].id, "1.31");
     assert_eq!(versions[1].version, "1.31");
 }
-
-// ─── Node group with custom_plan (docs section "Custom plan") ─────────────
 
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#get-node-group-details
 const NODE_GROUP_WITH_CUSTOM_PLAN_JSON: &str = r#"
@@ -1173,6 +1155,8 @@ const NODE_GROUP_WITH_CUSTOM_PLAN_JSON: &str = r#"
     }
 "#;
 
+// ─── Node group with custom_plan (docs section "Custom plan") ─────────────
+
 #[test]
 fn deserialize_node_group_with_custom_plan() {
     let group: NodeGroup = serde_json::from_str(NODE_GROUP_WITH_CUSTOM_PLAN_JSON).unwrap();
@@ -1193,8 +1177,6 @@ fn deserialize_node_group_with_custom_plan() {
     assert!(group.cloud_native_plan.is_none());
     assert!(group.gpu_plan.is_none());
 }
-
-// ─── Node group with cloud_native_plan (docs section "Cloud native plan") ────
 
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#get-node-group-details
 const NODE_GROUP_WITH_CLOUD_NATIVE_PLAN_JSON: &str = r#"
@@ -1217,6 +1199,8 @@ const NODE_GROUP_WITH_CLOUD_NATIVE_PLAN_JSON: &str = r#"
     }
 "#;
 
+// ─── Node group with cloud_native_plan (docs section "Cloud native plan") ────
+
 #[test]
 fn deserialize_node_group_with_cloud_native_plan() {
     let group: NodeGroup = serde_json::from_str(NODE_GROUP_WITH_CLOUD_NATIVE_PLAN_JSON).unwrap();
@@ -1232,8 +1216,6 @@ fn deserialize_node_group_with_cloud_native_plan() {
     assert!(group.custom_plan.is_none());
     assert!(group.gpu_plan.is_none());
 }
-
-// ─── Node group with gpu_plan (docs section "GPU plan") ──────────────────────
 
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#get-node-group-details
 const NODE_GROUP_WITH_GPU_PLAN_JSON: &str = r#"
@@ -1262,6 +1244,8 @@ const NODE_GROUP_WITH_GPU_PLAN_JSON: &str = r#"
     }
 "#;
 
+// ─── Node group with gpu_plan (docs section "GPU plan") ──────────────────────
+
 #[test]
 fn deserialize_node_group_with_gpu_plan() {
     let group: NodeGroup = serde_json::from_str(NODE_GROUP_WITH_GPU_PLAN_JSON).unwrap();
@@ -1283,8 +1267,6 @@ fn deserialize_node_group_with_gpu_plan() {
     assert!(group.custom_plan.is_none());
     assert!(group.cloud_native_plan.is_none());
 }
-
-// ─── Full cluster response with storage_encryption (docs, page 20) ───────────
 
 // Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#get-cluster-details
 const K8S_CLUSTER_WITH_ENCRYPTION_JSON: &str = r#"
@@ -1332,6 +1314,8 @@ const K8S_CLUSTER_WITH_ENCRYPTION_JSON: &str = r#"
         "zone": "fi-hel2"
     }
 "#;
+
+// ─── Full cluster response with storage_encryption (docs, page 20) ───────────
 
 #[test]
 fn deserialize_cluster_with_storage_encryption() {

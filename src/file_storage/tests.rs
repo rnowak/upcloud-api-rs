@@ -1,5 +1,4 @@
 use super::*;
-
 // Source: https://developers.upcloud.com/1.3/25-file-storage/#list-services
 const FS_LIST_JSON: &str = r#"
     [
@@ -51,88 +50,6 @@ const FS_LIST_JSON: &str = r#"
             "updated_at": "2025-08-03T19:23:52.350216Z",
             "uuid": "17871d62-6964-4336-b68d-4a85a8ee10fe",
             "zone": "fi-hel2"
-        }
-    ]
-"#;
-
-// Source: https://developers.upcloud.com/1.3/25-file-storage/#get-service-details
-const FS_DETAIL_JSON: &str = r#"
-    {
-        "configured_status": "started",
-        "created_at": "2025-08-01T10:40:04.140473Z",
-        "encrypted": false,
-        "labels": [
-            {
-                "key": "environment",
-                "value": "production"
-            }
-        ],
-        "name": "test2",
-        "networks": [
-            {
-                "family": "IPv4",
-                "ip_address": "10.10.10.50",
-                "name": "net",
-                "uuid": "0391f203-6eef-4a69-bfcc-fffffbdfdc32"
-            }
-        ],
-        "operational_state": "running",
-        "shares": [
-            {
-                "acl": [
-                    {
-                        "name": "read",
-                        "permission": "ro",
-                        "target": "*"
-                    }
-                ],
-                "name": "data",
-                "path": "/data"
-            }
-        ],
-        "size_gib": 250,
-        "updated_at": "2025-08-03T19:23:52.350216Z",
-        "uuid": "17871d62-6964-4336-b68d-4a85a8ee10fe",
-        "zone": "fi-hel2"
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-networks
-const FS_NETWORK_LIST_JSON: &str = r#"
-    [
-        {
-            "family": "IPv4",
-            "ip_address": "192.168.147.250",
-            "name": "test-name",
-            "uuid": "03720d07-80a9-41ac-90b0-68a932109339"
-        }
-    ]
-"#;
-
-// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-shares
-const FS_SHARE_LIST_JSON: &str = r#"
-    [
-        {
-            "acl": [
-                {
-                    "name": "write-all",
-                    "permission": "rw",
-                    "target": "*"
-                }
-            ],
-            "name": "share1",
-            "path": "/share-1"
-        },
-        {
-            "acl": [
-                {
-                    "name": "read-only-all",
-                    "permission": "ro",
-                    "target": "*"
-                }
-            ],
-            "name": "share2",
-            "path": "/share-1/share-2"
         }
     ]
 "#;
@@ -193,6 +110,47 @@ fn deserialize_file_storage_list() {
     assert_eq!(labels[0].key, "environment");
     assert_eq!(labels[0].value, "production");
 }
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#get-service-details
+const FS_DETAIL_JSON: &str = r#"
+    {
+        "configured_status": "started",
+        "created_at": "2025-08-01T10:40:04.140473Z",
+        "encrypted": false,
+        "labels": [
+            {
+                "key": "environment",
+                "value": "production"
+            }
+        ],
+        "name": "test2",
+        "networks": [
+            {
+                "family": "IPv4",
+                "ip_address": "10.10.10.50",
+                "name": "net",
+                "uuid": "0391f203-6eef-4a69-bfcc-fffffbdfdc32"
+            }
+        ],
+        "operational_state": "running",
+        "shares": [
+            {
+                "acl": [
+                    {
+                        "name": "read",
+                        "permission": "ro",
+                        "target": "*"
+                    }
+                ],
+                "name": "data",
+                "path": "/data"
+            }
+        ],
+        "size_gib": 250,
+        "updated_at": "2025-08-03T19:23:52.350216Z",
+        "uuid": "17871d62-6964-4336-b68d-4a85a8ee10fe",
+        "zone": "fi-hel2"
+    }
+"#;
 
 #[test]
 fn deserialize_file_storage_detail() {
@@ -240,6 +198,17 @@ fn deserialize_file_storage_detail() {
     assert_eq!(labels[0].key, "environment");
     assert_eq!(labels[0].value, "production");
 }
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-networks
+const FS_NETWORK_LIST_JSON: &str = r#"
+    [
+        {
+            "family": "IPv4",
+            "ip_address": "192.168.147.250",
+            "name": "test-name",
+            "uuid": "03720d07-80a9-41ac-90b0-68a932109339"
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_file_storage_network_list() {
@@ -252,6 +221,33 @@ fn deserialize_file_storage_network_list() {
     assert!(nets[0].network_type.is_none());
     assert!(nets[0].dns_name.is_none());
 }
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-shares
+const FS_SHARE_LIST_JSON: &str = r#"
+    [
+        {
+            "acl": [
+                {
+                    "name": "write-all",
+                    "permission": "rw",
+                    "target": "*"
+                }
+            ],
+            "name": "share1",
+            "path": "/share-1"
+        },
+        {
+            "acl": [
+                {
+                    "name": "read-only-all",
+                    "permission": "ro",
+                    "target": "*"
+                }
+            ],
+            "name": "share2",
+            "path": "/share-1/share-2"
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_file_storage_share_list() {
@@ -325,274 +321,7 @@ const CREATE_FS_REQUEST_JSON: &str = r#"
     }
 "#;
 
-// Source: https://developers.upcloud.com/1.3/25-file-storage/#modify-service
-const REPLACE_FS_REQUEST_JSON: &str = r#"
-    {
-        "name": "test-name",
-        "configured_status": "started",
-        "size_gib": 250,
-        "networks": [
-            {
-                "uuid": "03720d07-80a9-41ac-90b0-68a932109339",
-                "name": "net",
-                "family": "IPv4",
-                "ip_address": "192.168.147.120"
-            }
-        ],
-        "labels": [
-            {
-                "key": "environment",
-                "value": "production"
-            }
-        ]
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/25-file-storage/#modify-service
-const MODIFY_FS_REQUEST_JSON: &str = r#"
-    {
-        "name": "test-name",
-        "configured_status": "started",
-        "size_gib": 250,
-        "networks": [
-            {
-                "uuid": "03720d07-80a9-41ac-90b0-68a932109339",
-                "name": "net",
-                "family": "IPv4",
-                "ip_address": "192.168.147.120"
-            }
-        ]
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/25-file-storage/#create-network
-const NETWORK_INPUT_JSON: &str = r#"
-    {
-        "uuid": "03720d07-80a9-41ac-90b0-68a932109339",
-        "name": "test-name",
-        "family": "IPv4",
-        "ip_address": "10.20.30.40"
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-networks
-const NETWORK_DETAIL_SINGLE_JSON: &str = r#"
-    {
-        "family": "IPv4",
-        "ip_address": "192.168.147.250",
-        "name": "test-name",
-        "uuid": "03720d07-80a9-41ac-90b0-68a932109339"
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-shares
-const SHARE_ACL_NESTED_JSON: &str = r#"
-    [
-        {
-            "acl": [
-                {
-                    "name": "write-all",
-                    "permission": "rw",
-                    "target": "*"
-                }
-            ],
-            "name": "share1",
-            "path": "/share-1"
-        },
-        {
-            "acl": [
-                {
-                    "name": "read-only-all",
-                    "permission": "ro",
-                    "target": "*"
-                }
-            ],
-            "name": "share2",
-            "path": "/share-1/share-2"
-        }
-    ]
-"#;
-
-// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-shares
-const SHARE_ACL_HOST_JSON: &str = r#"
-    [
-        {
-            "acl": [
-                {
-                    "name": "acl1",
-                    "permission": "rw",
-                    "target": "192.168.147.2"
-                }
-            ],
-            "name": "share1",
-            "path": "/share-1"
-        },
-        {
-            "acl": [
-                {
-                    "name": "acl1",
-                    "permission": "ro",
-                    "target": "*"
-                }
-            ],
-            "name": "share2",
-            "path": "/share-1/share-2"
-        }
-    ]
-"#;
-
-// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-shares
-const SHARE_ACL_EMPTY_JSON: &str = r#"
-    [
-        {
-            "acl": [],
-            "name": "no-access",
-            "path": "/share-1"
-        },
-        {
-            "acl": [
-                {
-                    "name": "acl1",
-                    "permission": "rw",
-                    "target": "*"
-                }
-            ],
-            "name": "write",
-            "path": "/share-2"
-        }
-    ]
-"#;
-
-// Source: https://developers.upcloud.com/1.3/25-file-storage/#create-share
-const CREATE_SHARE_REQUEST_JSON: &str = r#"
-    {
-        "name": "data",
-        "path": "/data",
-        "acl": [
-            {
-                "name": "read",
-                "target": "192.168.147.0/24",
-                "permission": "ro"
-            }
-        ]
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-shares
-const SHARE_LIST_DELETING_JSON: &str = r#"
-    [
-        {
-            "name": "proj",
-            "path": "/project/data",
-            "acl": [
-                {
-                    "name": "write",
-                    "target": "*",
-                    "permission": "rw"
-                }
-            ]
-        },
-        {
-            "name": "logs",
-            "path": "/project/logs",
-            "deleting": true,
-            "acl": [
-                {
-                    "name": "read",
-                    "target": "192.168.147.0/24",
-                    "permission": "ro"
-                }
-            ]
-        }
-    ]
-"#;
-
-// Source: https://developers.upcloud.com/1.3/25-file-storage/#get-share-details
-const SHARE_DETAIL_JSON: &str = r#"
-    {
-        "acl": [
-            {
-                "name": "write",
-                "permission": "rw",
-                "target": "*"
-            }
-        ],
-        "name": "proj",
-        "path": "/project/data"
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/25-file-storage/#modify-share
-const MODIFY_SHARE_REQUEST_JSON: &str = r#"
-    {
-        "name": "test-name",
-        "acl": [
-            {
-                "name": "read-only",
-                "target": "192.168.25.0/24",
-                "permission": "ro"
-            }
-        ]
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/25-file-storage/
-const ACL_LIST_JSON: &str = r#"
-    [
-        {
-            "name": "read-only",
-            "target": "192.168.147.0/24",
-            "permission": "rw"
-        },
-        {
-            "name": "guest",
-            "target": "192.168.150.0/24",
-            "permission": "ro"
-        }
-    ]
-"#;
-
-// Source: https://developers.upcloud.com/1.3/25-file-storage/
-const ACL_DETAIL_JSON: &str = r#"
-    {
-        "name": "read-only",
-        "permission": "rw",
-        "target": "*"
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/25-file-storage/
-const CREATE_ACL_JSON: &str = r#"
-    {
-        "name": "read-only",
-        "target": "192.168.25.0/24",
-        "permission": "ro"
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/25-file-storage/
-const LABEL_LIST_JSON: &str = r#"
-    [
-        {
-            "key": "env",
-            "value": "staging"
-        },
-        {
-            "key": "foo",
-            "value": "bar"
-        }
-    ]
-"#;
-
 // ─── Test: Create FS service request (#1) ────────────────────────────────
-
-// Source: https://developers.upcloud.com/1.3/25-file-storage/
-const LABEL_DETAIL_JSON: &str = r#"
-    {
-        "key": "env",
-        "value": "staging"
-    }
-"#;
 
 #[test]
 fn deserialize_create_file_storage_request() {
@@ -630,6 +359,29 @@ fn deserialize_create_file_storage_request() {
     assert_eq!(labels[0].value, "production");
 }
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#modify-service
+const REPLACE_FS_REQUEST_JSON: &str = r#"
+    {
+        "name": "test-name",
+        "configured_status": "started",
+        "size_gib": 250,
+        "networks": [
+            {
+                "uuid": "03720d07-80a9-41ac-90b0-68a932109339",
+                "name": "net",
+                "family": "IPv4",
+                "ip_address": "192.168.147.120"
+            }
+        ],
+        "labels": [
+            {
+                "key": "environment",
+                "value": "production"
+            }
+        ]
+    }
+"#;
+
 // ─── Test: Replace FS service request (#2) ──────────────────────────────
 
 #[test]
@@ -653,6 +405,23 @@ fn deserialize_replace_file_storage_request() {
     assert_eq!(val["labels"][0]["value"], "production");
 }
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#modify-service
+const MODIFY_FS_REQUEST_JSON: &str = r#"
+    {
+        "name": "test-name",
+        "configured_status": "started",
+        "size_gib": 250,
+        "networks": [
+            {
+                "uuid": "03720d07-80a9-41ac-90b0-68a932109339",
+                "name": "net",
+                "family": "IPv4",
+                "ip_address": "192.168.147.120"
+            }
+        ]
+    }
+"#;
+
 // ─── Test: Modify FS service request (#3) ───────────────────────────────
 
 #[test]
@@ -663,6 +432,16 @@ fn deserialize_modify_file_storage_request() {
     assert_eq!(req.size_gib, Some(250));
     assert!(req.labels.is_none());
 }
+
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#create-network
+const NETWORK_INPUT_JSON: &str = r#"
+    {
+        "uuid": "03720d07-80a9-41ac-90b0-68a932109339",
+        "name": "test-name",
+        "family": "IPv4",
+        "ip_address": "10.20.30.40"
+    }
+"#;
 
 // ─── Test: Create / modify network request (#4, #6) ─────────────────────
 
@@ -676,6 +455,16 @@ fn deserialize_network_input() {
     assert!(net.network_type.is_none());
 }
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-networks
+const NETWORK_DETAIL_SINGLE_JSON: &str = r#"
+    {
+        "family": "IPv4",
+        "ip_address": "192.168.147.250",
+        "name": "test-name",
+        "uuid": "03720d07-80a9-41ac-90b0-68a932109339"
+    }
+"#;
+
 // ─── Test: Network detail single (#5) ────────────────────────────────────
 
 #[test]
@@ -688,6 +477,34 @@ fn deserialize_network_detail_single() {
     assert!(net.network_type.is_none());
     assert!(net.dns_name.is_none());
 }
+
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-shares
+const SHARE_ACL_NESTED_JSON: &str = r#"
+    [
+        {
+            "acl": [
+                {
+                    "name": "write-all",
+                    "permission": "rw",
+                    "target": "*"
+                }
+            ],
+            "name": "share1",
+            "path": "/share-1"
+        },
+        {
+            "acl": [
+                {
+                    "name": "read-only-all",
+                    "permission": "ro",
+                    "target": "*"
+                }
+            ],
+            "name": "share2",
+            "path": "/share-1/share-2"
+        }
+    ]
+"#;
 
 // ─── Test: Share ACL nested (#7) ─────────────────────────────────────────
 
@@ -711,6 +528,34 @@ fn deserialize_share_acl_nested() {
     assert!(shares[1].deleting.is_none());
 }
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-shares
+const SHARE_ACL_HOST_JSON: &str = r#"
+    [
+        {
+            "acl": [
+                {
+                    "name": "acl1",
+                    "permission": "rw",
+                    "target": "192.168.147.2"
+                }
+            ],
+            "name": "share1",
+            "path": "/share-1"
+        },
+        {
+            "acl": [
+                {
+                    "name": "acl1",
+                    "permission": "ro",
+                    "target": "*"
+                }
+            ],
+            "name": "share2",
+            "path": "/share-1/share-2"
+        }
+    ]
+"#;
+
 // ─── Test: Share ACL host-specific (#8) ──────────────────────────────────
 
 #[test]
@@ -733,6 +578,28 @@ fn deserialize_share_acl_host_specific() {
     assert!(shares[1].deleting.is_none());
 }
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-shares
+const SHARE_ACL_EMPTY_JSON: &str = r#"
+    [
+        {
+            "acl": [],
+            "name": "no-access",
+            "path": "/share-1"
+        },
+        {
+            "acl": [
+                {
+                    "name": "acl1",
+                    "permission": "rw",
+                    "target": "*"
+                }
+            ],
+            "name": "write",
+            "path": "/share-2"
+        }
+    ]
+"#;
+
 // ─── Test: Share ACL empty + non-empty (#9) ─────────────────────────────
 
 #[test]
@@ -752,6 +619,21 @@ fn deserialize_share_acl_empty() {
     assert!(shares[1].deleting.is_none());
 }
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#create-share
+const CREATE_SHARE_REQUEST_JSON: &str = r#"
+    {
+        "name": "data",
+        "path": "/data",
+        "acl": [
+            {
+                "name": "read",
+                "target": "192.168.147.0/24",
+                "permission": "ro"
+            }
+        ]
+    }
+"#;
+
 // ─── Test: Create share request (#10) ────────────────────────────────────
 
 #[test]
@@ -764,6 +646,35 @@ fn deserialize_create_share_request() {
     assert_eq!(req.acl[0].target, "192.168.147.0/24");
     assert_eq!(req.acl[0].permission, ShareACLPermission::Ro);
 }
+
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-shares
+const SHARE_LIST_DELETING_JSON: &str = r#"
+    [
+        {
+            "name": "proj",
+            "path": "/project/data",
+            "acl": [
+                {
+                    "name": "write",
+                    "target": "*",
+                    "permission": "rw"
+                }
+            ]
+        },
+        {
+            "name": "logs",
+            "path": "/project/logs",
+            "deleting": true,
+            "acl": [
+                {
+                    "name": "read",
+                    "target": "192.168.147.0/24",
+                    "permission": "ro"
+                }
+            ]
+        }
+    ]
+"#;
 
 // ─── Test: Share list with deleting flag (#11) ──────────────────────────
 
@@ -787,6 +698,21 @@ fn deserialize_share_list_with_deleting() {
     assert_eq!(shares[1].acl[0].permission, ShareACLPermission::Ro);
 }
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#get-share-details
+const SHARE_DETAIL_JSON: &str = r#"
+    {
+        "acl": [
+            {
+                "name": "write",
+                "permission": "rw",
+                "target": "*"
+            }
+        ],
+        "name": "proj",
+        "path": "/project/data"
+    }
+"#;
+
 // ─── Test: Share detail (#12) ────────────────────────────────────────────
 
 #[test]
@@ -801,6 +727,20 @@ fn deserialize_share_detail() {
     assert!(share.deleting.is_none());
 }
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#modify-share
+const MODIFY_SHARE_REQUEST_JSON: &str = r#"
+    {
+        "name": "test-name",
+        "acl": [
+            {
+                "name": "read-only",
+                "target": "192.168.25.0/24",
+                "permission": "ro"
+            }
+        ]
+    }
+"#;
+
 // ─── Test: Modify share request (#13) ────────────────────────────────────
 
 #[test]
@@ -813,6 +753,22 @@ fn deserialize_modify_share_request() {
     assert_eq!(acl[0].target, "192.168.25.0/24");
     assert_eq!(acl[0].permission, ShareACLPermission::Ro);
 }
+
+// Source: https://developers.upcloud.com/1.3/25-file-storage/
+const ACL_LIST_JSON: &str = r#"
+    [
+        {
+            "name": "read-only",
+            "target": "192.168.147.0/24",
+            "permission": "rw"
+        },
+        {
+            "name": "guest",
+            "target": "192.168.150.0/24",
+            "permission": "ro"
+        }
+    ]
+"#;
 
 // ─── Test: ACL list (#14) ────────────────────────────────────────────────
 
@@ -828,6 +784,15 @@ fn deserialize_acl_list() {
     assert_eq!(acls[1].permission, ShareACLPermission::Ro);
 }
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/
+const ACL_DETAIL_JSON: &str = r#"
+    {
+        "name": "read-only",
+        "permission": "rw",
+        "target": "*"
+    }
+"#;
+
 // ─── Test: ACL detail (#15) ──────────────────────────────────────────────
 
 #[test]
@@ -838,6 +803,15 @@ fn deserialize_acl_detail() {
     assert_eq!(acl.permission, ShareACLPermission::Rw);
 }
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/
+const CREATE_ACL_JSON: &str = r#"
+    {
+        "name": "read-only",
+        "target": "192.168.25.0/24",
+        "permission": "ro"
+    }
+"#;
+
 // ─── Test: Create/modify ACL (#16) ───────────────────────────────────────
 
 #[test]
@@ -847,6 +821,20 @@ fn deserialize_create_acl() {
     assert_eq!(acl.target, "192.168.25.0/24");
     assert_eq!(acl.permission, ShareACLPermission::Ro);
 }
+
+// Source: https://developers.upcloud.com/1.3/25-file-storage/
+const LABEL_LIST_JSON: &str = r#"
+    [
+        {
+            "key": "env",
+            "value": "staging"
+        },
+        {
+            "key": "foo",
+            "value": "bar"
+        }
+    ]
+"#;
 
 // ─── Test: Label list (#17) ──────────────────────────────────────────────
 
@@ -859,6 +847,14 @@ fn deserialize_label_list() {
     assert_eq!(labels[1].key, "foo");
     assert_eq!(labels[1].value, "bar");
 }
+
+// Source: https://developers.upcloud.com/1.3/25-file-storage/
+const LABEL_DETAIL_JSON: &str = r#"
+    {
+        "key": "env",
+        "value": "staging"
+    }
+"#;
 
 // ─── Test: Label detail (#18) ────────────────────────────────────────────
 

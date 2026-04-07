@@ -1,7 +1,5 @@
 use super::*;
 
-// ─── List all networks ──────────────────────────────────────────────────
-
 // Source: https://developers.upcloud.com/1.3/13-networks/#list-all-networks
 const LIST_NETWORKS_JSON: &str = r#"
     {
@@ -41,6 +39,8 @@ const LIST_NETWORKS_JSON: &str = r#"
         }
     }
 "#;
+
+// ─── List all networks ──────────────────────────────────────────────────
 
 #[test]
 fn deserialize_network_list() {
@@ -90,8 +90,6 @@ fn deserialize_network_list() {
         Some("Helsinki server #1")
     );
 }
-
-// ─── List networks within zone ──────────────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/13-networks/#list-networks-within-zone
 const LIST_NETWORKS_ZONE_JSON: &str = r#"
@@ -151,6 +149,8 @@ const LIST_NETWORKS_ZONE_JSON: &str = r#"
     }
 "#;
 
+// ─── List networks within zone ──────────────────────────────────────────
+
 #[test]
 fn deserialize_network_list_within_zone() {
     let resp: NetworkListResponse = serde_json::from_str(LIST_NETWORKS_ZONE_JSON).unwrap();
@@ -190,8 +190,6 @@ fn deserialize_network_list_within_zone() {
     assert_eq!(eff_routes[0]["type"], "user");
 }
 
-// ─── Get network details ────────────────────────────────────────────────
-
 // Source: https://developers.upcloud.com/1.3/13-networks/#get-network-details
 const GET_NETWORK_JSON: &str = r#"
     {
@@ -225,6 +223,8 @@ const GET_NETWORK_JSON: &str = r#"
     }
 "#;
 
+// ─── Get network details ────────────────────────────────────────────────
+
 #[test]
 fn deserialize_network_detail() {
     let resp: NetworkResponse = serde_json::from_str(GET_NETWORK_JSON).unwrap();
@@ -255,8 +255,6 @@ fn deserialize_network_detail() {
 
     assert_eq!(net.labels.as_ref().unwrap()[0].value, "");
 }
-
-// ─── Create SDN private network request ─────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/13-networks/#create-sdn-private-network
 const CREATE_NETWORK_REQUEST_JSON: &str = r#"
@@ -302,6 +300,8 @@ const CREATE_NETWORK_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// ─── Create SDN private network request ─────────────────────────────────
+
 #[test]
 fn deserialize_create_network_request() {
     #[derive(Debug, Deserialize)]
@@ -338,8 +338,6 @@ fn deserialize_create_network_request() {
     assert_eq!(labels[0].key, "test");
     assert_eq!(labels[0].value, "");
 }
-
-// ─── Create SDN private network response ────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/13-networks/#create-sdn-private-network
 const CREATE_NETWORK_RESPONSE_JSON: &str = r#"
@@ -411,6 +409,8 @@ const CREATE_NETWORK_RESPONSE_JSON: &str = r#"
     }
 "#;
 
+// ─── Create SDN private network response ────────────────────────────────
+
 #[test]
 fn deserialize_create_network_response() {
     let resp: NetworkResponse = serde_json::from_str(CREATE_NETWORK_RESPONSE_JSON).unwrap();
@@ -455,8 +455,6 @@ fn deserialize_create_network_response() {
     assert_eq!(labels[0].value, "");
 }
 
-// ─── Modify network request ─────────────────────────────────────────────
-
 // Source: https://developers.upcloud.com/1.3/13-networks/#modify-network-details
 const MODIFY_NETWORK_REQUEST_JSON: &str = r#"
     {
@@ -496,6 +494,8 @@ const MODIFY_NETWORK_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// ─── Modify network request ─────────────────────────────────────────────
+
 #[test]
 fn deserialize_modify_network_request() {
     #[derive(Debug, Deserialize)]
@@ -530,8 +530,6 @@ fn deserialize_modify_network_request() {
     assert_eq!(labels[0].value, "databases");
 }
 
-// ─── Modify network — attach to router ──────────────────────────────────
-
 // Source: https://developers.upcloud.com/1.3/13-networks/#modify-network-details
 const MODIFY_NETWORK_ROUTER_JSON: &str = r#"
     {
@@ -540,6 +538,8 @@ const MODIFY_NETWORK_ROUTER_JSON: &str = r#"
         }
     }
 "#;
+
+// ─── Modify network — attach to router ──────────────────────────────────
 
 #[test]
 fn deserialize_modify_network_attach_router() {
@@ -556,8 +556,6 @@ fn deserialize_modify_network_attach_router() {
     assert!(body.network.ip_networks.is_none());
     assert!(body.network.labels.is_none());
 }
-
-// ─── Modify network response ────────────────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/13-networks/#modify-network-details
 const MODIFY_NETWORK_RESPONSE_JSON: &str = r#"
@@ -609,6 +607,8 @@ const MODIFY_NETWORK_RESPONSE_JSON: &str = r#"
     }
 "#;
 
+// ─── Modify network response ────────────────────────────────────────────
+
 #[test]
 fn deserialize_modify_network_response() {
     let resp: NetworkResponse = serde_json::from_str(MODIFY_NETWORK_RESPONSE_JSON).unwrap();
@@ -652,8 +652,6 @@ fn deserialize_modify_network_response() {
     assert_eq!(labels[0].value, "databases");
 }
 
-// ─── List routers ───────────────────────────────────────────────────────
-
 // Source: https://developers.upcloud.com/1.3/13-networks/#list-routers
 const LIST_ROUTERS_JSON: &str = r#"
     {
@@ -673,6 +671,8 @@ const LIST_ROUTERS_JSON: &str = r#"
         }
     }
 "#;
+
+// ─── List routers ───────────────────────────────────────────────────────
 
 #[test]
 fn deserialize_router_list() {
@@ -694,8 +694,6 @@ fn deserialize_router_list() {
     assert!(routers[0].labels.as_ref().unwrap().is_empty());
 }
 
-// ─── Get router details ─────────────────────────────────────────────────
-
 // Source: https://developers.upcloud.com/1.3/13-networks/#get-router-details
 const GET_ROUTER_JSON: &str = r#"
     {
@@ -711,6 +709,8 @@ const GET_ROUTER_JSON: &str = r#"
         }
     }
 "#;
+
+// ─── Get router details ─────────────────────────────────────────────────
 
 #[test]
 fn deserialize_router_detail() {
@@ -731,8 +731,6 @@ fn deserialize_router_detail() {
     assert!(router.static_routes.is_empty());
 }
 
-// ─── Create router request ──────────────────────────────────────────────
-
 // Source: https://developers.upcloud.com/1.3/13-networks/#create-router
 const CREATE_ROUTER_REQUEST_JSON: &str = r#"
     {
@@ -748,6 +746,8 @@ const CREATE_ROUTER_REQUEST_JSON: &str = r#"
         }
     }
 "#;
+
+// ─── Create router request ──────────────────────────────────────────────
 
 #[test]
 fn deserialize_create_router_request() {
@@ -767,8 +767,6 @@ fn deserialize_create_router_request() {
     assert!(body.router.labels.is_none());
     assert!(body.router.static_routes[0].route_type.is_none());
 }
-
-// ─── Create router response ─────────────────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/13-networks/#create-router
 const CREATE_ROUTER_RESPONSE_JSON: &str = r#"
@@ -792,6 +790,8 @@ const CREATE_ROUTER_RESPONSE_JSON: &str = r#"
         }
     }
 "#;
+
+// ─── Create router response ─────────────────────────────────────────────
 
 #[test]
 fn deserialize_create_router_response() {
@@ -822,8 +822,6 @@ fn deserialize_create_router_response() {
     assert_eq!(router.static_routes[0].nexthop, "10.0.0.100");
 }
 
-// ─── Modify router request ──────────────────────────────────────────────
-
 // Source: https://developers.upcloud.com/1.3/13-networks/#modify-router
 const MODIFY_ROUTER_REQUEST_JSON: &str = r#"
     {
@@ -840,6 +838,8 @@ const MODIFY_ROUTER_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// ─── Modify router request ──────────────────────────────────────────────
+
 #[test]
 fn deserialize_modify_router_request() {
     #[derive(Debug, Deserialize)]
@@ -854,8 +854,6 @@ fn deserialize_modify_router_request() {
     assert_eq!(labels[0].key, "service");
     assert_eq!(labels[0].value, "postgres cluster connectivity");
 }
-
-// ─── Modify router response ─────────────────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/13-networks/#modify-router
 const MODIFY_ROUTER_RESPONSE_JSON: &str = r#"
@@ -877,6 +875,8 @@ const MODIFY_ROUTER_RESPONSE_JSON: &str = r#"
         }
     }
 "#;
+
+// ─── Modify router response ─────────────────────────────────────────────
 
 #[test]
 fn deserialize_modify_router_response() {
@@ -900,8 +900,6 @@ fn deserialize_modify_router_response() {
     );
 }
 
-// ─── List network peerings ──────────────────────────────────────────────
-
 // Source: https://developers.upcloud.com/1.3/13-networks/#list-network-peerings
 const LIST_PEERINGS_JSON: &str = r#"
     {
@@ -922,6 +920,8 @@ const LIST_PEERINGS_JSON: &str = r#"
         ]
     }
 "#;
+
+// ─── List network peerings ──────────────────────────────────────────────
 
 #[test]
 fn deserialize_peering_list() {
@@ -946,8 +946,6 @@ fn deserialize_peering_list() {
     assert_eq!(peer.uuid, "03e3d3ab-ac72-4e39-8264-2bc0f2e4e872");
     assert!(peer.ip_networks.is_none());
 }
-
-// ─── List peerings (docs wrapper format) ────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/13-networks/#list-network-peerings
 const LIST_PEERINGS_DOCS_JSON: &str = r#"
@@ -1001,6 +999,8 @@ const LIST_PEERINGS_DOCS_JSON: &str = r#"
     }
 "#;
 
+// ─── List peerings (docs wrapper format) ────────────────────────────────
+
 #[test]
 fn deserialize_peering_list_docs_format() {
     #[derive(Debug, Deserialize)]
@@ -1045,8 +1045,6 @@ fn deserialize_peering_list_docs_format() {
     assert_eq!(labels[0].key, "env");
     assert_eq!(labels[0].value, "prod");
 }
-
-// ─── Get network peering details ────────────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/13-networks/#get-network-peering-details
 const GET_PEERING_DETAILS_JSON: &str = r#"
@@ -1096,6 +1094,8 @@ const GET_PEERING_DETAILS_JSON: &str = r#"
     }
 "#;
 
+// ─── Get network peering details ────────────────────────────────────────
+
 #[test]
 fn deserialize_peering_details() {
     let resp: PeeringResponse = serde_json::from_str(GET_PEERING_DETAILS_JSON).unwrap();
@@ -1129,8 +1129,6 @@ fn deserialize_peering_details() {
     assert_eq!(peer_ips.ip_network[1].family, "IPv6");
 }
 
-// ─── Create peering request ─────────────────────────────────────────────
-
 // Source: https://developers.upcloud.com/1.3/13-networks/#create-network-peering
 const CREATE_PEERING_REQUEST_JSON: &str = r#"
     {
@@ -1156,6 +1154,8 @@ const CREATE_PEERING_REQUEST_JSON: &str = r#"
         }
     }
 "#;
+
+// ─── Create peering request ─────────────────────────────────────────────
 
 #[test]
 fn deserialize_create_peering_request() {
@@ -1185,8 +1185,6 @@ fn deserialize_create_peering_request() {
     assert_eq!(labels[1].key, "foo");
     assert_eq!(labels[1].value, "bar");
 }
-
-// ─── Create peering response ────────────────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/13-networks/#create-network-peering
 const CREATE_PEERING_RESPONSE_JSON: &str = r#"
@@ -1224,6 +1222,8 @@ const CREATE_PEERING_RESPONSE_JSON: &str = r#"
     }
 "#;
 
+// ─── Create peering response ────────────────────────────────────────────
+
 #[test]
 fn deserialize_create_peering_response() {
     let resp: PeeringResponse = serde_json::from_str(CREATE_PEERING_RESPONSE_JSON).unwrap();
@@ -1253,8 +1253,6 @@ fn deserialize_create_peering_response() {
     assert!(peer.ip_networks.is_none());
 }
 
-// ─── Modify peering request ─────────────────────────────────────────────
-
 // Source: https://developers.upcloud.com/1.3/13-networks/#modify-network-peering
 const MODIFY_PEERING_REQUEST_JSON: &str = r#"
     {
@@ -1274,6 +1272,8 @@ const MODIFY_PEERING_REQUEST_JSON: &str = r#"
         }
     }
 "#;
+
+// ─── Modify peering request ─────────────────────────────────────────────
 
 #[test]
 fn deserialize_modify_peering_request() {
@@ -1297,8 +1297,6 @@ fn deserialize_modify_peering_request() {
     assert_eq!(labels[1].key, "foo");
     assert_eq!(labels[1].value, "bar");
 }
-
-// ─── Modify peering response ────────────────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/13-networks/#modify-network-peering
 const MODIFY_PEERING_RESPONSE_JSON: &str = r#"
@@ -1347,6 +1345,8 @@ const MODIFY_PEERING_RESPONSE_JSON: &str = r#"
         }
     }
 "#;
+
+// ─── Modify peering response ────────────────────────────────────────────
 
 #[test]
 fn deserialize_modify_peering_response() {

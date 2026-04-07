@@ -1,5 +1,4 @@
 use super::*;
-
 // Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
 const MOS_SERVICE_LIST_JSON: &str = r#"
     [
@@ -35,22 +34,6 @@ const MOS_SERVICE_LIST_JSON: &str = r#"
                 "total_size_bytes": 0
             },
             "uuid": "1289deac-1cd1-459d-a467-a6fc420d4502"
-        }
-    ]
-"#;
-
-// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-bucket
-const MOS_BUCKET_LIST_JSON: &str = r#"
-    [
-        {
-            "name": "example-bucket-1",
-            "total_objects": 157,
-            "total_size_bytes": 5293771
-        },
-        {
-            "name": "example-bucket-2",
-            "total_objects": 12,
-            "total_size_bytes": 832226
         }
     ]
 "#;
@@ -108,6 +91,21 @@ fn deserialize_mos_service_list() {
     assert_eq!(networks[0].network_type, "public");
     assert!(networks[0].uuid.is_none());
 }
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-bucket
+const MOS_BUCKET_LIST_JSON: &str = r#"
+    [
+        {
+            "name": "example-bucket-1",
+            "total_objects": 157,
+            "total_size_bytes": 5293771
+        },
+        {
+            "name": "example-bucket-2",
+            "total_objects": 12,
+            "total_size_bytes": 832226
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_mos_bucket_list() {
@@ -143,6 +141,21 @@ const MOS_REGION_LIST_JSON: &str = r#"
     ]
 "#;
 
+// ─── New tests ───────────────────────────────────────────────────────────
+
+#[test]
+fn deserialize_mos_region_list() {
+    let regions: Vec<Region> = serde_json::from_str(MOS_REGION_LIST_JSON).unwrap();
+    assert_eq!(regions.len(), 1);
+    let r = &regions[0];
+    assert_eq!(r.name, "europe-1");
+    assert_eq!(r.primary_zone.as_deref(), Some("fi-hel1"));
+    assert!(r.endpoint_url.is_none());
+    let zones = r.zones.as_ref().unwrap();
+    assert_eq!(zones.len(), 2);
+    assert_eq!(zones[0].name, "fi-hel1");
+    assert_eq!(zones[1].name, "de-fra1");
+}
 // Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
 const MOS_REGION_DETAIL_JSON: &str = r#"
     {
@@ -159,6 +172,17 @@ const MOS_REGION_DETAIL_JSON: &str = r#"
     }
 "#;
 
+#[test]
+fn deserialize_mos_region_detail() {
+    let r: Region = serde_json::from_str(MOS_REGION_DETAIL_JSON).unwrap();
+    assert_eq!(r.name, "europe-1");
+    assert_eq!(r.primary_zone.as_deref(), Some("fi-hel1"));
+    assert!(r.endpoint_url.is_none());
+    let zones = r.zones.as_ref().unwrap();
+    assert_eq!(zones.len(), 2);
+    assert_eq!(zones[0].name, "fi-hel1");
+    assert_eq!(zones[1].name, "de-fra1");
+}
 // Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-service
 const MOS_CREATE_SERVICE_REQUEST_JSON: &str = r#"
     {
@@ -182,6 +206,26 @@ const MOS_CREATE_SERVICE_REQUEST_JSON: &str = r#"
     }
 "#;
 
+#[test]
+fn deserialize_mos_create_service_request() {
+    let req: CreateRequest = serde_json::from_str(MOS_CREATE_SERVICE_REQUEST_JSON).unwrap();
+    assert_eq!(req.name, "example-service");
+    assert_eq!(req.region, "example");
+    assert_eq!(req.configured_status.as_deref(), Some("started"));
+    assert!(req.labels.is_none());
+    assert_eq!(req.networks.len(), 2);
+    assert_eq!(req.networks[0].name, "example-public-network");
+    assert_eq!(req.networks[0].network_type, "public");
+    assert_eq!(req.networks[0].family, "IPv4");
+    assert_eq!(req.networks[0].uuid, None);
+    assert_eq!(req.networks[1].name, "example-private-network");
+    assert_eq!(req.networks[1].network_type, "private");
+    assert_eq!(req.networks[1].family, "IPv4");
+    assert_eq!(
+        req.networks[1].uuid.as_deref(),
+        Some("03aa7245-2ff9-49c8-9f0e-7ca0270d71a4")
+    );
+}
 // Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#get-service-details
 const MOS_SERVICE_DETAIL_JSON: &str = r#"
     {
@@ -288,182 +332,6 @@ const MOS_SERVICE_DETAIL_JSON: &str = r#"
     }
 "#;
 
-// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#modify-service
-const MOS_REPLACE_SERVICE_REQUEST_JSON: &str = r#"
-    {
-        "name": "example-service",
-        "configured_status": "started",
-        "termination_protection": false,
-        "networks": [
-            {
-                "name": "example-public-network",
-                "type": "public",
-                "family": "IPv4"
-            },
-            {
-                "name": "example-private-network",
-                "uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4",
-                "type": "private",
-                "family": "IPv4"
-            }
-        ],
-        "labels": [
-            {
-                "key": "example-label-key",
-                "value": "example-label-value"
-            }
-        ]
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#modify-service
-const MOS_MODIFY_SERVICE_REQUEST_JSON: &str = r#"
-    {
-        "name": "example-service",
-        "configured_status": "started",
-        "termination_protection": false,
-        "networks": [
-            {
-                "name": "example-private-network",
-                "uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4",
-                "type": "private",
-                "family": "IPv4"
-            }
-        ],
-        "labels": null
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
-const MOS_USAGE_JSON: &str = r#"
-    {
-        "total_objects": 1287,
-        "total_size_bytes": 48277239
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-bucket
-const MOS_CREATE_BUCKET_RESPONSE_JSON: &str = r#"
-    {
-        "name": "my-bucket-1",
-        "total_objects": 0,
-        "total_size_bytes": 0
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
-const MOS_NETWORK_LIST_JSON: &str = r#"
-    [
-        {
-            "family": "IPv4",
-            "name": "example-public-network",
-            "type": "public"
-        },
-        {
-            "family": "IPv4",
-            "name": "example-private-network",
-            "type": "private",
-            "uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4"
-        }
-    ]
-"#;
-
-// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
-const MOS_NETWORK_DETAIL_JSON: &str = r#"
-    {
-        "family": "IPv4",
-        "name": "example-private-network",
-        "type": "private",
-        "uuid": "03bec0ad-85c3-459e-824d-710f8f24f740"
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
-const MOS_PUBLIC_NETWORK_JSON: &str = r#"
-    {
-        "name": "example-public-network",
-        "type": "public",
-        "family": "IPv4"
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
-const MOS_PRIVATE_NETWORK_INPUT_JSON: &str = r#"
-    {
-        "name": "example-private-network",
-        "uuid": "03bec0ad-85c3-459e-824d-710f8f24f740",
-        "type": "private",
-        "family": "IPv4"
-    }
-"#;
-
-// ─── New tests ───────────────────────────────────────────────────────────
-
-// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
-const MOS_METRICS_SERIES_JSON: &str = r#"
-    [
-        {
-            "bytes_created": 530000,
-            "bytes_deleted": 244000,
-            "bytes_received": 530000,
-            "bytes_total": 7502000,
-            "bytes_transmitted": 0,
-            "end_at": "2023-10-31T12:00:00Z",
-            "objects_created": 79,
-            "objects_deleted": 40,
-            "objects_total": 1237,
-            "start_at": "2023-10-31T11:00:00Z"
-        }
-    ]
-"#;
-
-#[test]
-fn deserialize_mos_region_list() {
-    let regions: Vec<Region> = serde_json::from_str(MOS_REGION_LIST_JSON).unwrap();
-    assert_eq!(regions.len(), 1);
-    let r = &regions[0];
-    assert_eq!(r.name, "europe-1");
-    assert_eq!(r.primary_zone.as_deref(), Some("fi-hel1"));
-    assert!(r.endpoint_url.is_none());
-    let zones = r.zones.as_ref().unwrap();
-    assert_eq!(zones.len(), 2);
-    assert_eq!(zones[0].name, "fi-hel1");
-    assert_eq!(zones[1].name, "de-fra1");
-}
-
-#[test]
-fn deserialize_mos_region_detail() {
-    let r: Region = serde_json::from_str(MOS_REGION_DETAIL_JSON).unwrap();
-    assert_eq!(r.name, "europe-1");
-    assert_eq!(r.primary_zone.as_deref(), Some("fi-hel1"));
-    assert!(r.endpoint_url.is_none());
-    let zones = r.zones.as_ref().unwrap();
-    assert_eq!(zones.len(), 2);
-    assert_eq!(zones[0].name, "fi-hel1");
-    assert_eq!(zones[1].name, "de-fra1");
-}
-
-#[test]
-fn deserialize_mos_create_service_request() {
-    let req: CreateRequest = serde_json::from_str(MOS_CREATE_SERVICE_REQUEST_JSON).unwrap();
-    assert_eq!(req.name, "example-service");
-    assert_eq!(req.region, "example");
-    assert_eq!(req.configured_status.as_deref(), Some("started"));
-    assert!(req.labels.is_none());
-    assert_eq!(req.networks.len(), 2);
-    assert_eq!(req.networks[0].name, "example-public-network");
-    assert_eq!(req.networks[0].network_type, "public");
-    assert_eq!(req.networks[0].family, "IPv4");
-    assert_eq!(req.networks[0].uuid, None);
-    assert_eq!(req.networks[1].name, "example-private-network");
-    assert_eq!(req.networks[1].network_type, "private");
-    assert_eq!(req.networks[1].family, "IPv4");
-    assert_eq!(
-        req.networks[1].uuid.as_deref(),
-        Some("03aa7245-2ff9-49c8-9f0e-7ca0270d71a4")
-    );
-}
-
 #[test]
 fn deserialize_mos_service_detail() {
     let svc: Service = serde_json::from_str(MOS_SERVICE_DETAIL_JSON).unwrap();
@@ -557,6 +425,33 @@ fn deserialize_mos_service_detail() {
     assert_eq!(users.len(), 1);
     assert_eq!(users[0].username, "example_user");
 }
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#modify-service
+const MOS_REPLACE_SERVICE_REQUEST_JSON: &str = r#"
+    {
+        "name": "example-service",
+        "configured_status": "started",
+        "termination_protection": false,
+        "networks": [
+            {
+                "name": "example-public-network",
+                "type": "public",
+                "family": "IPv4"
+            },
+            {
+                "name": "example-private-network",
+                "uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4",
+                "type": "private",
+                "family": "IPv4"
+            }
+        ],
+        "labels": [
+            {
+                "key": "example-label-key",
+                "value": "example-label-value"
+            }
+        ]
+    }
+"#;
 
 #[test]
 fn deserialize_mos_replace_service_request() {
@@ -580,6 +475,23 @@ fn deserialize_mos_replace_service_request() {
     assert_eq!(labels[0]["key"], "example-label-key");
     assert_eq!(labels[0]["value"], "example-label-value");
 }
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#modify-service
+const MOS_MODIFY_SERVICE_REQUEST_JSON: &str = r#"
+    {
+        "name": "example-service",
+        "configured_status": "started",
+        "termination_protection": false,
+        "networks": [
+            {
+                "name": "example-private-network",
+                "uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4",
+                "type": "private",
+                "family": "IPv4"
+            }
+        ],
+        "labels": null
+    }
+"#;
 
 #[test]
 fn deserialize_mos_modify_service_request() {
@@ -596,6 +508,13 @@ fn deserialize_mos_modify_service_request() {
     assert_eq!(networks[0]["family"], "IPv4");
     assert_eq!(networks[0]["uuid"], "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4");
 }
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
+const MOS_USAGE_JSON: &str = r#"
+    {
+        "total_objects": 1287,
+        "total_size_bytes": 48277239
+    }
+"#;
 
 #[test]
 fn deserialize_mos_usage() {
@@ -603,6 +522,14 @@ fn deserialize_mos_usage() {
     assert_eq!(u.total_objects, Some(1287));
     assert_eq!(u.total_size_bytes, Some(48277239));
 }
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-bucket
+const MOS_CREATE_BUCKET_RESPONSE_JSON: &str = r#"
+    {
+        "name": "my-bucket-1",
+        "total_objects": 0,
+        "total_size_bytes": 0
+    }
+"#;
 
 #[test]
 fn deserialize_mos_create_bucket_response() {
@@ -612,6 +539,22 @@ fn deserialize_mos_create_bucket_response() {
     assert_eq!(b.total_size_bytes, Some(0));
     assert!(b.created_at.is_none());
 }
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
+const MOS_NETWORK_LIST_JSON: &str = r#"
+    [
+        {
+            "family": "IPv4",
+            "name": "example-public-network",
+            "type": "public"
+        },
+        {
+            "family": "IPv4",
+            "name": "example-private-network",
+            "type": "private",
+            "uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4"
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_mos_network_list() {
@@ -629,6 +572,15 @@ fn deserialize_mos_network_list() {
         Some("03aa7245-2ff9-49c8-9f0e-7ca0270d71a4")
     );
 }
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
+const MOS_NETWORK_DETAIL_JSON: &str = r#"
+    {
+        "family": "IPv4",
+        "name": "example-private-network",
+        "type": "private",
+        "uuid": "03bec0ad-85c3-459e-824d-710f8f24f740"
+    }
+"#;
 
 #[test]
 fn deserialize_mos_network_detail() {
@@ -641,6 +593,14 @@ fn deserialize_mos_network_detail() {
         Some("03bec0ad-85c3-459e-824d-710f8f24f740")
     );
 }
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
+const MOS_PUBLIC_NETWORK_JSON: &str = r#"
+    {
+        "name": "example-public-network",
+        "type": "public",
+        "family": "IPv4"
+    }
+"#;
 
 #[test]
 fn deserialize_mos_public_network_value() {
@@ -649,6 +609,15 @@ fn deserialize_mos_public_network_value() {
     assert_eq!(v["type"], "public");
     assert_eq!(v["family"], "IPv4");
 }
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
+const MOS_PRIVATE_NETWORK_INPUT_JSON: &str = r#"
+    {
+        "name": "example-private-network",
+        "uuid": "03bec0ad-85c3-459e-824d-710f8f24f740",
+        "type": "private",
+        "family": "IPv4"
+    }
+"#;
 
 #[test]
 fn deserialize_mos_private_network_input() {
@@ -661,6 +630,23 @@ fn deserialize_mos_private_network_input() {
         Some("03bec0ad-85c3-459e-824d-710f8f24f740")
     );
 }
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
+const MOS_METRICS_SERIES_JSON: &str = r#"
+    [
+        {
+            "bytes_created": 530000,
+            "bytes_deleted": 244000,
+            "bytes_received": 530000,
+            "bytes_total": 7502000,
+            "bytes_transmitted": 0,
+            "end_at": "2023-10-31T12:00:00Z",
+            "objects_created": 79,
+            "objects_deleted": 40,
+            "objects_total": 1237,
+            "start_at": "2023-10-31T11:00:00Z"
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_mos_metrics_series() {
@@ -678,8 +664,6 @@ fn deserialize_mos_metrics_series() {
     assert_eq!(m["objects_total"], 1237);
     assert_eq!(m["start_at"], "2023-10-31T11:00:00Z");
 }
-
-// ─── MOS policy tests (official docs, page 21) ───────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-policy
 const MOS_POLICY_LIST_JSON: &str = r#"
@@ -737,20 +721,7 @@ const MOS_POLICY_LIST_JSON: &str = r#"
     ]
 "#;
 
-// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-policy
-const MOS_POLICY_DETAIL_JSON: &str = r#"
-    {
-        "arn": "urn:ecs:iam:::policy/ECSS3FullAccess",
-        "attachment_count": 0,
-        "created_at": "2024-02-05T11:06:16Z",
-        "default_version_id": "v1",
-        "description": "Provides full access to all buckets.",
-        "document": "%7B%0A++++%22Version%22%3A+%222012-10-17%22%2C%0A++++%22Statement%22%3A+%5B%0A++++++++%7B%0A++++++++++++%22Effect%22%3A+%22Allow%22%2C%0A++++++++++++%22Action%22%3A+%22s3%3A*%22%2C%0A++++++++++++%22Resource%22%3A+%22*%22%0A++++++++%7D%0A++++%5D%0A%7D",
-        "name": "ECSS3FullAccess",
-        "system": true,
-        "updated_at": "2024-02-05T11:06:16Z"
-    }
-"#;
+// ─── MOS policy tests (official docs, page 21) ───────────────────────────
 
 #[test]
 fn deserialize_mos_policy_list() {
@@ -805,6 +776,20 @@ fn deserialize_mos_policy_list() {
         Some("Provides read only access to IAM.")
     );
 }
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-policy
+const MOS_POLICY_DETAIL_JSON: &str = r#"
+    {
+        "arn": "urn:ecs:iam:::policy/ECSS3FullAccess",
+        "attachment_count": 0,
+        "created_at": "2024-02-05T11:06:16Z",
+        "default_version_id": "v1",
+        "description": "Provides full access to all buckets.",
+        "document": "%7B%0A++++%22Version%22%3A+%222012-10-17%22%2C%0A++++%22Statement%22%3A+%5B%0A++++++++%7B%0A++++++++++++%22Effect%22%3A+%22Allow%22%2C%0A++++++++++++%22Action%22%3A+%22s3%3A*%22%2C%0A++++++++++++%22Resource%22%3A+%22*%22%0A++++++++%7D%0A++++%5D%0A%7D",
+        "name": "ECSS3FullAccess",
+        "system": true,
+        "updated_at": "2024-02-05T11:06:16Z"
+    }
+"#;
 
 #[test]
 fn deserialize_mos_policy_detail() {
@@ -826,8 +811,6 @@ fn deserialize_mos_policy_detail() {
     assert_eq!(p.system, Some(true));
     assert_eq!(p.updated_at.as_deref(), Some("2024-02-05T11:06:16Z"));
 }
-
-// ─── MOS user tests (official docs, page 21) ─────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-user
 const MOS_USER_LIST_JSON: &str = r#"
@@ -858,42 +841,7 @@ const MOS_USER_LIST_JSON: &str = r#"
     ]
 "#;
 
-// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-user
-const MOS_USER_DETAIL_JSON: &str = r#"
-    {
-        "access_keys": [
-            {
-                "access_key_id": "AKIA63F41D01345BB477",
-                "created_at": "2023-05-07T20:52:19.705405Z",
-                "last_used_at": "2023-05-07T20:52:17Z",
-                "status": "Active"
-            }
-        ],
-        "arn": "urn:ecs:iam::123bbb5c6a4240409e07f7d89fe28891:user/example_user",
-        "created_at": "2023-05-07T15:55:24.655776Z",
-        "policies": [
-            {
-                "arn": "urn:ecs:iam:::policy/ECSS3FullAccess",
-                "name": "ECSS3FullAccess"
-            },
-            {
-                "arn": "urn:ecs:iam:::policy/IAMFullAccess",
-                "name": "IAMFullAccess"
-            }
-        ],
-        "username": "example_user"
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-user
-const MOS_USER_CREATE_RESPONSE_JSON: &str = r#"
-    {
-        "access_keys": [],
-        "created_at": "2023-05-07T18:19:16.507681Z",
-        "policies": [],
-        "username": "example_user"
-    }
-"#;
+// ─── MOS user tests (official docs, page 21) ─────────────────────────────
 
 #[test]
 fn deserialize_mos_user_list() {
@@ -934,6 +882,32 @@ fn deserialize_mos_user_list() {
         Some("urn:ecs:iam:::policy/IAMFullAccess")
     );
 }
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-user
+const MOS_USER_DETAIL_JSON: &str = r#"
+    {
+        "access_keys": [
+            {
+                "access_key_id": "AKIA63F41D01345BB477",
+                "created_at": "2023-05-07T20:52:19.705405Z",
+                "last_used_at": "2023-05-07T20:52:17Z",
+                "status": "Active"
+            }
+        ],
+        "arn": "urn:ecs:iam::123bbb5c6a4240409e07f7d89fe28891:user/example_user",
+        "created_at": "2023-05-07T15:55:24.655776Z",
+        "policies": [
+            {
+                "arn": "urn:ecs:iam:::policy/ECSS3FullAccess",
+                "name": "ECSS3FullAccess"
+            },
+            {
+                "arn": "urn:ecs:iam:::policy/IAMFullAccess",
+                "name": "IAMFullAccess"
+            }
+        ],
+        "username": "example_user"
+    }
+"#;
 
 #[test]
 fn deserialize_mos_user_detail() {
@@ -972,6 +946,15 @@ fn deserialize_mos_user_detail() {
         Some("urn:ecs:iam:::policy/IAMFullAccess")
     );
 }
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-user
+const MOS_USER_CREATE_RESPONSE_JSON: &str = r#"
+    {
+        "access_keys": [],
+        "created_at": "2023-05-07T18:19:16.507681Z",
+        "policies": [],
+        "username": "example_user"
+    }
+"#;
 
 #[test]
 fn deserialize_mos_user_create_response() {
@@ -985,8 +968,6 @@ fn deserialize_mos_user_create_response() {
     assert!(policies.is_empty());
 }
 
-// ─── MOS access key tests (official docs, page 21) ───────────────────────
-
 // Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-access-key
 const MOS_ACCESS_KEY_LIST_JSON: &str = r#"
     [
@@ -999,26 +980,7 @@ const MOS_ACCESS_KEY_LIST_JSON: &str = r#"
     ]
 "#;
 
-// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-access-key
-const MOS_ACCESS_KEY_CREATE_RESPONSE_JSON: &str = r#"
-    {
-        "access_key_id": "AKIA589142A152F5E423",
-        "created_at": "2023-05-07T22:58:26.239729Z",
-        "last_used_at": "2023-05-07T22:58:26.239729Z",
-        "secret_access_key": "xbINHFALkXjFjmxhAYL8mJnODRDX91OM7cCd2+1Y",
-        "status": "Active"
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#get-access-key-details
-const MOS_ACCESS_KEY_DETAIL_JSON: &str = r#"
-    {
-        "access_key_id": "AKIA63F41D01345BB477",
-        "created_at": "2023-05-07T20:52:19.705405Z",
-        "last_used_at": "2023-05-07T20:52:17Z",
-        "status": "Active"
-    }
-"#;
+// ─── MOS access key tests (official docs, page 21) ───────────────────────
 
 #[test]
 fn deserialize_mos_access_key_list() {
@@ -1036,6 +998,16 @@ fn deserialize_mos_access_key_list() {
     assert_eq!(keys[0].status.as_deref(), Some("Active"));
     assert!(keys[0].secret_access_key.is_none());
 }
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-access-key
+const MOS_ACCESS_KEY_CREATE_RESPONSE_JSON: &str = r#"
+    {
+        "access_key_id": "AKIA589142A152F5E423",
+        "created_at": "2023-05-07T22:58:26.239729Z",
+        "last_used_at": "2023-05-07T22:58:26.239729Z",
+        "secret_access_key": "xbINHFALkXjFjmxhAYL8mJnODRDX91OM7cCd2+1Y",
+        "status": "Active"
+    }
+"#;
 
 #[test]
 fn deserialize_mos_access_key_create_response() {
@@ -1055,6 +1027,15 @@ fn deserialize_mos_access_key_create_response() {
     );
     assert_eq!(key.status.as_deref(), Some("Active"));
 }
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#get-access-key-details
+const MOS_ACCESS_KEY_DETAIL_JSON: &str = r#"
+    {
+        "access_key_id": "AKIA63F41D01345BB477",
+        "created_at": "2023-05-07T20:52:19.705405Z",
+        "last_used_at": "2023-05-07T20:52:17Z",
+        "status": "Active"
+    }
+"#;
 
 #[test]
 fn deserialize_mos_access_key_detail() {
@@ -1085,6 +1066,17 @@ const MOS_CUSTOM_DOMAIN_JSON: &str = r#"
     }
 "#;
 
+#[test]
+fn deserialize_custom_domain() {
+    let cd: CustomDomain = serde_json::from_str(MOS_CUSTOM_DOMAIN_JSON).unwrap();
+    assert_eq!(cd.name, "objects-cdn");
+    assert_eq!(cd.domain_name, "objects.example-company.com");
+    assert_eq!(cd.status.as_deref(), Some("active"));
+    assert_eq!(
+        cd.created_at.as_deref(),
+        Some("2023-05-07T16:00:00.000000Z")
+    );
+}
 // Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#list-custom-domains
 const MOS_CUSTOM_DOMAIN_LIST_JSON: &str = r#"
     [
@@ -1102,18 +1094,6 @@ const MOS_CUSTOM_DOMAIN_LIST_JSON: &str = r#"
         }
     ]
 "#;
-
-#[test]
-fn deserialize_custom_domain() {
-    let cd: CustomDomain = serde_json::from_str(MOS_CUSTOM_DOMAIN_JSON).unwrap();
-    assert_eq!(cd.name, "objects-cdn");
-    assert_eq!(cd.domain_name, "objects.example-company.com");
-    assert_eq!(cd.status.as_deref(), Some("active"));
-    assert_eq!(
-        cd.created_at.as_deref(),
-        Some("2023-05-07T16:00:00.000000Z")
-    );
-}
 
 #[test]
 fn deserialize_custom_domain_list() {
@@ -1140,6 +1120,17 @@ const MOS_POLICY_VERSION_JSON: &str = r#"
     }
 "#;
 
+#[test]
+fn deserialize_policy_version() {
+    let pv: PolicyVersion = serde_json::from_str(MOS_POLICY_VERSION_JSON).unwrap();
+    assert_eq!(pv.version_id, "v2");
+    assert!(pv.document.contains("2012-10-17"));
+    assert_eq!(pv.is_default_version, Some(true));
+    assert_eq!(
+        pv.created_at.as_deref(),
+        Some("2024-03-27T17:24:38.000071+02:00")
+    );
+}
 // Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#list-policy-versions
 const MOS_POLICY_VERSION_LIST_JSON: &str = r#"
     [
@@ -1157,18 +1148,6 @@ const MOS_POLICY_VERSION_LIST_JSON: &str = r#"
         }
     ]
 "#;
-
-#[test]
-fn deserialize_policy_version() {
-    let pv: PolicyVersion = serde_json::from_str(MOS_POLICY_VERSION_JSON).unwrap();
-    assert_eq!(pv.version_id, "v2");
-    assert!(pv.document.contains("2012-10-17"));
-    assert_eq!(pv.is_default_version, Some(true));
-    assert_eq!(
-        pv.created_at.as_deref(),
-        Some("2024-03-27T17:24:38.000071+02:00")
-    );
-}
 
 #[test]
 fn deserialize_policy_version_list() {

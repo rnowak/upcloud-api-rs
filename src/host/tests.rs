@@ -1,5 +1,4 @@
 use super::*;
-
 // Source: https://developers.upcloud.com/1.3/14-hosts/#list-available-hosts
 const LIST_HOSTS_JSON: &str = r#"
     {
@@ -50,32 +49,6 @@ const LIST_HOSTS_JSON: &str = r#"
     }
 "#;
 
-// Source: https://developers.upcloud.com/1.3/14-hosts/#get-host-details
-const GET_HOST_JSON: &str = r#"
-    {
-        "host": {
-            "id": 7653311107,
-            "description": "My Host #1",
-            "zone": "private-zone-id",
-            "windows_enabled": "no",
-            "stats": {
-                "stat": [
-                    {
-                        "name": "cpu_idle",
-                        "timestamp": "2019-08-09T12:46:57Z",
-                        "value": 95.2
-                    },
-                    {
-                        "name": "memory_free",
-                        "timestamp": "2019-08-09T12:46:57Z",
-                        "value": 102
-                    }
-                ]
-            }
-        }
-    }
-"#;
-
 #[test]
 fn deserialize_host_list() {
     let resp: HostListResponse = serde_json::from_str(LIST_HOSTS_JSON).unwrap();
@@ -120,6 +93,31 @@ fn deserialize_host_list() {
     );
     assert_eq!(hosts[1].stats.stat[1].value, serde_json::json!(61));
 }
+// Source: https://developers.upcloud.com/1.3/14-hosts/#get-host-details
+const GET_HOST_JSON: &str = r#"
+    {
+        "host": {
+            "id": 7653311107,
+            "description": "My Host #1",
+            "zone": "private-zone-id",
+            "windows_enabled": "no",
+            "stats": {
+                "stat": [
+                    {
+                        "name": "cpu_idle",
+                        "timestamp": "2019-08-09T12:46:57Z",
+                        "value": 95.2
+                    },
+                    {
+                        "name": "memory_free",
+                        "timestamp": "2019-08-09T12:46:57Z",
+                        "value": 102
+                    }
+                ]
+            }
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_host_detail() {
@@ -144,8 +142,6 @@ fn deserialize_host_detail() {
     assert_eq!(host.stats.stat[1].value, serde_json::json!(102));
 }
 
-// ─── Modify host request ────────────────────────────────────────────────
-
 // Source: https://developers.upcloud.com/1.3/14-hosts/#modify-host-details
 const MODIFY_HOST_REQUEST_JSON: &str = r#"
     {
@@ -154,6 +150,8 @@ const MODIFY_HOST_REQUEST_JSON: &str = r#"
         }
     }
 "#;
+
+// ─── Modify host request ────────────────────────────────────────────────
 
 #[test]
 fn deserialize_modify_host_request() {
@@ -164,8 +162,6 @@ fn deserialize_modify_host_request() {
     let body: Body = serde_json::from_str(MODIFY_HOST_REQUEST_JSON).unwrap();
     assert_eq!(body.host.description.as_deref(), Some("My New Host"));
 }
-
-// ─── Modify host response ───────────────────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/14-hosts/#modify-host-details
 const MODIFY_HOST_RESPONSE_JSON: &str = r#"
@@ -192,6 +188,8 @@ const MODIFY_HOST_RESPONSE_JSON: &str = r#"
         }
     }
 "#;
+
+// ─── Modify host response ───────────────────────────────────────────────
 
 #[test]
 fn deserialize_modify_host_response() {

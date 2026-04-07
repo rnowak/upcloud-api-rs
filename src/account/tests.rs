@@ -1,7 +1,6 @@
 use super::*;
 
 use serde::Deserialize;
-
 // Source: https://developers.upcloud.com/1.3/24-api-tokens/#list-tokens
 const TOKEN_LIST_JSON: &str = r#"
     [
@@ -31,6 +30,16 @@ const TOKEN_LIST_JSON: &str = r#"
     ]
 "#;
 
+#[test]
+fn deserialize_token_list() {
+    let tokens: Vec<ApiToken> = serde_json::from_str(TOKEN_LIST_JSON).unwrap();
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0].id, "0c848138-2559-4562-9520-b1f22c4ae751");
+    assert!(tokens[0].can_create_tokens);
+    assert!(!tokens[0].gui);
+    assert_eq!(tokens[0].allowed_ip_ranges, vec!["1.2.3.4"]);
+    assert!(tokens[1].last_used_at.is_some());
+}
 // Source: https://developers.upcloud.com/1.3/24-api-tokens/#create-token
 const TOKEN_CREATE_JSON: &str = r#"
     {
@@ -49,17 +58,6 @@ const TOKEN_CREATE_JSON: &str = r#"
 "#;
 
 #[test]
-fn deserialize_token_list() {
-    let tokens: Vec<ApiToken> = serde_json::from_str(TOKEN_LIST_JSON).unwrap();
-    assert_eq!(tokens.len(), 2);
-    assert_eq!(tokens[0].id, "0c848138-2559-4562-9520-b1f22c4ae751");
-    assert!(tokens[0].can_create_tokens);
-    assert!(!tokens[0].gui);
-    assert_eq!(tokens[0].allowed_ip_ranges, vec!["1.2.3.4"]);
-    assert!(tokens[1].last_used_at.is_some());
-}
-
-#[test]
 fn deserialize_token_create() {
     let resp: CreateTokenResponse = serde_json::from_str(TOKEN_CREATE_JSON).unwrap();
     assert_eq!(resp.token, "ucat_01DQE3AJDEBFEKECFM558TGH2F");
@@ -67,7 +65,6 @@ fn deserialize_token_create() {
     assert!(resp.can_create_tokens);
     assert_eq!(resp.allowed_ip_ranges.len(), 2);
 }
-
 // Source: https://developers.upcloud.com/1.3/24-api-tokens/#get-token-details
 const TOKEN_DETAIL_JSON: &str = r#"
     {
@@ -97,7 +94,6 @@ fn deserialize_token_detail() {
     assert!(token.can_create_tokens);
     assert_eq!(token.allowed_ip_ranges.len(), 2);
 }
-
 // Source: https://developers.upcloud.com/1.3/24-api-tokens/#create-token
 const CREATE_TOKEN_REQUEST_JSON: &str = r#"
     {
@@ -120,8 +116,6 @@ fn deserialize_create_token_request() {
     assert_eq!(ranges[0], "0.0.0.0/0");
     assert_eq!(ranges[1], "::/0");
 }
-
-// ─── Account info (GET /1.3/account) ─────────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/3-accounts/#get-account-information
 const GET_ACCOUNT_INFO_JSON: &str = r#"
@@ -153,6 +147,8 @@ const GET_ACCOUNT_INFO_JSON: &str = r#"
     }
 "#;
 
+// ─── Account info (GET /1.3/account) ─────────────────────────────────────
+
 #[test]
 fn deserialize_get_account_info() {
     let resp: AccountResponse = serde_json::from_str(GET_ACCOUNT_INFO_JSON).unwrap();
@@ -167,8 +163,6 @@ fn deserialize_get_account_info() {
     assert_eq!(limits.ntp_excess_gib, Some(20000));
     assert_eq!(limits.routers, Some(100));
 }
-
-// ─── Account list (GET /1.3/account/list) ────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/3-accounts/#get-account-list
 const GET_ACCOUNT_LIST_JSON: &str = r#"
@@ -223,6 +217,8 @@ const GET_ACCOUNT_LIST_JSON: &str = r#"
     }
 "#;
 
+// ─── Account list (GET /1.3/account/list) ────────────────────────────────
+
 #[test]
 fn deserialize_get_account_list() {
     let resp: AccountListResponse = serde_json::from_str(GET_ACCOUNT_LIST_JSON).unwrap();
@@ -240,8 +236,6 @@ fn deserialize_get_account_list() {
 
     assert_eq!(accounts[3].username, "my_billing_account");
 }
-
-// ─── Account details (GET /1.3/account/details/{username}) ───────────────
 
 // Source: https://developers.upcloud.com/1.3/3-accounts/#get-account-details
 const GET_ACCOUNT_DETAILS_JSON: &str = r#"
@@ -300,6 +294,8 @@ const GET_ACCOUNT_DETAILS_JSON: &str = r#"
     }
 "#;
 
+// ─── Account details (GET /1.3/account/details/{username}) ───────────────
+
 #[test]
 fn deserialize_get_account_details() {
     let resp: AccountResponse = serde_json::from_str(GET_ACCOUNT_DETAILS_JSON).unwrap();
@@ -326,8 +322,6 @@ fn deserialize_get_account_details() {
 
     assert!(acct.labels.unwrap().is_empty());
 }
-
-// ─── Modify account details (PUT request body) ───────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/3-accounts/#modify-account-details
 const MODIFY_ACCOUNT_JSON: &str = r#"
@@ -398,6 +392,8 @@ const MODIFY_ACCOUNT_JSON: &str = r#"
     }
 "#;
 
+// ─── Modify account details (PUT request body) ───────────────────────────
+
 #[test]
 fn deserialize_modify_account_request() {
     #[derive(Debug, Deserialize)]
@@ -421,8 +417,6 @@ fn deserialize_modify_account_request() {
     assert_eq!(labels.len(), 1);
     assert_eq!(labels[0].key, "role");
 }
-
-// ─── Add subaccount (POST request body) ──────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/3-accounts/#add-subaccount
 const ADD_SUBACCOUNT_JSON: &str = r#"
@@ -478,6 +472,8 @@ const ADD_SUBACCOUNT_JSON: &str = r#"
     }
 "#;
 
+// ─── Add subaccount (POST request body) ──────────────────────────────────
+
 #[test]
 fn deserialize_add_subaccount_request() {
     #[derive(Debug, Deserialize)]
@@ -501,8 +497,6 @@ fn deserialize_add_subaccount_request() {
     assert_eq!(labels[0].key, "department");
     assert_eq!(labels[0].value, "it");
 }
-
-// ─── Monthly billing summary (new endpoint) ─────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/3-accounts/#billing-summary
 const BILLING_SUMMARY_JSON: &str = r#"
@@ -612,6 +606,8 @@ const BILLING_SUMMARY_JSON: &str = r#"
     }
 "#;
 
+// ─── Monthly billing summary (new endpoint) ─────────────────────────────
+
 #[test]
 fn deserialize_billing_summary() {
     let resp: BillingSummaryResponse = serde_json::from_str(BILLING_SUMMARY_JSON).unwrap();
@@ -663,8 +659,6 @@ fn deserialize_billing_summary() {
     assert_eq!(srv_resources[1]["hours"], 430);
 }
 
-// ─── Monthly billing summary deprecated ─────────────────────────────────
-
 // Source: https://developers.upcloud.com/1.3/3-accounts/#billing-summary
 const DEPRECATED_BILLING_JSON: &str = r#"
     {
@@ -705,6 +699,8 @@ const DEPRECATED_BILLING_JSON: &str = r#"
     }
 "#;
 
+// ─── Monthly billing summary deprecated ─────────────────────────────────
+
 #[test]
 fn deserialize_deprecated_billing_summary() {
     let resp: DeprecatedBillingWrapper = serde_json::from_str(DEPRECATED_BILLING_JSON).unwrap();
@@ -732,8 +728,6 @@ fn deserialize_deprecated_billing_summary() {
     let sto = resp.billing.storages.unwrap();
     assert_eq!(sto["total_amount"], 3.6224);
 }
-
-// ─── Detailed monthly billing summary deprecated ────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/3-accounts/#billing-summary
 const DETAILED_BILLING_JSON: &str = r#"
@@ -855,6 +849,8 @@ const DETAILED_BILLING_JSON: &str = r#"
     }
 "#;
 
+// ─── Detailed monthly billing summary deprecated ────────────────────────
+
 #[test]
 fn deserialize_detailed_billing_summary() {
     let resp: DeprecatedBillingWrapper = serde_json::from_str(DETAILED_BILLING_JSON).unwrap();
@@ -927,8 +923,6 @@ fn deserialize_detailed_billing_summary() {
     assert_eq!(sto["storage"]["backup"].as_array().unwrap().len(), 1);
 }
 
-// ─── Resource billing summary ───────────────────────────────────────────
-
 // Source: https://developers.upcloud.com/1.3/3-accounts/#billing-summary
 const RESOURCE_BILLING_JSON: &str = r#"
     {
@@ -958,6 +952,8 @@ const RESOURCE_BILLING_JSON: &str = r#"
     }
 "#;
 
+// ─── Resource billing summary ───────────────────────────────────────────
+
 #[test]
 fn deserialize_resource_billing_summary() {
     let resp: ResourceBillingWrapper = serde_json::from_str(RESOURCE_BILLING_JSON).unwrap();
@@ -981,8 +977,6 @@ fn deserialize_resource_billing_summary() {
     assert_eq!(details.resource_type.as_deref(), Some("server"));
     assert_eq!(details.zone.as_deref(), Some("fi-hel1"));
 }
-
-// ─── Network transfer statistics ────────────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/23-account/
 const NETWORK_TRANSFER_STATS_JSON: &str = r#"
@@ -1018,6 +1012,8 @@ const NETWORK_TRANSFER_STATS_JSON: &str = r#"
     }
 "#;
 
+// ─── Network transfer statistics ────────────────────────────────────────
+
 #[test]
 fn deserialize_network_transfer_stats() {
     let resp: NetworkTransferStatsResponse =
@@ -1050,8 +1046,6 @@ fn deserialize_network_transfer_stats() {
     assert_eq!(stats[2].total_sent_bytes, Some(906));
 }
 
-// ─── Resource transfer statistics ───────────────────────────────────────
-
 // Source: https://developers.upcloud.com/1.3/23-account/
 const RESOURCE_TRANSFER_STATS_JSON: &str = r#"
     {
@@ -1082,6 +1076,8 @@ const RESOURCE_TRANSFER_STATS_JSON: &str = r#"
         }
     }
 "#;
+
+// ─── Resource transfer statistics ───────────────────────────────────────
 
 #[test]
 fn deserialize_resource_transfer_stats() {
@@ -1136,8 +1132,6 @@ fn deserialize_resource_transfer_stats() {
     assert_eq!(resp.stats.stat[2].zone.as_deref(), Some("de-fra1"));
 }
 
-// ─── Current network usage ──────────────────────────────────────────────
-
 // Source: https://developers.upcloud.com/1.3/23-account/
 const CURRENT_NETWORK_USAGE_JSON: &str = r#"
     {
@@ -1152,6 +1146,8 @@ const CURRENT_NETWORK_USAGE_JSON: &str = r#"
         }
     }
 "#;
+
+// ─── Current network usage ──────────────────────────────────────────────
 
 #[test]
 fn deserialize_current_network_usage() {

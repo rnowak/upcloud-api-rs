@@ -1,5 +1,4 @@
 use super::*;
-
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#list-managed-databases
 const DB_LIST_JSON: &str = r#"
     [
@@ -59,66 +58,6 @@ const DB_LIST_JSON: &str = r#"
                     "value": "production"
                 }
             ]
-        }
-    ]
-"#;
-
-// Source: https://developers.upcloud.com/1.3/16-managed-database/#list-users
-const DB_USER_LIST_JSON: &str = r#"
-    [
-        {
-            "username": "upadmin",
-            "type": "primary"
-        },
-        {
-            "username": "reader",
-            "type": "readonly",
-            "pg_allow_replication": false
-        }
-    ]
-"#;
-
-// Source: https://developers.upcloud.com/1.3/16-managed-database/#list-logical-databases
-const DB_LOGICAL_DB_LIST_JSON: &str = r#"
-    [
-        {
-            "name": "defaultdb",
-            "lc_collate": "en_US.UTF-8",
-            "lc_ctype": "en_US.UTF-8"
-        },
-        {
-            "name": "testdb"
-        }
-    ]
-"#;
-
-// Source: https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-plans
-const DB_PLAN_JSON: &str = r#"
-    [
-        {
-            "name": "1x1xCPU-2GB-25GB",
-            "node_count": 1,
-            "storage_size": 25600
-        },
-        {
-            "name": "2x2xCPU-4GB-50GB",
-            "node_count": 2,
-            "storage_size": 51200
-        }
-    ]
-"#;
-
-// Source: https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-sessions
-const DB_SESSION_JSON: &str = r#"
-    [
-        {
-            "pid": 12345,
-            "query": "SELECT 1",
-            "query_duration": "00:00:01",
-            "state": "active",
-            "client_addr": "192.168.1.1",
-            "datname": "defaultdb",
-            "usename": "upadmin"
         }
     ]
 "#;
@@ -185,6 +124,20 @@ fn deserialize_managed_database_list() {
     assert_eq!(labels[0].key, "env");
     assert_eq!(labels[0].value, "production");
 }
+// Source: https://developers.upcloud.com/1.3/16-managed-database/#list-users
+const DB_USER_LIST_JSON: &str = r#"
+    [
+        {
+            "username": "upadmin",
+            "type": "primary"
+        },
+        {
+            "username": "reader",
+            "type": "readonly",
+            "pg_allow_replication": false
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_db_user_list() {
@@ -201,6 +154,19 @@ fn deserialize_db_user_list() {
     assert!(users[1].password.is_none());
     assert!(users[1].authentication.is_none());
 }
+// Source: https://developers.upcloud.com/1.3/16-managed-database/#list-logical-databases
+const DB_LOGICAL_DB_LIST_JSON: &str = r#"
+    [
+        {
+            "name": "defaultdb",
+            "lc_collate": "en_US.UTF-8",
+            "lc_ctype": "en_US.UTF-8"
+        },
+        {
+            "name": "testdb"
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_db_logical_database_list() {
@@ -213,6 +179,21 @@ fn deserialize_db_logical_database_list() {
     assert!(dbs[1].lc_collate.is_none());
     assert!(dbs[1].lc_ctype.is_none());
 }
+// Source: https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-plans
+const DB_PLAN_JSON: &str = r#"
+    [
+        {
+            "name": "1x1xCPU-2GB-25GB",
+            "node_count": 1,
+            "storage_size": 25600
+        },
+        {
+            "name": "2x2xCPU-4GB-50GB",
+            "node_count": 2,
+            "storage_size": 51200
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_db_plan_list() {
@@ -231,6 +212,20 @@ fn deserialize_db_plan_list() {
     assert!(plans[1].max_memory_percent.is_none());
     assert!(plans[1].zones.is_none());
 }
+// Source: https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-sessions
+const DB_SESSION_JSON: &str = r#"
+    [
+        {
+            "pid": 12345,
+            "query": "SELECT 1",
+            "query_duration": "00:00:01",
+            "state": "active",
+            "client_addr": "192.168.1.1",
+            "datname": "defaultdb",
+            "usename": "upadmin"
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_db_session_list() {
@@ -244,8 +239,6 @@ fn deserialize_db_session_list() {
     assert_eq!(sessions[0].datname.as_deref(), Some("defaultdb"));
     assert_eq!(sessions[0].usename.as_deref(), Some("upadmin"));
 }
-
-// ─── New deserialization tests ───────────────────────────────────────────
 
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-service-types
 const PG_AVAILABLE_EXTENSIONS_JSON: &str = r#"
@@ -312,6 +305,8 @@ const PG_AVAILABLE_EXTENSIONS_JSON: &str = r#"
     ]
 "#;
 
+// ─── New deserialization tests ───────────────────────────────────────────
+
 #[test]
 fn deserialize_pg_available_extensions() {
     let versions: Vec<PgVersionExtensions> =
@@ -346,7 +341,6 @@ fn deserialize_pg_available_extensions() {
     assert_eq!(versions[1].extensions[2].default_version, "0.8.1");
     assert_eq!(versions[1].extensions[2].versions, vec!["0.8.1"]);
 }
-
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-service-types
 const INSTANCE_AVAILABLE_EXTENSIONS_JSON: &str = r#"
     [
@@ -400,7 +394,6 @@ fn deserialize_instance_available_extensions() {
     assert_eq!(exts[2].default_version, "5.2.4");
     assert_eq!(exts[2].versions, vec!["5.2.4"]);
 }
-
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-service-types
 const DB_SERVICE_TYPES_JSON: &str = r#"
     {
@@ -476,7 +469,6 @@ fn deserialize_db_service_types() {
     assert!(pg["service_plans"].as_array().unwrap().is_empty());
     assert!(pg["properties"].as_object().unwrap().is_empty());
 }
-
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#create-managed-database
 const CREATE_DB_REQUEST_JSON: &str = r#"
     {
@@ -554,7 +546,6 @@ fn deserialize_create_db_request() {
     assert_eq!(labels[1]["key"], "foo");
     assert_eq!(labels[1]["value"], "bar");
 }
-
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-details
 const DB_DETAILS_JSON: &str = r#"
     {
@@ -646,7 +637,6 @@ fn deserialize_db_details() {
     assert_eq!(props["public_access"], true);
     assert_eq!(props["version"], "13");
 }
-
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#modify-managed-database
 const MODIFY_DB_REQUEST_JSON: &str = r#"
     {
@@ -669,7 +659,6 @@ fn deserialize_modify_db_request() {
     assert_eq!(props["automatic_utility_network_ip_filter"], true);
     assert!(req.labels.is_none());
 }
-
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#create-user
 const CREATE_DB_USER_MYSQL_JSON: &str = r#"
     {
@@ -688,7 +677,6 @@ fn deserialize_create_db_user_mysql() {
     assert!(req.user_type.is_none());
     assert!(req.pg_allow_replication.is_none());
 }
-
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#get-user-details
 const DB_USER_DETAIL_MYSQL_JSON: &str = r#"
     {
@@ -711,7 +699,6 @@ fn deserialize_db_user_detail_mysql() {
     assert_eq!(user.user_type, UserType::Normal);
     assert!(user.pg_allow_replication.is_none());
 }
-
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#get-user-details
 const DB_USER_DETAIL_PG_JSON: &str = r#"
     {
@@ -766,7 +753,6 @@ fn deserialize_create_logical_db() {
     assert_eq!(req.lc_collate.as_deref(), Some("en_US.UTF8"));
     assert_eq!(req.lc_ctype.as_deref(), Some("en_US.UTF8"));
 }
-
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#cancel-managed-database-session
 const SESSION_TERMINATE_JSON: &str = r#"
     {
@@ -779,7 +765,6 @@ fn deserialize_session_terminate() {
     let val: serde_json::Value = serde_json::from_str(SESSION_TERMINATE_JSON).unwrap();
     assert_eq!(val["success"], true);
 }
-
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-sessions
 const PG_SESSIONS_DETAILED_JSON: &str = r#"
     {
@@ -821,7 +806,6 @@ fn deserialize_pg_sessions_detailed() {
     assert_eq!(s["state"], "idle");
     assert_eq!(s["usename"], "upadmin");
 }
-
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-query-statistics
 const QUERY_STATISTICS_JSON: &str = r#"
     {
@@ -861,7 +845,6 @@ fn deserialize_query_statistics() {
     assert_eq!(s["total_time"], 60879904);
     assert_eq!(s["user_name"], "upadmin");
 }
-
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-metrics
 const DB_METRICS_JSON: &str = r#"
     {
@@ -907,7 +890,6 @@ fn deserialize_db_metrics() {
     assert_eq!(rows[0][1], 2.744);
     assert_eq!(cpu["hints"]["title"], "CPU usage %");
 }
-
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-logs
 const DB_LOGS_JSON: &str = r#"
     {
@@ -936,7 +918,6 @@ fn deserialize_db_logs() {
     assert_eq!(logs[0]["time"], "2022-01-21T13:07:23.687241Z");
     assert_eq!(logs[0]["service"], "postgresql-13.service");
 }
-
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-versions
 const DB_VERSIONS_JSON: &str = r#"
     [
@@ -958,7 +939,6 @@ fn deserialize_db_versions() {
     assert_eq!(versions[3], "13");
     assert_eq!(versions[4], "14");
 }
-
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-details
 const DB_NETWORKS_JSON: &str = r#"
     [
@@ -980,8 +960,6 @@ fn deserialize_db_networks() {
     assert_eq!(nets[0].family, "IPv4");
     assert_eq!(nets[0].network_type, "private");
 }
-
-// ─── Service type detail (single type, official docs page 16) ─────────────
 
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-service-types
 const DB_SERVICE_TYPE_DETAIL_JSON: &str = r#"
@@ -1063,6 +1041,8 @@ const DB_SERVICE_TYPE_DETAIL_JSON: &str = r#"
         }
     }
 "#;
+
+// ─── Service type detail (single type, official docs page 16) ─────────────
 
 #[test]
 fn deserialize_db_service_type_detail() {
@@ -1152,7 +1132,6 @@ fn deserialize_state_kebab_case() {
 
 // ─── Database detail with backups and maintenance from docs ───────────────
 // Real JSON from UpCloud API 1.3 docs: "Get Managed Database details"
-
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-details
 const DATABASE_DETAIL_FROM_DOCS_JSON: &str = r#"
     {
@@ -1311,7 +1290,6 @@ fn deserialize_opensearch_access_control_rule() {
     assert_eq!(rule.index, "my-index-*");
     assert_eq!(rule.permission, "readwrite");
 }
-
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-indices
 const OPENSEARCH_INDEX_JSON: &str = r#"
     {
@@ -1357,7 +1335,6 @@ fn deserialize_modify_access_control_request() {
     assert_eq!(req.access_control, Some(true));
     assert_eq!(req.extended_access_control, Some(false));
 }
-
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#modify-managed-database-user-access-control
 const USER_OPENSEARCH_ACCESS_CONTROL_JSON: &str = r#"
     {

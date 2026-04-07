@@ -1,5 +1,4 @@
 use super::*;
-
 // Source: https://developers.upcloud.com/1.3/10-ip-addresses/#list-ip-addresses
 const LIST_IP_ADDRESSES_JSON: &str = r#"
     {
@@ -59,25 +58,6 @@ const LIST_IP_ADDRESSES_JSON: &str = r#"
                     "zone": "nl-ams1"
                 }
             ]
-        }
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/10-ip-addresses/#get-ip-address-details
-const GET_IP_ADDRESS_JSON: &str = r#"
-    {
-        "ip_address": {
-            "access": "public",
-            "address": "0.0.0.0",
-            "family": "IPv4",
-            "part_of_plan": "yes",
-            "ptr_record": "test.example.com",
-            "server": "009d64ef-31d1-4684-a26b-c86c955cbf46",
-            "mac": "mm:mm:mm:mm:mm:m5",
-            "floating": "no",
-            "release_policy": "keep",
-            "is_delegated": "yes",
-            "zone": "sg-sin1"
         }
     }
 "#;
@@ -174,6 +154,24 @@ fn deserialize_ip_address_list() {
     assert_eq!(ips[4].zone.as_deref(), Some("nl-ams1"));
     assert!(ips[4].part_of_plan.is_none());
 }
+// Source: https://developers.upcloud.com/1.3/10-ip-addresses/#get-ip-address-details
+const GET_IP_ADDRESS_JSON: &str = r#"
+    {
+        "ip_address": {
+            "access": "public",
+            "address": "0.0.0.0",
+            "family": "IPv4",
+            "part_of_plan": "yes",
+            "ptr_record": "test.example.com",
+            "server": "009d64ef-31d1-4684-a26b-c86c955cbf46",
+            "mac": "mm:mm:mm:mm:mm:m5",
+            "floating": "no",
+            "release_policy": "keep",
+            "is_delegated": "yes",
+            "zone": "sg-sin1"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_ip_address_detail() {
@@ -196,7 +194,6 @@ fn deserialize_ip_address_detail() {
 }
 
 // ── Assign IP address (docs: POST /1.3/ip_address) ──
-
 // Source: https://developers.upcloud.com/1.3/10-ip-addresses/#assign-ip-address
 const ASSIGN_IP_ADDRESS_REQUEST_JSON: &str = r#"
     {
@@ -216,7 +213,6 @@ fn deserialize_assign_ip_address_request() {
 }
 
 // ── Assign attached floating IP (docs: POST /1.3/ip_address) ──
-
 // Source: https://developers.upcloud.com/1.3/10-ip-addresses/#assign-ip-address
 const ASSIGN_ATTACHED_FLOATING_IP_REQUEST_JSON: &str = r#"
     {
@@ -229,6 +225,16 @@ const ASSIGN_ATTACHED_FLOATING_IP_REQUEST_JSON: &str = r#"
     }
 "#;
 
+#[test]
+fn deserialize_assign_attached_floating_ip_request() {
+    let v: serde_json::Value =
+        serde_json::from_str(ASSIGN_ATTACHED_FLOATING_IP_REQUEST_JSON).unwrap();
+    let ip = &v["ip_address"];
+    assert_eq!(ip["family"], "IPv4");
+    assert_eq!(ip["floating"], "yes");
+    assert_eq!(ip["mac"], "mm:mm:mm:mm:mm:m1");
+    assert_eq!(ip["release_policy"], "release");
+}
 // Source: https://developers.upcloud.com/1.3/10-ip-addresses/#assign-ip-address
 const ASSIGN_ATTACHED_FLOATING_IP_RESPONSE_JSON: &str = r#"
     {
@@ -245,17 +251,6 @@ const ASSIGN_ATTACHED_FLOATING_IP_RESPONSE_JSON: &str = r#"
         }
     }
 "#;
-
-#[test]
-fn deserialize_assign_attached_floating_ip_request() {
-    let v: serde_json::Value =
-        serde_json::from_str(ASSIGN_ATTACHED_FLOATING_IP_REQUEST_JSON).unwrap();
-    let ip = &v["ip_address"];
-    assert_eq!(ip["family"], "IPv4");
-    assert_eq!(ip["floating"], "yes");
-    assert_eq!(ip["mac"], "mm:mm:mm:mm:mm:m1");
-    assert_eq!(ip["release_policy"], "release");
-}
 
 #[test]
 fn deserialize_assign_attached_floating_ip_response() {
@@ -282,7 +277,6 @@ fn deserialize_assign_attached_floating_ip_response() {
 }
 
 // ── Assign detached floating IP (docs: POST /1.3/ip_address) ──
-
 // Source: https://developers.upcloud.com/1.3/10-ip-addresses/#assign-ip-address
 const ASSIGN_DETACHED_FLOATING_IP_REQUEST_JSON: &str = r#"
     {
@@ -290,21 +284,6 @@ const ASSIGN_DETACHED_FLOATING_IP_REQUEST_JSON: &str = r#"
             "family": "IPv4",
             "zone": "fi-hel2",
             "floating": "yes"
-        }
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/10-ip-addresses/#assign-ip-address
-const ASSIGN_DETACHED_FLOATING_IP_RESPONSE_JSON: &str = r#"
-    {
-        "ip_address": {
-            "access": "public",
-            "address": "xx.xx.xx.xx",
-            "family": "IPv4",
-            "floating": "yes",
-            "ptr_record": "xx-xx-xx-xx.de-fra1.upcloud.host",
-            "release_policy": "keep",
-            "zone": "de-fra1"
         }
     }
 "#;
@@ -319,6 +298,20 @@ fn deserialize_assign_detached_floating_ip_request() {
     assert_eq!(ip["zone"], "fi-hel2");
     assert!(ip.get("mac").is_none());
 }
+// Source: https://developers.upcloud.com/1.3/10-ip-addresses/#assign-ip-address
+const ASSIGN_DETACHED_FLOATING_IP_RESPONSE_JSON: &str = r#"
+    {
+        "ip_address": {
+            "access": "public",
+            "address": "xx.xx.xx.xx",
+            "family": "IPv4",
+            "floating": "yes",
+            "ptr_record": "xx-xx-xx-xx.de-fra1.upcloud.host",
+            "release_policy": "keep",
+            "zone": "de-fra1"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_assign_detached_floating_ip_response() {
@@ -343,7 +336,6 @@ fn deserialize_assign_detached_floating_ip_response() {
 }
 
 // ── Modify IP address (docs: PATCH /1.3/ip_address/{address}) ──
-
 // Source: https://developers.upcloud.com/1.3/10-ip-addresses/#modify-ip-address
 const MODIFY_IP_ADDRESS_REQUEST_JSON: &str = r#"
     {
@@ -351,22 +343,6 @@ const MODIFY_IP_ADDRESS_REQUEST_JSON: &str = r#"
             "mac": "mm:mm:mm:mm:mm:m1",
             "ptr_record": "hostname.example.com",
             "release_policy": "release"
-        }
-    }
-"#;
-
-// Source: https://developers.upcloud.com/1.3/10-ip-addresses/#modify-ip-address
-const MODIFY_IP_ADDRESS_RESPONSE_JSON: &str = r#"
-    {
-        "ip_address": {
-            "access": "public",
-            "address": "0.0.0.0",
-            "family": "IPv4",
-            "ptr_record": "hostname.example.com",
-            "server": "009d64ef-31d1-4684-a26b-c86c95c5bf46",
-            "mac": "mm:mm:mm:mm:mm:m1",
-            "floating": "yes",
-            "zone": "sg-sin1"
         }
     }
 "#;
@@ -383,6 +359,21 @@ fn deserialize_modify_ip_address_request() {
     assert_eq!(req.ptr_record.as_deref(), Some("hostname.example.com"));
     assert_eq!(req.release_policy, Some(ReleasePolicy::Release));
 }
+// Source: https://developers.upcloud.com/1.3/10-ip-addresses/#modify-ip-address
+const MODIFY_IP_ADDRESS_RESPONSE_JSON: &str = r#"
+    {
+        "ip_address": {
+            "access": "public",
+            "address": "0.0.0.0",
+            "family": "IPv4",
+            "ptr_record": "hostname.example.com",
+            "server": "009d64ef-31d1-4684-a26b-c86c95c5bf46",
+            "mac": "mm:mm:mm:mm:mm:m1",
+            "floating": "yes",
+            "zone": "sg-sin1"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_modify_ip_address_response() {
