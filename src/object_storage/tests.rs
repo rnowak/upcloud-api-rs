@@ -1282,22 +1282,29 @@ fn serialize_modify_user_access_key_request() {
     assert_eq!(json2["status"], "Active");
 }
 
-// Source: Synthetic test fixture
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#replace-service
 const MOS_REPLACE_REQUEST_JSON: &str = r#"
     {
+        "name": "example-service",
         "configured_status": "started",
-        "name": "my-updated-service",
+        "termination_protection": false,
         "networks": [
             {
                 "name": "example-public-network",
                 "type": "public",
                 "family": "IPv4"
+            },
+            {
+                "name": "example-private-network",
+                "uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4",
+                "type": "private",
+                "family": "IPv4"
             }
         ],
         "labels": [
             {
-                "key": "env",
-                "value": "prod"
+                "key": "example-label-key",
+                "value": "example-label-value"
             }
         ]
     }
@@ -1307,15 +1314,17 @@ const MOS_REPLACE_REQUEST_JSON: &str = r#"
 fn deserialize_replace_request() {
     let req: ReplaceRequest = serde_json::from_str(MOS_REPLACE_REQUEST_JSON).unwrap();
     assert_eq!(req.configured_status, "started");
-    assert_eq!(req.name.as_deref(), Some("my-updated-service"));
-    assert_eq!(req.networks.len(), 1);
+    assert_eq!(req.name.as_deref(), Some("example-service"));
+    assert_eq!(req.networks.len(), 2);
     assert_eq!(req.networks[0].name, "example-public-network");
     assert_eq!(req.networks[0].network_type, "public");
     assert_eq!(req.networks[0].family, "IPv4");
+    assert_eq!(req.networks[1].name, "example-private-network");
+    assert_eq!(req.networks[1].network_type, "private");
     let labels = req.labels.as_ref().unwrap();
     assert_eq!(labels.len(), 1);
-    assert_eq!(labels[0].key, "env");
-    assert_eq!(labels[0].value, "prod");
+    assert_eq!(labels[0].key, "example-label-key");
+    assert_eq!(labels[0].value, "example-label-value");
 }
 
 #[test]
@@ -1323,6 +1332,7 @@ fn serialize_replace_request() {
     let req = ReplaceRequest {
         configured_status: "started".to_string(),
         name: Some("my-service".to_string()),
+        termination_protection: None,
         labels: None,
         networks: vec![NetworkInput {
             family: "IPv4".to_string(),
@@ -1344,6 +1354,7 @@ fn serialize_replace_request_minimal() {
     let req = ReplaceRequest {
         configured_status: "stopped".to_string(),
         name: None,
+        termination_protection: None,
         labels: None,
         networks: vec![],
     };
@@ -1354,18 +1365,18 @@ fn serialize_replace_request_minimal() {
     assert_eq!(json["networks"], serde_json::json!([]));
 }
 
-// Source: Synthetic test fixture
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#list-bucket-metrics
 const MOS_BUCKET_METRICS_JSON: &str = r#"
     [
         {
-            "name": "my-bucket-1",
-            "bytes": 1048576,
-            "objects": 42
+            "name": "example-bucket-1",
+            "total_objects": 157,
+            "total_size_bytes": 5293771
         },
         {
-            "name": "my-bucket-2",
-            "bytes": 0,
-            "objects": 0
+            "name": "example-bucket-2",
+            "total_objects": 12,
+            "total_size_bytes": 832226
         }
     ]
 "#;
@@ -1374,12 +1385,12 @@ const MOS_BUCKET_METRICS_JSON: &str = r#"
 fn deserialize_bucket_metrics() {
     let metrics: Vec<BucketMetrics> = serde_json::from_str(MOS_BUCKET_METRICS_JSON).unwrap();
     assert_eq!(metrics.len(), 2);
-    assert_eq!(metrics[0].name, "my-bucket-1");
-    assert_eq!(metrics[0].bytes, Some(1048576));
-    assert_eq!(metrics[0].objects, Some(42));
-    assert_eq!(metrics[1].name, "my-bucket-2");
-    assert_eq!(metrics[1].bytes, Some(0));
-    assert_eq!(metrics[1].objects, Some(0));
+    assert_eq!(metrics[0].name, "example-bucket-1");
+    assert_eq!(metrics[0].total_objects, Some(157));
+    assert_eq!(metrics[0].total_size_bytes, Some(5293771));
+    assert_eq!(metrics[1].name, "example-bucket-2");
+    assert_eq!(metrics[1].total_objects, Some(12));
+    assert_eq!(metrics[1].total_size_bytes, Some(832226));
 }
 
 #[test]

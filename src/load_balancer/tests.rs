@@ -2180,16 +2180,20 @@ fn deserialize_node() {
     assert_eq!(node.networks[1].ip_addresses[1].address, "172.16.1.45");
 }
 
-// Source: Synthetic test fixture
+// Source: https://developers.upcloud.com/1.3/17-managed-loadbalancer/#list-ip-addresses
 const IP_ADDRESS_LIST_JSON: &str = r#"
     [
         {
-            "address": "100.127.5.146",
-            "listen_only": false
+            "address": "94.94.0.161",
+            "created_at": "2025-03-07T17:32:27.056811Z",
+            "network_name": "public-net",
+            "updated_at": "2025-03-09T01:19:56.100199Z"
         },
         {
-            "address": "172.16.1.44",
-            "listen_only": true
+            "address": "94.94.0.162",
+            "created_at": "2025-03-07T17:32:27.056811Z",
+            "network_name": "public-net",
+            "updated_at": "2025-03-09T01:19:56.100199Z"
         }
     ]
 "#;
@@ -2198,10 +2202,8 @@ const IP_ADDRESS_LIST_JSON: &str = r#"
 fn deserialize_ip_address_list() {
     let addrs: Vec<IPAddress> = serde_json::from_str(IP_ADDRESS_LIST_JSON).unwrap();
     assert_eq!(addrs.len(), 2);
-    assert_eq!(addrs[0].address, "100.127.5.146");
-    assert_eq!(addrs[0].listen_only, Some(false));
-    assert_eq!(addrs[1].address, "172.16.1.44");
-    assert_eq!(addrs[1].listen_only, Some(true));
+    assert_eq!(addrs[0].address, "94.94.0.161");
+    assert_eq!(addrs[1].address, "94.94.0.162");
 }
 
 #[test]
@@ -2222,17 +2224,17 @@ fn serialize_add_ip_address_request_empty() {
     assert_eq!(json, "{}");
 }
 
-// Source: Synthetic test fixture
+// Source: https://developers.upcloud.com/1.3/17-managed-loadbalancer/#dns-challenge
 const DNS_CHALLENGE_JSON: &str = r#"
     {
-        "domain": "_acme-challenge.lb.upcloud.com"
+        "domain": "_acme-challenge.xxxxx.upcloudlb.com"
     }
 "#;
 
 #[test]
 fn deserialize_dns_challenge_domain() {
     let d: DnsChallengeDomain = serde_json::from_str(DNS_CHALLENGE_JSON).unwrap();
-    assert_eq!(d.domain, "_acme-challenge.lb.upcloud.com");
+    assert_eq!(d.domain, "_acme-challenge.xxxxx.upcloudlb.com");
 }
 
 #[test]

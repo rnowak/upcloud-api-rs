@@ -307,12 +307,12 @@ pub struct Metrics {
 #[non_exhaustive]
 pub struct BucketMetrics {
     pub name: String,
-    /// Total bytes in bucket.
+    /// Total number of objects in bucket.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bytes: Option<u64>,
-    /// Total objects in bucket.
+    pub total_objects: Option<u64>,
+    /// Total size of objects in bucket, in bytes.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub objects: Option<u64>,
+    pub total_size_bytes: Option<u64>,
 }
 
 // ─── Request types ────────────────────────────────────────────────────────────
@@ -374,6 +374,8 @@ pub struct ReplaceRequest {
     pub configured_status: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub termination_protection: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
     /// Networks to attach.

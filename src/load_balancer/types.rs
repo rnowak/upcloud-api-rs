@@ -72,9 +72,13 @@ pub struct Plan {
 #[non_exhaustive]
 pub struct IPAddress {
     pub address: String,
-    /// If true, the address is used only for listening (not for outbound traffic).
+    /// The name of the network where the IP address is attached.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub listen_only: Option<bool>,
+    pub network_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created_at: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub updated_at: Option<String>,
 }
 
 /// A network attached to the load balancer.
