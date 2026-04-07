@@ -107,7 +107,7 @@ pub struct Service {
     #[serde(default)]
     pub networks: Vec<Network>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::Label>>,
+    pub labels: Option<Vec<crate::types::common::Label>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -136,7 +136,7 @@ pub struct CreateRequest {
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub networks: Vec<NetworkInput>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::Label>>,
+    pub labels: Option<Vec<crate::types::common::Label>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configured_status: Option<String>,
     /// Initial NFS shares.
@@ -171,7 +171,7 @@ pub struct ModifyRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configured_status: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::Label>>,
+    pub labels: Option<Vec<crate::types::common::Label>>,
 }
 
 /// Request body for creating an NFS share.

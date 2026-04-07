@@ -3,7 +3,7 @@
 //! Usage:
 //!   UPCLOUD_TOKEN=ucat_... cargo run --example list_object_storages
 
-use upcloud_api::{Client, object_storage, types::PageParams};
+use upcloud_api::{Client, object_storage, types::common::PageParams};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

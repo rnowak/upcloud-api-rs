@@ -22,7 +22,7 @@ struct GroupRequestInner {
     #[serde(default)]
     servers: Option<GroupServers>,
     anti_affinity: Option<String>,
-    labels: Option<crate::types::Labels>,
+    labels: Option<crate::types::common::Labels>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -2126,7 +2126,7 @@ fn list_params_uuids() {
 
 #[test]
 fn list_params_ordering() {
-    use crate::types::SortOrder;
+    use crate::types::common::SortOrder;
     let params = ListParams::new().order_by(OrderBy::Title, SortOrder::Asc);
     let pairs = params.to_query_pairs();
     assert_eq!(
@@ -2150,7 +2150,7 @@ fn list_params_pagination() {
 
 #[test]
 fn list_params_full_combination() {
-    use crate::types::SortOrder;
+    use crate::types::common::SortOrder;
     let params = ListParams::new()
         .state(State::Started)
         .label("env", "prod")

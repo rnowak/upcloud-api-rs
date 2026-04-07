@@ -95,7 +95,7 @@ pub struct Service {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub users: Option<Vec<UserSummary>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::Label>>,
+    pub labels: Option<Vec<crate::types::common::Label>>,
     /// Storage usage statistics.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub usage: Option<Usage>,
@@ -343,7 +343,7 @@ pub struct CreateRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configured_status: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::Label>>,
+    pub labels: Option<Vec<crate::types::common::Label>>,
     /// Enable termination protection.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub termination_protection: Option<bool>,
@@ -358,7 +358,7 @@ pub struct ModifyRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configured_status: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::Label>>,
+    pub labels: Option<Vec<crate::types::common::Label>>,
     /// Termination protection.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub termination_protection: Option<bool>,

@@ -193,7 +193,7 @@ pub struct Database {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<Vec<Network>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::Label>>,
+    pub labels: Option<Vec<crate::types::common::Label>>,
     /// Whether termination protection is enabled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub termination_protection: Option<bool>,
@@ -400,7 +400,7 @@ pub struct CreateRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<Vec<NetworkInput>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::Label>>,
+    pub labels: Option<Vec<crate::types::common::Label>>,
     /// Enable termination protection.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub termination_protection: Option<bool>,
@@ -429,7 +429,7 @@ pub struct ModifyRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub powered: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::Label>>,
+    pub labels: Option<Vec<crate::types::common::Label>>,
     /// Termination protection.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub termination_protection: Option<bool>,

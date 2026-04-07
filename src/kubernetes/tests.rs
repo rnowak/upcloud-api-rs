@@ -854,7 +854,7 @@ fn deserialize_modify_kubernetes_node_group_response() {
 fn serialize_modify_cluster_request() {
     let req = ModifyClusterRequest {
         ip_filter: None,
-        labels: Some(vec![crate::types::Label {
+        labels: Some(vec![crate::types::common::Label {
             key: "env".into(),
             value: "production".into(),
         }]),

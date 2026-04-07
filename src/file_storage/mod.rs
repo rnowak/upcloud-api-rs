@@ -6,7 +6,7 @@ pub use types::*;
 
 use crate::client::Client;
 use crate::error::Error;
-use crate::types::PageParams;
+use crate::types::common::PageParams;
 
 /// Handler for file storage operations.
 pub struct FileStorageHandler<'a> {

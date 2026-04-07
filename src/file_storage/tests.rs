@@ -761,7 +761,7 @@ fn deserialize_create_acl() {
 
 #[test]
 fn deserialize_label_list() {
-    let labels: Vec<crate::types::Label> = serde_json::from_str(LABEL_LIST_JSON).unwrap();
+    let labels: Vec<crate::types::common::Label> = serde_json::from_str(LABEL_LIST_JSON).unwrap();
     assert_eq!(labels.len(), 2);
     assert_eq!(labels[0].key, "env");
     assert_eq!(labels[0].value, "staging");
@@ -773,7 +773,7 @@ fn deserialize_label_list() {
 
 #[test]
 fn deserialize_label_detail() {
-    let label: crate::types::Label = serde_json::from_str(LABEL_DETAIL_JSON).unwrap();
+    let label: crate::types::common::Label = serde_json::from_str(LABEL_DETAIL_JSON).unwrap();
     assert_eq!(label.key, "env");
     assert_eq!(label.value, "staging");
 }

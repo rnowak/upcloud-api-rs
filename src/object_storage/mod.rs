@@ -10,7 +10,7 @@ use serde::Serialize;
 
 use crate::client::Client;
 use crate::error::Error;
-use crate::types::PageParams;
+use crate::types::common::PageParams;
 
 /// Handler for managed object storage operations.
 pub struct ObjectStorageHandler<'a> {

@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 use serde_with::{DisplayFromStr, PickFirst, serde_as};
 
-use crate::types::YesNo;
+use crate::types::common::YesNo;
 
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
@@ -169,7 +169,7 @@ pub struct StorageDevice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub storage_encrypted: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::Label>>,
+    pub labels: Option<Vec<crate::types::common::Label>>,
 }
 
 /// IP address assigned to a server.
@@ -390,7 +390,7 @@ pub struct ServerDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networking: Option<ServerNetworking>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<crate::types::Labels>,
+    pub labels: Option<crate::types::common::Labels>,
     /// Whether the metadata service is enabled (`"yes"` or `"no"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<String>,
@@ -535,7 +535,7 @@ pub struct CreateRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_data: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<crate::types::Labels>,
+    pub labels: Option<crate::types::common::Labels>,
     /// Host ID to avoid for scheduling (private cloud).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub avoid_host: Option<i64>,
@@ -583,7 +583,7 @@ pub struct CreateServerStorageDevice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub backup_rule: Option<crate::storage::BackupRule>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::Label>>,
+    pub labels: Option<Vec<crate::types::common::Label>>,
 }
 
 /// Wrapper for storage devices in a server create request.
@@ -785,7 +785,7 @@ pub struct Group {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub servers: Option<GroupServers>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<crate::types::Labels>,
+    pub labels: Option<crate::types::common::Labels>,
 }
 
 /// Anti-affinity status for a server in a group.
@@ -814,7 +814,7 @@ pub struct CreateGroupRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub anti_affinity: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<crate::types::Labels>,
+    pub labels: Option<crate::types::common::Labels>,
     /// Initial server UUIDs to add to the group.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub servers: Option<GroupServers>,
@@ -828,7 +828,7 @@ pub struct ModifyGroupRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub anti_affinity: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<crate::types::Labels>,
+    pub labels: Option<crate::types::common::Labels>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub servers: Option<GroupServers>,
 }
@@ -871,7 +871,7 @@ impl std::fmt::Display for OrderBy {
 ///
 /// ```
 /// use upcloud_api::server::{ListParams, State, OrderBy};
-/// use upcloud_api::types::SortOrder;
+/// use upcloud_api::types::common::SortOrder;
 ///
 /// let params = ListParams::new()
 ///     .state(State::Started)
@@ -889,7 +889,7 @@ pub struct ListParams {
     hosts: Vec<i64>,
     uuids: Vec<String>,
     order_by: Option<OrderBy>,
-    sort_order: Option<crate::types::SortOrder>,
+    sort_order: Option<crate::types::common::SortOrder>,
     limit: Option<u32>,
     offset: Option<u32>,
 }
@@ -937,7 +937,7 @@ impl ListParams {
     }
 
     /// Sort results by the given field and direction.
-    pub fn order_by(mut self, field: OrderBy, direction: crate::types::SortOrder) -> Self {
+    pub fn order_by(mut self, field: OrderBy, direction: crate::types::common::SortOrder) -> Self {
         self.order_by = Some(field);
         self.sort_order = Some(direction);
         self

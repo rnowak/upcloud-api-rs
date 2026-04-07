@@ -121,7 +121,7 @@ pub struct LoadBalancer {
     #[serde(default)]
     pub networks: Vec<Network>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::Label>>,
+    pub labels: Option<Vec<crate::types::common::Label>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -417,7 +417,7 @@ pub struct CreateRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configured_status: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::Label>>,
+    pub labels: Option<Vec<crate::types::common::Label>>,
 }
 
 /// Network configuration input for load balancer creation.
@@ -448,7 +448,7 @@ pub struct ModifyRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configured_status: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::Label>>,
+    pub labels: Option<Vec<crate::types::common::Label>>,
 }
 
 /// Request to create a new backend.

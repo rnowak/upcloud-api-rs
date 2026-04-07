@@ -5,7 +5,7 @@ pub use types::*;
 
 use crate::client::Client;
 use crate::error::Error;
-use crate::types::PageParams;
+use crate::types::common::PageParams;
 
 use std::time::{Duration, Instant};
 use tokio::time::sleep;
@@ -305,7 +305,7 @@ impl<'a> GatewayHandler<'a> {
     pub async fn list_labels(
         &self,
         gateway_uuid: &str,
-    ) -> Result<Vec<crate::types::Label>, Error> {
+    ) -> Result<Vec<crate::types::common::Label>, Error> {
         self.client
             .get(&format!("/1.3/gateway/{gateway_uuid}/labels"))
             .await
@@ -319,8 +319,8 @@ impl<'a> GatewayHandler<'a> {
     pub async fn create_label(
         &self,
         gateway_uuid: &str,
-        label: crate::types::Label,
-    ) -> Result<crate::types::Label, Error> {
+        label: crate::types::common::Label,
+    ) -> Result<crate::types::common::Label, Error> {
         self.client
             .post(&format!("/1.3/gateway/{gateway_uuid}/labels"), &label)
             .await
@@ -335,8 +335,8 @@ impl<'a> GatewayHandler<'a> {
         &self,
         gateway_uuid: &str,
         key: &str,
-        label: crate::types::Label,
-    ) -> Result<crate::types::Label, Error> {
+        label: crate::types::common::Label,
+    ) -> Result<crate::types::common::Label, Error> {
         self.client
             .patch(&format!("/1.3/gateway/{gateway_uuid}/labels/{key}"), &label)
             .await

@@ -109,7 +109,7 @@ pub struct Cluster {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub node_groups: Option<Vec<NodeGroup>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::Label>>,
+    pub labels: Option<Vec<crate::types::common::Label>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
     /// Allowed CIDRs for control plane access.
@@ -139,7 +139,7 @@ pub struct NodeGroup {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub anti_affinity: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::Label>>,
+    pub labels: Option<Vec<crate::types::common::Label>>,
     /// Kubernetes taints applied to nodes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub taints: Option<Vec<Taint>>,
@@ -272,7 +272,7 @@ pub struct CreateClusterRequest {
     #[serde(default)]
     pub node_groups: Vec<CreateNodeGroupRequest>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::Label>>,
+    pub labels: Option<Vec<crate::types::common::Label>>,
     /// Enable private networking for node groups.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub private_node_groups: Option<bool>,
@@ -290,7 +290,7 @@ pub struct ModifyClusterRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_filter: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::Label>>,
+    pub labels: Option<Vec<crate::types::common::Label>>,
     /// Allowed CIDRs for control plane access.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub control_plane_ip_filter: Option<Vec<String>>,
@@ -309,7 +309,7 @@ pub struct CreateNodeGroupRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub anti_affinity: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::Label>>,
+    pub labels: Option<Vec<crate::types::common::Label>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub taints: Option<Vec<Taint>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -340,7 +340,7 @@ pub struct ModifyNodeGroupRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub count: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<crate::types::Label>>,
+    pub labels: Option<Vec<crate::types::common::Label>>,
 }
 
 /// Strategy for cluster version upgrades.

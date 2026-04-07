@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
-use crate::types::YesNo;
+use crate::types::common::YesNo;
 
 /// A single host statistic measurement.
 #[derive(Debug, Clone, Serialize, Deserialize)]
