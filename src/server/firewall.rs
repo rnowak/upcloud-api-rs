@@ -124,24 +124,6 @@ pub struct CreateRuleRequest {
 // ─── Response wrappers ────────────────────────────────────────────────────────
 
 #[cfg(test)]
-#[derive(Debug, Deserialize)]
-struct RuleListResponse {
-    firewall_rules: RuleWrapper,
-}
-
-#[cfg(test)]
-#[derive(Debug, Deserialize)]
-struct RuleWrapper {
-    firewall_rule: Vec<Rule>,
-}
-
-#[cfg(test)]
-#[derive(Debug, Deserialize)]
-struct RuleResponse {
-    firewall_rule: Rule,
-}
-
-#[cfg(test)]
 mod tests {
     use super::*;
 
@@ -248,7 +230,15 @@ mod tests {
 
     #[test]
     fn deserialize_firewall_rule_list() {
-        let resp: RuleListResponse = serde_json::from_str(LIST_FIREWALL_RULES_JSON).unwrap();
+        #[derive(Debug, Deserialize)]
+        struct Wrapper {
+            firewall_rules: Inner,
+        }
+        #[derive(Debug, Deserialize)]
+        struct Inner {
+            firewall_rule: Vec<Rule>,
+        }
+        let resp: Wrapper = serde_json::from_str(LIST_FIREWALL_RULES_JSON).unwrap();
         let rules = resp.firewall_rules.firewall_rule;
         assert_eq!(rules.len(), 4);
 
@@ -338,7 +328,11 @@ mod tests {
 
     #[test]
     fn deserialize_firewall_rule_detail() {
-        let resp: RuleResponse = serde_json::from_str(GET_FIREWALL_RULE_JSON).unwrap();
+        #[derive(Debug, Deserialize)]
+        struct Wrapper {
+            firewall_rule: Rule,
+        }
+        let resp: Wrapper = serde_json::from_str(GET_FIREWALL_RULE_JSON).unwrap();
         let rule = resp.firewall_rule;
         assert_eq!(rule.action, Action::Accept);
         assert_eq!(rule.comment.as_deref(), Some("Allow HTTP from anywhere"));
@@ -464,7 +458,11 @@ mod tests {
 
     #[test]
     fn deserialize_create_firewall_rule_response() {
-        let resp: RuleResponse = serde_json::from_str(CREATE_FIREWALL_RULE_RESPONSE_JSON).unwrap();
+        #[derive(Debug, Deserialize)]
+        struct Wrapper {
+            firewall_rule: Rule,
+        }
+        let resp: Wrapper = serde_json::from_str(CREATE_FIREWALL_RULE_RESPONSE_JSON).unwrap();
         let rule = resp.firewall_rule;
         assert_eq!(rule.action, Action::Accept);
         assert_eq!(rule.comment.as_deref(), Some("Allow SSH from this network"));

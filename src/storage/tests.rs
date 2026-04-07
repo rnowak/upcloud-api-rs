@@ -265,13 +265,6 @@ fn deserialize_storage_with_backup_rule() {
     assert_eq!(rule.retention.as_deref(), Some("365"));
 }
 
-// ── Test-only wrapper types ──
-
-#[derive(Debug, Deserialize)]
-struct ResizeBackupTestResponse {
-    resize_backup: StorageDetails,
-}
-
 // ── Create storage (docs: POST /1.3/storage) ──
 // Source: https://developers.upcloud.com/1.3/9-storages/#create-storage
 const CREATE_STORAGE_REQUEST_JSON: &str = r#"
@@ -466,8 +459,11 @@ const RESIZE_STORAGE_RESPONSE_JSON: &str = r#"
 
 #[test]
 fn deserialize_resize_storage_response() {
-    let resp: ResizeBackupTestResponse =
-        serde_json::from_str(RESIZE_STORAGE_RESPONSE_JSON).unwrap();
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        resize_backup: StorageDetails,
+    }
+    let resp: Wrapper = serde_json::from_str(RESIZE_STORAGE_RESPONSE_JSON).unwrap();
     let s = resp.resize_backup;
     assert_eq!(s.uuid, "01beec3a-14ac-4f71-9c63-3338341121c3");
     assert_eq!(s.access, Access::Private);

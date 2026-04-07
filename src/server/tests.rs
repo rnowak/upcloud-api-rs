@@ -1,55 +1,5 @@
 use super::*;
 
-#[derive(Debug, Deserialize)]
-struct GpusResponse {
-    gpus: Vec<GpuDetail>,
-}
-
-#[derive(Debug, Deserialize)]
-struct GroupServersResponse {
-    servers: GroupServers,
-}
-
-#[derive(Debug, Deserialize)]
-struct GroupRequestBody {
-    server_group: GroupRequestInner,
-}
-
-#[allow(dead_code)]
-#[derive(Debug, Deserialize)]
-struct GroupRequestInner {
-    title: Option<String>,
-    #[serde(default)]
-    servers: Option<GroupServers>,
-    anti_affinity: Option<String>,
-    labels: Option<crate::types::common::Labels>,
-}
-
-#[derive(Debug, Deserialize)]
-struct RebuildRequestBody {
-    server_rebuild: RebuildRequest,
-}
-
-#[derive(Debug, Deserialize)]
-struct StopRequestBody {
-    stop_server: StopRequest,
-}
-
-#[derive(Debug, Deserialize)]
-struct RestartRequestBody {
-    restart_server: RestartRequest,
-}
-
-#[derive(Debug, Deserialize)]
-struct ModifyRequestBody {
-    server: ModifyRequest,
-}
-
-#[derive(Debug, Deserialize)]
-struct CreateRequestBody {
-    server: CreateRequest,
-}
-
 /// Full "Get server details" response from the UpCloud 1.3 docs,
 /// including GPU devices, storage_encrypted, remote_access_host/port.
 // Source: https://developers.upcloud.com/1.3/8-servers/#get-server-details
@@ -436,7 +386,11 @@ const GET_SERVER_GPUS_JSON: &str = r#"
 
 #[test]
 fn deserialize_get_server_gpus() {
-    let resp: GpusResponse = serde_json::from_str(GET_SERVER_GPUS_JSON).expect("deserialize gpus");
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        gpus: Vec<GpuDetail>,
+    }
+    let resp: Wrapper = serde_json::from_str(GET_SERVER_GPUS_JSON).expect("deserialize gpus");
     assert_eq!(resp.gpus.len(), 2);
     assert_eq!(resp.gpus[0].model, "NVIDIA L40S");
     assert_eq!(resp.gpus[0].cores, 18176);
@@ -548,7 +502,11 @@ const CREATE_SERVER_FROM_TEMPLATE_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_create_server_from_template_request() {
-    let body: CreateRequestBody = serde_json::from_str(CREATE_SERVER_FROM_TEMPLATE_REQUEST_JSON)
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        server: CreateRequest,
+    }
+    let body: Wrapper = serde_json::from_str(CREATE_SERVER_FROM_TEMPLATE_REQUEST_JSON)
         .expect("deserialize create from template");
     let s = body.server;
     // Top-level scalar fields
@@ -686,7 +644,11 @@ const CREATE_SERVER_BY_CLONING_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_create_server_by_cloning_request() {
-    let body: CreateRequestBody = serde_json::from_str(CREATE_SERVER_BY_CLONING_REQUEST_JSON)
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        server: CreateRequest,
+    }
+    let body: Wrapper = serde_json::from_str(CREATE_SERVER_BY_CLONING_REQUEST_JSON)
         .expect("deserialize create by cloning");
     let s = body.server;
     // Top-level scalar fields
@@ -816,7 +778,11 @@ const CREATE_SERVER_FROM_SCRATCH_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_create_server_from_scratch_request() {
-    let body: CreateRequestBody = serde_json::from_str(CREATE_SERVER_FROM_SCRATCH_REQUEST_JSON)
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        server: CreateRequest,
+    }
+    let body: Wrapper = serde_json::from_str(CREATE_SERVER_FROM_SCRATCH_REQUEST_JSON)
         .expect("deserialize create from scratch");
     let s = body.server;
     // Top-level scalar fields
@@ -1014,7 +980,11 @@ const REBUILD_SERVER_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_rebuild_server_request() {
-    let body: RebuildRequestBody =
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        server_rebuild: RebuildRequest,
+    }
+    let body: Wrapper =
         serde_json::from_str(REBUILD_SERVER_REQUEST_JSON).expect("deserialize rebuild request");
     let r = body.server_rebuild;
     assert_eq!(r.clone_source, "01000000-0000-4000-8000-000020050100");
@@ -1408,7 +1378,11 @@ const STOP_SERVER_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_stop_server_request() {
-    let body: StopRequestBody =
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        stop_server: StopRequest,
+    }
+    let body: Wrapper =
         serde_json::from_str(STOP_SERVER_REQUEST_JSON).expect("deserialize stop request");
     assert_eq!(body.stop_server.stop_type, StopType::Soft);
     assert_eq!(body.stop_server.timeout.as_deref(), Some("60"));
@@ -1539,7 +1513,11 @@ const RESTART_SERVER_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_restart_server_request() {
-    let body: RestartRequestBody =
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        restart_server: RestartRequest,
+    }
+    let body: Wrapper =
         serde_json::from_str(RESTART_SERVER_REQUEST_JSON).expect("deserialize restart request");
     assert_eq!(body.restart_server.stop_type, StopType::Soft);
     assert_eq!(body.restart_server.timeout.as_deref(), Some("60"));
@@ -1686,7 +1664,11 @@ const MODIFY_SERVER_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_modify_server_request() {
-    let body: ModifyRequestBody =
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        server: ModifyRequest,
+    }
+    let body: Wrapper =
         serde_json::from_str(MODIFY_SERVER_REQUEST_JSON).expect("deserialize modify request");
     let s = body.server;
     assert_eq!(s.core_number, Some(8));
@@ -1985,7 +1967,11 @@ const LIST_SERVERS_IN_GROUP_JSON: &str = r#"
 
 #[test]
 fn deserialize_list_servers_in_group() {
-    let resp: GroupServersResponse =
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        servers: GroupServers,
+    }
+    let resp: Wrapper =
         serde_json::from_str(LIST_SERVERS_IN_GROUP_JSON).expect("deserialize servers in group");
     assert_eq!(resp.servers.server.len(), 2);
     assert_eq!(
@@ -2022,7 +2008,20 @@ const CREATE_SERVER_GROUP_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_create_server_group_request() {
-    let body: GroupRequestBody = serde_json::from_str(CREATE_SERVER_GROUP_REQUEST_JSON)
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        server_group: Inner,
+    }
+    #[allow(dead_code)]
+    #[derive(Debug, Deserialize)]
+    struct Inner {
+        title: Option<String>,
+        #[serde(default)]
+        servers: Option<GroupServers>,
+        anti_affinity: Option<String>,
+        labels: Option<crate::types::common::Labels>,
+    }
+    let body: Wrapper = serde_json::from_str(CREATE_SERVER_GROUP_REQUEST_JSON)
         .expect("deserialize create group request");
     assert_eq!(
         body.server_group.title.as_deref(),
@@ -2053,7 +2052,20 @@ const MODIFY_SERVER_GROUP_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_modify_server_group_request() {
-    let body: GroupRequestBody = serde_json::from_str(MODIFY_SERVER_GROUP_REQUEST_JSON)
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        server_group: Inner,
+    }
+    #[allow(dead_code)]
+    #[derive(Debug, Deserialize)]
+    struct Inner {
+        title: Option<String>,
+        #[serde(default)]
+        servers: Option<GroupServers>,
+        anti_affinity: Option<String>,
+        labels: Option<crate::types::common::Labels>,
+    }
+    let body: Wrapper = serde_json::from_str(MODIFY_SERVER_GROUP_REQUEST_JSON)
         .expect("deserialize modify group request");
     assert_eq!(
         body.server_group.title.as_deref(),
