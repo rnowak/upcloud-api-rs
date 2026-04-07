@@ -83,6 +83,28 @@ pub enum StorageImportState {
     Cancelled,
 }
 
+/// Backup schedule interval.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum BackupInterval {
+    Daily,
+    Mon,
+    Tue,
+    Wed,
+    Thu,
+    Fri,
+    Sat,
+    Sun,
+}
+
+/// Import source type.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ImportSource {
+    HttpImport,
+    DirectUpload,
+}
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 /// A storage resource.
@@ -189,9 +211,9 @@ pub struct StorageBackups {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct BackupRule {
-    /// Backup interval (`"daily"`, `"mon"`, `"tue"`, etc.).
+    /// Backup interval.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval: Option<String>,
+    pub interval: Option<BackupInterval>,
     /// Time of day for the backup in `HHMM` format (UTC).
     #[serde(alias = "hour", skip_serializing_if = "Option::is_none")]
     pub time: Option<String>,
@@ -216,9 +238,9 @@ pub struct ImportDetails {
     /// SHA-256 checksum of the imported data.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sha256sum: Option<String>,
-    /// Import source type (e.g. `"http_import"` or `"direct_upload"`).
+    /// Import source type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<String>,
+    pub source: Option<ImportSource>,
     /// URL of the source for HTTP imports.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_location: Option<String>,
@@ -339,8 +361,8 @@ pub struct CreateBackupRequest {
 /// Request to import data into a storage.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateImportRequest {
-    /// Import source type (e.g. `"http_import"` or `"direct_upload"`).
-    pub source: String,
+    /// Import source type.
+    pub source: ImportSource,
     /// URL to import from (required for `http_import`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_location: Option<String>,

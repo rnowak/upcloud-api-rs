@@ -71,7 +71,7 @@ fn deserialize_managed_database_list() {
     assert_eq!(db.name, "pg-2x2xcpu-4gb-50gb-de-fra1");
     assert_eq!(db.title, "pg-2x2xcpu-4gb-50gb-de-fra1");
     assert_eq!(db.plan, "2x2xCPU-4GB-50GB");
-    assert_eq!(db.db_type, "pg");
+    assert_eq!(db.db_type, DatabaseType::Pg);
     assert_eq!(db.state, State::Running);
     assert_eq!(db.zone, "de-fra1");
     assert_eq!(db.powered, Some(true));
@@ -440,7 +440,7 @@ const DB_SERVICE_TYPES_JSON: &str = r#"
 #[test]
 fn deserialize_db_service_types() {
     // API returns a map keyed by service name with nested service_plans/properties
-    // that don't match the typed DatabaseType struct; kept as untyped JSON.
+    // that don't match the typed DatabaseServiceType struct; kept as untyped JSON.
     let val: serde_json::Value = serde_json::from_str(DB_SERVICE_TYPES_JSON).unwrap();
     assert!(val.is_object());
     let obj = val.as_object().unwrap();
@@ -526,7 +526,7 @@ fn deserialize_create_db_request() {
     assert_eq!(req.hostname_prefix, "doc-api-unique-prefix");
     assert_eq!(req.plan, "1x1xCPU-2GB-25GB");
     assert_eq!(req.title, "my-managed-database");
-    assert_eq!(req.db_type, "mysql");
+    assert_eq!(req.db_type, DatabaseType::Mysql);
     assert_eq!(req.zone, "de-fra1");
     assert_eq!(req.termination_protection, Some(false));
     let maint = req.maintenance.expect("maintenance present");
@@ -588,7 +588,7 @@ fn deserialize_db_details() {
     assert_eq!(db.title, "pg-2x2xcpu-4gb-50gb-de-fra1");
     assert_eq!(db.plan, "2x2xCPU-4GB-50GB");
     assert_eq!(db.zone, "de-fra1");
-    assert_eq!(db.db_type, "pg");
+    assert_eq!(db.db_type, DatabaseType::Pg);
     assert_eq!(db.state, State::Running);
     assert_eq!(db.powered, Some(true));
     assert!(db.primary_database.is_none());
@@ -666,9 +666,9 @@ fn deserialize_modify_db_request() {
     assert_eq!(req.zone.as_deref(), Some("de-fra1"));
     let networks = req.networks.as_ref().unwrap();
     assert_eq!(networks.len(), 1);
-    assert_eq!(networks[0].family, "IPv4");
+    assert_eq!(networks[0].family, Family::IPv4);
     assert_eq!(networks[0].name, "my-network");
-    assert_eq!(networks[0].network_type, "private");
+    assert_eq!(networks[0].network_type, NetworkType::Private);
     assert_eq!(req.additional_disk_space_gib, Some(50));
     let maint = req.maintenance.as_ref().unwrap();
     assert_eq!(maint.dow, "monday");
@@ -1005,8 +1005,8 @@ fn deserialize_db_networks() {
     assert_eq!(nets.len(), 1);
     assert_eq!(nets[0].uuid, "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4");
     assert_eq!(nets[0].name, "example-private-network");
-    assert_eq!(nets[0].family, "IPv4");
-    assert_eq!(nets[0].network_type, "private");
+    assert_eq!(nets[0].family, Family::IPv4);
+    assert_eq!(nets[0].network_type, NetworkType::Private);
 }
 
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-service-types
@@ -1266,7 +1266,7 @@ fn deserialize_database_detail_from_docs() {
     assert_eq!(db.title, "pg-2x2xcpu-4gb-50gb-de-fra1");
     assert_eq!(db.plan, "2x2xCPU-4GB-50GB");
     assert_eq!(db.zone, "de-fra1");
-    assert_eq!(db.db_type, "pg");
+    assert_eq!(db.db_type, DatabaseType::Pg);
     assert_eq!(db.state, State::Running);
     assert_eq!(db.powered, Some(true));
     assert_eq!(db.termination_protection, Some(false));
@@ -1364,7 +1364,7 @@ fn deserialize_opensearch_index() {
     assert_eq!(idx.number_of_shards, Some(5));
     assert_eq!(idx.read_only_allow_delete, Some(false));
     assert_eq!(idx.size, Some(1048576));
-    assert_eq!(idx.status.as_deref(), Some("open"));
+    assert_eq!(idx.status, Some(OpenSearchIndexStatus::Open));
 }
 
 // ─── ModifyAccessControlRequest ───────────────────────────────────────────

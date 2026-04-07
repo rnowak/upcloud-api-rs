@@ -127,7 +127,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             || rule.time.is_some()
                             || rule.retention.is_some() =>
                     {
-                        let interval = rule.interval.as_deref().unwrap_or("—");
+                        let interval = rule
+                            .interval
+                            .map(|i| format!("{i:?}"))
+                            .unwrap_or_else(|| "—".into());
                         let time = rule.time.as_deref().unwrap_or("—");
                         let retention = rule.retention.as_deref().unwrap_or("—");
                         println!(

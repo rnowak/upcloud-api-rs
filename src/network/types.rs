@@ -5,7 +5,8 @@ use serde_with::serde_as;
 
 use crate::types::common::YesNo;
 
-// Re-export the shared NetworkType enum so existing `network::NetworkType` paths work.
+// Re-export shared enums so existing `network::*` paths work.
+pub use crate::types::common::Family;
 pub use crate::types::common::NetworkType;
 
 /// An IP network (subnet) within an SDN network.
@@ -35,8 +36,8 @@ pub struct IpNetwork {
     /// DHCP boot file URL for PXE booting.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dhcp_bootfile_url: Option<String>,
-    /// Address family (`"IPv4"` or `"IPv6"`).
-    pub family: String,
+    /// Address family.
+    pub family: Family,
     /// Gateway address for this subnet.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gateway: Option<String>,
@@ -207,8 +208,8 @@ pub struct InterfaceIpAddressesInput {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct InterfaceIpAddressInput {
-    /// Address family (`"IPv4"` or `"IPv6"`).
-    pub family: String,
+    /// Address family.
+    pub family: Family,
     /// Specific IP address to assign, or omit for automatic assignment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,

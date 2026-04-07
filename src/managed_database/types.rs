@@ -2,6 +2,8 @@
 
 use serde::{Deserialize, Serialize};
 
+pub use crate::types::common::{Family, NetworkType};
+
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
 /// Managed database lifecycle state.
@@ -138,9 +140,9 @@ pub struct OpenSearchIndex {
     /// Index size in bytes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub size: Option<u64>,
-    /// Index status (e.g. `"open"`, `"closed"`).
+    /// Index status.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub status: Option<OpenSearchIndexStatus>,
 }
 
 /// Per-user OpenSearch access control rules.
@@ -208,9 +210,9 @@ pub struct Database {
     pub plan: String,
     /// Zone where the service is hosted.
     pub zone: String,
-    /// Database engine type (e.g. `"pg"`, `"mysql"`).
+    /// Database engine type.
     #[serde(rename = "type")]
-    pub db_type: String,
+    pub db_type: DatabaseType,
     /// Current service lifecycle state.
     pub state: State,
     /// UUID of the primary if this is a read replica.
@@ -292,6 +294,27 @@ pub enum NodeRole {
     Standby,
 }
 
+/// Database engine type.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum DatabaseType {
+    #[serde(rename = "pg")]
+    Pg,
+    Mysql,
+    Redis,
+    Valkey,
+    #[serde(rename = "opensearch")]
+    OpenSearch,
+}
+
+/// Status of an OpenSearch index.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum OpenSearchIndexStatus {
+    Open,
+    Closed,
+}
+
 /// State of a single database node.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
@@ -307,12 +330,12 @@ pub struct NodeState {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Network {
-    /// Address family (e.g. `"IPv4"`).
-    pub family: String,
+    /// Address family.
+    pub family: Family,
     pub name: String,
-    /// Network type (e.g. `"private"`).
+    /// Network type.
     #[serde(rename = "type")]
-    pub network_type: String,
+    pub network_type: NetworkType,
     /// Private network UUID.
     pub uuid: String,
 }
@@ -410,7 +433,7 @@ pub struct Session {
 /// A supported database engine type.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
-pub struct DatabaseType {
+pub struct DatabaseServiceType {
     pub name: String,
     /// Human-readable display title.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -448,11 +471,11 @@ pub struct PgVersionExtensions {
 #[non_exhaustive]
 pub struct NetworkInput {
     /// Address family.
-    pub family: String,
+    pub family: Family,
     pub name: String,
     /// Network type.
     #[serde(rename = "type")]
-    pub network_type: String,
+    pub network_type: NetworkType,
     pub uuid: String,
 }
 
@@ -471,7 +494,7 @@ pub struct CreateRequest {
     pub zone: String,
     /// Database engine type.
     #[serde(rename = "type")]
-    pub db_type: String,
+    pub db_type: DatabaseType,
     /// Database engine version.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,

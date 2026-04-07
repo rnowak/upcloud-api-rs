@@ -77,7 +77,7 @@ fn deserialize_network_list() {
     assert_eq!(dhcp_dns.len(), 2);
     assert_eq!(dhcp_dns[0], "94.237.127.9");
     assert_eq!(dhcp_dns[1], "94.237.40.9");
-    assert_eq!(ip_nets.ip_network[0].family, "IPv4");
+    assert_eq!(ip_nets.ip_network[0].family, Family::IPv4);
     assert_eq!(
         ip_nets.ip_network[0].gateway.as_deref(),
         Some("80.69.172.1")
@@ -174,7 +174,7 @@ fn deserialize_network_list_within_zone() {
     assert_eq!(dhcp_dns.len(), 2);
     assert_eq!(dhcp_dns[0], "94.237.127.9");
     assert_eq!(dhcp_dns[1], "94.237.40.9");
-    assert_eq!(ip_net.family, "IPv4");
+    assert_eq!(ip_net.family, Family::IPv4);
     assert_eq!(ip_net.gateway.as_deref(), Some("80.69.172.1"));
 
     let dhcp_eff = &ip_net.dhcp_effective_routes.as_ref().unwrap()[0];
@@ -250,7 +250,7 @@ fn deserialize_network_detail() {
     assert_eq!(dhcp_dns.len(), 2);
     assert_eq!(dhcp_dns[0], "172.16.0.10");
     assert_eq!(dhcp_dns[1], "172.16.1.10");
-    assert_eq!(ip_nets.ip_network[0].family, "IPv4");
+    assert_eq!(ip_nets.ip_network[0].family, Family::IPv4);
     assert_eq!(ip_nets.ip_network[0].gateway.as_deref(), Some("172.16.0.1"));
 
     assert_eq!(net.labels.as_ref().unwrap()[0].value, "");
@@ -327,7 +327,7 @@ fn deserialize_create_network_request() {
     assert_eq!(dhcp_dns.len(), 2);
     assert_eq!(dhcp_dns[0], "172.16.0.10");
     assert_eq!(dhcp_dns[1], "172.16.1.10");
-    assert_eq!(ip_net.family, "IPv4");
+    assert_eq!(ip_net.family, Family::IPv4);
     assert_eq!(ip_net.gateway.as_deref(), Some("172.16.0.1"));
     let dhcp_routes = ip_net.dhcp_routes.as_ref().unwrap();
     assert_eq!(dhcp_routes[0], "192.168.0.0/24-nexthop=10.0.1.100");
@@ -436,7 +436,7 @@ fn deserialize_create_network_response() {
     assert_eq!(dhcp_dns.len(), 2);
     assert_eq!(dhcp_dns[0], "172.16.0.10");
     assert_eq!(dhcp_dns[1], "172.16.1.10");
-    assert_eq!(ip_net.family, "IPv4");
+    assert_eq!(ip_net.family, Family::IPv4);
     assert_eq!(ip_net.gateway.as_deref(), Some("172.16.0.1"));
     assert_eq!(ip_net.dhcp_routes.as_ref().unwrap().len(), 2);
 
@@ -518,7 +518,7 @@ fn deserialize_modify_network_request() {
     assert_eq!(dhcp_dns.len(), 2);
     assert_eq!(dhcp_dns[0], "172.16.0.10");
     assert_eq!(dhcp_dns[1], "172.16.1.10");
-    assert_eq!(ip_net.family, "IPv4");
+    assert_eq!(ip_net.family, Family::IPv4);
     assert_eq!(ip_net.gateway.as_deref(), Some("172.16.0.1"));
     let dhcp_routes = ip_net.dhcp_routes.as_ref().unwrap();
     assert_eq!(dhcp_routes[0], "192.168.0.0/24");
@@ -744,7 +744,7 @@ fn deserialize_modify_network_response() {
     assert_eq!(dhcp_dns.len(), 2);
     assert_eq!(dhcp_dns[0], "172.16.0.10");
     assert_eq!(dhcp_dns[1], "172.16.1.10");
-    assert_eq!(ip_net.family, "IPv4");
+    assert_eq!(ip_net.family, Family::IPv4);
     assert_eq!(ip_net.gateway.as_deref(), Some("172.16.0.1"));
     let dhcp_routes = ip_net.dhcp_routes.as_ref().unwrap();
     assert_eq!(dhcp_routes.len(), 2);
@@ -1144,16 +1144,16 @@ fn deserialize_peering_list_docs_format() {
 
     assert_eq!(net.uuid, "03126dc1-a69f-4bc2-8b24-e31c22d64712");
     assert_eq!(ip_nets.ip_network[1].address, "fc02:c4f3::/64");
-    assert_eq!(ip_nets.ip_network[1].family, "IPv6");
+    assert_eq!(ip_nets.ip_network[1].family, Family::IPv6);
 
     let peer = peerings[0].peer_network.as_ref().unwrap();
     assert_eq!(peer.uuid, "03585987-bf7d-4544-8e9b-5a1b4d74a333");
     let peer_ips = peer.ip_networks.as_ref().unwrap();
     assert_eq!(peer_ips.ip_network.len(), 2);
     assert_eq!(peer_ips.ip_network[0].address, "192.168.99.0/24");
-    assert_eq!(peer_ips.ip_network[0].family, "IPv4");
+    assert_eq!(peer_ips.ip_network[0].family, Family::IPv4);
     assert_eq!(peer_ips.ip_network[1].address, "fc02:c4f3:99::/64");
-    assert_eq!(peer_ips.ip_network[1].family, "IPv6");
+    assert_eq!(peer_ips.ip_network[1].family, Family::IPv6);
 
     let labels = peerings[0].labels.as_ref().unwrap();
     assert_eq!(labels[0].key, "env");
@@ -1230,17 +1230,17 @@ fn deserialize_peering_details() {
     assert_eq!(labels[0].value, "prod");
 
     assert_eq!(ip_nets.ip_network[0].address, "192.168.0.0/24");
-    assert_eq!(ip_nets.ip_network[0].family, "IPv4");
+    assert_eq!(ip_nets.ip_network[0].family, Family::IPv4);
     assert_eq!(ip_nets.ip_network[1].address, "fc02:c4f3::/64");
-    assert_eq!(ip_nets.ip_network[1].family, "IPv6");
+    assert_eq!(ip_nets.ip_network[1].family, Family::IPv6);
 
     let peer = p.peer_network.unwrap();
     assert_eq!(peer.uuid, "03585987-bf7d-4544-8e9b-5a1b4d74a333");
     let peer_ips = peer.ip_networks.unwrap();
     assert_eq!(peer_ips.ip_network[0].address, "192.168.99.0/24");
-    assert_eq!(peer_ips.ip_network[0].family, "IPv4");
+    assert_eq!(peer_ips.ip_network[0].family, Family::IPv4);
     assert_eq!(peer_ips.ip_network[1].address, "fc02:c4f3:99::/64");
-    assert_eq!(peer_ips.ip_network[1].family, "IPv6");
+    assert_eq!(peer_ips.ip_network[1].family, Family::IPv6);
 }
 
 // Source: https://developers.upcloud.com/1.3/13-networks/#create-network-peering
@@ -1358,9 +1358,9 @@ fn deserialize_create_peering_response() {
     let ip_networks = net.ip_networks.unwrap();
     assert_eq!(ip_networks.ip_network.len(), 2);
     assert_eq!(ip_networks.ip_network[0].address, "192.168.0.0/24");
-    assert_eq!(ip_networks.ip_network[0].family, "IPv4");
+    assert_eq!(ip_networks.ip_network[0].family, Family::IPv4);
     assert_eq!(ip_networks.ip_network[1].address, "fc02:c4f3::/64");
-    assert_eq!(ip_networks.ip_network[1].family, "IPv6");
+    assert_eq!(ip_networks.ip_network[1].family, Family::IPv6);
 
     let peer = p.peer_network.unwrap();
     assert_eq!(peer.uuid, "03585987-bf7d-4544-8e9b-5a1b4d74a333");
@@ -1482,16 +1482,16 @@ fn deserialize_modify_peering_response() {
     let net_ips = net.ip_networks.unwrap();
     assert_eq!(net_ips.ip_network.len(), 2);
     assert_eq!(net_ips.ip_network[0].address, "192.168.0.0/24");
-    assert_eq!(net_ips.ip_network[0].family, "IPv4");
+    assert_eq!(net_ips.ip_network[0].family, Family::IPv4);
     assert_eq!(net_ips.ip_network[1].address, "fc02:c4f3::/64");
-    assert_eq!(net_ips.ip_network[1].family, "IPv6");
+    assert_eq!(net_ips.ip_network[1].family, Family::IPv6);
 
     let peer = p.peer_network.unwrap();
     assert_eq!(peer.uuid, "03585987-bf7d-4544-8e9b-5a1b4d74a333");
     let peer_ips = peer.ip_networks.unwrap();
     assert_eq!(peer_ips.ip_network.len(), 2);
     assert_eq!(peer_ips.ip_network[0].address, "192.168.99.0/24");
-    assert_eq!(peer_ips.ip_network[0].family, "IPv4");
+    assert_eq!(peer_ips.ip_network[0].family, Family::IPv4);
     assert_eq!(peer_ips.ip_network[1].address, "fc02:c4f3:99::/64");
-    assert_eq!(peer_ips.ip_network[1].family, "IPv6");
+    assert_eq!(peer_ips.ip_network[1].family, Family::IPv6);
 }

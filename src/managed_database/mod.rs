@@ -25,7 +25,7 @@ impl<'a> DatabaseHandler<'a> {
     /// `GET /1.3/database/service-types`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-service-types)
-    pub async fn list_types(&self) -> Result<Vec<DatabaseType>, Error> {
+    pub async fn list_types(&self) -> Result<Vec<DatabaseServiceType>, Error> {
         self.client.get("/1.3/database/service-types").await
     }
 
