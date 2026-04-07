@@ -1,81 +1,158 @@
 use super::*;
 
-const GATEWAY_LIST_JSON: &str = r#"[
-  {
-"addresses": [{"address": "100.127.0.241", "name": "public-ip-1"}],
-"configured_status": "started",
-"created_at": "2022-12-01T09:04:08.529138Z",
-"features": ["nat", "vpn"],
-"connections": [
-  {
-    "uuid": "1085d477-8d8f-4c97-9bef-731933187538",
-    "name": "example-connection",
-    "type": "ipsec",
-    "local_routes": [{"name": "upcloud-example-route", "type": "static", "static_network": "10.0.0.0/24"}],
-    "remote_routes": [{"name": "remote-example-route", "type": "static", "static_network": "10.0.1.0/24"}],
-    "tunnels": [
-      {
-        "local_address": {"name": "public-ip-1"},
-        "name": "example-tunnel-1",
-        "uuid": "1085d477-8d8f-4c97-9bef-731933187777",
-        "remote_address": {"address": "100.10.0.111"},
-        "ipsec": {
-          "authentication": {"authentication": "psk"},
-          "child_rekey_time": 1440,
-          "dpd_delay": 30,
-          "dpd_timeout": 120,
-          "ike_lifetime": 86400,
-          "phase1_algorithms": ["aes128gcm128", "aes256gcm128"],
-          "phase1_dh_group_numbers": [14, 16, 18, 19, 20, 21],
-          "phase1_integrity_algorithms": ["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"],
-          "phase2_algorithms": ["aes128gcm128", "aes256gcm128"],
-          "phase2_dh_group_numbers": [14, 16, 18, 19, 20, 21],
-          "phase2_integrity_algorithms": ["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"],
-          "rekey_time": 14400
-        },
-        "tunnel_healthy": true,
-        "tunnel_up": true,
-        "tunnel_internal_ip": "169.254.17.1",
-        "internal_peer_ping_interval": 0,
-        "operational_state": "established",
-        "created_at": "2022-12-01T09:04:08.529138Z",
-        "updated_at": "2022-12-01T19:04:08.529138Z"
-      }
-    ],
-    "created_at": "2022-12-01T09:04:08.529138Z",
-    "updated_at": "2022-12-01T19:04:08.529138Z"
-  }
-],
-"name": "example-gateway",
-"operational_state": "running",
-"plan": "production",
-"routers": [{"created_at": "2022-12-01T09:04:08.529138Z", "uuid": "1085d477-8d8f-4c97-9bef-731933187538"}],
-"labels": [{"key": "env", "value": "testing"}],
-"automatic_tunnel_internal_ip_allocation": true,
-"updated_at": "2022-12-01T19:04:08.529138Z",
-"uuid": "10c153e0-12e4-4dea-8748-4f34850ff55d",
-"zone": "fi-hel1"
-  }
-]"#;
+const GATEWAY_LIST_JSON: &str = r#"
+    [
+        {
+            "addresses": [
+                {
+                    "address": "100.127.0.241",
+                    "name": "public-ip-1"
+                }
+            ],
+            "configured_status": "started",
+            "created_at": "2022-12-01T09:04:08.529138Z",
+            "features": [
+                "nat",
+                "vpn"
+            ],
+            "connections": [
+                {
+                    "uuid": "1085d477-8d8f-4c97-9bef-731933187538",
+                    "name": "example-connection",
+                    "type": "ipsec",
+                    "local_routes": [
+                        {
+                            "name": "upcloud-example-route",
+                            "type": "static",
+                            "static_network": "10.0.0.0/24"
+                        }
+                    ],
+                    "remote_routes": [
+                        {
+                            "name": "remote-example-route",
+                            "type": "static",
+                            "static_network": "10.0.1.0/24"
+                        }
+                    ],
+                    "tunnels": [
+                        {
+                            "local_address": {
+                                "name": "public-ip-1"
+                            },
+                            "name": "example-tunnel-1",
+                            "uuid": "1085d477-8d8f-4c97-9bef-731933187777",
+                            "remote_address": {
+                                "address": "100.10.0.111"
+                            },
+                            "ipsec": {
+                                "authentication": {
+                                    "authentication": "psk"
+                                },
+                                "child_rekey_time": 1440,
+                                "dpd_delay": 30,
+                                "dpd_timeout": 120,
+                                "ike_lifetime": 86400,
+                                "phase1_algorithms": [
+                                    "aes128gcm128",
+                                    "aes256gcm128"
+                                ],
+                                "phase1_dh_group_numbers": [
+                                    14,
+                                    16,
+                                    18,
+                                    19,
+                                    20,
+                                    21
+                                ],
+                                "phase1_integrity_algorithms": [
+                                    "aes128gmac",
+                                    "aes256gmac",
+                                    "sha256",
+                                    "sha384",
+                                    "sha512"
+                                ],
+                                "phase2_algorithms": [
+                                    "aes128gcm128",
+                                    "aes256gcm128"
+                                ],
+                                "phase2_dh_group_numbers": [
+                                    14,
+                                    16,
+                                    18,
+                                    19,
+                                    20,
+                                    21
+                                ],
+                                "phase2_integrity_algorithms": [
+                                    "aes128gmac",
+                                    "aes256gmac",
+                                    "sha256",
+                                    "sha384",
+                                    "sha512"
+                                ],
+                                "rekey_time": 14400
+                            },
+                            "tunnel_healthy": true,
+                            "tunnel_up": true,
+                            "tunnel_internal_ip": "169.254.17.1",
+                            "internal_peer_ping_interval": 0,
+                            "operational_state": "established",
+                            "created_at": "2022-12-01T09:04:08.529138Z",
+                            "updated_at": "2022-12-01T19:04:08.529138Z"
+                        }
+                    ],
+                    "created_at": "2022-12-01T09:04:08.529138Z",
+                    "updated_at": "2022-12-01T19:04:08.529138Z"
+                }
+            ],
+            "name": "example-gateway",
+            "operational_state": "running",
+            "plan": "production",
+            "routers": [
+                {
+                    "created_at": "2022-12-01T09:04:08.529138Z",
+                    "uuid": "1085d477-8d8f-4c97-9bef-731933187538"
+                }
+            ],
+            "labels": [
+                {
+                    "key": "env",
+                    "value": "testing"
+                }
+            ],
+            "automatic_tunnel_internal_ip_allocation": true,
+            "updated_at": "2022-12-01T19:04:08.529138Z",
+            "uuid": "10c153e0-12e4-4dea-8748-4f34850ff55d",
+            "zone": "fi-hel1"
+        }
+    ]
+"#;
 
-const GATEWAY_PLAN_LIST_JSON: &str = r#"[
-  {
-"name": "advanced",
-"per_gateway_bandwidth_mbps": 10000,
-"per_gateway_max_connections": 100000,
-"server_number": 2,
-"supported_features": ["nat", "vpn"],
-"vpn_tunnel_amount": 10
-  },
-  {
-"name": "development",
-"per_gateway_bandwidth_mbps": 10,
-"per_gateway_max_connections": 10000,
-"server_number": 1,
-"supported_features": ["nat"],
-"vpn_tunnel_amount": 0
-  }
-]"#;
+const GATEWAY_PLAN_LIST_JSON: &str = r#"
+    [
+        {
+            "name": "advanced",
+            "per_gateway_bandwidth_mbps": 10000,
+            "per_gateway_max_connections": 100000,
+            "server_number": 2,
+            "supported_features": [
+                "nat",
+                "vpn"
+            ],
+            "vpn_tunnel_amount": 10
+        },
+        {
+            "name": "development",
+            "per_gateway_bandwidth_mbps": 10,
+            "per_gateway_max_connections": 10000,
+            "server_number": 1,
+            "supported_features": [
+                "nat"
+            ],
+            "vpn_tunnel_amount": 0
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_gateway_list() {
@@ -270,270 +347,595 @@ fn deserialize_gateway_plan_list() {
     assert_eq!(features_1[0], Feature::Nat);
 }
 
-const GATEWAY_PLAN_DETAIL_JSON: &str = r#"{
-  "name": "advanced",
-  "per_gateway_bandwidth_mbps": 10000,
-  "per_gateway_max_connections": 100000,
-  "server_number": 2,
-  "supported_features": ["nat", "vpn"],
-  "vpn_tunnel_amount": 10
-}"#;
-
-const GATEWAY_DETAIL_JSON: &str = r#"{
-  "addresses": [{"address": "100.127.0.241", "name": "public-ip-1"}],
-  "configured_status": "started",
-  "created_at": "2022-12-01T09:04:08.529138Z",
-  "features": ["nat", "vpn"],
-  "connections": [
-{
-  "name": "example-connection",
-  "uuid": "1085d477-8d8f-4c97-9bef-731933187538",
-  "type": "ipsec",
-  "local_routes": [{"name": "upcloud-example-route", "type": "static", "static_network": "10.0.0.0/24"}],
-  "remote_routes": [{"name": "remote-example-route", "type": "static", "static_network": "10.0.1.0/24"}],
-  "tunnels": [
+const GATEWAY_PLAN_DETAIL_JSON: &str = r#"
     {
-      "local_address": {"name": "public-ip-1"},
-      "name": "example-tunnel-1",
-      "uuid": "1085d477-8d8f-4c97-9bef-731933187777",
-      "remote_address": {"address": "100.10.0.111"},
-      "ipsec": {
-        "authentication": {"authentication": "psk"},
-        "child_rekey_time": 1440,
-        "dpd_delay": 30,
-        "dpd_timeout": 120,
-        "ike_lifetime": 86400,
-        "phase1_algorithms": ["aes128gcm128", "aes256gcm128"],
-        "phase1_dh_group_numbers": [14, 16, 18, 19, 20, 21],
-        "phase1_integrity_algorithms": ["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"],
-        "phase2_algorithms": ["aes128gcm128", "aes256gcm128"],
-        "phase2_dh_group_numbers": [14, 16, 18, 19, 20, 21],
-        "phase2_integrity_algorithms": ["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"],
-        "rekey_time": 14400
-      },
-      "tunnel_healthy": true,
-      "tunnel_up": true,
-      "tunnel_internal_ip": "169.254.17.1",
-      "internal_peer_ping_interval": 0,
-      "operational_state": "established",
-      "created_at": "2022-12-01T09:04:08.529138Z",
-      "updated_at": "2022-12-01T19:04:08.529138Z"
+        "name": "advanced",
+        "per_gateway_bandwidth_mbps": 10000,
+        "per_gateway_max_connections": 100000,
+        "server_number": 2,
+        "supported_features": [
+            "nat",
+            "vpn"
+        ],
+        "vpn_tunnel_amount": 10
     }
-  ],
-  "created_at": "2022-12-01T09:04:08.529138Z",
-  "updated_at": "2022-12-01T19:04:08.529138Z"
-}
-  ],
-  "name": "example-gateway",
-  "operational_state": "running",
-  "plan": "production",
-  "routers": [{"created_at": "2022-12-01T09:04:08.529138Z", "uuid": "1085d477-8d8f-4c97-9bef-731933187538"}],
-  "labels": [{"key": "env", "value": "testing"}],
-  "automatic_tunnel_internal_ip_allocation": true,
-  "updated_at": "2022-12-01T19:04:08.529138Z",
-  "uuid": "10c153e0-12e4-4dea-8748-4f34850ff55d",
-  "zone": "fi-hel1"
-}"#;
+"#;
 
-const GATEWAY_CREATE_REQ_JSON: &str = r#"{
-  "name": "example-gateway",
-  "zone": "fi-hel1",
-  "features": ["nat", "vpn"],
-  "plan": "production",
-  "routers": [{"uuid": "1085d477-8d8f-4c97-9bef-731933187538"}],
-  "addresses": [{"name": "my-public-ip"}],
-  "connections": [
-{
-  "name": "example-connection",
-  "type": "ipsec",
-  "local_routes": [{"name": "upcloud-example-route", "type": "static", "static_network": "10.0.0.0/24"}],
-  "remote_routes": [{"name": "remote-example-route", "type": "static", "static_network": "10.0.1.0/24"}],
-  "tunnels": [
+const GATEWAY_DETAIL_JSON: &str = r#"
     {
-      "name": "example-tunnel-1",
-      "local_address": {"name": "public-ip-1"},
-      "remote_address": {"address": "100.10.0.111"},
-      "ipsec": {
-        "authentication": {"authentication": "psk", "psk": "secretkey123"}
-      },
-      "tunnel_internal_ip": "169.254.17.1",
-      "internal_peer_ping_interval": 5
+        "addresses": [
+            {
+                "address": "100.127.0.241",
+                "name": "public-ip-1"
+            }
+        ],
+        "configured_status": "started",
+        "created_at": "2022-12-01T09:04:08.529138Z",
+        "features": [
+            "nat",
+            "vpn"
+        ],
+        "connections": [
+            {
+                "name": "example-connection",
+                "uuid": "1085d477-8d8f-4c97-9bef-731933187538",
+                "type": "ipsec",
+                "local_routes": [
+                    {
+                        "name": "upcloud-example-route",
+                        "type": "static",
+                        "static_network": "10.0.0.0/24"
+                    }
+                ],
+                "remote_routes": [
+                    {
+                        "name": "remote-example-route",
+                        "type": "static",
+                        "static_network": "10.0.1.0/24"
+                    }
+                ],
+                "tunnels": [
+                    {
+                        "local_address": {
+                            "name": "public-ip-1"
+                        },
+                        "name": "example-tunnel-1",
+                        "uuid": "1085d477-8d8f-4c97-9bef-731933187777",
+                        "remote_address": {
+                            "address": "100.10.0.111"
+                        },
+                        "ipsec": {
+                            "authentication": {
+                                "authentication": "psk"
+                            },
+                            "child_rekey_time": 1440,
+                            "dpd_delay": 30,
+                            "dpd_timeout": 120,
+                            "ike_lifetime": 86400,
+                            "phase1_algorithms": [
+                                "aes128gcm128",
+                                "aes256gcm128"
+                            ],
+                            "phase1_dh_group_numbers": [
+                                14,
+                                16,
+                                18,
+                                19,
+                                20,
+                                21
+                            ],
+                            "phase1_integrity_algorithms": [
+                                "aes128gmac",
+                                "aes256gmac",
+                                "sha256",
+                                "sha384",
+                                "sha512"
+                            ],
+                            "phase2_algorithms": [
+                                "aes128gcm128",
+                                "aes256gcm128"
+                            ],
+                            "phase2_dh_group_numbers": [
+                                14,
+                                16,
+                                18,
+                                19,
+                                20,
+                                21
+                            ],
+                            "phase2_integrity_algorithms": [
+                                "aes128gmac",
+                                "aes256gmac",
+                                "sha256",
+                                "sha384",
+                                "sha512"
+                            ],
+                            "rekey_time": 14400
+                        },
+                        "tunnel_healthy": true,
+                        "tunnel_up": true,
+                        "tunnel_internal_ip": "169.254.17.1",
+                        "internal_peer_ping_interval": 0,
+                        "operational_state": "established",
+                        "created_at": "2022-12-01T09:04:08.529138Z",
+                        "updated_at": "2022-12-01T19:04:08.529138Z"
+                    }
+                ],
+                "created_at": "2022-12-01T09:04:08.529138Z",
+                "updated_at": "2022-12-01T19:04:08.529138Z"
+            }
+        ],
+        "name": "example-gateway",
+        "operational_state": "running",
+        "plan": "production",
+        "routers": [
+            {
+                "created_at": "2022-12-01T09:04:08.529138Z",
+                "uuid": "1085d477-8d8f-4c97-9bef-731933187538"
+            }
+        ],
+        "labels": [
+            {
+                "key": "env",
+                "value": "testing"
+            }
+        ],
+        "automatic_tunnel_internal_ip_allocation": true,
+        "updated_at": "2022-12-01T19:04:08.529138Z",
+        "uuid": "10c153e0-12e4-4dea-8748-4f34850ff55d",
+        "zone": "fi-hel1"
     }
-  ]
-}
-  ],
-  "labels": [{"key": "env", "value": "testing"}],
-  "configured_status": "started",
-  "automatic_tunnel_internal_ip_allocation": false
-}"#;
+"#;
 
-const GATEWAY_MODIFY_REQ_JSON: &str = r#"{
-  "name": "example-gateway",
-  "configured_status": "started",
-  "labels": [{"key": "env", "value": "testing"}]
-}"#;
+const GATEWAY_CREATE_REQ_JSON: &str = r#"
+    {
+        "name": "example-gateway",
+        "zone": "fi-hel1",
+        "features": [
+            "nat",
+            "vpn"
+        ],
+        "plan": "production",
+        "routers": [
+            {
+                "uuid": "1085d477-8d8f-4c97-9bef-731933187538"
+            }
+        ],
+        "addresses": [
+            {
+                "name": "my-public-ip"
+            }
+        ],
+        "connections": [
+            {
+                "name": "example-connection",
+                "type": "ipsec",
+                "local_routes": [
+                    {
+                        "name": "upcloud-example-route",
+                        "type": "static",
+                        "static_network": "10.0.0.0/24"
+                    }
+                ],
+                "remote_routes": [
+                    {
+                        "name": "remote-example-route",
+                        "type": "static",
+                        "static_network": "10.0.1.0/24"
+                    }
+                ],
+                "tunnels": [
+                    {
+                        "name": "example-tunnel-1",
+                        "local_address": {
+                            "name": "public-ip-1"
+                        },
+                        "remote_address": {
+                            "address": "100.10.0.111"
+                        },
+                        "ipsec": {
+                            "authentication": {
+                                "authentication": "psk",
+                                "psk": "secretkey123"
+                            }
+                        },
+                        "tunnel_internal_ip": "169.254.17.1",
+                        "internal_peer_ping_interval": 5
+                    }
+                ]
+            }
+        ],
+        "labels": [
+            {
+                "key": "env",
+                "value": "testing"
+            }
+        ],
+        "configured_status": "started",
+        "automatic_tunnel_internal_ip_allocation": false
+    }
+"#;
 
-const CONNECTION_CREATE_REQ_JSON: &str = r#"{
-  "name": "example-connection",
-  "type": "ipsec",
-  "local_routes": [{"name": "upcloud-example-route", "type": "static", "static_network": "10.0.0.0/24"}],
-  "remote_routes": [{"name": "remote-example-route", "type": "static", "static_network": "10.0.1.0/24"}],
-  "tunnels": [
-{
-  "name": "example-tunnel-1",
-  "local_address": {"name": "public-ip-1"},
-  "remote_address": {"address": "100.10.0.111"},
-  "ipsec": {
-    "authentication": {"authentication": "psk", "psk": "secretkey123"}
-  },
-  "tunnel_internal_ip": "169.254.17.1",
-  "internal_peer_ping_interval": 0
-}
-  ]
-}"#;
+const GATEWAY_MODIFY_REQ_JSON: &str = r#"
+    {
+        "name": "example-gateway",
+        "configured_status": "started",
+        "labels": [
+            {
+                "key": "env",
+                "value": "testing"
+            }
+        ]
+    }
+"#;
 
-const CONNECTION_DETAIL_JSON: &str = r#"{
-  "name": "example-connection",
-  "uuid": "1085d477-8d8f-4c97-9bef-731933187538",
-  "type": "ipsec",
-  "local_routes": [{"name": "upcloud-example-route", "type": "static", "static_network": "10.0.0.0/24"}],
-  "remote_routes": [{"name": "remote-example-route", "type": "static", "static_network": "10.0.1.0/24"}],
-  "tunnels": [
-{
-  "local_address": {"name": "public-ip-1"},
-  "name": "example-tunnel-1",
-  "uuid": "1085d477-8d8f-4c97-9bef-731933187777",
-  "remote_address": {"address": "100.10.0.111"},
-  "ipsec": {
-    "authentication": {"authentication": "psk"},
-    "child_rekey_time": 1440,
-    "dpd_delay": 30,
-    "dpd_timeout": 120,
-    "ike_lifetime": 86400,
-    "phase1_algorithms": ["aes128gcm128", "aes256gcm128"],
-    "phase1_dh_group_numbers": [14, 16, 18, 19, 20, 21],
-    "phase1_integrity_algorithms": ["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"],
-    "phase2_algorithms": ["aes128gcm128", "aes256gcm128"],
-    "phase2_dh_group_numbers": [14, 16, 18, 19, 20, 21],
-    "phase2_integrity_algorithms": ["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"],
-    "rekey_time": 14400
-  },
-  "tunnel_healthy": true,
-  "tunnel_up": true,
-  "tunnel_internal_ip": "169.254.17.1",
-  "internal_peer_ping_interval": 0,
-  "operational_state": "established",
-  "created_at": "2022-12-01T09:04:08.529138Z",
-  "updated_at": "2022-12-01T19:04:08.529138Z"
-}
-  ],
-  "created_at": "2022-12-01T09:04:08.529138Z",
-  "updated_at": "2022-12-01T19:04:08.529138Z"
-}"#;
+const CONNECTION_CREATE_REQ_JSON: &str = r#"
+    {
+        "name": "example-connection",
+        "type": "ipsec",
+        "local_routes": [
+            {
+                "name": "upcloud-example-route",
+                "type": "static",
+                "static_network": "10.0.0.0/24"
+            }
+        ],
+        "remote_routes": [
+            {
+                "name": "remote-example-route",
+                "type": "static",
+                "static_network": "10.0.1.0/24"
+            }
+        ],
+        "tunnels": [
+            {
+                "name": "example-tunnel-1",
+                "local_address": {
+                    "name": "public-ip-1"
+                },
+                "remote_address": {
+                    "address": "100.10.0.111"
+                },
+                "ipsec": {
+                    "authentication": {
+                        "authentication": "psk",
+                        "psk": "secretkey123"
+                    }
+                },
+                "tunnel_internal_ip": "169.254.17.1",
+                "internal_peer_ping_interval": 0
+            }
+        ]
+    }
+"#;
 
-const CONNECTION_MODIFY_REQ_JSON: &str = r#"{
-  "local_routes": [{"name": "modified-routes", "type": "static", "static_network": "10.0.22.0/24"}]
-}"#;
+const CONNECTION_DETAIL_JSON: &str = r#"
+    {
+        "name": "example-connection",
+        "uuid": "1085d477-8d8f-4c97-9bef-731933187538",
+        "type": "ipsec",
+        "local_routes": [
+            {
+                "name": "upcloud-example-route",
+                "type": "static",
+                "static_network": "10.0.0.0/24"
+            }
+        ],
+        "remote_routes": [
+            {
+                "name": "remote-example-route",
+                "type": "static",
+                "static_network": "10.0.1.0/24"
+            }
+        ],
+        "tunnels": [
+            {
+                "local_address": {
+                    "name": "public-ip-1"
+                },
+                "name": "example-tunnel-1",
+                "uuid": "1085d477-8d8f-4c97-9bef-731933187777",
+                "remote_address": {
+                    "address": "100.10.0.111"
+                },
+                "ipsec": {
+                    "authentication": {
+                        "authentication": "psk"
+                    },
+                    "child_rekey_time": 1440,
+                    "dpd_delay": 30,
+                    "dpd_timeout": 120,
+                    "ike_lifetime": 86400,
+                    "phase1_algorithms": [
+                        "aes128gcm128",
+                        "aes256gcm128"
+                    ],
+                    "phase1_dh_group_numbers": [
+                        14,
+                        16,
+                        18,
+                        19,
+                        20,
+                        21
+                    ],
+                    "phase1_integrity_algorithms": [
+                        "aes128gmac",
+                        "aes256gmac",
+                        "sha256",
+                        "sha384",
+                        "sha512"
+                    ],
+                    "phase2_algorithms": [
+                        "aes128gcm128",
+                        "aes256gcm128"
+                    ],
+                    "phase2_dh_group_numbers": [
+                        14,
+                        16,
+                        18,
+                        19,
+                        20,
+                        21
+                    ],
+                    "phase2_integrity_algorithms": [
+                        "aes128gmac",
+                        "aes256gmac",
+                        "sha256",
+                        "sha384",
+                        "sha512"
+                    ],
+                    "rekey_time": 14400
+                },
+                "tunnel_healthy": true,
+                "tunnel_up": true,
+                "tunnel_internal_ip": "169.254.17.1",
+                "internal_peer_ping_interval": 0,
+                "operational_state": "established",
+                "created_at": "2022-12-01T09:04:08.529138Z",
+                "updated_at": "2022-12-01T19:04:08.529138Z"
+            }
+        ],
+        "created_at": "2022-12-01T09:04:08.529138Z",
+        "updated_at": "2022-12-01T19:04:08.529138Z"
+    }
+"#;
 
-const TUNNEL_LIST_JSON: &str = r#"[
-  {
-"local_address": {"name": "public-ip-1"},
-"name": "example-tunnel-1",
-"uuid": "1085d477-8d8f-4c97-9bef-731933187538",
-"remote_address": {"address": "100.10.0.111"},
-"ipsec": {
-  "authentication": {"authentication": "psk"},
-  "child_rekey_time": 1440,
-  "dpd_delay": 30,
-  "dpd_timeout": 120,
-  "ike_lifetime": 86400,
-  "phase1_algorithms": ["aes128gcm128", "aes256gcm128"],
-  "phase1_dh_group_numbers": [14, 16, 18, 19, 20, 21],
-  "phase1_integrity_algorithms": ["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"],
-  "phase2_algorithms": ["aes128gcm128", "aes256gcm128"],
-  "phase2_dh_group_numbers": [14, 16, 18, 19, 20, 21],
-  "phase2_integrity_algorithms": ["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"],
-  "rekey_time": 14400
-},
-"tunnel_healthy": true,
-"tunnel_up": true,
-"tunnel_internal_ip": "169.254.17.1",
-"internal_peer_ping_interval": 0,
-"operational_state": "established",
-"created_at": "2022-12-01T09:04:08.529138Z",
-"updated_at": "2022-12-01T19:04:08.529138Z"
-  }
-]"#;
+const CONNECTION_MODIFY_REQ_JSON: &str = r#"
+    {
+        "local_routes": [
+            {
+                "name": "modified-routes",
+                "type": "static",
+                "static_network": "10.0.22.0/24"
+            }
+        ]
+    }
+"#;
 
-const TUNNEL_CREATE_REQ_JSON: &str = r#"{
-  "name": "example-tunnel-2",
-  "local_address": {"name": "public-ip-1"},
-  "remote_address": {"address": "100.10.0.111"},
-  "ipsec": {
-"authentication": {"authentication": "psk", "psk": "secretkey123"}
-  },
-  "tunnel_internal_ip": "169.254.17.1",
-  "internal_peer_ping_interval": 0
-}"#;
+const TUNNEL_LIST_JSON: &str = r#"
+    [
+        {
+            "local_address": {
+                "name": "public-ip-1"
+            },
+            "name": "example-tunnel-1",
+            "uuid": "1085d477-8d8f-4c97-9bef-731933187538",
+            "remote_address": {
+                "address": "100.10.0.111"
+            },
+            "ipsec": {
+                "authentication": {
+                    "authentication": "psk"
+                },
+                "child_rekey_time": 1440,
+                "dpd_delay": 30,
+                "dpd_timeout": 120,
+                "ike_lifetime": 86400,
+                "phase1_algorithms": [
+                    "aes128gcm128",
+                    "aes256gcm128"
+                ],
+                "phase1_dh_group_numbers": [
+                    14,
+                    16,
+                    18,
+                    19,
+                    20,
+                    21
+                ],
+                "phase1_integrity_algorithms": [
+                    "aes128gmac",
+                    "aes256gmac",
+                    "sha256",
+                    "sha384",
+                    "sha512"
+                ],
+                "phase2_algorithms": [
+                    "aes128gcm128",
+                    "aes256gcm128"
+                ],
+                "phase2_dh_group_numbers": [
+                    14,
+                    16,
+                    18,
+                    19,
+                    20,
+                    21
+                ],
+                "phase2_integrity_algorithms": [
+                    "aes128gmac",
+                    "aes256gmac",
+                    "sha256",
+                    "sha384",
+                    "sha512"
+                ],
+                "rekey_time": 14400
+            },
+            "tunnel_healthy": true,
+            "tunnel_up": true,
+            "tunnel_internal_ip": "169.254.17.1",
+            "internal_peer_ping_interval": 0,
+            "operational_state": "established",
+            "created_at": "2022-12-01T09:04:08.529138Z",
+            "updated_at": "2022-12-01T19:04:08.529138Z"
+        }
+    ]
+"#;
 
-const TUNNEL_MODIFY_REQ_JSON: &str = r#"{
-  "remote_address": {"address": "100.10.0.222"}
-}"#;
+const TUNNEL_CREATE_REQ_JSON: &str = r#"
+    {
+        "name": "example-tunnel-2",
+        "local_address": {
+            "name": "public-ip-1"
+        },
+        "remote_address": {
+            "address": "100.10.0.111"
+        },
+        "ipsec": {
+            "authentication": {
+                "authentication": "psk",
+                "psk": "secretkey123"
+            }
+        },
+        "tunnel_internal_ip": "169.254.17.1",
+        "internal_peer_ping_interval": 0
+    }
+"#;
 
-const GATEWAY_REPLACE_REQ_JSON: &str = r#"{
-  "name": "example-gateway",
-  "configured_status": "started"
-}"#;
+const TUNNEL_MODIFY_REQ_JSON: &str = r#"
+    {
+        "remote_address": {
+            "address": "100.10.0.222"
+        }
+    }
+"#;
 
-const GATEWAY_LABEL_LIST_JSON: &str = r#"[
-  {"key": "env", "value": "staging"},
-  {"key": "foo", "value": "bar"}
-]"#;
+const GATEWAY_REPLACE_REQ_JSON: &str = r#"
+    {
+        "name": "example-gateway",
+        "configured_status": "started"
+    }
+"#;
 
-const GATEWAY_LABEL_DETAIL_JSON: &str = r#"{"key": "env", "value": "staging"}"#;
+const GATEWAY_LABEL_LIST_JSON: &str = r#"
+    [
+        {
+            "key": "env",
+            "value": "staging"
+        },
+        {
+            "key": "foo",
+            "value": "bar"
+        }
+    ]
+"#;
 
-const GATEWAY_LABEL_CREATE_JSON: &str = r#"{"key": "env", "value": "production"}"#;
+const GATEWAY_LABEL_DETAIL_JSON: &str = r#"
+    {
+        "key": "env",
+        "value": "staging"
+    }
+"#;
 
-const CONNECTION_LIST_JSON: &str = r#"[
-  {
-"name": "example-connection",
-"uuid": "1085d477-8d8f-4c97-9bef-731933187538",
-"type": "ipsec",
-"local_routes": [{"name": "upcloud-example-route", "type": "static", "static_network": "10.0.0.0/24"}],
-"remote_routes": [{"name": "remote-example-route", "type": "static", "static_network": "10.0.1.0/24"}],
-"tunnels": [
-  {
-    "local_address": {"name": "public-ip-1"},
-    "name": "example-tunnel-1",
-    "uuid": "1085d477-8d8f-4c97-9bef-731933187777",
-    "remote_address": {"address": "100.10.0.111"},
-    "ipsec": {
-      "authentication": {"authentication": "psk"},
-      "child_rekey_time": 1440,
-      "dpd_delay": 30,
-      "dpd_timeout": 120,
-      "ike_lifetime": 86400,
-      "phase1_algorithms": ["aes128gcm128", "aes256gcm128"],
-      "phase1_dh_group_numbers": [14, 16, 18, 19, 20, 21],
-      "phase1_integrity_algorithms": ["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"],
-      "phase2_algorithms": ["aes128gcm128", "aes256gcm128"],
-      "phase2_dh_group_numbers": [14, 16, 18, 19, 20, 21],
-      "phase2_integrity_algorithms": ["aes128gmac", "aes256gmac", "sha256", "sha384", "sha512"],
-      "rekey_time": 14400
-    },
-    "tunnel_healthy": true,
-    "tunnel_up": true,
-    "tunnel_internal_ip": "169.254.17.1",
-    "internal_peer_ping_interval": 0,
-    "operational_state": "established",
-    "created_at": "2022-12-01T09:04:08.529138Z",
-    "updated_at": "2022-12-01T19:04:08.529138Z"
-  }
-],
-"created_at": "2022-12-01T09:04:08.529138Z",
-"updated_at": "2022-12-01T19:04:08.529138Z"
-  }
-]"#;
+const GATEWAY_LABEL_CREATE_JSON: &str = r#"
+    {
+        "key": "env",
+        "value": "production"
+    }
+"#;
+
+const CONNECTION_LIST_JSON: &str = r#"
+    [
+        {
+            "name": "example-connection",
+            "uuid": "1085d477-8d8f-4c97-9bef-731933187538",
+            "type": "ipsec",
+            "local_routes": [
+                {
+                    "name": "upcloud-example-route",
+                    "type": "static",
+                    "static_network": "10.0.0.0/24"
+                }
+            ],
+            "remote_routes": [
+                {
+                    "name": "remote-example-route",
+                    "type": "static",
+                    "static_network": "10.0.1.0/24"
+                }
+            ],
+            "tunnels": [
+                {
+                    "local_address": {
+                        "name": "public-ip-1"
+                    },
+                    "name": "example-tunnel-1",
+                    "uuid": "1085d477-8d8f-4c97-9bef-731933187777",
+                    "remote_address": {
+                        "address": "100.10.0.111"
+                    },
+                    "ipsec": {
+                        "authentication": {
+                            "authentication": "psk"
+                        },
+                        "child_rekey_time": 1440,
+                        "dpd_delay": 30,
+                        "dpd_timeout": 120,
+                        "ike_lifetime": 86400,
+                        "phase1_algorithms": [
+                            "aes128gcm128",
+                            "aes256gcm128"
+                        ],
+                        "phase1_dh_group_numbers": [
+                            14,
+                            16,
+                            18,
+                            19,
+                            20,
+                            21
+                        ],
+                        "phase1_integrity_algorithms": [
+                            "aes128gmac",
+                            "aes256gmac",
+                            "sha256",
+                            "sha384",
+                            "sha512"
+                        ],
+                        "phase2_algorithms": [
+                            "aes128gcm128",
+                            "aes256gcm128"
+                        ],
+                        "phase2_dh_group_numbers": [
+                            14,
+                            16,
+                            18,
+                            19,
+                            20,
+                            21
+                        ],
+                        "phase2_integrity_algorithms": [
+                            "aes128gmac",
+                            "aes256gmac",
+                            "sha256",
+                            "sha384",
+                            "sha512"
+                        ],
+                        "rekey_time": 14400
+                    },
+                    "tunnel_healthy": true,
+                    "tunnel_up": true,
+                    "tunnel_internal_ip": "169.254.17.1",
+                    "internal_peer_ping_interval": 0,
+                    "operational_state": "established",
+                    "created_at": "2022-12-01T09:04:08.529138Z",
+                    "updated_at": "2022-12-01T19:04:08.529138Z"
+                }
+            ],
+            "created_at": "2022-12-01T09:04:08.529138Z",
+            "updated_at": "2022-12-01T19:04:08.529138Z"
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_gateway_plan_detail() {

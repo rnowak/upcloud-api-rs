@@ -1,74 +1,78 @@
 use super::*;
 
-const LIST_HOSTS_JSON: &str = r#"{
-  "hosts": {
-"host": [
-  {
-    "id": 7653311107,
-    "description": "My Host #1",
-    "zone": "private-zone-id",
-    "windows_enabled": "no",
-    "stats": {
-      "stat": [
-        {
-          "name": "cpu_idle",
-          "timestamp": "2019-08-09T12:46:57Z",
-          "value": 95.2
-        },
-        {
-          "name": "memory_free",
-          "timestamp": "2019-08-09T12:46:57Z",
-          "value": 102
+const LIST_HOSTS_JSON: &str = r#"
+    {
+        "hosts": {
+            "host": [
+                {
+                    "id": 7653311107,
+                    "description": "My Host #1",
+                    "zone": "private-zone-id",
+                    "windows_enabled": "no",
+                    "stats": {
+                        "stat": [
+                            {
+                                "name": "cpu_idle",
+                                "timestamp": "2019-08-09T12:46:57Z",
+                                "value": 95.2
+                            },
+                            {
+                                "name": "memory_free",
+                                "timestamp": "2019-08-09T12:46:57Z",
+                                "value": 102
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": 8055964291,
+                    "description": "My Host #2",
+                    "zone": "private-zone-id",
+                    "windows_enabled": "no",
+                    "stats": {
+                        "stat": [
+                            {
+                                "name": "cpu_idle",
+                                "timestamp": "2019-08-09T12:46:57Z",
+                                "value": 80.1
+                            },
+                            {
+                                "name": "memory_free",
+                                "timestamp": "2019-08-09T12:46:57Z",
+                                "value": 61
+                            }
+                        ]
+                    }
+                }
+            ]
         }
-      ]
     }
-  },
-  {
-    "id": 8055964291,
-    "description": "My Host #2",
-    "zone": "private-zone-id",
-    "windows_enabled": "no",
-    "stats": {
-      "stat": [
-        {
-          "name": "cpu_idle",
-          "timestamp": "2019-08-09T12:46:57Z",
-          "value": 80.1
-        },
-        {
-          "name": "memory_free",
-          "timestamp": "2019-08-09T12:46:57Z",
-          "value": 61
-        }
-      ]
-    }
-  }
-]
-  }
-}"#;
+"#;
 
-const GET_HOST_JSON: &str = r#"{
-  "host": {
-"id": 7653311107,
-"description": "My Host #1",
-"zone": "private-zone-id",
-"windows_enabled": "no",
-"stats": {
-  "stat": [
+const GET_HOST_JSON: &str = r#"
     {
-      "name": "cpu_idle",
-      "timestamp": "2019-08-09T12:46:57Z",
-      "value": 95.2
-    },
-    {
-      "name": "memory_free",
-      "timestamp": "2019-08-09T12:46:57Z",
-      "value": 102
+        "host": {
+            "id": 7653311107,
+            "description": "My Host #1",
+            "zone": "private-zone-id",
+            "windows_enabled": "no",
+            "stats": {
+                "stat": [
+                    {
+                        "name": "cpu_idle",
+                        "timestamp": "2019-08-09T12:46:57Z",
+                        "value": 95.2
+                    },
+                    {
+                        "name": "memory_free",
+                        "timestamp": "2019-08-09T12:46:57Z",
+                        "value": 102
+                    }
+                ]
+            }
+        }
     }
-  ]
-}
-  }
-}"#;
+"#;
 
 #[test]
 fn deserialize_host_list() {
@@ -140,11 +144,13 @@ fn deserialize_host_detail() {
 
 // ─── Modify host request ────────────────────────────────────────────────
 
-const MODIFY_HOST_REQUEST_JSON: &str = r#"{
-  "host": {
-"description": "My New Host"
-  }
-}"#;
+const MODIFY_HOST_REQUEST_JSON: &str = r#"
+    {
+        "host": {
+            "description": "My New Host"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_modify_host_request() {
@@ -158,28 +164,30 @@ fn deserialize_modify_host_request() {
 
 // ─── Modify host response ───────────────────────────────────────────────
 
-const MODIFY_HOST_RESPONSE_JSON: &str = r#"{
-  "host": {
-"id": 7653311107,
-"description": "My New Host",
-"zone": "private-zone-id",
-"windows_enabled": "no",
-"stats": {
-  "stat": [
+const MODIFY_HOST_RESPONSE_JSON: &str = r#"
     {
-      "name": "cpu_idle",
-      "timestamp": "2019-08-09T13:37:12Z",
-      "value": 93.3
-    },
-    {
-      "name": "memory_free",
-      "timestamp": "2019-08-09T13:37:12Z",
-      "value": 104
+        "host": {
+            "id": 7653311107,
+            "description": "My New Host",
+            "zone": "private-zone-id",
+            "windows_enabled": "no",
+            "stats": {
+                "stat": [
+                    {
+                        "name": "cpu_idle",
+                        "timestamp": "2019-08-09T13:37:12Z",
+                        "value": 93.3
+                    },
+                    {
+                        "name": "memory_free",
+                        "timestamp": "2019-08-09T13:37:12Z",
+                        "value": 104
+                    }
+                ]
+            }
+        }
     }
-  ]
-}
-  }
-}"#;
+"#;
 
 #[test]
 fn deserialize_modify_host_response() {

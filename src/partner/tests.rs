@@ -1,50 +1,54 @@
 use super::*;
 
-const PARTNER_ACCOUNT_LIST_JSON: &str = r#"[
-  {
-"address": "Some street",
-"city": "Some city",
-"company": "Some company",
-"country": "FIN",
-"email": "someuser@example.com",
-"first_name": "Some",
-"last_name": "User",
-"phone": "+358.91234567",
-"postal_code": "00100",
-"state": "",
-"username": "someuser",
-"vat_number": ""
-  },
-  {
-"address": "Another street",
-"city": "Another city",
-"company": "Another company",
-"country": "FIN",
-"email": "anotheruser@example.com",
-"first_name": "Another",
-"last_name": "User",
-"phone": "+358.97654321",
-"postal_code": "90100",
-"state": "",
-"username": "anotheruser",
-"vat_number": ""
-  }
-]"#;
+const PARTNER_ACCOUNT_LIST_JSON: &str = r#"
+    [
+        {
+            "address": "Some street",
+            "city": "Some city",
+            "company": "Some company",
+            "country": "FIN",
+            "email": "someuser@example.com",
+            "first_name": "Some",
+            "last_name": "User",
+            "phone": "+358.91234567",
+            "postal_code": "00100",
+            "state": "",
+            "username": "someuser",
+            "vat_number": ""
+        },
+        {
+            "address": "Another street",
+            "city": "Another city",
+            "company": "Another company",
+            "country": "FIN",
+            "email": "anotheruser@example.com",
+            "first_name": "Another",
+            "last_name": "User",
+            "phone": "+358.97654321",
+            "postal_code": "90100",
+            "state": "",
+            "username": "anotheruser",
+            "vat_number": ""
+        }
+    ]
+"#;
 
-const PARTNER_ACCOUNT_CREATE_JSON: &str = r#"{
-  "address": "",
-  "city": "",
-  "company": "",
-  "country": "FIN",
-  "email": "newuser@example.com",
-  "first_name": "New",
-  "last_name": "User",
-  "phone": "+358.91111111",
-  "postal_code": "",
-  "state": "",
-  "username": "newuser",
-  "vat_number": ""
-}"#;
+const PARTNER_ACCOUNT_CREATE_JSON: &str = r#"
+    {
+        "address": "",
+        "city": "",
+        "company": "",
+        "country": "FIN",
+        "email": "newuser@example.com",
+        "first_name": "New",
+        "last_name": "User",
+        "phone": "+358.91111111",
+        "postal_code": "",
+        "state": "",
+        "username": "newuser",
+        "vat_number": ""
+    }
+"#;
 
 #[test]
 fn deserialize_partner_account_list() {
@@ -98,19 +102,21 @@ fn deserialize_partner_account_create_response() {
     assert_eq!(account.vat_number.as_deref(), Some(""));
 }
 
-const CREATE_REQUEST_WITH_CONTACT_JSON: &str = r#"{
-  "username": "newuser",
-  "password": "superSecret123",
-  "email": "newuser@example.com",
-  "terms_of_service_agreed": true,
-  "contact_details": {
-"country": "FIN",
-"email": "newuser@example.com",
-"first_name": "New",
-"last_name": "User",
-"phone": "+358.91111111"
-  }
-}"#;
+const CREATE_REQUEST_WITH_CONTACT_JSON: &str = r#"
+    {
+        "username": "newuser",
+        "password": "superSecret123",
+        "email": "newuser@example.com",
+        "terms_of_service_agreed": true,
+        "contact_details": {
+            "country": "FIN",
+            "email": "newuser@example.com",
+            "first_name": "New",
+            "last_name": "User",
+            "phone": "+358.91111111"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_create_request_with_contact_details() {
@@ -147,12 +153,14 @@ fn deserialize_create_request_with_contact_details() {
     assert!(cd.vat_number.is_none());
 }
 
-const CREATE_REQUEST_WITHOUT_CONTACT_JSON: &str = r#"{
-  "username": "newuser",
-  "password": "superSecret123",
-  "email": "newuser@example.com",
-  "terms_of_service_agreed": true
-}"#;
+const CREATE_REQUEST_WITHOUT_CONTACT_JSON: &str = r#"
+    {
+        "username": "newuser",
+        "password": "superSecret123",
+        "email": "newuser@example.com",
+        "terms_of_service_agreed": true
+    }
+"#;
 
 #[test]
 fn deserialize_create_request_without_contact_details() {
@@ -178,42 +186,48 @@ fn deserialize_create_request_without_contact_details() {
 
 // ─── Partner account detail / modify tests (official docs, page 23) ──────
 
-const PARTNER_ACCOUNT_DETAIL_JSON: &str = r#"{
-  "address": "Some street",
-  "city": "Some city",
-  "company": "Some company",
-  "country": "FIN",
-  "email": "someuser@example.com",
-  "first_name": "Some",
-  "last_name": "User",
-  "phone": "+358.91234567",
-  "postal_code": "00100",
-  "state": "",
-  "username": "someuser",
-  "vat_number": ""
-}"#;
+const PARTNER_ACCOUNT_DETAIL_JSON: &str = r#"
+    {
+        "address": "Some street",
+        "city": "Some city",
+        "company": "Some company",
+        "country": "FIN",
+        "email": "someuser@example.com",
+        "first_name": "Some",
+        "last_name": "User",
+        "phone": "+358.91234567",
+        "postal_code": "00100",
+        "state": "",
+        "username": "someuser",
+        "vat_number": ""
+    }
+"#;
 
-const MODIFY_PARTNER_ACCOUNT_REQUEST_JSON: &str = r#"{
-  "first_name": "Updated",
-  "last_name": "User",
-  "company": "Updated company",
-  "email": "updated@example.com"
-}"#;
+const MODIFY_PARTNER_ACCOUNT_REQUEST_JSON: &str = r#"
+    {
+        "first_name": "Updated",
+        "last_name": "User",
+        "company": "Updated company",
+        "email": "updated@example.com"
+    }
+"#;
 
-const MODIFY_PARTNER_ACCOUNT_RESPONSE_JSON: &str = r#"{
-  "address": "Some street",
-  "city": "Some city",
-  "company": "Updated company",
-  "country": "FIN",
-  "email": "updated@example.com",
-  "first_name": "Updated",
-  "last_name": "User",
-  "phone": "+358.91234567",
-  "postal_code": "00100",
-  "state": "",
-  "username": "someuser",
-  "vat_number": ""
-}"#;
+const MODIFY_PARTNER_ACCOUNT_RESPONSE_JSON: &str = r#"
+    {
+        "address": "Some street",
+        "city": "Some city",
+        "company": "Updated company",
+        "country": "FIN",
+        "email": "updated@example.com",
+        "first_name": "Updated",
+        "last_name": "User",
+        "phone": "+358.91234567",
+        "postal_code": "00100",
+        "state": "",
+        "username": "someuser",
+        "vat_number": ""
+    }
+"#;
 
 #[test]
 fn deserialize_partner_account_detail() {

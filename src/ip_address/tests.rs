@@ -1,80 +1,84 @@
 use super::*;
 
-const LIST_IP_ADDRESSES_JSON: &str = r#"{
-  "ip_addresses": {
-"ip_address": [
-  {
-    "access": "utility",
-    "address": "10.0.0.0",
-    "family": "IPv4",
-    "ptr_record": "",
-    "server": "0053cd80-5945-4105-9081-11192806a8f7",
-    "mac": "mm:mm:mm:mm:mm:m1",
-    "floating": "no",
-    "release_policy": "release",
-    "zone": "fi-hel2"
-  },
-  {
-    "access": "public",
-    "address": "x.x.x.x",
-    "family": "IPv4",
-    "part_of_plan": "yes",
-    "ptr_record": "x-x-x-x.zone.upcloud.host",
-    "server": "0053cd80-5945-4105-9081-11192806a8f7",
-    "mac": "mm:mm:mm:mm:mm:m1",
-    "floating": "yes",
-    "release_policy": "release",
-    "zone": "de-fra1"
-  },
-  {
-    "access": "public",
-    "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx",
-    "family": "IPv6",
-    "ptr_record": "xxxx-xxxx-xxxx-xxxx.v6.zone.upcloud.host",
-    "server": "006b6701-55d2-4374-ac40-56cc1501037f",
-    "mac": "mm:mm:mm:mm:mm:m3",
-    "floating": "no",
-    "release_policy": "release",
-    "zone": "fi-hel1"
-  },
-  {
-    "access": "public",
-    "address": "y.y.y.y",
-    "family": "IPv4",
-    "ptr_record": "y.y.y.y.zone.host.upcloud.com",
-    "floating": "yes",
-    "release_policy": "keep",
-    "zone": "nl-ams1"
-  },
-  {
-    "access": "public",
-    "address": "z.z.z.z",
-    "family": "IPv4",
-    "ptr_record": "z.z.z.z.zone.host.upcloud.com",
-    "floating": "yes",
-    "release_policy": "keep",
-    "is_delegated": "yes",
-    "zone": "nl-ams1"
-  }
-]
-  }
-}"#;
+const LIST_IP_ADDRESSES_JSON: &str = r#"
+    {
+        "ip_addresses": {
+            "ip_address": [
+                {
+                    "access": "utility",
+                    "address": "10.0.0.0",
+                    "family": "IPv4",
+                    "ptr_record": "",
+                    "server": "0053cd80-5945-4105-9081-11192806a8f7",
+                    "mac": "mm:mm:mm:mm:mm:m1",
+                    "floating": "no",
+                    "release_policy": "release",
+                    "zone": "fi-hel2"
+                },
+                {
+                    "access": "public",
+                    "address": "x.x.x.x",
+                    "family": "IPv4",
+                    "part_of_plan": "yes",
+                    "ptr_record": "x-x-x-x.zone.upcloud.host",
+                    "server": "0053cd80-5945-4105-9081-11192806a8f7",
+                    "mac": "mm:mm:mm:mm:mm:m1",
+                    "floating": "yes",
+                    "release_policy": "release",
+                    "zone": "de-fra1"
+                },
+                {
+                    "access": "public",
+                    "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx",
+                    "family": "IPv6",
+                    "ptr_record": "xxxx-xxxx-xxxx-xxxx.v6.zone.upcloud.host",
+                    "server": "006b6701-55d2-4374-ac40-56cc1501037f",
+                    "mac": "mm:mm:mm:mm:mm:m3",
+                    "floating": "no",
+                    "release_policy": "release",
+                    "zone": "fi-hel1"
+                },
+                {
+                    "access": "public",
+                    "address": "y.y.y.y",
+                    "family": "IPv4",
+                    "ptr_record": "y.y.y.y.zone.host.upcloud.com",
+                    "floating": "yes",
+                    "release_policy": "keep",
+                    "zone": "nl-ams1"
+                },
+                {
+                    "access": "public",
+                    "address": "z.z.z.z",
+                    "family": "IPv4",
+                    "ptr_record": "z.z.z.z.zone.host.upcloud.com",
+                    "floating": "yes",
+                    "release_policy": "keep",
+                    "is_delegated": "yes",
+                    "zone": "nl-ams1"
+                }
+            ]
+        }
+    }
+"#;
 
-const GET_IP_ADDRESS_JSON: &str = r#"{
-  "ip_address": {
-"access": "public",
-"address": "0.0.0.0",
-"family": "IPv4",
-"part_of_plan": "yes",
-"ptr_record": "test.example.com",
-"server": "009d64ef-31d1-4684-a26b-c86c955cbf46",
-"mac": "mm:mm:mm:mm:mm:m5",
-"floating": "no",
-"release_policy": "keep",
-"is_delegated": "yes",
-"zone": "sg-sin1"
-  }
-}"#;
+const GET_IP_ADDRESS_JSON: &str = r#"
+    {
+        "ip_address": {
+            "access": "public",
+            "address": "0.0.0.0",
+            "family": "IPv4",
+            "part_of_plan": "yes",
+            "ptr_record": "test.example.com",
+            "server": "009d64ef-31d1-4684-a26b-c86c955cbf46",
+            "mac": "mm:mm:mm:mm:mm:m5",
+            "floating": "no",
+            "release_policy": "keep",
+            "is_delegated": "yes",
+            "zone": "sg-sin1"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_ip_address_list() {
@@ -191,12 +195,14 @@ fn deserialize_ip_address_detail() {
 
 // ── Assign IP address (docs: POST /1.3/ip_address) ──
 
-const ASSIGN_IP_ADDRESS_REQUEST_JSON: &str = r#"{
-  "ip_address": {
-"family": "IPv4",
-"server": "009d64ef-31d1-4684-a26b-c86c955cbf46"
-  }
-}"#;
+const ASSIGN_IP_ADDRESS_REQUEST_JSON: &str = r#"
+    {
+        "ip_address": {
+            "family": "IPv4",
+            "server": "009d64ef-31d1-4684-a26b-c86c955cbf46"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_assign_ip_address_request() {
@@ -208,28 +214,32 @@ fn deserialize_assign_ip_address_request() {
 
 // ── Assign attached floating IP (docs: POST /1.3/ip_address) ──
 
-const ASSIGN_ATTACHED_FLOATING_IP_REQUEST_JSON: &str = r#"{
-  "ip_address": {
-"family": "IPv4",
-"mac": "mm:mm:mm:mm:mm:m1",
-"release_policy": "release",
-"floating": "yes"
-  }
-}"#;
+const ASSIGN_ATTACHED_FLOATING_IP_REQUEST_JSON: &str = r#"
+    {
+        "ip_address": {
+            "family": "IPv4",
+            "mac": "mm:mm:mm:mm:mm:m1",
+            "release_policy": "release",
+            "floating": "yes"
+        }
+    }
+"#;
 
-const ASSIGN_ATTACHED_FLOATING_IP_RESPONSE_JSON: &str = r#"{
-  "ip_address": {
-"access": "public",
-"address": "0.0.0.0",
-"family": "IPv4",
-"ptr_record": "xxxx-xxxx-xxxx-xxxx.v6.zone.upcloud.host",
-"server": "009d64ef-31d1-4684-a26b-c86c955cbf46",
-"mac": "mm:mm:mm:mm:mm:m1",
-"floating": "yes",
-"release_policy": "release",
-"zone": "fi-hel2"
-  }
-}"#;
+const ASSIGN_ATTACHED_FLOATING_IP_RESPONSE_JSON: &str = r#"
+    {
+        "ip_address": {
+            "access": "public",
+            "address": "0.0.0.0",
+            "family": "IPv4",
+            "ptr_record": "xxxx-xxxx-xxxx-xxxx.v6.zone.upcloud.host",
+            "server": "009d64ef-31d1-4684-a26b-c86c955cbf46",
+            "mac": "mm:mm:mm:mm:mm:m1",
+            "floating": "yes",
+            "release_policy": "release",
+            "zone": "fi-hel2"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_assign_attached_floating_ip_request() {
@@ -268,25 +278,29 @@ fn deserialize_assign_attached_floating_ip_response() {
 
 // ── Assign detached floating IP (docs: POST /1.3/ip_address) ──
 
-const ASSIGN_DETACHED_FLOATING_IP_REQUEST_JSON: &str = r#"{
-  "ip_address": {
-"family": "IPv4",
-"zone": "fi-hel2",
-"floating": "yes"
-  }
-}"#;
+const ASSIGN_DETACHED_FLOATING_IP_REQUEST_JSON: &str = r#"
+    {
+        "ip_address": {
+            "family": "IPv4",
+            "zone": "fi-hel2",
+            "floating": "yes"
+        }
+    }
+"#;
 
-const ASSIGN_DETACHED_FLOATING_IP_RESPONSE_JSON: &str = r#"{
-  "ip_address": {
-"access": "public",
-"address": "xx.xx.xx.xx",
-"family": "IPv4",
-"floating": "yes",
-"ptr_record": "xx-xx-xx-xx.de-fra1.upcloud.host",
-"release_policy": "keep",
-"zone": "de-fra1"
-  }
-}"#;
+const ASSIGN_DETACHED_FLOATING_IP_RESPONSE_JSON: &str = r#"
+    {
+        "ip_address": {
+            "access": "public",
+            "address": "xx.xx.xx.xx",
+            "family": "IPv4",
+            "floating": "yes",
+            "ptr_record": "xx-xx-xx-xx.de-fra1.upcloud.host",
+            "release_policy": "keep",
+            "zone": "de-fra1"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_assign_detached_floating_ip_request() {
@@ -323,26 +337,30 @@ fn deserialize_assign_detached_floating_ip_response() {
 
 // ── Modify IP address (docs: PATCH /1.3/ip_address/{address}) ──
 
-const MODIFY_IP_ADDRESS_REQUEST_JSON: &str = r#"{
-  "ip_address": {
-"mac": "mm:mm:mm:mm:mm:m1",
-"ptr_record": "hostname.example.com",
-"release_policy": "release"
-  }
-}"#;
+const MODIFY_IP_ADDRESS_REQUEST_JSON: &str = r#"
+    {
+        "ip_address": {
+            "mac": "mm:mm:mm:mm:mm:m1",
+            "ptr_record": "hostname.example.com",
+            "release_policy": "release"
+        }
+    }
+"#;
 
-const MODIFY_IP_ADDRESS_RESPONSE_JSON: &str = r#"{
-  "ip_address": {
-"access": "public",
-"address": "0.0.0.0",
-"family": "IPv4",
-"ptr_record": "hostname.example.com",
-"server": "009d64ef-31d1-4684-a26b-c86c95c5bf46",
-"mac": "mm:mm:mm:mm:mm:m1",
-"floating": "yes",
-"zone": "sg-sin1"
-  }
-}"#;
+const MODIFY_IP_ADDRESS_RESPONSE_JSON: &str = r#"
+    {
+        "ip_address": {
+            "access": "public",
+            "address": "0.0.0.0",
+            "family": "IPv4",
+            "ptr_record": "hostname.example.com",
+            "server": "009d64ef-31d1-4684-a26b-c86c95c5bf46",
+            "mac": "mm:mm:mm:mm:mm:m1",
+            "floating": "yes",
+            "zone": "sg-sin1"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_modify_ip_address_request() {

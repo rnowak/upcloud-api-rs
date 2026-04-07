@@ -50,109 +50,138 @@ struct CreateRequestBody {
     server: CreateRequest,
 }
 
-const GET_SERVER_DETAILS_JSON: &str = r#"{
-  "server": {
-"boot_order": "disk",
-"core_number": "12",
-"firewall": "on",
-"host": 7653311107,
-"hostname": "server1.example.com",
-"labels": {
-  "label": [
-    { "key": "env", "value": "dev" }
-  ]
-},
-"ip_addresses": {
-  "ip_address": [
-    { "access": "utility", "address": "10.0.0.00", "family": "IPv4" },
-    { "access": "public",  "address": "0.0.0.0",   "family": "IPv4" },
-    { "access": "public",  "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx", "family": "IPv6" }
-  ]
-},
-"license": 0,
-"memory_amount": "130048",
-"networking": {
-  "interfaces": {
-    "interface": [
-      {
-        "index": 1,
-        "ip_addresses": {
-          "ip_address": [
-            { "address": "94.237.0.207", "dhcp_provided": "yes", "family": "IPv4", "release_policy": "release", "floating": "no" }
-          ]
-        },
-        "mac": "de:ff:ff:ff:66:89",
-        "network": "037fcf2a-6745-45dd-867e-f9479ea8c044",
-        "type": "public",
-        "bootable": "no"
-      }
-    ]
-  }
-},
-"nic_model": "virtio",
-"plan": "GPU-12xCPU-128GB-2xL40S",
-"plan_ipv4_bytes": "3565675343",
-"plan_ipv6_bytes": "4534432",
-"simple_backup": "0100,dailies",
-"state": "started",
-"server_group": "0b3d85b4-b3be-46ca-a1e2-3b5d40d60fb1",
-"storage_devices": {
-  "storage_device": [
+const GET_SERVER_DETAILS_JSON: &str = r#"
     {
-      "address": "virtio:0",
-      "part_of_plan": "yes",
-      "labels": [
-        { "key": "foo", "value": "bar" }
-      ],
-      "storage": "012580a1-32a1-466e-a323-689ca16f2d43",
-      "storage_size": "20",
-      "storage_encrypted": "yes",
-      "storage_tier": "maxiops",
-      "storage_title": "Storage for server1.example.com",
-      "type": "disk",
-      "boot_disk": "0"
+        "server": {
+            "boot_order": "disk",
+            "core_number": "12",
+            "firewall": "on",
+            "host": 7653311107,
+            "hostname": "server1.example.com",
+            "labels": {
+                "label": [
+                    {
+                        "key": "env",
+                        "value": "dev"
+                    }
+                ]
+            },
+            "ip_addresses": {
+                "ip_address": [
+                    {
+                        "access": "utility",
+                        "address": "10.0.0.00",
+                        "family": "IPv4"
+                    },
+                    {
+                        "access": "public",
+                        "address": "0.0.0.0",
+                        "family": "IPv4"
+                    },
+                    {
+                        "access": "public",
+                        "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx",
+                        "family": "IPv6"
+                    }
+                ]
+            },
+            "license": 0,
+            "memory_amount": "130048",
+            "networking": {
+                "interfaces": {
+                    "interface": [
+                        {
+                            "index": 1,
+                            "ip_addresses": {
+                                "ip_address": [
+                                    {
+                                        "address": "94.237.0.207",
+                                        "dhcp_provided": "yes",
+                                        "family": "IPv4",
+                                        "release_policy": "release",
+                                        "floating": "no"
+                                    }
+                                ]
+                            },
+                            "mac": "de:ff:ff:ff:66:89",
+                            "network": "037fcf2a-6745-45dd-867e-f9479ea8c044",
+                            "type": "public",
+                            "bootable": "no"
+                        }
+                    ]
+                }
+            },
+            "nic_model": "virtio",
+            "plan": "GPU-12xCPU-128GB-2xL40S",
+            "plan_ipv4_bytes": "3565675343",
+            "plan_ipv6_bytes": "4534432",
+            "simple_backup": "0100,dailies",
+            "state": "started",
+            "server_group": "0b3d85b4-b3be-46ca-a1e2-3b5d40d60fb1",
+            "storage_devices": {
+                "storage_device": [
+                    {
+                        "address": "virtio:0",
+                        "part_of_plan": "yes",
+                        "labels": [
+                            {
+                                "key": "foo",
+                                "value": "bar"
+                            }
+                        ],
+                        "storage": "012580a1-32a1-466e-a323-689ca16f2d43",
+                        "storage_size": "20",
+                        "storage_encrypted": "yes",
+                        "storage_tier": "maxiops",
+                        "storage_title": "Storage for server1.example.com",
+                        "type": "disk",
+                        "boot_disk": "0"
+                    }
+                ]
+            },
+            "devices": {
+                "device": [
+                    {
+                        "model": "NVIDIA L40S",
+                        "type": "gpu",
+                        "serial": "1790925007018",
+                        "metadata": {
+                            "serial": "1723925007011",
+                            "cores": 18176,
+                            "memory": 48
+                        }
+                    },
+                    {
+                        "model": "NVIDIA L40S",
+                        "type": "gpu",
+                        "serial": "1790325030002",
+                        "metadata": {
+                            "serial": "1723382930206",
+                            "cores": 18176,
+                            "memory": 48
+                        }
+                    }
+                ]
+            },
+            "tags": {
+                "tag": [
+                    "DEV",
+                    "Ubuntu"
+                ]
+            },
+            "timezone": "UTC",
+            "title": "server1.example.com",
+            "uuid": "0077fa3d-32db-4b09-9f5f-30d9e9afb565",
+            "video_model": "cirrus",
+            "remote_access_enabled": "yes",
+            "remote_access_type": "vnc",
+            "remote_access_host": "fi-hel1.vnc.upcloud.com",
+            "remote_access_password": "aabbccdd",
+            "remote_access_port": "3000",
+            "zone": "fi-hel1"
+        }
     }
-  ]
-},
-"devices": {
-  "device": [
-    {
-      "model": "NVIDIA L40S",
-      "type": "gpu",
-      "serial": "1790925007018",
-      "metadata": {
-        "serial": "1723925007011",
-        "cores": 18176,
-        "memory": 48
-      }
-    },
-    {
-      "model": "NVIDIA L40S",
-      "type": "gpu",
-      "serial": "1790325030002",
-      "metadata": {
-        "serial": "1723382930206",
-        "cores": 18176,
-        "memory": 48
-      }
-    }
-  ]
-},
-"tags": {
-  "tag": ["DEV", "Ubuntu"]
-},
-"timezone": "UTC",
-"title": "server1.example.com",
-"uuid": "0077fa3d-32db-4b09-9f5f-30d9e9afb565",
-"video_model": "cirrus",
-"remote_access_enabled": "yes",
-"remote_access_type": "vnc",
-"remote_access_host": "fi-hel1.vnc.upcloud.com",
-"remote_access_password": "aabbccdd",
-"remote_access_port": "3000",
-"zone": "fi-hel1"
-  }
-}"#;
+"#;
 
 /// Full "Get server details" response from the UpCloud 1.3 docs,
 /// including GPU devices, storage_encrypted, remote_access_host/port.
@@ -206,40 +235,61 @@ fn deserialize_get_server_details() {
     assert_eq!(labels.label[0].key, "env");
 }
 
-const LIST_SERVERS_JSON: &str = r#"{
-  "servers": {
-"server": [
-  {
-    "core_number": "1",
-    "hostname": "fi.example.com",
-    "labels": { "label": [{ "key": "env", "value": "prod" }] },
-    "license": 0,
-    "memory_amount": "2048",
-    "plan": "1xCPU-2GB",
-    "plan_ipv4_bytes": "34253332",
-    "plan_ipv6_bytes": "0",
-    "state": "started",
-    "tags": { "tag": ["PROD", "CentOS"] },
-    "title": "Helsinki server",
-    "uuid": "00798b85-efdc-41ca-8021-f6ef457b8531",
-    "zone": "fi-hel1"
-  },
-  {
-    "core_number": "1",
-    "hostname": "uk.example.com",
-    "labels": { "label": [] },
-    "license": 0,
-    "memory_amount": "512",
-    "plan": "custom",
-    "state": "stopped",
-    "tags": { "tag": ["DEV", "Ubuntu"] },
-    "title": "London server",
-    "uuid": "009d64ef-31d1-4684-a26b-c86c955cbf46",
-    "zone": "uk-lon1"
-  }
-]
-  }
-}"#;
+const LIST_SERVERS_JSON: &str = r#"
+    {
+        "servers": {
+            "server": [
+                {
+                    "core_number": "1",
+                    "hostname": "fi.example.com",
+                    "labels": {
+                        "label": [
+                            {
+                                "key": "env",
+                                "value": "prod"
+                            }
+                        ]
+                    },
+                    "license": 0,
+                    "memory_amount": "2048",
+                    "plan": "1xCPU-2GB",
+                    "plan_ipv4_bytes": "34253332",
+                    "plan_ipv6_bytes": "0",
+                    "state": "started",
+                    "tags": {
+                        "tag": [
+                            "PROD",
+                            "CentOS"
+                        ]
+                    },
+                    "title": "Helsinki server",
+                    "uuid": "00798b85-efdc-41ca-8021-f6ef457b8531",
+                    "zone": "fi-hel1"
+                },
+                {
+                    "core_number": "1",
+                    "hostname": "uk.example.com",
+                    "labels": {
+                        "label": []
+                    },
+                    "license": 0,
+                    "memory_amount": "512",
+                    "plan": "custom",
+                    "state": "stopped",
+                    "tags": {
+                        "tag": [
+                            "DEV",
+                            "Ubuntu"
+                        ]
+                    },
+                    "title": "London server",
+                    "uuid": "009d64ef-31d1-4684-a26b-c86c955cbf46",
+                    "zone": "uk-lon1"
+                }
+            ]
+        }
+    }
+"#;
 
 /// List servers response from docs.
 #[test]
@@ -279,18 +329,20 @@ fn deserialize_list_servers() {
     assert_eq!(tags1[1], "Ubuntu");
 }
 
-const MINIMAL_SERVER_JSON: &str = r#"{
-  "server": {
-"core_number": "1",
-"hostname": "test.example.com",
-"memory_amount": "1024",
-"plan": "custom",
-"state": "stopped",
-"title": "test",
-"uuid": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
-"zone": "fi-hel1"
-  }
-}"#;
+const MINIMAL_SERVER_JSON: &str = r#"
+    {
+        "server": {
+            "core_number": "1",
+            "hostname": "test.example.com",
+            "memory_amount": "1024",
+            "plan": "custom",
+            "state": "stopped",
+            "title": "test",
+            "uuid": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+            "zone": "fi-hel1"
+        }
+    }
+"#;
 
 /// Minimal server (only required fields) still deserializes.
 #[test]
@@ -306,22 +358,38 @@ fn deserialize_minimal_server() {
     assert!(s.storage_devices.is_none());
 }
 
-const SERVER_GROUP_LIST_JSON: &str = r#"{
-  "server_groups": {
-"server_group": [
-  {
-    "anti_affinity": "yes",
-    "anti_affinity_status": [
-      { "uuid": "0016dadf-eba4-4331-bd34-a361841f7af1", "status": "met" }
-    ],
-    "labels": { "label": [{ "key": "foo", "value": "bar" }] },
-    "servers": { "server": ["0016dadf-eba4-4331-bd34-a361841f7af2"] },
-    "title": "nameserver group",
-    "uuid": "0b3d85b4-b3be-46ca-a1e2-3b5d30d60ab0"
-  }
-]
-  }
-}"#;
+const SERVER_GROUP_LIST_JSON: &str = r#"
+    {
+        "server_groups": {
+            "server_group": [
+                {
+                    "anti_affinity": "yes",
+                    "anti_affinity_status": [
+                        {
+                            "uuid": "0016dadf-eba4-4331-bd34-a361841f7af1",
+                            "status": "met"
+                        }
+                    ],
+                    "labels": {
+                        "label": [
+                            {
+                                "key": "foo",
+                                "value": "bar"
+                            }
+                        ]
+                    },
+                    "servers": {
+                        "server": [
+                            "0016dadf-eba4-4331-bd34-a361841f7af2"
+                        ]
+                    },
+                    "title": "nameserver group",
+                    "uuid": "0b3d85b4-b3be-46ca-a1e2-3b5d30d60ab0"
+                }
+            ]
+        }
+    }
+"#;
 
 /// Server group list response from docs.
 #[test]
@@ -337,26 +405,28 @@ fn deserialize_server_group_list() {
 
 // ─── NEW TESTS: every JSON example from the UpCloud 1.3 Servers docs ──────
 
-const GET_SERVER_GPUS_JSON: &str = r#"{
-  "gpus": [
-{
-  "cores": 18176,
-  "firmware": "95.02.66.00.15",
-  "memory_gib": 48,
-  "model": "NVIDIA L40S",
-  "part": "900-2G133-0180-030",
-  "serial": "1723925007011"
-},
-{
-  "cores": 18176,
-  "firmware": "95.02.66.00.15",
-  "memory_gib": 48,
-  "model": "NVIDIA L40S",
-  "part": "900-2G133-0180-030",
-  "serial": "1723382930206"
-}
-  ]
-}"#;
+const GET_SERVER_GPUS_JSON: &str = r#"
+    {
+        "gpus": [
+            {
+                "cores": 18176,
+                "firmware": "95.02.66.00.15",
+                "memory_gib": 48,
+                "model": "NVIDIA L40S",
+                "part": "900-2G133-0180-030",
+                "serial": "1723925007011"
+            },
+            {
+                "cores": 18176,
+                "firmware": "95.02.66.00.15",
+                "memory_gib": 48,
+                "model": "NVIDIA L40S",
+                "part": "900-2G133-0180-030",
+                "serial": "1723382930206"
+            }
+        ]
+    }
+"#;
 
 /// Get server GPUs response (GET /1.3/server/{uuid}/gpus).
 #[test]
@@ -370,96 +440,104 @@ fn deserialize_get_server_gpus() {
     assert_eq!(resp.gpus[1].serial, "1723382930206");
 }
 
-const CREATE_SERVER_FROM_TEMPLATE_REQUEST_JSON: &str = r#"{
-  "server": {
-"zone": "fi-hel1",
-"title": "My Debian server",
-"hostname": "debian.example.com",
-"labels": {
-  "label": [
+const CREATE_SERVER_FROM_TEMPLATE_REQUEST_JSON: &str = r#"
     {
-      "key": "test",
-      "value": ""
-    }
-  ]
-},
-"plan": "2xCPU-4GB",
-"storage_devices": {
-  "storage_device": [
-    {
-      "action": "clone",
-      "labels": [
-        {
-          "key": "foo",
-          "value": "bar"
-        }
-      ],
-      "storage": "01000000-0000-4000-8000-000020030100",
-      "encrypted": "yes",
-      "title": "Debian from a template",
-      "size": "50",
-      "tier": "maxiops"
-    }
-  ]
-},
-"networking": {
-  "interfaces": {
-    "interface": [
-      {
-        "ip_addresses": {
-          "ip_address": [
-            { "family": "IPv4" }
-          ]
-        },
-        "type": "public"
-      },
-      {
-        "ip_addresses": {
-          "ip_address": [
-            { "family": "IPv4" }
-          ]
-        },
-        "type": "utility"
-      },
-      {
-        "ip_addresses": {
-          "ip_address": [
-            { "family": "IPv6" }
-          ]
-        },
-        "type": "public"
-      },
-      {
-        "type": "private",
-        "network": "03b5b0a0-ad4c-4817-9632-dafdb3ace5d9",
-        "ip_addresses": {
-          "ip_address": [
-            {
-              "family": "IPv4",
-              "address": "10.0.0.50",
-              "dhcp_provided": "yes"
+        "server": {
+            "zone": "fi-hel1",
+            "title": "My Debian server",
+            "hostname": "debian.example.com",
+            "labels": {
+                "label": [
+                    {
+                        "key": "test",
+                        "value": ""
+                    }
+                ]
             },
-            {
-              "family": "IPv4",
-              "address": "10.0.0.60"
+            "plan": "2xCPU-4GB",
+            "storage_devices": {
+                "storage_device": [
+                    {
+                        "action": "clone",
+                        "labels": [
+                            {
+                                "key": "foo",
+                                "value": "bar"
+                            }
+                        ],
+                        "storage": "01000000-0000-4000-8000-000020030100",
+                        "encrypted": "yes",
+                        "title": "Debian from a template",
+                        "size": "50",
+                        "tier": "maxiops"
+                    }
+                ]
+            },
+            "networking": {
+                "interfaces": {
+                    "interface": [
+                        {
+                            "ip_addresses": {
+                                "ip_address": [
+                                    {
+                                        "family": "IPv4"
+                                    }
+                                ]
+                            },
+                            "type": "public"
+                        },
+                        {
+                            "ip_addresses": {
+                                "ip_address": [
+                                    {
+                                        "family": "IPv4"
+                                    }
+                                ]
+                            },
+                            "type": "utility"
+                        },
+                        {
+                            "ip_addresses": {
+                                "ip_address": [
+                                    {
+                                        "family": "IPv6"
+                                    }
+                                ]
+                            },
+                            "type": "public"
+                        },
+                        {
+                            "type": "private",
+                            "network": "03b5b0a0-ad4c-4817-9632-dafdb3ace5d9",
+                            "ip_addresses": {
+                                "ip_address": [
+                                    {
+                                        "family": "IPv4",
+                                        "address": "10.0.0.50",
+                                        "dhcp_provided": "yes"
+                                    },
+                                    {
+                                        "family": "IPv4",
+                                        "address": "10.0.0.60"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            "login_user": {
+                "username": "upclouduser",
+                "ssh_keys": {
+                    "ssh_key": [
+                        "ssh-rsa AAAAB3NzaC1yc2EAA user@example.com",
+                        "ssh-dss AAAAB3NzaC1kc3MAA user@example.com"
+                    ]
+                }
             }
-          ]
         }
-      }
-    ]
-  }
-},
-"login_user": {
-  "username": "upclouduser",
-  "ssh_keys": {
-    "ssh_key": [
-      "ssh-rsa AAAAB3NzaC1yc2EAA user@example.com",
-      "ssh-dss AAAAB3NzaC1kc3MAA user@example.com"
-    ]
-  }
-}
-  }
-}"#;
+    }
+"#;
 
 /// Create server from template request (POST /1.3/server).
 #[test]
@@ -529,66 +607,74 @@ fn deserialize_create_server_from_template_request() {
     assert_eq!(ssh[1], "ssh-dss AAAAB3NzaC1kc3MAA user@example.com");
 }
 
-const CREATE_SERVER_BY_CLONING_REQUEST_JSON: &str = r#"{
-  "server": {
-"zone": "fi-hel1",
-"title": "Another Debian server",
-"hostname": "debian2.example.com",
-"core_number": "4",
-"memory_amount": "8192",
-"storage_devices": {
-  "storage_device": [
+const CREATE_SERVER_BY_CLONING_REQUEST_JSON: &str = r#"
     {
-      "action": "clone",
-      "storage": "0169b4f8-051c-4a86-9484-f5b798249949",
-      "title": "Storage for another Debian server"
-    }
-  ]
-},
-"networking": {
-  "interfaces": {
-    "interface": [
-      {
-        "ip_addresses": {
-          "ip_address": [
-            { "family": "IPv4" }
-          ]
-        },
-        "type": "public"
-      },
-      {
-        "ip_addresses": {
-          "ip_address": [
-            { "family": "IPv4" }
-          ]
-        },
-        "type": "utility"
-      },
-      {
-        "ip_addresses": {
-          "ip_address": [
-            { "family": "IPv6" }
-          ]
-        },
-        "type": "public"
-      },
-      {
-        "type": "private",
-        "network": "03b5b0a0-ad4c-4817-9632-dafdb3ace5d9",
-        "ip_addresses": {
-          "ip_address": [
-            {
-              "family": "IPv4",
-              "address": "10.0.0.50"
+        "server": {
+            "zone": "fi-hel1",
+            "title": "Another Debian server",
+            "hostname": "debian2.example.com",
+            "core_number": "4",
+            "memory_amount": "8192",
+            "storage_devices": {
+                "storage_device": [
+                    {
+                        "action": "clone",
+                        "storage": "0169b4f8-051c-4a86-9484-f5b798249949",
+                        "title": "Storage for another Debian server"
+                    }
+                ]
+            },
+            "networking": {
+                "interfaces": {
+                    "interface": [
+                        {
+                            "ip_addresses": {
+                                "ip_address": [
+                                    {
+                                        "family": "IPv4"
+                                    }
+                                ]
+                            },
+                            "type": "public"
+                        },
+                        {
+                            "ip_addresses": {
+                                "ip_address": [
+                                    {
+                                        "family": "IPv4"
+                                    }
+                                ]
+                            },
+                            "type": "utility"
+                        },
+                        {
+                            "ip_addresses": {
+                                "ip_address": [
+                                    {
+                                        "family": "IPv6"
+                                    }
+                                ]
+                            },
+                            "type": "public"
+                        },
+                        {
+                            "type": "private",
+                            "network": "03b5b0a0-ad4c-4817-9632-dafdb3ace5d9",
+                            "ip_addresses": {
+                                "ip_address": [
+                                    {
+                                        "family": "IPv4",
+                                        "address": "10.0.0.50"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
             }
-          ]
         }
-      }
-    ]
-  }
-}
-  }
-}"#;
+    }
+"#;
 
 /// Create server by cloning request (POST /1.3/server).
 #[test]
@@ -642,74 +728,82 @@ fn deserialize_create_server_by_cloning_request() {
     assert_eq!(priv_ips[0].address.as_deref(), Some("10.0.0.50"));
 }
 
-const CREATE_SERVER_FROM_SCRATCH_REQUEST_JSON: &str = r#"{
-  "server": {
-"zone": "fi-hel1",
-"title": "My Debian server",
-"hostname": "debian.example.com",
-"avoid_host": 7653311107,
-"core_number": "4",
-"memory_amount": "8192",
-"storage_devices": {
-  "storage_device": [
+const CREATE_SERVER_FROM_SCRATCH_REQUEST_JSON: &str = r#"
     {
-      "action": "create",
-      "size": "20",
-      "tier": "maxiops",
-      "title": "Debian from scratch"
-    },
-    {
-      "action": "attach",
-      "storage": "01000000-0000-4000-8000-000020010301",
-      "type": "cdrom"
-    }
-  ]
-},
-"simple_backup": "0430,monthlies",
-"networking": {
-  "interfaces": {
-    "interface": [
-      {
-        "ip_addresses": {
-          "ip_address": [
-            { "family": "IPv4" }
-          ]
-        },
-        "type": "public"
-      },
-      {
-        "ip_addresses": {
-          "ip_address": [
-            { "family": "IPv4" }
-          ]
-        },
-        "type": "utility"
-      },
-      {
-        "ip_addresses": {
-          "ip_address": [
-            { "family": "IPv6" }
-          ]
-        },
-        "type": "public"
-      },
-      {
-        "type": "private",
-        "network": "03b5b0a0-ad4c-4817-9632-dafdb3ace5d9",
-        "ip_addresses": {
-          "ip_address": [
-            {
-              "family": "IPv4",
-              "address": "10.0.0.50"
+        "server": {
+            "zone": "fi-hel1",
+            "title": "My Debian server",
+            "hostname": "debian.example.com",
+            "avoid_host": 7653311107,
+            "core_number": "4",
+            "memory_amount": "8192",
+            "storage_devices": {
+                "storage_device": [
+                    {
+                        "action": "create",
+                        "size": "20",
+                        "tier": "maxiops",
+                        "title": "Debian from scratch"
+                    },
+                    {
+                        "action": "attach",
+                        "storage": "01000000-0000-4000-8000-000020010301",
+                        "type": "cdrom"
+                    }
+                ]
+            },
+            "simple_backup": "0430,monthlies",
+            "networking": {
+                "interfaces": {
+                    "interface": [
+                        {
+                            "ip_addresses": {
+                                "ip_address": [
+                                    {
+                                        "family": "IPv4"
+                                    }
+                                ]
+                            },
+                            "type": "public"
+                        },
+                        {
+                            "ip_addresses": {
+                                "ip_address": [
+                                    {
+                                        "family": "IPv4"
+                                    }
+                                ]
+                            },
+                            "type": "utility"
+                        },
+                        {
+                            "ip_addresses": {
+                                "ip_address": [
+                                    {
+                                        "family": "IPv6"
+                                    }
+                                ]
+                            },
+                            "type": "public"
+                        },
+                        {
+                            "type": "private",
+                            "network": "03b5b0a0-ad4c-4817-9632-dafdb3ace5d9",
+                            "ip_addresses": {
+                                "ip_address": [
+                                    {
+                                        "family": "IPv4",
+                                        "address": "10.0.0.50"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
             }
-          ]
         }
-      }
-    ]
-  }
-}
-  }
-}"#;
+    }
+"#;
 
 /// Create server from scratch request (POST /1.3/server).
 #[test]
@@ -766,52 +860,68 @@ fn deserialize_create_server_from_scratch_request() {
     assert_eq!(priv_ips[0].address.as_deref(), Some("10.0.0.50"));
 }
 
-const CREATE_SERVER_RESPONSE_JSON: &str = r#"{
-  "server": {
-"boot_order": "disk",
-"core_number": "2",
-"firewall": "on",
-"hostname": "debian.example.com",
-"ip_addresses": {
-  "ip_address": [
-    { "access": "utility", "address": "10.0.0.0", "family": "IPv4" },
-    { "access": "public",  "address": "x.x.x.x",  "family": "IPv4" },
-    { "access": "public",  "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx", "family": "IPv6" }
-  ]
-},
-"license": 0,
-"memory_amount": "4096",
-"nic_model": "virtio",
-"password": "aabbccdd",
-"plan": "2xCPU-4GB",
-"plan_ipv4_bytes": "0",
-"plan_ipv6_bytes": "0",
-"simple_backup": "0430,dailies",
-"state": "maintenance",
-"storage_devices": {
-  "storage_device": [
+const CREATE_SERVER_RESPONSE_JSON: &str = r#"
     {
-      "address": "virtio:0",
-      "part_of_plan": "yes",
-      "storage": "0169b4f8-051c-4a86-9484-f5b798249949",
-      "storage_size": 1,
-      "storage_tier": "maxiops",
-      "storage_title": "Debian from a template",
-      "type": "disk",
-      "boot_disk": "0"
+        "server": {
+            "boot_order": "disk",
+            "core_number": "2",
+            "firewall": "on",
+            "hostname": "debian.example.com",
+            "ip_addresses": {
+                "ip_address": [
+                    {
+                        "access": "utility",
+                        "address": "10.0.0.0",
+                        "family": "IPv4"
+                    },
+                    {
+                        "access": "public",
+                        "address": "x.x.x.x",
+                        "family": "IPv4"
+                    },
+                    {
+                        "access": "public",
+                        "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx",
+                        "family": "IPv6"
+                    }
+                ]
+            },
+            "license": 0,
+            "memory_amount": "4096",
+            "nic_model": "virtio",
+            "password": "aabbccdd",
+            "plan": "2xCPU-4GB",
+            "plan_ipv4_bytes": "0",
+            "plan_ipv6_bytes": "0",
+            "simple_backup": "0430,dailies",
+            "state": "maintenance",
+            "storage_devices": {
+                "storage_device": [
+                    {
+                        "address": "virtio:0",
+                        "part_of_plan": "yes",
+                        "storage": "0169b4f8-051c-4a86-9484-f5b798249949",
+                        "storage_size": 1,
+                        "storage_tier": "maxiops",
+                        "storage_title": "Debian from a template",
+                        "type": "disk",
+                        "boot_disk": "0"
+                    }
+                ]
+            },
+            "tags": {
+                "tag": []
+            },
+            "timezone": "UTC",
+            "title": "My Debian server",
+            "uuid": "00c78863-db86-44ea-af70-d6edc4d162bf",
+            "video_model": "cirrus",
+            "remote_access_enabled": "no",
+            "remote_access_password": "aabbccdd",
+            "zone": "fi-hel1"
+        }
     }
-  ]
-},
-"tags": { "tag": [] },
-"timezone": "UTC",
-"title": "My Debian server",
-"uuid": "00c78863-db86-44ea-af70-d6edc4d162bf",
-"video_model": "cirrus",
-"remote_access_enabled": "no",
-"remote_access_password": "aabbccdd",
-"zone": "fi-hel1"
-  }
-}"#;
+"#;
 
 /// Create server response (POST /1.3/server — 202 Accepted).
 #[test]
@@ -869,25 +979,27 @@ fn deserialize_create_server_response() {
     assert!(s.tags.as_ref().unwrap().tag.is_empty());
 }
 
-const REBUILD_SERVER_REQUEST_JSON: &str = r#"{
-  "server_rebuild": {
-"storage_title": "new encrypted storage",
-"clone_source": "01000000-0000-4000-8000-000020050100",
-"detach_disk": "0169b4f8-051c-4a86-9484-f5b798249949",
-"delete_detached_disk": "yes",
-"password_delivery": "email",
-"encrypted": "yes",
-"login_user": {
-  "create_password": 0,
-  "username": "foobar",
-  "ssh_keys": {
-    "ssh_key": [
-      "ssh-ed25519 ..."
-    ]
-  }
-}
-  }
-}"#;
+const REBUILD_SERVER_REQUEST_JSON: &str = r#"
+    {
+        "server_rebuild": {
+            "storage_title": "new encrypted storage",
+            "clone_source": "01000000-0000-4000-8000-000020050100",
+            "detach_disk": "0169b4f8-051c-4a86-9484-f5b798249949",
+            "delete_detached_disk": "yes",
+            "password_delivery": "email",
+            "encrypted": "yes",
+            "login_user": {
+                "create_password": 0,
+                "username": "foobar",
+                "ssh_keys": {
+                    "ssh_key": [
+                        "ssh-ed25519 ..."
+                    ]
+                }
+            }
+        }
+    }
+"#;
 
 /// Rebuild server request (POST /1.3/server/{uuid}/rebuild).
 #[test]
@@ -904,108 +1016,141 @@ fn deserialize_rebuild_server_request() {
     assert_eq!(lu.ssh_keys.unwrap().ssh_key.len(), 1);
 }
 
-const REBUILD_SERVER_RESPONSE_JSON: &str = r#"{
-  "server": {
-"boot_order": "disk",
-"core_number": "1",
-"created": 1716400530,
-"firewall": "off",
-"hostname": "my-awesome-server",
-"ip_addresses": {
-  "ip_address": [
-    { "access": "utility", "address": "10.10.15.1", "family": "IPv4" },
-    { "access": "public", "address": "150.127.16.103", "family": "IPv4", "part_of_plan": "yes" }
-  ]
-},
-"labels": { "label": [] },
-"license": 0,
-"memory_amount": "1024",
-"metadata": "yes",
-"networking": {
-  "interfaces": {
-    "interface": [
-      {
-        "bootable": "no",
-        "index": 1,
-        "ip_addresses": {
-          "ip_address": [
-            {
-              "address": "150.127.16.103",
-              "dhcp_provided": "yes",
-              "family": "IPv4",
-              "floating": "no",
-              "release_policy": "release"
-            }
-          ]
-        },
-        "mac": "de:10:ff:ff:17:79",
-        "network": "03030473-8e9a-4f5f-bffe-b3cffe378a28",
-        "source_ip_filtering": "yes",
-        "type": "public"
-      },
-      {
-        "bootable": "no",
-        "index": 2,
-        "ip_addresses": {
-          "ip_address": [
-            {
-              "address": "10.10.15.1",
-              "dhcp_provided": "yes",
-              "family": "IPv4",
-              "floating": "no",
-              "release_policy": "release"
-            }
-          ]
-        },
-        "mac": "de:10:ff:ff:17:78",
-        "network": "039bd564-c991-4fdd-bedd-37e936fab099",
-        "source_ip_filtering": "yes",
-        "type": "utility"
-      }
-    ]
-  }
-},
-"nic_model": "virtio",
-"plan": "1xCPU-1GB",
-"plan_ipv4_bytes": "0",
-"plan_ipv6_bytes": "0",
-"remote_access_enabled": "no",
-"remote_access_password": "osd9xRqufdlqwe_1481-7",
-"remote_access_type": "vnc",
-"server_group": null,
-"simple_backup": "no",
-"state": "maintenance",
-"storage_devices": {
-  "storage_device": [
+const REBUILD_SERVER_RESPONSE_JSON: &str = r#"
     {
-      "address": "virtio:0",
-      "boot_disk": "0",
-      "labels": [
-        { "key": "_os_architecture", "value": "64" },
-        { "key": "_os_brand_name", "value": "Debian" },
-        { "key": "_os_brand_version", "value": "10.1" },
-        { "key": "_os_main_category", "value": "Linux" },
-        { "key": "_os_type", "value": "debian" },
-        { "key": "_template_uuid", "value": "01000000-0000-4000-8000-000020050100" }
-      ],
-      "part_of_plan": "yes",
-      "storage": "0117aae1-b8a9-4aee-affe-89771922cabf",
-      "storage_encrypted": "yes",
-      "storage_size": 25,
-      "storage_tier": "maxiops",
-      "storage_title": "my new re-installed os",
-      "type": "disk"
+        "server": {
+            "boot_order": "disk",
+            "core_number": "1",
+            "created": 1716400530,
+            "firewall": "off",
+            "hostname": "my-awesome-server",
+            "ip_addresses": {
+                "ip_address": [
+                    {
+                        "access": "utility",
+                        "address": "10.10.15.1",
+                        "family": "IPv4"
+                    },
+                    {
+                        "access": "public",
+                        "address": "150.127.16.103",
+                        "family": "IPv4",
+                        "part_of_plan": "yes"
+                    }
+                ]
+            },
+            "labels": {
+                "label": []
+            },
+            "license": 0,
+            "memory_amount": "1024",
+            "metadata": "yes",
+            "networking": {
+                "interfaces": {
+                    "interface": [
+                        {
+                            "bootable": "no",
+                            "index": 1,
+                            "ip_addresses": {
+                                "ip_address": [
+                                    {
+                                        "address": "150.127.16.103",
+                                        "dhcp_provided": "yes",
+                                        "family": "IPv4",
+                                        "floating": "no",
+                                        "release_policy": "release"
+                                    }
+                                ]
+                            },
+                            "mac": "de:10:ff:ff:17:79",
+                            "network": "03030473-8e9a-4f5f-bffe-b3cffe378a28",
+                            "source_ip_filtering": "yes",
+                            "type": "public"
+                        },
+                        {
+                            "bootable": "no",
+                            "index": 2,
+                            "ip_addresses": {
+                                "ip_address": [
+                                    {
+                                        "address": "10.10.15.1",
+                                        "dhcp_provided": "yes",
+                                        "family": "IPv4",
+                                        "floating": "no",
+                                        "release_policy": "release"
+                                    }
+                                ]
+                            },
+                            "mac": "de:10:ff:ff:17:78",
+                            "network": "039bd564-c991-4fdd-bedd-37e936fab099",
+                            "source_ip_filtering": "yes",
+                            "type": "utility"
+                        }
+                    ]
+                }
+            },
+            "nic_model": "virtio",
+            "plan": "1xCPU-1GB",
+            "plan_ipv4_bytes": "0",
+            "plan_ipv6_bytes": "0",
+            "remote_access_enabled": "no",
+            "remote_access_password": "osd9xRqufdlqwe_1481-7",
+            "remote_access_type": "vnc",
+            "server_group": null,
+            "simple_backup": "no",
+            "state": "maintenance",
+            "storage_devices": {
+                "storage_device": [
+                    {
+                        "address": "virtio:0",
+                        "boot_disk": "0",
+                        "labels": [
+                            {
+                                "key": "_os_architecture",
+                                "value": "64"
+                            },
+                            {
+                                "key": "_os_brand_name",
+                                "value": "Debian"
+                            },
+                            {
+                                "key": "_os_brand_version",
+                                "value": "10.1"
+                            },
+                            {
+                                "key": "_os_main_category",
+                                "value": "Linux"
+                            },
+                            {
+                                "key": "_os_type",
+                                "value": "debian"
+                            },
+                            {
+                                "key": "_template_uuid",
+                                "value": "01000000-0000-4000-8000-000020050100"
+                            }
+                        ],
+                        "part_of_plan": "yes",
+                        "storage": "0117aae1-b8a9-4aee-affe-89771922cabf",
+                        "storage_encrypted": "yes",
+                        "storage_size": 25,
+                        "storage_tier": "maxiops",
+                        "storage_title": "my new re-installed os",
+                        "type": "disk"
+                    }
+                ]
+            },
+            "tags": {
+                "tag": []
+            },
+            "timezone": "UTC",
+            "title": "my awesome server",
+            "uuid": "00b5d217-3aa8-4820-8b6a-aef77f8e84f5",
+            "video_model": "cirrus",
+            "zone": "fi-hel1"
+        }
     }
-  ]
-},
-"tags": { "tag": [] },
-"timezone": "UTC",
-"title": "my awesome server",
-"uuid": "00b5d217-3aa8-4820-8b6a-aef77f8e84f5",
-"video_model": "cirrus",
-"zone": "fi-hel1"
-  }
-}"#;
+"#;
 
 /// Rebuild server response (POST /1.3/server/{uuid}/rebuild — 202 Accepted).
 #[test]
@@ -1098,11 +1243,13 @@ fn deserialize_rebuild_server_response() {
     assert!(s.labels.as_ref().unwrap().label.is_empty());
 }
 
-const START_SERVER_REQUEST_JSON: &str = r#"{
-  "server": {
-"host": 8055964291
-  }
-}"#;
+const START_SERVER_REQUEST_JSON: &str = r#"
+    {
+        "server": {
+            "host": 8055964291
+        }
+    }
+"#;
 
 /// Start server request (POST /1.3/server/{uuid}/start).
 #[test]
@@ -1111,52 +1258,70 @@ fn deserialize_start_server_request() {
     assert_eq!(v["server"]["host"], 8055964291_i64);
 }
 
-const START_SERVER_RESPONSE_JSON: &str = r#"{
-  "server": {
-"boot_order": "disk",
-"core_number": "2",
-"firewall": "on",
-"hostname": "debian.example.com",
-"host": 8055964291,
-"ip_addresses": {
-  "ip_address": [
-    { "access": "utility", "address": "10.0.0.0", "family": "IPv4" },
-    { "access": "public",  "address": "x.x.x.x",  "family": "IPv4" },
-    { "access": "public",  "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx", "family": "IPv6" }
-  ]
-},
-"labels": { "label": [] },
-"license": 0,
-"memory_amount": "4096",
-"nic_model": "virtio",
-"plan": "2xCPU-4GB",
-"plan_ipv4_bytes": "435376546",
-"plan_ipv6_bytes": "0",
-"state": "started",
-"storage_devices": {
-  "storage_device": [
+const START_SERVER_RESPONSE_JSON: &str = r#"
     {
-      "address": "virtio:0",
-      "plart_of_plan": "yes",
-      "storage": "0169b4f8-051c-4a86-9484-f5b798249949",
-      "storage_size": "10",
-      "storage_tier": "maxiops",
-      "storage_title": "Debian from a template",
-      "type": "disk",
-      "boot_disk": "0"
+        "server": {
+            "boot_order": "disk",
+            "core_number": "2",
+            "firewall": "on",
+            "hostname": "debian.example.com",
+            "host": 8055964291,
+            "ip_addresses": {
+                "ip_address": [
+                    {
+                        "access": "utility",
+                        "address": "10.0.0.0",
+                        "family": "IPv4"
+                    },
+                    {
+                        "access": "public",
+                        "address": "x.x.x.x",
+                        "family": "IPv4"
+                    },
+                    {
+                        "access": "public",
+                        "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx",
+                        "family": "IPv6"
+                    }
+                ]
+            },
+            "labels": {
+                "label": []
+            },
+            "license": 0,
+            "memory_amount": "4096",
+            "nic_model": "virtio",
+            "plan": "2xCPU-4GB",
+            "plan_ipv4_bytes": "435376546",
+            "plan_ipv6_bytes": "0",
+            "state": "started",
+            "storage_devices": {
+                "storage_device": [
+                    {
+                        "address": "virtio:0",
+                        "plart_of_plan": "yes",
+                        "storage": "0169b4f8-051c-4a86-9484-f5b798249949",
+                        "storage_size": "10",
+                        "storage_tier": "maxiops",
+                        "storage_title": "Debian from a template",
+                        "type": "disk",
+                        "boot_disk": "0"
+                    }
+                ]
+            },
+            "tags": {
+                "tag": []
+            },
+            "timezone": "UTC",
+            "title": "My Debian server",
+            "uuid": "00c78863-db86-44ea-af70-d6edc4d162bf",
+            "video_model": "cirrus",
+            "remote_access_enabled": "no",
+            "remote_access_password": "aabbccdd",
+            "zone": "fi-hel1"
+        }
     }
-  ]
-},
-"tags": { "tag": [] },
-"timezone": "UTC",
-"title": "My Debian server",
-"uuid": "00c78863-db86-44ea-af70-d6edc4d162bf",
-"video_model": "cirrus",
-"remote_access_enabled": "no",
-"remote_access_password": "aabbccdd",
-"zone": "fi-hel1"
-  }
-}"#;
+"#;
 
 /// Start server response (POST /1.3/server/{uuid}/start — 200 OK).
 #[test]
@@ -1217,12 +1382,14 @@ fn deserialize_start_server_response() {
     assert!(s.labels.as_ref().unwrap().label.is_empty());
 }
 
-const STOP_SERVER_REQUEST_JSON: &str = r#"{
-  "stop_server": {
-"stop_type": "soft",
-"timeout": "60"
-  }
-}"#;
+const STOP_SERVER_REQUEST_JSON: &str = r#"
+    {
+        "stop_server": {
+            "stop_type": "soft",
+            "timeout": "60"
+        }
+    }
+"#;
 
 /// Stop server request (POST /1.3/server/{uuid}/stop).
 #[test]
@@ -1233,49 +1400,67 @@ fn deserialize_stop_server_request() {
     assert_eq!(body.stop_server.timeout.as_deref(), Some("60"));
 }
 
-const STOP_SERVER_RESPONSE_JSON: &str = r#"{
-  "server": {
-"boot_order": "disk",
-"core_number": "2",
-"firewall": "on",
-"hostname": "debian.example.com",
-"host": 8055964291,
-"ip_addresses": [
-  { "access": "utility", "address": "10.0.0.0",  "family": "IPv4" },
-  { "access": "public",  "address": "x.x.x.x",   "family": "IPv4" },
-  { "access": "public",  "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx", "family": "IPv6" }
-],
-"labels": { "label": [] },
-"license": 0,
-"memory_amount": "4096",
-"nic_model": "virtio",
-"plan": "2xCPU-4GB",
-"plan_ipv4_bytes": "34543646754",
-"plan_ipv6_bytes": "242432",
-"state": "started",
-"storage_devices": {
-  "storage_device": [
+const STOP_SERVER_RESPONSE_JSON: &str = r#"
     {
-      "address": "virtio:0",
-      "part_of_plan": "yes",
-      "storage": "0169b4f8-051c-4a86-9484-f5b798249949",
-      "storage_size": "10",
-      "storage_tier": "maxiops",
-      "storage_title": "Debian from a template",
-      "type": "disk"
+        "server": {
+            "boot_order": "disk",
+            "core_number": "2",
+            "firewall": "on",
+            "hostname": "debian.example.com",
+            "host": 8055964291,
+            "ip_addresses": [
+                {
+                    "access": "utility",
+                    "address": "10.0.0.0",
+                    "family": "IPv4"
+                },
+                {
+                    "access": "public",
+                    "address": "x.x.x.x",
+                    "family": "IPv4"
+                },
+                {
+                    "access": "public",
+                    "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx",
+                    "family": "IPv6"
+                }
+            ],
+            "labels": {
+                "label": []
+            },
+            "license": 0,
+            "memory_amount": "4096",
+            "nic_model": "virtio",
+            "plan": "2xCPU-4GB",
+            "plan_ipv4_bytes": "34543646754",
+            "plan_ipv6_bytes": "242432",
+            "state": "started",
+            "storage_devices": {
+                "storage_device": [
+                    {
+                        "address": "virtio:0",
+                        "part_of_plan": "yes",
+                        "storage": "0169b4f8-051c-4a86-9484-f5b798249949",
+                        "storage_size": "10",
+                        "storage_tier": "maxiops",
+                        "storage_title": "Debian from a template",
+                        "type": "disk"
+                    }
+                ]
+            },
+            "tags": {
+                "tag": []
+            },
+            "timezone": "UTC",
+            "title": "My Debian server",
+            "uuid": "00c78863-db86-44ea-af70-d6edc4d162bf",
+            "video_model": "cirrus",
+            "remote_access_enabled": "no",
+            "remote_access_password": "aabbccdd",
+            "zone": "fi-hel1"
+        }
     }
-  ]
-},
-"tags": { "tag": [] },
-"timezone": "UTC",
-"title": "My Debian server",
-"uuid": "00c78863-db86-44ea-af70-d6edc4d162bf",
-"video_model": "cirrus",
-"remote_access_enabled": "no",
-"remote_access_password": "aabbccdd",
-"zone": "fi-hel1"
-  }
-}"#;
+"#;
 
 /// Stop server response (POST /1.3/server/{uuid}/stop — 200 OK).
 /// Note: The docs use a bare array for `ip_addresses` instead of the usual
@@ -1325,13 +1510,15 @@ fn deserialize_stop_server_response() {
     assert!(sv["labels"]["label"].as_array().unwrap().is_empty());
 }
 
-const RESTART_SERVER_REQUEST_JSON: &str = r#"{
-  "restart_server": {
-"stop_type": "soft",
-"timeout": "60",
-"timeout_action": "destroy"
-  }
-}"#;
+const RESTART_SERVER_REQUEST_JSON: &str = r#"
+    {
+        "restart_server": {
+            "stop_type": "soft",
+            "timeout": "60",
+            "timeout_action": "destroy"
+        }
+    }
+"#;
 
 /// Restart server request (POST /1.3/server/{uuid}/restart).
 #[test]
@@ -1346,51 +1533,69 @@ fn deserialize_restart_server_request() {
     );
 }
 
-const RESTART_SERVER_RESPONSE_JSON: &str = r#"{
-  "server": {
-"boot_order": "disk",
-"core_number": "2",
-"firewall": "on",
-"hostname": "debian.example.com",
-"host": 8055964291,
-"ip_addresses": {
-  "ip_address": [
-    { "access": "utility", "address": "10.0.0.0",  "family": "IPv4" },
-    { "access": "public",  "address": "x.x.x.x",   "family": "IPv4" },
-    { "access": "public",  "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx", "family": "IPv6" }
-  ]
-},
-"labels": { "label": [] },
-"license": 0,
-"memory_amount": "4096",
-"nic_model": "virtio",
-"plan": "2xCPU-4GB",
-"plan_ipv4_bytes": "34543646754",
-"plan_ipv6_bytes": "242432",
-"state": "started",
-"storage_devices": {
-  "storage_device": [
+const RESTART_SERVER_RESPONSE_JSON: &str = r#"
     {
-      "address": "virtio:0",
-      "plart_of_plan": "yes",
-      "storage": "0169b4f8-051c-4a86-9484-f5b798249949",
-      "storage_size": "10",
-      "storage_tier": "maxiops",
-      "storage_title": "Debian from a template",
-      "type": "disk"
+        "server": {
+            "boot_order": "disk",
+            "core_number": "2",
+            "firewall": "on",
+            "hostname": "debian.example.com",
+            "host": 8055964291,
+            "ip_addresses": {
+                "ip_address": [
+                    {
+                        "access": "utility",
+                        "address": "10.0.0.0",
+                        "family": "IPv4"
+                    },
+                    {
+                        "access": "public",
+                        "address": "x.x.x.x",
+                        "family": "IPv4"
+                    },
+                    {
+                        "access": "public",
+                        "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx",
+                        "family": "IPv6"
+                    }
+                ]
+            },
+            "labels": {
+                "label": []
+            },
+            "license": 0,
+            "memory_amount": "4096",
+            "nic_model": "virtio",
+            "plan": "2xCPU-4GB",
+            "plan_ipv4_bytes": "34543646754",
+            "plan_ipv6_bytes": "242432",
+            "state": "started",
+            "storage_devices": {
+                "storage_device": [
+                    {
+                        "address": "virtio:0",
+                        "plart_of_plan": "yes",
+                        "storage": "0169b4f8-051c-4a86-9484-f5b798249949",
+                        "storage_size": "10",
+                        "storage_tier": "maxiops",
+                        "storage_title": "Debian from a template",
+                        "type": "disk"
+                    }
+                ]
+            },
+            "tags": {
+                "tag": []
+            },
+            "timezone": "UTC",
+            "title": "My Debian server",
+            "uuid": "00c78863-db86-44ea-af70-d6edc4d162bf",
+            "video_model": "cirrus",
+            "remote_access_enabled": "no",
+            "remote_access_password": "aabbccdd",
+            "zone": "fi-hel1"
+        }
     }
-  ]
-},
-"tags": { "tag": [] },
-"timezone": "UTC",
-"title": "My Debian server",
-"uuid": "00c78863-db86-44ea-af70-d6edc4d162bf",
-"video_model": "cirrus",
-"remote_access_enabled": "no",
-"remote_access_password": "aabbccdd",
-"zone": "fi-hel1"
-  }
-}"#;
+"#;
 
 /// Restart server response (POST /1.3/server/{uuid}/restart — 200 OK).
 #[test]
@@ -1450,13 +1655,15 @@ fn deserialize_restart_server_response() {
     assert!(s.labels.as_ref().unwrap().label.is_empty());
 }
 
-const MODIFY_SERVER_REQUEST_JSON: &str = r#"{
-  "server": {
-"core_number": "8",
-"memory_amount": "16384",
-"plan": "custom"
-  }
-}"#;
+const MODIFY_SERVER_REQUEST_JSON: &str = r#"
+    {
+        "server": {
+            "core_number": "8",
+            "memory_amount": "16384",
+            "plan": "custom"
+        }
+    }
+"#;
 
 /// Modify server request (PUT /1.3/server/{uuid}).
 #[test]
@@ -1469,53 +1676,71 @@ fn deserialize_modify_server_request() {
     assert_eq!(s.plan.as_deref(), Some("custom"));
 }
 
-const MODIFY_SERVER_RESPONSE_JSON: &str = r#"{
-  "server": {
-"boot_order": "disk",
-"core_number": "8",
-"firewall": "on",
-"hostname": "debian.example.com",
-"host": 8055964291,
-"ip_addresses": {
-  "ip_address": [
-    { "access": "utility", "address": "10.0.0.0",  "family": "IPv4" },
-    { "access": "public",  "address": "x.x.x.x",   "family": "IPv4" },
-    { "access": "public",  "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx", "family": "IPv6" }
-  ]
-},
-"labels": { "label": [] },
-"license": 0,
-"memory_amount": "16384",
-"nic_model": "virtio",
-"plan": "custom",
-"plan_ipv4_bytes": "0",
-"plan_ipv6_bytes": "0",
-"simple_backup": "no",
-"state": "stopped",
-"storage_devices": {
-  "storage_device": [
+const MODIFY_SERVER_RESPONSE_JSON: &str = r#"
     {
-      "address": "virtio:0",
-      "plart_of_plan": "yes",
-      "storage": "0169b4f8-051c-4a86-9484-f5b798249949",
-      "storage_size": "10",
-      "storage_tier": "maxiops",
-      "storage_title": "Debian from a template",
-      "type": "disk",
-      "boot_disk": "0"
+        "server": {
+            "boot_order": "disk",
+            "core_number": "8",
+            "firewall": "on",
+            "hostname": "debian.example.com",
+            "host": 8055964291,
+            "ip_addresses": {
+                "ip_address": [
+                    {
+                        "access": "utility",
+                        "address": "10.0.0.0",
+                        "family": "IPv4"
+                    },
+                    {
+                        "access": "public",
+                        "address": "x.x.x.x",
+                        "family": "IPv4"
+                    },
+                    {
+                        "access": "public",
+                        "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx",
+                        "family": "IPv6"
+                    }
+                ]
+            },
+            "labels": {
+                "label": []
+            },
+            "license": 0,
+            "memory_amount": "16384",
+            "nic_model": "virtio",
+            "plan": "custom",
+            "plan_ipv4_bytes": "0",
+            "plan_ipv6_bytes": "0",
+            "simple_backup": "no",
+            "state": "stopped",
+            "storage_devices": {
+                "storage_device": [
+                    {
+                        "address": "virtio:0",
+                        "plart_of_plan": "yes",
+                        "storage": "0169b4f8-051c-4a86-9484-f5b798249949",
+                        "storage_size": "10",
+                        "storage_tier": "maxiops",
+                        "storage_title": "Debian from a template",
+                        "type": "disk",
+                        "boot_disk": "0"
+                    }
+                ]
+            },
+            "tags": {
+                "tag": []
+            },
+            "timezone": "UTC",
+            "title": "My Debian server",
+            "uuid": "00c78863-db86-44ea-af70-d6edc4d162bf",
+            "video_model": "cirrus",
+            "remote_access_enabled": "no",
+            "remote_access_password": "aabbccdd",
+            "zone": "fi-hel1"
+        }
     }
-  ]
-},
-"tags": { "tag": [] },
-"timezone": "UTC",
-"title": "My Debian server",
-"uuid": "00c78863-db86-44ea-af70-d6edc4d162bf",
-"video_model": "cirrus",
-"remote_access_enabled": "no",
-"remote_access_password": "aabbccdd",
-"zone": "fi-hel1"
-  }
-}"#;
+"#;
 
 /// Modify server response (PUT /1.3/server/{uuid} — 202 Accepted).
 #[test]
@@ -1577,28 +1802,39 @@ fn deserialize_modify_server_response() {
     assert!(s.labels.as_ref().unwrap().label.is_empty());
 }
 
-const SERVER_GROUP_DETAILS_JSON: &str = r#"{
-  "server_group": {
-"anti_affinity": "yes",
-"anti_affinity_status": [
-  { "uuid": "0016dadf-eba4-4331-bd34-a361841f7af1", "status": "met" },
-  { "uuid": "00c77bbe-fc0e-436f-a753-37f5b5b76270", "status": "met" }
-],
-"labels": {
-  "label": [
-    { "key": "foo", "value": "bar" }
-  ]
-},
-"servers": {
-  "server": [
-    "0016dadf-eba4-4331-bd34-a361841f7af2",
-    "00c77bbe-fc0e-436f-a753-37f5b5b76271"
-  ]
-},
-"title": "nameserver group",
-"uuid": "0b3d85b4-b3be-46ca-a1e2-3b5d30d60ab0"
-  }
-}"#;
+const SERVER_GROUP_DETAILS_JSON: &str = r#"
+    {
+        "server_group": {
+            "anti_affinity": "yes",
+            "anti_affinity_status": [
+                {
+                    "uuid": "0016dadf-eba4-4331-bd34-a361841f7af1",
+                    "status": "met"
+                },
+                {
+                    "uuid": "00c77bbe-fc0e-436f-a753-37f5b5b76270",
+                    "status": "met"
+                }
+            ],
+            "labels": {
+                "label": [
+                    {
+                        "key": "foo",
+                        "value": "bar"
+                    }
+                ]
+            },
+            "servers": {
+                "server": [
+                    "0016dadf-eba4-4331-bd34-a361841f7af2",
+                    "00c77bbe-fc0e-436f-a753-37f5b5b76271"
+                ]
+            },
+            "title": "nameserver group",
+            "uuid": "0b3d85b4-b3be-46ca-a1e2-3b5d30d60ab0"
+        }
+    }
+"#;
 
 /// Server group details response (GET /1.3/server-group/{uuid}).
 #[test]
@@ -1616,48 +1852,62 @@ fn deserialize_server_group_details() {
     assert_eq!(servers.len(), 2);
 }
 
-const SERVER_GROUP_LIST_FULL_JSON: &str = r#"{
-  "server_groups": {
-"server_group": [
-  {
-    "anti_affinity": "yes",
-    "anti_affinity_status": [
-      { "uuid": "0016dadf-eba4-4331-bd34-a361841f7af1", "status": "met" },
-      { "uuid": "00c77bbe-fc0e-436f-a753-37f5b5b76270", "status": "met" }
-    ],
-    "labels": {
-      "label": [
-        { "key": "foo", "value": "bar" }
-      ]
-    },
-    "servers": {
-      "server": [
-        "0016dadf-eba4-4331-bd34-a361841f7af2",
-        "00c77bbe-fc0e-436f-a753-37f5b5b76271"
-      ]
-    },
-    "title": "nameserver group",
-    "uuid": "0b3d85b4-b3be-46ca-a1e2-3b5d30d60ab0"
-  },
-  {
-    "anti_affinity": "no",
-    "anti_affinity_status": null,
-    "labels": {
-      "label": [
-        { "key": "foo", "value": "bar" }
-      ]
-    },
-    "servers": {
-      "server": [
-        "001789da-3aa4-4431-bd34-b4ad841f23e2"
-      ]
-    },
-    "title": "my group",
-    "uuid": "0bebfe54-7532-4ca4-b8c0-0fa294ea9b7a"
-  }
-]
-  }
-}"#;
+const SERVER_GROUP_LIST_FULL_JSON: &str = r#"
+    {
+        "server_groups": {
+            "server_group": [
+                {
+                    "anti_affinity": "yes",
+                    "anti_affinity_status": [
+                        {
+                            "uuid": "0016dadf-eba4-4331-bd34-a361841f7af1",
+                            "status": "met"
+                        },
+                        {
+                            "uuid": "00c77bbe-fc0e-436f-a753-37f5b5b76270",
+                            "status": "met"
+                        }
+                    ],
+                    "labels": {
+                        "label": [
+                            {
+                                "key": "foo",
+                                "value": "bar"
+                            }
+                        ]
+                    },
+                    "servers": {
+                        "server": [
+                            "0016dadf-eba4-4331-bd34-a361841f7af2",
+                            "00c77bbe-fc0e-436f-a753-37f5b5b76271"
+                        ]
+                    },
+                    "title": "nameserver group",
+                    "uuid": "0b3d85b4-b3be-46ca-a1e2-3b5d30d60ab0"
+                },
+                {
+                    "anti_affinity": "no",
+                    "anti_affinity_status": null,
+                    "labels": {
+                        "label": [
+                            {
+                                "key": "foo",
+                                "value": "bar"
+                            }
+                        ]
+                    },
+                    "servers": {
+                        "server": [
+                            "001789da-3aa4-4431-bd34-b4ad841f23e2"
+                        ]
+                    },
+                    "title": "my group",
+                    "uuid": "0bebfe54-7532-4ca4-b8c0-0fa294ea9b7a"
+                }
+            ]
+        }
+    }
+"#;
 
 /// Full server group list from docs (2 groups, second has anti_affinity_status: null).
 #[test]
@@ -1699,14 +1949,16 @@ fn deserialize_server_group_list_full() {
     assert_eq!(servers1[0], "001789da-3aa4-4431-bd34-b4ad841f23e2");
 }
 
-const LIST_SERVERS_IN_GROUP_JSON: &str = r#"{
-  "servers": {
-"server": [
-  "0016dadf-eba4-4331-bd34-a361841f7af2",
-  "00c77bbe-fc0e-436f-a753-37f5b5b76271"
-]
-  }
-}"#;
+const LIST_SERVERS_IN_GROUP_JSON: &str = r#"
+    {
+        "servers": {
+            "server": [
+                "0016dadf-eba4-4331-bd34-a361841f7af2",
+                "00c77bbe-fc0e-436f-a753-37f5b5b76271"
+            ]
+        }
+    }
+"#;
 
 /// List servers in a group response (GET /1.3/server-group/{uuid}/servers).
 #[test]
@@ -1720,24 +1972,29 @@ fn deserialize_list_servers_in_group() {
     );
 }
 
-const CREATE_SERVER_GROUP_REQUEST_JSON: &str = r#"{
-  "server_group": {
-"title": "My brand new server group",
-"servers": {
-  "server": [
-    "00e2dc05-379d-6b90-a354-e5c3f9293918",
-    "00451e12-46ee-41a0-8a52-1aff9039298a",
-    "00651e23-44ff-41a0-9a82-2aff9039298b"
-  ]
-},
-"labels": {
-  "label": [
-    { "key": "foo", "value": "bar" }
-  ]
-},
-"anti_affinity": "yes"
-  }
-}"#;
+const CREATE_SERVER_GROUP_REQUEST_JSON: &str = r#"
+    {
+        "server_group": {
+            "title": "My brand new server group",
+            "servers": {
+                "server": [
+                    "00e2dc05-379d-6b90-a354-e5c3f9293918",
+                    "00451e12-46ee-41a0-8a52-1aff9039298a",
+                    "00651e23-44ff-41a0-9a82-2aff9039298b"
+                ]
+            },
+            "labels": {
+                "label": [
+                    {
+                        "key": "foo",
+                        "value": "bar"
+                    }
+                ]
+            },
+            "anti_affinity": "yes"
+        }
+    }
+"#;
 
 /// Create server group request (POST /1.3/server-group).
 #[test]
@@ -1754,18 +2011,20 @@ fn deserialize_create_server_group_request() {
     assert_eq!(servers[0], "00e2dc05-379d-6b90-a354-e5c3f9293918");
 }
 
-const MODIFY_SERVER_GROUP_REQUEST_JSON: &str = r#"{
-  "server_group": {
-"title": "New fancy title for the group",
-"servers": {
-  "server": [
-    "00e2dc05-379d-6b90-a354-e5c3f9293918",
-    "00451e12-46ee-41a0-8a52-1aff9039298a"
-  ]
-},
-"anti_affinity": "no"
-  }
-}"#;
+const MODIFY_SERVER_GROUP_REQUEST_JSON: &str = r#"
+    {
+        "server_group": {
+            "title": "New fancy title for the group",
+            "servers": {
+                "server": [
+                    "00e2dc05-379d-6b90-a354-e5c3f9293918",
+                    "00451e12-46ee-41a0-8a52-1aff9039298a"
+                ]
+            },
+            "anti_affinity": "no"
+        }
+    }
+"#;
 
 /// Modify server group request (PATCH /1.3/server-group/{uuid}).
 #[test]
@@ -1781,11 +2040,13 @@ fn deserialize_modify_server_group_request() {
     assert_eq!(servers.len(), 2);
 }
 
-const ADD_SERVER_TO_GROUP_REQUEST_JSON: &str = r#"{
-  "server": {
-"uuid": "00235adf-add4-66f1-ef34-e331516bb6a1"
-  }
-}"#;
+const ADD_SERVER_TO_GROUP_REQUEST_JSON: &str = r#"
+    {
+        "server": {
+            "uuid": "00235adf-add4-66f1-ef34-e331516bb6a1"
+        }
+    }
+"#;
 
 /// Add server to group request (POST /1.3/server-group/{uuid}/servers).
 #[test]
@@ -1795,9 +2056,11 @@ fn deserialize_add_server_to_group_request() {
     assert_eq!(v["server"]["uuid"], "00235adf-add4-66f1-ef34-e331516bb6a1");
 }
 
-const RELOCATE_SERVER_REQUEST_JSON: &str = r#"{
-  "zone": "fi-priv-example"
-}"#;
+const RELOCATE_SERVER_REQUEST_JSON: &str = r#"
+    {
+        "zone": "fi-priv-example"
+    }
+"#;
 
 /// Relocate server request (POST /1.3/server/{uuid}/relocate).
 #[test]
@@ -1807,51 +2070,69 @@ fn deserialize_relocate_server_request() {
     assert_eq!(v["zone"], "fi-priv-example");
 }
 
-const RELOCATE_SERVER_RESPONSE_JSON: &str = r#"{
-  "server": {
-"boot_order": "disk",
-"core_number": "2",
-"firewall": "on",
-"hostname": "debian.example.com",
-"ip_addresses": {
-  "ip_address": [
-    { "access": "utility", "address": "x.x.x.x", "family": "IPv4" },
-    { "access": "public",  "address": "x.x.x.x", "family": "IPv4" },
-    { "access": "public",  "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx", "family": "IPv6" }
-  ]
-},
-"labels": { "label": [] },
-"license": 0,
-"memory_amount": "4096",
-"nic_model": "virtio",
-"plan": "2xCPU-4GB",
-"plan_ipv4_bytes": "435376546",
-"plan_ipv6_bytes": "0",
-"remote_access_enabled": "no",
-"remote_access_password": "aabbccdd",
-"state": "stopped",
-"storage_devices": {
-  "storage_device": [
+const RELOCATE_SERVER_RESPONSE_JSON: &str = r#"
     {
-      "address": "virtio:0",
-      "plart_of_plan": "yes",
-      "storage": "0169b4f8-051c-4a86-9484-f5b798249949",
-      "storage_size": "10",
-      "storage_tier": "maxiops",
-      "storage_title": "Debian from a template",
-      "type": "disk",
-      "boot_disk": "0"
+        "server": {
+            "boot_order": "disk",
+            "core_number": "2",
+            "firewall": "on",
+            "hostname": "debian.example.com",
+            "ip_addresses": {
+                "ip_address": [
+                    {
+                        "access": "utility",
+                        "address": "x.x.x.x",
+                        "family": "IPv4"
+                    },
+                    {
+                        "access": "public",
+                        "address": "x.x.x.x",
+                        "family": "IPv4"
+                    },
+                    {
+                        "access": "public",
+                        "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx",
+                        "family": "IPv6"
+                    }
+                ]
+            },
+            "labels": {
+                "label": []
+            },
+            "license": 0,
+            "memory_amount": "4096",
+            "nic_model": "virtio",
+            "plan": "2xCPU-4GB",
+            "plan_ipv4_bytes": "435376546",
+            "plan_ipv6_bytes": "0",
+            "remote_access_enabled": "no",
+            "remote_access_password": "aabbccdd",
+            "state": "stopped",
+            "storage_devices": {
+                "storage_device": [
+                    {
+                        "address": "virtio:0",
+                        "plart_of_plan": "yes",
+                        "storage": "0169b4f8-051c-4a86-9484-f5b798249949",
+                        "storage_size": "10",
+                        "storage_tier": "maxiops",
+                        "storage_title": "Debian from a template",
+                        "type": "disk",
+                        "boot_disk": "0"
+                    }
+                ]
+            },
+            "tags": {
+                "tag": []
+            },
+            "timezone": "UTC",
+            "title": "My Debian server",
+            "uuid": "00c78863-db86-44ea-af70-d6edc4d162bf",
+            "video_model": "cirrus",
+            "zone": "fi-priv-example"
+        }
     }
-  ]
-},
-"tags": { "tag": [] },
-"timezone": "UTC",
-"title": "My Debian server",
-"uuid": "00c78863-db86-44ea-af70-d6edc4d162bf",
-"video_model": "cirrus",
-"zone": "fi-priv-example"
-  }
-}"#;
+"#;
 
 /// Relocate server response (POST /1.3/server/{uuid}/relocate — 200 OK).
 #[test]
@@ -1910,87 +2191,101 @@ fn deserialize_relocate_server_response() {
     assert!(s.labels.as_ref().unwrap().label.is_empty());
 }
 
-const METADATA_SERVICE_RESPONSE_JSON: &str = r#"{
-  "cloud_name": "upcloud",
-  "instance_id": "00bf9504-a4cb-4839-88ff-124a2c95e169",
-  "hostname": "metadata.example.com",
-  "platform": "servers",
-  "subplatform": "metadata (http://169.254.169.254)",
-  "public_keys": [
-"ssh-rsa AAAAB3 user@example.com"
-  ],
-  "region": "de-fra1",
-  "network": {
-"interfaces": [
-  {
-    "index": 1,
-    "ip_addresses": [
-      {
-        "address": "94.237.90.209",
-        "dhcp": true,
-        "dns": ["94.237.127.9", "94.237.40.9"],
-        "family": "IPv4",
-        "floating": false,
-        "gateway": "94.237.90.1",
-        "network": "94.237.90.0/24"
-      }
-    ],
-    "mac": "de:ad:be:ef:3f:c5",
-    "network_id": "03030473-8e9d-4f4f-bcfe-b2c300391a07",
-    "type": "public"
-  },
-  {
-    "index": 2,
-    "ip_addresses": [
-      {
-        "address": "10.199.12.11",
-        "dhcp": true,
-        "dns": null,
-        "family": "IPv4",
-        "floating": false,
-        "gateway": "10.199.12.1",
-        "network": "10.199.12.0/24"
-      }
-    ],
-    "mac": "de:ad:be:ef:9f:ff",
-    "network_id": "03318153-4e70-4ba5-8e74-69538582188d",
-    "type": "utility"
-  },
-  {
-    "index": 3,
-    "ip_addresses": [
-      {
-        "address": "2a04:3540:1000:811:9809:21ff:fe8b:5962",
-        "dhcp": true,
-        "dns": ["2a04:3540:53::1", "2a04:3544:53::1"],
-        "family": "IPv6",
-        "floating": false,
-        "gateway": "2a04:3540:1000:811::1",
-        "network": "2a04:3540:1000:811::/64"
-      }
-    ],
-    "mac": "9a:09:21:8b:59:62",
-    "network_id": "03000000-0000-4000-8002-000000000000",
-    "type": "public"
-  }
-],
-"dns": ["94.237.127.9", "94.237.40.9"]
-  },
-  "storage": {
-"disks": [
-  {
-    "id": "0187b8c5-7220-4c90-9026-047dff8be0b3",
-    "serial": "0187b8c572204c909026",
-    "size": 25,
-    "type": "disk",
-    "tier": "maxiops"
-  }
-]
-  },
-  "tags": ["dev", "metadata"],
-  "user_data": "apt-get update && apt-get -y upgrade",
-  "vendor_data": ""
-}"#;
+const METADATA_SERVICE_RESPONSE_JSON: &str = r#"
+    {
+        "cloud_name": "upcloud",
+        "instance_id": "00bf9504-a4cb-4839-88ff-124a2c95e169",
+        "hostname": "metadata.example.com",
+        "platform": "servers",
+        "subplatform": "metadata (http://169.254.169.254)",
+        "public_keys": [
+            "ssh-rsa AAAAB3 user@example.com"
+        ],
+        "region": "de-fra1",
+        "network": {
+            "interfaces": [
+                {
+                    "index": 1,
+                    "ip_addresses": [
+                        {
+                            "address": "94.237.90.209",
+                            "dhcp": true,
+                            "dns": [
+                                "94.237.127.9",
+                                "94.237.40.9"
+                            ],
+                            "family": "IPv4",
+                            "floating": false,
+                            "gateway": "94.237.90.1",
+                            "network": "94.237.90.0/24"
+                        }
+                    ],
+                    "mac": "de:ad:be:ef:3f:c5",
+                    "network_id": "03030473-8e9d-4f4f-bcfe-b2c300391a07",
+                    "type": "public"
+                },
+                {
+                    "index": 2,
+                    "ip_addresses": [
+                        {
+                            "address": "10.199.12.11",
+                            "dhcp": true,
+                            "dns": null,
+                            "family": "IPv4",
+                            "floating": false,
+                            "gateway": "10.199.12.1",
+                            "network": "10.199.12.0/24"
+                        }
+                    ],
+                    "mac": "de:ad:be:ef:9f:ff",
+                    "network_id": "03318153-4e70-4ba5-8e74-69538582188d",
+                    "type": "utility"
+                },
+                {
+                    "index": 3,
+                    "ip_addresses": [
+                        {
+                            "address": "2a04:3540:1000:811:9809:21ff:fe8b:5962",
+                            "dhcp": true,
+                            "dns": [
+                                "2a04:3540:53::1",
+                                "2a04:3544:53::1"
+                            ],
+                            "family": "IPv6",
+                            "floating": false,
+                            "gateway": "2a04:3540:1000:811::1",
+                            "network": "2a04:3540:1000:811::/64"
+                        }
+                    ],
+                    "mac": "9a:09:21:8b:59:62",
+                    "network_id": "03000000-0000-4000-8002-000000000000",
+                    "type": "public"
+                }
+            ],
+            "dns": [
+                "94.237.127.9",
+                "94.237.40.9"
+            ]
+        },
+        "storage": {
+            "disks": [
+                {
+                    "id": "0187b8c5-7220-4c90-9026-047dff8be0b3",
+                    "serial": "0187b8c572204c909026",
+                    "size": 25,
+                    "type": "disk",
+                    "tier": "maxiops"
+                }
+            ]
+        },
+        "tags": [
+            "dev",
+            "metadata"
+        ],
+        "user_data": "apt-get update && apt-get -y upgrade",
+        "vendor_data": ""
+    }
+"#;
 
 /// Metadata service JSON response (curl http://169.254.169.254/metadata/v1.json).
 #[test]
@@ -2184,18 +2479,24 @@ fn list_params_full_combination() {
 // Uses realistic zone IDs and GPU model names from the UpCloud API docs
 // (server details show devices with model "NVIDIA L40S").
 
-const DEVICE_AVAILABILITY_JSON: &str = r#"{
-  "fi-hel1": {
-    "gpu_plans": {
-      "NVIDIA L40S": { "amount": 8 }
+const DEVICE_AVAILABILITY_JSON: &str = r#"
+    {
+        "fi-hel1": {
+            "gpu_plans": {
+                "NVIDIA L40S": {
+                    "amount": 8
+                }
+            }
+        },
+        "de-fra1": {
+            "gpu_plans": {
+                "NVIDIA L40S": {
+                    "amount": 4
+                }
+            }
+        }
     }
-  },
-  "de-fra1": {
-    "gpu_plans": {
-      "NVIDIA L40S": { "amount": 4 }
-    }
-  }
-}"#;
+"#;
 
 #[test]
 fn deserialize_device_availability() {

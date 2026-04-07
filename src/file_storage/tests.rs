@@ -1,101 +1,137 @@
 use super::*;
 
-const FS_LIST_JSON: &str = r#"[
-  {
-"configured_status": "started",
-"created_at": "2025-08-01T10:40:04.140473Z",
-"encrypted": false,
-"labels": [
-  {"key": "environment", "value": "production"}
-],
-"name": "test2",
-"networks": [
-  {
-    "family": "IPv4",
-    "ip_address": "10.10.10.50",
-    "name": "net",
-    "uuid": "0391f203-6eef-4a69-bfcc-fffffbdfdc32"
-  }
-],
-"operational_state": "running",
-"shares": [
-  {
-    "acl": [
-      {"name": "read", "permission": "ro", "target": "*"}
-    ],
-    "name": "data",
-    "path": "/data"
-  },
-  {
-    "acl": [
-      {"name": "write", "permission": "rw", "target": "10.10.10.0/24"}
-    ],
-    "name": "proj",
-    "path": "/project/data"
-  }
-],
-"size_gib": 250,
-"updated_at": "2025-08-03T19:23:52.350216Z",
-"uuid": "17871d62-6964-4336-b68d-4a85a8ee10fe",
-"zone": "fi-hel2"
-  }
-]"#;
+const FS_LIST_JSON: &str = r#"
+    [
+        {
+            "configured_status": "started",
+            "created_at": "2025-08-01T10:40:04.140473Z",
+            "encrypted": false,
+            "labels": [
+                {
+                    "key": "environment",
+                    "value": "production"
+                }
+            ],
+            "name": "test2",
+            "networks": [
+                {
+                    "family": "IPv4",
+                    "ip_address": "10.10.10.50",
+                    "name": "net",
+                    "uuid": "0391f203-6eef-4a69-bfcc-fffffbdfdc32"
+                }
+            ],
+            "operational_state": "running",
+            "shares": [
+                {
+                    "acl": [
+                        {
+                            "name": "read",
+                            "permission": "ro",
+                            "target": "*"
+                        }
+                    ],
+                    "name": "data",
+                    "path": "/data"
+                },
+                {
+                    "acl": [
+                        {
+                            "name": "write",
+                            "permission": "rw",
+                            "target": "10.10.10.0/24"
+                        }
+                    ],
+                    "name": "proj",
+                    "path": "/project/data"
+                }
+            ],
+            "size_gib": 250,
+            "updated_at": "2025-08-03T19:23:52.350216Z",
+            "uuid": "17871d62-6964-4336-b68d-4a85a8ee10fe",
+            "zone": "fi-hel2"
+        }
+    ]
+"#;
 
-const FS_DETAIL_JSON: &str = r#"{
-  "configured_status": "started",
-  "created_at": "2025-08-01T10:40:04.140473Z",
-  "encrypted": false,
-  "labels": [
-{"key": "environment", "value": "production"}
-  ],
-  "name": "test2",
-  "networks": [
-{
-  "family": "IPv4",
-  "ip_address": "10.10.10.50",
-  "name": "net",
-  "uuid": "0391f203-6eef-4a69-bfcc-fffffbdfdc32"
-}
-  ],
-  "operational_state": "running",
-  "shares": [
-{
-  "acl": [{"name": "read", "permission": "ro", "target": "*"}],
-  "name": "data",
-  "path": "/data"
-}
-  ],
-  "size_gib": 250,
-  "updated_at": "2025-08-03T19:23:52.350216Z",
-  "uuid": "17871d62-6964-4336-b68d-4a85a8ee10fe",
-  "zone": "fi-hel2"
-}"#;
+const FS_DETAIL_JSON: &str = r#"
+    {
+        "configured_status": "started",
+        "created_at": "2025-08-01T10:40:04.140473Z",
+        "encrypted": false,
+        "labels": [
+            {
+                "key": "environment",
+                "value": "production"
+            }
+        ],
+        "name": "test2",
+        "networks": [
+            {
+                "family": "IPv4",
+                "ip_address": "10.10.10.50",
+                "name": "net",
+                "uuid": "0391f203-6eef-4a69-bfcc-fffffbdfdc32"
+            }
+        ],
+        "operational_state": "running",
+        "shares": [
+            {
+                "acl": [
+                    {
+                        "name": "read",
+                        "permission": "ro",
+                        "target": "*"
+                    }
+                ],
+                "name": "data",
+                "path": "/data"
+            }
+        ],
+        "size_gib": 250,
+        "updated_at": "2025-08-03T19:23:52.350216Z",
+        "uuid": "17871d62-6964-4336-b68d-4a85a8ee10fe",
+        "zone": "fi-hel2"
+    }
+"#;
 
-const FS_NETWORK_LIST_JSON: &str = r#"[
-  {
-"family": "IPv4",
-"ip_address": "192.168.147.250",
-"name": "test-name",
-"uuid": "03720d07-80a9-41ac-90b0-68a932109339"
-  }
-]"#;
+const FS_NETWORK_LIST_JSON: &str = r#"
+    [
+        {
+            "family": "IPv4",
+            "ip_address": "192.168.147.250",
+            "name": "test-name",
+            "uuid": "03720d07-80a9-41ac-90b0-68a932109339"
+        }
+    ]
+"#;
 
-const FS_SHARE_LIST_JSON: &str = r#"[
-  {
-"acl": [
-  {"name": "write-all", "permission": "rw", "target": "*"}
-],
-"name": "share1",
-"path": "/share-1"
-  },
-  {
-"acl": [
-  {"name": "read-only-all", "permission": "ro", "target": "*"}
-],
-"name": "share2",
-"path": "/share-1/share-2"
-  }
-]"#;
+const FS_SHARE_LIST_JSON: &str = r#"
+    [
+        {
+            "acl": [
+                {
+                    "name": "write-all",
+                    "permission": "rw",
+                    "target": "*"
+                }
+            ],
+            "name": "share1",
+            "path": "/share-1"
+        },
+        {
+            "acl": [
+                {
+                    "name": "read-only-all",
+                    "permission": "ro",
+                    "target": "*"
+                }
+            ],
+            "name": "share2",
+            "path": "/share-1/share-2"
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_file_storage_list() {
@@ -236,272 +272,306 @@ fn deserialize_file_storage_share_list() {
 
 // ─── JSON constants from official docs (page 25) ─────────────────────────
 
-const CREATE_FS_REQUEST_JSON: &str = r#"{
-  "name": "test-name",
-  "zone": "fi-hel2",
-  "configured_status": "started",
-  "size_gib": 250,
-  "encrypted": false,
-  "networks": [
-{
-  "uuid": "03720d07-80a9-41ac-90b0-68a932109339",
-  "name": "net",
-  "family": "IPv4",
-  "ip_address": "192.168.147.120"
-}
-  ],
-  "shares": [
-{
-  "name": "data",
-  "path": "/data",
-  "acl": [
+const CREATE_FS_REQUEST_JSON: &str = r#"
     {
-      "name": "read",
-      "target": "*",
-      "permission": "ro"
+        "name": "test-name",
+        "zone": "fi-hel2",
+        "configured_status": "started",
+        "size_gib": 250,
+        "encrypted": false,
+        "networks": [
+            {
+                "uuid": "03720d07-80a9-41ac-90b0-68a932109339",
+                "name": "net",
+                "family": "IPv4",
+                "ip_address": "192.168.147.120"
+            }
+        ],
+        "shares": [
+            {
+                "name": "data",
+                "path": "/data",
+                "acl": [
+                    {
+                        "name": "read",
+                        "target": "*",
+                        "permission": "ro"
+                    }
+                ]
+            },
+            {
+                "name": "proj",
+                "path": "/project/data",
+                "acl": [
+                    {
+                        "name": "write",
+                        "target": "192.168.147.0/24",
+                        "permission": "rw"
+                    }
+                ]
+            }
+        ],
+        "labels": [
+            {
+                "key": "environment",
+                "value": "production"
+            }
+        ]
     }
-  ]
-},
-{
-  "name": "proj",
-  "path": "/project/data",
-  "acl": [
+"#;
+
+const REPLACE_FS_REQUEST_JSON: &str = r#"
     {
-      "name": "write",
-      "target": "192.168.147.0/24",
-      "permission": "rw"
+        "name": "test-name",
+        "configured_status": "started",
+        "size_gib": 250,
+        "networks": [
+            {
+                "uuid": "03720d07-80a9-41ac-90b0-68a932109339",
+                "name": "net",
+                "family": "IPv4",
+                "ip_address": "192.168.147.120"
+            }
+        ],
+        "labels": [
+            {
+                "key": "environment",
+                "value": "production"
+            }
+        ]
     }
-  ]
-}
-  ],
-  "labels": [
-{
-  "key": "environment",
-  "value": "production"
-}
-  ]
-}"#;
+"#;
 
-const REPLACE_FS_REQUEST_JSON: &str = r#"{
-  "name": "test-name",
-  "configured_status": "started",
-  "size_gib": 250,
-  "networks": [
-{
-  "uuid": "03720d07-80a9-41ac-90b0-68a932109339",
-  "name": "net",
-  "family": "IPv4",
-  "ip_address": "192.168.147.120"
-}
-  ],
-  "labels": [
-{
-  "key": "environment",
-  "value": "production"
-}
-  ]
-}"#;
+const MODIFY_FS_REQUEST_JSON: &str = r#"
+    {
+        "name": "test-name",
+        "configured_status": "started",
+        "size_gib": 250,
+        "networks": [
+            {
+                "uuid": "03720d07-80a9-41ac-90b0-68a932109339",
+                "name": "net",
+                "family": "IPv4",
+                "ip_address": "192.168.147.120"
+            }
+        ]
+    }
+"#;
 
-const MODIFY_FS_REQUEST_JSON: &str = r#"{
-  "name": "test-name",
-  "configured_status": "started",
-  "size_gib": 250,
-  "networks": [
-{
-  "uuid": "03720d07-80a9-41ac-90b0-68a932109339",
-  "name": "net",
-  "family": "IPv4",
-  "ip_address": "192.168.147.120"
-}
-  ]
-}"#;
+const NETWORK_INPUT_JSON: &str = r#"
+    {
+        "uuid": "03720d07-80a9-41ac-90b0-68a932109339",
+        "name": "test-name",
+        "family": "IPv4",
+        "ip_address": "10.20.30.40"
+    }
+"#;
 
-const NETWORK_INPUT_JSON: &str = r#"{
-  "uuid": "03720d07-80a9-41ac-90b0-68a932109339",
-  "name": "test-name",
-  "family": "IPv4",
-  "ip_address": "10.20.30.40"
-}"#;
+const NETWORK_DETAIL_SINGLE_JSON: &str = r#"
+    {
+        "family": "IPv4",
+        "ip_address": "192.168.147.250",
+        "name": "test-name",
+        "uuid": "03720d07-80a9-41ac-90b0-68a932109339"
+    }
+"#;
 
-const NETWORK_DETAIL_SINGLE_JSON: &str = r#"{
-  "family": "IPv4",
-  "ip_address": "192.168.147.250",
-  "name": "test-name",
-  "uuid": "03720d07-80a9-41ac-90b0-68a932109339"
-}"#;
-
-const SHARE_ACL_NESTED_JSON: &str = r#"[
-{
-    "acl": [
+const SHARE_ACL_NESTED_JSON: &str = r#"
+    [
         {
-            "name": "write-all",
-            "permission": "rw",
-            "target": "*"
-        }
-    ],
-    "name": "share1",
-    "path": "/share-1"
-},
-{
-    "acl": [
+            "acl": [
+                {
+                    "name": "write-all",
+                    "permission": "rw",
+                    "target": "*"
+                }
+            ],
+            "name": "share1",
+            "path": "/share-1"
+        },
         {
-            "name": "read-only-all",
-            "permission": "ro",
-            "target": "*"
+            "acl": [
+                {
+                    "name": "read-only-all",
+                    "permission": "ro",
+                    "target": "*"
+                }
+            ],
+            "name": "share2",
+            "path": "/share-1/share-2"
         }
-    ],
-    "name": "share2",
-    "path": "/share-1/share-2"
-}
-]"#;
+    ]
+"#;
 
-const SHARE_ACL_HOST_JSON: &str = r#"[
-{
-    "acl": [
+const SHARE_ACL_HOST_JSON: &str = r#"
+    [
         {
-            "name": "acl1",
-            "permission": "rw",
-            "target": "192.168.147.2"
-        }
-    ],
-    "name": "share1",
-    "path": "/share-1"
-},
-{
-    "acl": [
+            "acl": [
+                {
+                    "name": "acl1",
+                    "permission": "rw",
+                    "target": "192.168.147.2"
+                }
+            ],
+            "name": "share1",
+            "path": "/share-1"
+        },
         {
-            "name": "acl1",
-            "permission": "ro",
-            "target": "*"
+            "acl": [
+                {
+                    "name": "acl1",
+                    "permission": "ro",
+                    "target": "*"
+                }
+            ],
+            "name": "share2",
+            "path": "/share-1/share-2"
         }
-    ],
-    "name": "share2",
-    "path": "/share-1/share-2"
-}
-]"#;
+    ]
+"#;
 
-const SHARE_ACL_EMPTY_JSON: &str = r#"[
-{
-    "acl": [],
-    "name": "no-access",
-    "path": "/share-1"
-},
-{
-    "acl": [
+const SHARE_ACL_EMPTY_JSON: &str = r#"
+    [
         {
-            "name": "acl1",
-            "permission": "rw",
-            "target": "*"
+            "acl": [],
+            "name": "no-access",
+            "path": "/share-1"
+        },
+        {
+            "acl": [
+                {
+                    "name": "acl1",
+                    "permission": "rw",
+                    "target": "*"
+                }
+            ],
+            "name": "write",
+            "path": "/share-2"
         }
-    ],
-    "name": "write",
-    "path": "/share-2"
-}
-]"#;
+    ]
+"#;
 
-const CREATE_SHARE_REQUEST_JSON: &str = r#"{
-  "name": "data",
-  "path": "/data",
-  "acl": [
-{
-  "name": "read",
-  "target": "192.168.147.0/24",
-  "permission": "ro"
-}
-  ]
-}"#;
+const CREATE_SHARE_REQUEST_JSON: &str = r#"
+    {
+        "name": "data",
+        "path": "/data",
+        "acl": [
+            {
+                "name": "read",
+                "target": "192.168.147.0/24",
+                "permission": "ro"
+            }
+        ]
+    }
+"#;
 
-const SHARE_LIST_DELETING_JSON: &str = r#"[
-  {
-"name": "proj",
-"path": "/project/data",
-"acl": [
-  {
-    "name": "write",
-    "target": "*",
-    "permission": "rw"
-  }
-]
-  },
-  {
-"name": "logs",
-"path": "/project/logs",
-"deleting": true,
-"acl": [
-  {
-    "name": "read",
-    "target": "192.168.147.0/24",
-    "permission": "ro"
-  }
-]
-  }
-]"#;
+const SHARE_LIST_DELETING_JSON: &str = r#"
+    [
+        {
+            "name": "proj",
+            "path": "/project/data",
+            "acl": [
+                {
+                    "name": "write",
+                    "target": "*",
+                    "permission": "rw"
+                }
+            ]
+        },
+        {
+            "name": "logs",
+            "path": "/project/logs",
+            "deleting": true,
+            "acl": [
+                {
+                    "name": "read",
+                    "target": "192.168.147.0/24",
+                    "permission": "ro"
+                }
+            ]
+        }
+    ]
+"#;
 
-const SHARE_DETAIL_JSON: &str = r#"{
-  "acl": [
-{
-  "name": "write",
-  "permission": "rw",
-  "target": "*"
-}
-  ],
-  "name": "proj",
-  "path": "/project/data"
-}"#;
+const SHARE_DETAIL_JSON: &str = r#"
+    {
+        "acl": [
+            {
+                "name": "write",
+                "permission": "rw",
+                "target": "*"
+            }
+        ],
+        "name": "proj",
+        "path": "/project/data"
+    }
+"#;
 
-const MODIFY_SHARE_REQUEST_JSON: &str = r#"{
-  "name": "test-name",
-  "acl": [
-{
-  "name": "read-only",
-  "target": "192.168.25.0/24",
-  "permission": "ro"
-}
-  ]
-}"#;
+const MODIFY_SHARE_REQUEST_JSON: &str = r#"
+    {
+        "name": "test-name",
+        "acl": [
+            {
+                "name": "read-only",
+                "target": "192.168.25.0/24",
+                "permission": "ro"
+            }
+        ]
+    }
+"#;
 
-const ACL_LIST_JSON: &str = r#"[
-   {
- "name": "read-only",
- "target": "192.168.147.0/24",
- "permission": "rw"
-   },
-   {
- "name": "guest",
- "target": "192.168.150.0/24",
- "permission": "ro"
-   }
-]"#;
+const ACL_LIST_JSON: &str = r#"
+    [
+        {
+            "name": "read-only",
+            "target": "192.168.147.0/24",
+            "permission": "rw"
+        },
+        {
+            "name": "guest",
+            "target": "192.168.150.0/24",
+            "permission": "ro"
+        }
+    ]
+"#;
 
-const ACL_DETAIL_JSON: &str = r#"{
-  "name": "read-only",
-  "permission": "rw",
-  "target": "*"
-}"#;
+const ACL_DETAIL_JSON: &str = r#"
+    {
+        "name": "read-only",
+        "permission": "rw",
+        "target": "*"
+    }
+"#;
 
-const CREATE_ACL_JSON: &str = r#"{
-  "name": "read-only",
-  "target": "192.168.25.0/24",
-  "permission": "ro"
-}"#;
+const CREATE_ACL_JSON: &str = r#"
+    {
+        "name": "read-only",
+        "target": "192.168.25.0/24",
+        "permission": "ro"
+    }
+"#;
 
-const LABEL_LIST_JSON: &str = r#"[
-{
-    "key": "env",
-    "value": "staging"
-},
-{
-    "key": "foo",
-    "value": "bar"
-}
-]"#;
+const LABEL_LIST_JSON: &str = r#"
+    [
+        {
+            "key": "env",
+            "value": "staging"
+        },
+        {
+            "key": "foo",
+            "value": "bar"
+        }
+    ]
+"#;
 
 // ─── Test: Create FS service request (#1) ────────────────────────────────
 
-const LABEL_DETAIL_JSON: &str = r#"{
-"key": "env",
-"value": "staging"
-}"#;
+const LABEL_DETAIL_JSON: &str = r#"
+    {
+        "key": "env",
+        "value": "staging"
+    }
+"#;
 
 #[test]
 fn deserialize_create_file_storage_request() {

@@ -1,46 +1,50 @@
 use super::*;
 
-const LIST_TAGS_JSON: &str = r#"{
-  "tags": {
-"tag": [
-  {
-    "description": "Development servers",
-    "name": "DEV",
-    "servers": {
-      "server": [
-        "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
-      ]
+const LIST_TAGS_JSON: &str = r#"
+    {
+        "tags": {
+            "tag": [
+                {
+                    "description": "Development servers",
+                    "name": "DEV",
+                    "servers": {
+                        "server": [
+                            "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
+                        ]
+                    }
+                },
+                {
+                    "description": "My own servers",
+                    "name": "private",
+                    "servers": {
+                        "server": []
+                    }
+                },
+                {
+                    "description": "Production servers",
+                    "name": "PROD",
+                    "servers": {
+                        "server": []
+                    }
+                }
+            ]
+        }
     }
-  },
-  {
-    "description": "My own servers",
-    "name": "private",
-    "servers": {
-      "server": []
-    }
-  },
-  {
-    "description": "Production servers",
-    "name": "PROD",
-    "servers": {
-      "server": []
-    }
-  }
-]
-  }
-}"#;
+"#;
 
-const CREATE_TAG_RESPONSE_JSON: &str = r#"{
-  "tag": {
-"name": "DEV",
-"description": "Development servers",
-"servers": {
-  "server": [
-    "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
-  ]
-}
-  }
-}"#;
+const CREATE_TAG_RESPONSE_JSON: &str = r#"
+    {
+        "tag": {
+            "name": "DEV",
+            "description": "Development servers",
+            "servers": {
+                "server": [
+                    "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
+                ]
+            }
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_tag_list() {
@@ -80,17 +84,19 @@ fn deserialize_tag_detail() {
 
 // ─── Create tag request ─────────────────────────────────────────────────
 
-const CREATE_TAG_REQUEST_JSON: &str = r#"{
-  "tag": {
-"name": "DEV",
-"description": "Development servers",
-"servers": {
-  "server": [
-    "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
-  ]
-}
-  }
-}"#;
+const CREATE_TAG_REQUEST_JSON: &str = r#"
+    {
+        "tag": {
+            "name": "DEV",
+            "description": "Development servers",
+            "servers": {
+                "server": [
+                    "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
+                ]
+            }
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_create_tag_request() {
@@ -107,17 +113,19 @@ fn deserialize_create_tag_request() {
 
 // ─── Create tag response ────────────────────────────────────────────────
 
-const CREATE_TAG_RESP_JSON: &str = r#"{
-  "tag": {
-"name": "DEV",
-"description": "Development servers",
-"servers": {
-  "server": [
-    "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
-  ]
-}
-  }
-}"#;
+const CREATE_TAG_RESP_JSON: &str = r#"
+    {
+        "tag": {
+            "name": "DEV",
+            "description": "Development servers",
+            "servers": {
+                "server": [
+                    "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
+                ]
+            }
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_create_tag_response() {
@@ -133,17 +141,19 @@ fn deserialize_create_tag_response() {
 
 // ─── Modify tag request ─────────────────────────────────────────────────
 
-const MODIFY_TAG_REQUEST_JSON: &str = r#"{
-  "tag": {
-"name": "PROD",
-"description": "Production servers",
-"servers": {
-  "server": [
-    "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
-  ]
-}
-  }
-}"#;
+const MODIFY_TAG_REQUEST_JSON: &str = r#"
+    {
+        "tag": {
+            "name": "PROD",
+            "description": "Production servers",
+            "servers": {
+                "server": [
+                    "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
+                ]
+            }
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_modify_tag_request() {
@@ -159,17 +169,19 @@ fn deserialize_modify_tag_request() {
 
 // ─── Modify tag response ────────────────────────────────────────────────
 
-const MODIFY_TAG_RESP_JSON: &str = r#"{
-  "tag": {
-"name": "PROD",
-"description": "Production servers",
-"servers": {
-  "server": [
-    "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
-  ]
-}
-  }
-}"#;
+const MODIFY_TAG_RESP_JSON: &str = r#"
+    {
+        "tag": {
+            "name": "PROD",
+            "description": "Production servers",
+            "servers": {
+                "server": [
+                    "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
+                ]
+            }
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_modify_tag_response() {
@@ -185,66 +197,68 @@ fn deserialize_modify_tag_response() {
 
 // ─── Assign tag to server response ──────────────────────────────────────
 
-const ASSIGN_TAG_SERVER_JSON: &str = r#"{
-  "server": {
-"boot_order": "disk",
-"core_number": "2",
-"firewall": "on",
-"hostname": "debian.example.com",
-"ip_addresses": {
-  "ip_address": [
+const ASSIGN_TAG_SERVER_JSON: &str = r#"
     {
-      "access": "utility",
-      "address": "10.0.0.0",
-      "family": "IPv4"
-    },
-    {
-      "access": "public",
-      "address": "x.x.x.x",
-      "family": "IPv4"
-    },
-    {
-      "access": "public",
-      "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx",
-      "family": "IPv6"
+        "server": {
+            "boot_order": "disk",
+            "core_number": "2",
+            "firewall": "on",
+            "hostname": "debian.example.com",
+            "ip_addresses": {
+                "ip_address": [
+                    {
+                        "access": "utility",
+                        "address": "10.0.0.0",
+                        "family": "IPv4"
+                    },
+                    {
+                        "access": "public",
+                        "address": "x.x.x.x",
+                        "family": "IPv4"
+                    },
+                    {
+                        "access": "public",
+                        "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx",
+                        "family": "IPv6"
+                    }
+                ]
+            },
+            "license": 0,
+            "memory_amount": "4096",
+            "nic_model": "virtio",
+            "plan": "2xCPU-4GB",
+            "plan_ipv4_bytes": "345346754423",
+            "plan_ipv6_bytes": "676300234",
+            "state": "started",
+            "storage_devices": {
+                "storage_device": [
+                    {
+                        "address": "virtio:0",
+                        "part_of_plan": "yes",
+                        "storage": "0169b4f8-051c-4a86-9484-f5b798249949",
+                        "storage_size": 50,
+                        "storage_title": "Debian from a template",
+                        "type": "disk"
+                    }
+                ]
+            },
+            "tags": {
+                "tag": [
+                    "DEV",
+                    "private",
+                    "RHEL"
+                ]
+            },
+            "timezone": "UTC",
+            "title": "My Debian server",
+            "uuid": "00c78863-db86-44ea-af70-d6edc4d162bf",
+            "video_model": "cirrus",
+            "vnc": "off",
+            "vnc_password": "aabbccdd",
+            "zone": "fi-hel1"
+        }
     }
-  ]
-},
-"license": 0,
-"memory_amount": "4096",
-"nic_model": "virtio",
-"plan": "2xCPU-4GB",
-"plan_ipv4_bytes": "345346754423",
-"plan_ipv6_bytes": "676300234",
-"state": "started",
-"storage_devices": {
-  "storage_device": [
-    {
-      "address": "virtio:0",
-      "part_of_plan": "yes",
-      "storage": "0169b4f8-051c-4a86-9484-f5b798249949",
-      "storage_size": 50,
-      "storage_title": "Debian from a template",
-      "type": "disk"
-    }
-  ]
-},
-"tags": {
-   "tag": [
-      "DEV",
-      "private",
-      "RHEL"
-   ]
-},
-"timezone": "UTC",
-"title": "My Debian server",
-"uuid": "00c78863-db86-44ea-af70-d6edc4d162bf",
-"video_model": "cirrus",
-"vnc": "off",
-"vnc_password": "aabbccdd",
-"zone": "fi-hel1"
-  }
-}"#;
+"#;
 
 #[test]
 fn deserialize_assign_tag_server_response() {
@@ -304,65 +318,67 @@ fn deserialize_assign_tag_server_response() {
 
 // ─── Remove tag from server response ────────────────────────────────────
 
-const REMOVE_TAG_SERVER_JSON: &str = r#"{
-  "server": {
-"boot_order": "disk",
-"core_number": "2",
-"firewall": "on",
-"hostname": "debian.example.com",
-"ip_addresses": {
-  "ip_address": [
+const REMOVE_TAG_SERVER_JSON: &str = r#"
     {
-      "access": "utility",
-      "address": "10.0.0.0",
-      "family": "IPv4"
-    },
-    {
-      "access": "public",
-      "address": "x.x.x.x",
-      "family": "IPv4"
-    },
-    {
-      "access": "public",
-      "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx",
-      "family": "IPv6"
+        "server": {
+            "boot_order": "disk",
+            "core_number": "2",
+            "firewall": "on",
+            "hostname": "debian.example.com",
+            "ip_addresses": {
+                "ip_address": [
+                    {
+                        "access": "utility",
+                        "address": "10.0.0.0",
+                        "family": "IPv4"
+                    },
+                    {
+                        "access": "public",
+                        "address": "x.x.x.x",
+                        "family": "IPv4"
+                    },
+                    {
+                        "access": "public",
+                        "address": "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx",
+                        "family": "IPv6"
+                    }
+                ]
+            },
+            "license": 0,
+            "memory_amount": "4096",
+            "nic_model": "virtio",
+            "plan": "2xCPU-4GB",
+            "plan_ipv4_bytes": "345346754423",
+            "plan_ipv6_bytes": "676300234",
+            "state": "started",
+            "storage_devices": {
+                "storage_device": [
+                    {
+                        "address": "virtio:0",
+                        "part_of_plan": "yes",
+                        "storage": "0169b4f8-051c-4a86-9484-f5b798249949",
+                        "storage_size": 50,
+                        "storage_title": "Debian from a template",
+                        "type": "disk"
+                    }
+                ]
+            },
+            "tags": {
+                "tag": [
+                    "DEV",
+                    "RHEL"
+                ]
+            },
+            "timezone": "UTC",
+            "title": "My Debian server",
+            "uuid": "00c78863-db86-44ea-af70-d6edc4d162bf",
+            "video_model": "cirrus",
+            "vnc": "off",
+            "vnc_password": "aabbccdd",
+            "zone": "fi-hel1"
+        }
     }
-  ]
-},
-"license": 0,
-"memory_amount": "4096",
-"nic_model": "virtio",
-"plan": "2xCPU-4GB",
-"plan_ipv4_bytes": "345346754423",
-"plan_ipv6_bytes": "676300234",
-"state": "started",
-"storage_devices": {
-  "storage_device": [
-    {
-      "address": "virtio:0",
-      "part_of_plan": "yes",
-      "storage": "0169b4f8-051c-4a86-9484-f5b798249949",
-      "storage_size": 50,
-      "storage_title": "Debian from a template",
-      "type": "disk"
-    }
-  ]
-},
-"tags": {
-  "tag": [
-    "DEV",
-    "RHEL"
-  ]
-},
-"timezone": "UTC",
-"title": "My Debian server",
-"uuid": "00c78863-db86-44ea-af70-d6edc4d162bf",
-"video_model": "cirrus",
-"vnc": "off",
-"vnc_password": "aabbccdd",
-"zone": "fi-hel1"
-  }
-}"#;
+"#;
 
 #[test]
 fn deserialize_remove_tag_server_response() {

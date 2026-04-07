@@ -1,126 +1,185 @@
 use super::*;
 
-const K8S_PLAN_LIST_JSON: &str = r#"[
-  {
-"name": "dev-md",
-"max_nodes": 30,
-"deprecated": false
-  },
-  {
-"name": "prod-md",
-"max_nodes": 120,
-"deprecated": false
-  }
-]"#;
+const K8S_PLAN_LIST_JSON: &str = r#"
+    [
+        {
+            "name": "dev-md",
+            "max_nodes": 30,
+            "deprecated": false
+        },
+        {
+            "name": "prod-md",
+            "max_nodes": 120,
+            "deprecated": false
+        }
+    ]
+"#;
 
-const K8S_CLUSTER_LIST_JSON: &str = r#"[
-  {
-"control_plane_ip_filter": [],
-"labels": [
-  {"key": "env", "value": "staging"},
-  {"key": "app", "value": "cats-dating-app"}
-],
-"name": "example-cluster-1",
-"network": "03a85f64-5717-4562-b3fc-2c963f66afa6",
-"network_cidr": "172.16.0.0/24",
-"node_groups": [
-  {
-    "count": 3,
-    "kubelet_args": [],
-    "labels": [
-      {"key": "team", "value": "development"}
-    ],
-    "name": "example-node-group-1",
-    "plan": "4xCPU-8GB",
-    "ssh_keys": [
-      "ssh-rsa AAAAB3NzaC1yc2EAA"
-    ],
-    "state": "running",
-    "storage": "01000000-0000-4000-8000-000160010100",
-    "taints": [],
-    "anti_affinity": false,
-    "utility_network_access": true
-  }
-],
-"state": "running",
-"plan": "dev-md",
-"private_node_groups": false,
-"uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-"zone": "fi-hel2"
-  },
-  {
-"control_plane_ip_filter": ["0.0.0.0/0"],
-"name": "example-cluster-2",
-"network": "03a85f64-5717-4562-b3fc-2c963f66afa6",
-"network_cidr": "172.17.0.0/24",
-"node_groups": [],
-"state": "pending",
-"plan": "prod-md",
-"private_node_groups": true,
-"uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-"zone": "de-fra1"
-  }
-]"#;
+const K8S_CLUSTER_LIST_JSON: &str = r#"
+    [
+        {
+            "control_plane_ip_filter": [],
+            "labels": [
+                {
+                    "key": "env",
+                    "value": "staging"
+                },
+                {
+                    "key": "app",
+                    "value": "cats-dating-app"
+                }
+            ],
+            "name": "example-cluster-1",
+            "network": "03a85f64-5717-4562-b3fc-2c963f66afa6",
+            "network_cidr": "172.16.0.0/24",
+            "node_groups": [
+                {
+                    "count": 3,
+                    "kubelet_args": [],
+                    "labels": [
+                        {
+                            "key": "team",
+                            "value": "development"
+                        }
+                    ],
+                    "name": "example-node-group-1",
+                    "plan": "4xCPU-8GB",
+                    "ssh_keys": [
+                        "ssh-rsa AAAAB3NzaC1yc2EAA"
+                    ],
+                    "state": "running",
+                    "storage": "01000000-0000-4000-8000-000160010100",
+                    "taints": [],
+                    "anti_affinity": false,
+                    "utility_network_access": true
+                }
+            ],
+            "state": "running",
+            "plan": "dev-md",
+            "private_node_groups": false,
+            "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "zone": "fi-hel2"
+        },
+        {
+            "control_plane_ip_filter": [
+                "0.0.0.0/0"
+            ],
+            "name": "example-cluster-2",
+            "network": "03a85f64-5717-4562-b3fc-2c963f66afa6",
+            "network_cidr": "172.17.0.0/24",
+            "node_groups": [],
+            "state": "pending",
+            "plan": "prod-md",
+            "private_node_groups": true,
+            "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "zone": "de-fra1"
+        }
+    ]
+"#;
 
-const K8S_CLUSTER_DETAIL_JSON: &str = r#"{
-  "control_plane_ip_filter": ["0.0.0.0/0"],
-  "labels": [
-{"key": "env", "value": "staging"},
-{"key": "app", "value": "cats-dating-app"}
-  ],
-  "name": "example-cluster-1",
-  "network": "03a85f64-5717-4562-b3fc-2c963f66afa6",
-  "network_cidr": "172.16.0.0/24",
-  "node_groups": [
-{
-  "count": 3,
-  "kubelet_args": [],
-  "labels": [{"key": "team", "value": "development"}],
-  "name": "example-node-group-1",
-  "plan": "4xCPU-8GB",
-  "ssh_keys": ["ssh-rsa AAAAB3NzaC1yc2EAA"],
-  "state": "running",
-  "storage": "01000000-0000-4000-8000-000160010100",
-  "taints": [],
-  "anti_affinity": false,
-  "utility_network_access": true
-}
-  ],
-  "state": "running",
-  "plan": "dev-md",
-  "private_node_groups": false,
-  "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "zone": "fi-hel2"
-}"#;
+const K8S_CLUSTER_DETAIL_JSON: &str = r#"
+    {
+        "control_plane_ip_filter": [
+            "0.0.0.0/0"
+        ],
+        "labels": [
+            {
+                "key": "env",
+                "value": "staging"
+            },
+            {
+                "key": "app",
+                "value": "cats-dating-app"
+            }
+        ],
+        "name": "example-cluster-1",
+        "network": "03a85f64-5717-4562-b3fc-2c963f66afa6",
+        "network_cidr": "172.16.0.0/24",
+        "node_groups": [
+            {
+                "count": 3,
+                "kubelet_args": [],
+                "labels": [
+                    {
+                        "key": "team",
+                        "value": "development"
+                    }
+                ],
+                "name": "example-node-group-1",
+                "plan": "4xCPU-8GB",
+                "ssh_keys": [
+                    "ssh-rsa AAAAB3NzaC1yc2EAA"
+                ],
+                "state": "running",
+                "storage": "01000000-0000-4000-8000-000160010100",
+                "taints": [],
+                "anti_affinity": false,
+                "utility_network_access": true
+            }
+        ],
+        "state": "running",
+        "plan": "dev-md",
+        "private_node_groups": false,
+        "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "zone": "fi-hel2"
+    }
+"#;
 
-const NODE_GROUP_LIST_JSON: &str = r#"[
-  {
-"anti_affinity": false,
-"count": 3,
-"kubelet_args": [],
-"labels": [{"key": "team", "value": "development"}],
-"name": "example-node-group-1",
-"plan": "4xCPU-8GB",
-"ssh_keys": ["ssh-rsa AAAAB3NzaC1yc2EAA"],
-"state": "running",
-"storage": "01000000-0000-4000-8000-000160010100",
-"taints": [],
-"utility_network_access": true
-  },
-  {
-"anti_affinity": true,
-"count": 9,
-"kubelet_args": [{"key": "log-flush-frequency", "value": "5s"}],
-"labels": [{"key": "team", "value": "qa"}],
-"name": "example-node-group-2",
-"plan": "4xCPU-8GB",
-"ssh_keys": ["ssh-rsa AAAAB3NzaC1yc2EAA"],
-"state": "running",
-"storage": "01000000-0000-4000-8000-000160010100",
-"taints": [{"effect": "NoSchedule", "key": "team", "value": "qa"}],
-"utility_network_access": false
-  }
-]"#;
+const NODE_GROUP_LIST_JSON: &str = r#"
+    [
+        {
+            "anti_affinity": false,
+            "count": 3,
+            "kubelet_args": [],
+            "labels": [
+                {
+                    "key": "team",
+                    "value": "development"
+                }
+            ],
+            "name": "example-node-group-1",
+            "plan": "4xCPU-8GB",
+            "ssh_keys": [
+                "ssh-rsa AAAAB3NzaC1yc2EAA"
+            ],
+            "state": "running",
+            "storage": "01000000-0000-4000-8000-000160010100",
+            "taints": [],
+            "utility_network_access": true
+        },
+        {
+            "anti_affinity": true,
+            "count": 9,
+            "kubelet_args": [
+                {
+                    "key": "log-flush-frequency",
+                    "value": "5s"
+                }
+            ],
+            "labels": [
+                {
+                    "key": "team",
+                    "value": "qa"
+                }
+            ],
+            "name": "example-node-group-2",
+            "plan": "4xCPU-8GB",
+            "ssh_keys": [
+                "ssh-rsa AAAAB3NzaC1yc2EAA"
+            ],
+            "state": "running",
+            "storage": "01000000-0000-4000-8000-000160010100",
+            "taints": [
+                {
+                    "effect": "NoSchedule",
+                    "key": "team",
+                    "value": "qa"
+                }
+            ],
+            "utility_network_access": false
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_k8s_plan_list() {
@@ -325,184 +384,335 @@ fn deserialize_node_group_list() {
 
 // ─── New test JSON payloads (official docs, page 20) ──────────────────────
 
-const CREATE_CLUSTER_REQUEST_JSON: &str = r#"{
-  "control_plane_ip_filter": [],
-  "name": "example-cluster-1",
-  "network": "03a85f64-5717-4562-b3fc-2c963f66afa6",
-  "network_cidr": "172.16.0.0/24",
-  "node_groups": [
-{
-  "count": 3,
-  "labels": [
-    {"key": "team", "value": "development"}
-  ],
-  "name": "example-node-group-1",
-  "plan": "4xCPU-8GB",
-  "ssh_keys": ["ssh-rsa AAAAB3NzaC1yc2EAA"]
-}
-  ],
-  "plan": "dev-md",
-  "private_node_groups": false,
-  "zone": "fi-hel2",
-  "labels": [
-{"key": "env", "value": "staging"},
-{"key": "app", "value": "cats-dating-app"}
-  ]
-}"#;
+const CREATE_CLUSTER_REQUEST_JSON: &str = r#"
+    {
+        "control_plane_ip_filter": [],
+        "name": "example-cluster-1",
+        "network": "03a85f64-5717-4562-b3fc-2c963f66afa6",
+        "network_cidr": "172.16.0.0/24",
+        "node_groups": [
+            {
+                "count": 3,
+                "labels": [
+                    {
+                        "key": "team",
+                        "value": "development"
+                    }
+                ],
+                "name": "example-node-group-1",
+                "plan": "4xCPU-8GB",
+                "ssh_keys": [
+                    "ssh-rsa AAAAB3NzaC1yc2EAA"
+                ]
+            }
+        ],
+        "plan": "dev-md",
+        "private_node_groups": false,
+        "zone": "fi-hel2",
+        "labels": [
+            {
+                "key": "env",
+                "value": "staging"
+            },
+            {
+                "key": "app",
+                "value": "cats-dating-app"
+            }
+        ]
+    }
+"#;
 
-const CREATE_CLUSTER_RESPONSE_JSON: &str = r#"{
-  "control_plane_ip_filter": [],
-  "labels": [
-{"key": "env", "value": "staging"},
-{"key": "app", "value": "cats-dating-app"}
-  ],
-  "name": "example-cluster-1",
-  "network": "03a85f64-5717-4562-b3fc-2c963f66afa6",
-  "network_cidr": "172.16.0.0/24",
-  "node_groups": [
-{
-  "count": 3,
-  "kubelet_args": [],
-  "labels": [{"key": "team", "value": "development"}],
-  "name": "example-node-group-1",
-  "plan": "4xCPU-8GB",
-  "ssh_keys": ["ssh-rsa AAAAB3NzaC1yc2EAA"],
-  "state": "pending",
-  "storage": "01000000-0000-4000-8000-000160010100",
-  "taints": [],
-  "anti_affinity": false,
-  "utility_network_access": true
-}
-  ],
-  "state": "pending",
-  "plan": "dev-md",
-  "private_node_groups": false,
-  "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "zone": "fi-hel2"
-}"#;
+const CREATE_CLUSTER_RESPONSE_JSON: &str = r#"
+    {
+        "control_plane_ip_filter": [],
+        "labels": [
+            {
+                "key": "env",
+                "value": "staging"
+            },
+            {
+                "key": "app",
+                "value": "cats-dating-app"
+            }
+        ],
+        "name": "example-cluster-1",
+        "network": "03a85f64-5717-4562-b3fc-2c963f66afa6",
+        "network_cidr": "172.16.0.0/24",
+        "node_groups": [
+            {
+                "count": 3,
+                "kubelet_args": [],
+                "labels": [
+                    {
+                        "key": "team",
+                        "value": "development"
+                    }
+                ],
+                "name": "example-node-group-1",
+                "plan": "4xCPU-8GB",
+                "ssh_keys": [
+                    "ssh-rsa AAAAB3NzaC1yc2EAA"
+                ],
+                "state": "pending",
+                "storage": "01000000-0000-4000-8000-000160010100",
+                "taints": [],
+                "anti_affinity": false,
+                "utility_network_access": true
+            }
+        ],
+        "state": "pending",
+        "plan": "dev-md",
+        "private_node_groups": false,
+        "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "zone": "fi-hel2"
+    }
+"#;
 
-const MODIFY_CLUSTER_REQUEST_JSON: &str = r#"{
-  "control_plane_ip_filter": ["0.0.0.0/0"],
-  "labels": [
-{"key": "env", "value": "production"},
-{"key": "app", "value": "dogs-dating-app"}
-  ]
-}"#;
+const MODIFY_CLUSTER_REQUEST_JSON: &str = r#"
+    {
+        "control_plane_ip_filter": [
+            "0.0.0.0/0"
+        ],
+        "labels": [
+            {
+                "key": "env",
+                "value": "production"
+            },
+            {
+                "key": "app",
+                "value": "dogs-dating-app"
+            }
+        ]
+    }
+"#;
 
-const MODIFY_CLUSTER_RESPONSE_JSON: &str = r#"{
-  "control_plane_ip_filter": ["0.0.0.0/0"],
-  "labels": [
-{"key": "env", "value": "production"},
-{"key": "app", "value": "dogs-dating-app"}
-  ],
-  "name": "example-cluster-1",
-  "network": "03a85f64-5717-4562-b3fc-2c963f66afa6",
-  "network_cidr": "172.16.0.0/24",
-  "node_groups": [
-{
-  "count": 3,
-  "kubelet_args": [],
-  "labels": [{"key": "team", "value": "development"}],
-  "name": "example-node-group-1",
-  "plan": "4xCPU-8GB",
-  "ssh_keys": ["ssh-rsa AAAAB3NzaC1yc2EAA"],
-  "state": "running",
-  "storage": "01000000-0000-4000-8000-000160010100",
-  "taints": [],
-  "anti_affinity": false,
-  "utility_network_access": true
-}
-  ],
-  "state": "running",
-  "plan": "dev-md",
-  "private_node_groups": false,
-  "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "zone": "fi-hel2"
-}"#;
+const MODIFY_CLUSTER_RESPONSE_JSON: &str = r#"
+    {
+        "control_plane_ip_filter": [
+            "0.0.0.0/0"
+        ],
+        "labels": [
+            {
+                "key": "env",
+                "value": "production"
+            },
+            {
+                "key": "app",
+                "value": "dogs-dating-app"
+            }
+        ],
+        "name": "example-cluster-1",
+        "network": "03a85f64-5717-4562-b3fc-2c963f66afa6",
+        "network_cidr": "172.16.0.0/24",
+        "node_groups": [
+            {
+                "count": 3,
+                "kubelet_args": [],
+                "labels": [
+                    {
+                        "key": "team",
+                        "value": "development"
+                    }
+                ],
+                "name": "example-node-group-1",
+                "plan": "4xCPU-8GB",
+                "ssh_keys": [
+                    "ssh-rsa AAAAB3NzaC1yc2EAA"
+                ],
+                "state": "running",
+                "storage": "01000000-0000-4000-8000-000160010100",
+                "taints": [],
+                "anti_affinity": false,
+                "utility_network_access": true
+            }
+        ],
+        "state": "running",
+        "plan": "dev-md",
+        "private_node_groups": false,
+        "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "zone": "fi-hel2"
+    }
+"#;
 
-const AVAILABLE_UPGRADES_JSON: &str = r#"{"versions": ["1.31"]}"#;
+const AVAILABLE_UPGRADES_JSON: &str = r#"
+    {
+        "versions": [
+            "1.31"
+        ]
+    }
+"#;
 
-const UPGRADE_CLUSTER_REQUEST_JSON: &str = r#"{
-  "version": "1.31",
-  "strategy": {"type": "manual"}
-}"#;
+const UPGRADE_CLUSTER_REQUEST_JSON: &str = r#"
+    {
+        "version": "1.31",
+        "strategy": {
+            "type": "manual"
+        }
+    }
+"#;
 
-const KUBECONFIG_RESPONSE_JSON: &str = r#"{
-  "kubeconfig": "apiVersion: v1\nclusters:\n  - cluster:\n      certificate-authority-data: BASE64\n      server: https://server:6443\n    name: example-cluster-1\ncontexts:\n  - context:\n      cluster: example-cluster-1\n      user: example-cluster-1-admin\n    name: example-cluster-1-admin@example-cluster-1\ncurrent-context: example-cluster-1-admin@example-cluster-1\nkind: Config\npreferences: {}\nusers:\n  - name: example-cluster-1-admin\n    user:\n      client-certificate-data: BASE64\n      client-key-data: BASE64\n"
-}"#;
+const KUBECONFIG_RESPONSE_JSON: &str = r#"
+    {
+        "kubeconfig": "apiVersion: v1\nclusters:\n  - cluster:\n      certificate-authority-data: BASE64\n      server: https://server:6443\n    name: example-cluster-1\ncontexts:\n  - context:\n      cluster: example-cluster-1\n      user: example-cluster-1-admin\n    name: example-cluster-1-admin@example-cluster-1\ncurrent-context: example-cluster-1-admin@example-cluster-1\nkind: Config\npreferences: {}\nusers:\n  - name: example-cluster-1-admin\n    user:\n      client-certificate-data: BASE64\n      client-key-data: BASE64\n"
+    }
+"#;
 
-const CREATE_NODE_GROUP_REQUEST_JSON: &str = r#"{
-  "anti_affinity": true,
-  "count": 9,
-  "kubelet_args": [{"key": "log-flush-frequency", "value": "5s"}],
-  "labels": [{"key": "team", "value": "qa"}],
-  "name": "example-node-group-2",
-  "plan": "4xCPU-8GB",
-  "ssh_keys": ["ssh-rsa AAAAB3NzaC1yc2EAA"],
-  "storage": "01000000-0000-4000-8000-000160010100",
-  "taints": [{"effect": "NoSchedule", "key": "team", "value": "qa"}],
-  "utility_network_access": true
-}"#;
+const CREATE_NODE_GROUP_REQUEST_JSON: &str = r#"
+    {
+        "anti_affinity": true,
+        "count": 9,
+        "kubelet_args": [
+            {
+                "key": "log-flush-frequency",
+                "value": "5s"
+            }
+        ],
+        "labels": [
+            {
+                "key": "team",
+                "value": "qa"
+            }
+        ],
+        "name": "example-node-group-2",
+        "plan": "4xCPU-8GB",
+        "ssh_keys": [
+            "ssh-rsa AAAAB3NzaC1yc2EAA"
+        ],
+        "storage": "01000000-0000-4000-8000-000160010100",
+        "taints": [
+            {
+                "effect": "NoSchedule",
+                "key": "team",
+                "value": "qa"
+            }
+        ],
+        "utility_network_access": true
+    }
+"#;
 
-const CREATE_NODE_GROUP_RESPONSE_JSON: &str = r#"{
-  "anti_affinity": true,
-  "count": 9,
-  "kubelet_args": [{"key": "log-flush-frequency", "value": "5s"}],
-  "labels": [{"key": "team", "value": "qa"}],
-  "name": "example-node-group-2",
-  "plan": "4xCPU-8GB",
-  "ssh_keys": ["ssh-rsa AAAAB3NzaC1yc2EAA"],
-  "state": "pending",
-  "storage": "01000000-0000-4000-8000-000160010100",
-  "taints": [{"effect": "NoSchedule", "key": "team", "value": "qa"}],
-  "utility_network_access": true
-}"#;
+const CREATE_NODE_GROUP_RESPONSE_JSON: &str = r#"
+    {
+        "anti_affinity": true,
+        "count": 9,
+        "kubelet_args": [
+            {
+                "key": "log-flush-frequency",
+                "value": "5s"
+            }
+        ],
+        "labels": [
+            {
+                "key": "team",
+                "value": "qa"
+            }
+        ],
+        "name": "example-node-group-2",
+        "plan": "4xCPU-8GB",
+        "ssh_keys": [
+            "ssh-rsa AAAAB3NzaC1yc2EAA"
+        ],
+        "state": "pending",
+        "storage": "01000000-0000-4000-8000-000160010100",
+        "taints": [
+            {
+                "effect": "NoSchedule",
+                "key": "team",
+                "value": "qa"
+            }
+        ],
+        "utility_network_access": true
+    }
+"#;
 
-const NODE_GROUP_DETAIL_JSON: &str = r#"{
-  "anti_affinity_status": true,
-  "count": 2,
-  "kubelet_args": [{"key": "log-flush-frequency", "value": "5s"}],
-  "labels": [{"key": "team", "value": "qa"}],
-  "name": "example-node-group-2",
-  "plan": "4xCPU-8GB",
-  "ssh_keys": ["ssh-rsa AAAAB3NzaC1yc2EAA"],
-  "state": "running",
-  "storage": "01000000-0000-4000-8000-000160010100",
-  "taints": [{"effect": "NoSchedule", "key": "team", "value": "qa"}],
-  "utility_network_access": true,
-  "nodes": [
-{
-  "uuid": "564c8cd9-bc16-4f89-a328-daf3f138cc44",
-  "name": "example-fzwwt-8smpz",
-  "state": "running",
-  "kubelet_version": "1.30"
-},
-{
-  "uuid": "2e8039c6-95d4-41a9-92ca-46808f560abb",
-  "name": "example-fzwwt-zmjfs",
-  "state": "running",
-  "kubelet_version": "1.30"
-}
-  ]
-}"#;
+const NODE_GROUP_DETAIL_JSON: &str = r#"
+    {
+        "anti_affinity_status": true,
+        "count": 2,
+        "kubelet_args": [
+            {
+                "key": "log-flush-frequency",
+                "value": "5s"
+            }
+        ],
+        "labels": [
+            {
+                "key": "team",
+                "value": "qa"
+            }
+        ],
+        "name": "example-node-group-2",
+        "plan": "4xCPU-8GB",
+        "ssh_keys": [
+            "ssh-rsa AAAAB3NzaC1yc2EAA"
+        ],
+        "state": "running",
+        "storage": "01000000-0000-4000-8000-000160010100",
+        "taints": [
+            {
+                "effect": "NoSchedule",
+                "key": "team",
+                "value": "qa"
+            }
+        ],
+        "utility_network_access": true,
+        "nodes": [
+            {
+                "uuid": "564c8cd9-bc16-4f89-a328-daf3f138cc44",
+                "name": "example-fzwwt-8smpz",
+                "state": "running",
+                "kubelet_version": "1.30"
+            },
+            {
+                "uuid": "2e8039c6-95d4-41a9-92ca-46808f560abb",
+                "name": "example-fzwwt-zmjfs",
+                "state": "running",
+                "kubelet_version": "1.30"
+            }
+        ]
+    }
+"#;
 
 // ─── New test functions ───────────────────────────────────────────────────
 
-const MODIFY_NODE_GROUP_REQUEST_JSON: &str = r#"{"count": 15}"#;
+const MODIFY_NODE_GROUP_REQUEST_JSON: &str = r#"
+    {
+        "count": 15
+    }
+"#;
 
-const MODIFY_NODE_GROUP_RESPONSE_JSON: &str = r#"{
-  "anti_affinity": true,
-  "count": 15,
-  "kubelet_args": [{"key": "log-flush-frequency", "value": "5s"}],
-  "labels": [{"key": "team", "value": "qa"}],
-  "name": "example-node-group-2",
-  "plan": "4xCPU-8GB",
-  "ssh_keys": ["ssh-rsa AAAAB3NzaC1yc2EAA"],
-  "state": "running",
-  "storage": "01000000-0000-4000-8000-000160010100",
-  "taints": [{"effect": "NoSchedule", "key": "team", "value": "qa"}],
-  "utility_network_access": true
-}"#;
+const MODIFY_NODE_GROUP_RESPONSE_JSON: &str = r#"
+    {
+        "anti_affinity": true,
+        "count": 15,
+        "kubelet_args": [
+            {
+                "key": "log-flush-frequency",
+                "value": "5s"
+            }
+        ],
+        "labels": [
+            {
+                "key": "team",
+                "value": "qa"
+            }
+        ],
+        "name": "example-node-group-2",
+        "plan": "4xCPU-8GB",
+        "ssh_keys": [
+            "ssh-rsa AAAAB3NzaC1yc2EAA"
+        ],
+        "state": "running",
+        "storage": "01000000-0000-4000-8000-000160010100",
+        "taints": [
+            {
+                "effect": "NoSchedule",
+                "key": "team",
+                "value": "qa"
+            }
+        ],
+        "utility_network_access": true
+    }
+"#;
 
 #[test]
 fn deserialize_create_cluster_request() {
@@ -677,10 +887,14 @@ fn deserialize_upgrade_cluster_request() {
 
 // ─── Upgrade cluster response (official docs, page 20) ───────────────────
 
-const UPGRADE_CLUSTER_RESPONSE_JSON: &str = r#"{
-  "version": "1.31",
-  "strategy": {"type": "manual"}
-}"#;
+const UPGRADE_CLUSTER_RESPONSE_JSON: &str = r#"
+    {
+        "version": "1.31",
+        "strategy": {
+            "type": "manual"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_upgrade_cluster_response() {
@@ -885,10 +1099,18 @@ fn deserialize_modify_cluster_request_typed() {
     assert!(req.plan.is_none());
 }
 
-const KUBERNETES_VERSIONS_JSON: &str = r#"[
-  {"id": "1.30", "version": "1.30"},
-  {"id": "1.31", "version": "1.31"}
-]"#;
+const KUBERNETES_VERSIONS_JSON: &str = r#"
+    [
+        {
+            "id": "1.30",
+            "version": "1.30"
+        },
+        {
+            "id": "1.31",
+            "version": "1.31"
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_kubernetes_versions() {
@@ -902,26 +1124,35 @@ fn deserialize_kubernetes_versions() {
 
 // ─── Node group with custom_plan (docs section "Custom plan") ─────────────
 
-const NODE_GROUP_WITH_CUSTOM_PLAN_JSON: &str = r#"{
-  "count": 3,
-  "kubelet_args": [],
-  "labels": [{"key": "team", "value": "development"}],
-  "name": "custom-plan-group",
-  "plan": "custom",
-  "custom_plan": {
-    "cores": 4,
-    "memory": 8192,
-    "storage_size": 50,
-    "storage_tier": "maxiops"
-  },
-  "ssh_keys": ["ssh-rsa AAAAB3NzaC1yc2EAA"],
-  "state": "running",
-  "storage": "01000000-0000-4000-8000-000160010100",
-  "taints": [],
-  "anti_affinity": false,
-  "utility_network_access": true,
-  "storage_encryption": "data-at-rest"
-}"#;
+const NODE_GROUP_WITH_CUSTOM_PLAN_JSON: &str = r#"
+    {
+        "count": 3,
+        "kubelet_args": [],
+        "labels": [
+            {
+                "key": "team",
+                "value": "development"
+            }
+        ],
+        "name": "custom-plan-group",
+        "plan": "custom",
+        "custom_plan": {
+            "cores": 4,
+            "memory": 8192,
+            "storage_size": 50,
+            "storage_tier": "maxiops"
+        },
+        "ssh_keys": [
+            "ssh-rsa AAAAB3NzaC1yc2EAA"
+        ],
+        "state": "running",
+        "storage": "01000000-0000-4000-8000-000160010100",
+        "taints": [],
+        "anti_affinity": false,
+        "utility_network_access": true,
+        "storage_encryption": "data-at-rest"
+    }
+"#;
 
 #[test]
 fn deserialize_node_group_with_custom_plan() {
@@ -946,23 +1177,25 @@ fn deserialize_node_group_with_custom_plan() {
 
 // ─── Node group with cloud_native_plan (docs section "Cloud native plan") ────
 
-const NODE_GROUP_WITH_CLOUD_NATIVE_PLAN_JSON: &str = r#"{
-  "count": 2,
-  "kubelet_args": [],
-  "labels": [],
-  "name": "cloud-native-group",
-  "plan": "CLOUDNATIVE-48xCPU-384GB",
-  "cloud_native_plan": {
-    "storage_size": 25,
-    "storage_tier": "maxiops"
-  },
-  "ssh_keys": [],
-  "state": "running",
-  "storage": "01000000-0000-4000-8000-000160010100",
-  "taints": [],
-  "anti_affinity": false,
-  "utility_network_access": true
-}"#;
+const NODE_GROUP_WITH_CLOUD_NATIVE_PLAN_JSON: &str = r#"
+    {
+        "count": 2,
+        "kubelet_args": [],
+        "labels": [],
+        "name": "cloud-native-group",
+        "plan": "CLOUDNATIVE-48xCPU-384GB",
+        "cloud_native_plan": {
+            "storage_size": 25,
+            "storage_tier": "maxiops"
+        },
+        "ssh_keys": [],
+        "state": "running",
+        "storage": "01000000-0000-4000-8000-000160010100",
+        "taints": [],
+        "anti_affinity": false,
+        "utility_network_access": true
+    }
+"#;
 
 #[test]
 fn deserialize_node_group_with_cloud_native_plan() {
@@ -982,23 +1215,31 @@ fn deserialize_node_group_with_cloud_native_plan() {
 
 // ─── Node group with gpu_plan (docs section "GPU plan") ──────────────────────
 
-const NODE_GROUP_WITH_GPU_PLAN_JSON: &str = r#"{
-  "count": 1,
-  "kubelet_args": [],
-  "labels": [],
-  "name": "gpu-group",
-  "plan": "GPU-12xCPU-128GB-1xL40s",
-  "gpu_plan": {
-    "storage_size": 100,
-    "storage_tier": "maxiops"
-  },
-  "ssh_keys": [],
-  "state": "running",
-  "storage": "01000000-0000-4000-8000-000160010100",
-  "taints": [{"effect": "NoSchedule", "key": "nvidia.com/gpu", "value": "present"}],
-  "anti_affinity": false,
-  "utility_network_access": true
-}"#;
+const NODE_GROUP_WITH_GPU_PLAN_JSON: &str = r#"
+    {
+        "count": 1,
+        "kubelet_args": [],
+        "labels": [],
+        "name": "gpu-group",
+        "plan": "GPU-12xCPU-128GB-1xL40s",
+        "gpu_plan": {
+            "storage_size": 100,
+            "storage_tier": "maxiops"
+        },
+        "ssh_keys": [],
+        "state": "running",
+        "storage": "01000000-0000-4000-8000-000160010100",
+        "taints": [
+            {
+                "effect": "NoSchedule",
+                "key": "nvidia.com/gpu",
+                "value": "present"
+            }
+        ],
+        "anti_affinity": false,
+        "utility_network_access": true
+    }
+"#;
 
 #[test]
 fn deserialize_node_group_with_gpu_plan() {
@@ -1024,37 +1265,51 @@ fn deserialize_node_group_with_gpu_plan() {
 
 // ─── Full cluster response with storage_encryption (docs, page 20) ───────────
 
-const K8S_CLUSTER_WITH_ENCRYPTION_JSON: &str = r#"{
-  "control_plane_ip_filter": ["0.0.0.0/0"],
-  "labels": [
-    {"key": "env", "value": "production"}
-  ],
-  "name": "encrypted-cluster",
-  "network": "03a85f64-5717-4562-b3fc-2c963f66afa6",
-  "network_cidr": "172.16.0.0/24",
-  "node_groups": [
+const K8S_CLUSTER_WITH_ENCRYPTION_JSON: &str = r#"
     {
-      "count": 3,
-      "kubelet_args": [],
-      "labels": [{"key": "team", "value": "platform"}],
-      "name": "encrypted-node-group",
-      "plan": "4xCPU-8GB",
-      "ssh_keys": ["ssh-rsa AAAAB3NzaC1yc2EAA"],
-      "state": "running",
-      "storage": "01000000-0000-4000-8000-000160010100",
-      "taints": [],
-      "anti_affinity": false,
-      "utility_network_access": true,
-      "storage_encryption": "data-at-rest"
+        "control_plane_ip_filter": [
+            "0.0.0.0/0"
+        ],
+        "labels": [
+            {
+                "key": "env",
+                "value": "production"
+            }
+        ],
+        "name": "encrypted-cluster",
+        "network": "03a85f64-5717-4562-b3fc-2c963f66afa6",
+        "network_cidr": "172.16.0.0/24",
+        "node_groups": [
+            {
+                "count": 3,
+                "kubelet_args": [],
+                "labels": [
+                    {
+                        "key": "team",
+                        "value": "platform"
+                    }
+                ],
+                "name": "encrypted-node-group",
+                "plan": "4xCPU-8GB",
+                "ssh_keys": [
+                    "ssh-rsa AAAAB3NzaC1yc2EAA"
+                ],
+                "state": "running",
+                "storage": "01000000-0000-4000-8000-000160010100",
+                "taints": [],
+                "anti_affinity": false,
+                "utility_network_access": true,
+                "storage_encryption": "data-at-rest"
+            }
+        ],
+        "state": "running",
+        "plan": "prod-md",
+        "private_node_groups": false,
+        "storage_encryption": "data-at-rest",
+        "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "zone": "fi-hel2"
     }
-  ],
-  "state": "running",
-  "plan": "prod-md",
-  "private_node_groups": false,
-  "storage_encryption": "data-at-rest",
-  "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "zone": "fi-hel2"
-}"#;
+"#;
 
 #[test]
 fn deserialize_cluster_with_storage_encryption() {

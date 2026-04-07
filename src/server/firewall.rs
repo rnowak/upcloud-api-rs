@@ -145,100 +145,104 @@ struct RuleResponse {
 mod tests {
     use super::*;
 
-    const LIST_FIREWALL_RULES_JSON: &str = r#"{
-  "firewall_rules": {
-    "firewall_rule": [
-      {
-        "action": "accept",
-        "comment": "Allow HTTP from anywhere",
-        "destination_address_end": "",
-        "destination_address_start": "",
-        "destination_port_end": "80",
-        "destination_port_start": "80",
-        "direction": "in",
-        "family": "IPv4",
-        "icmp_type": "",
-        "position": "1",
-        "protocol": "",
-        "source_address_end": "",
-        "source_address_start": "",
-        "source_port_end": "",
-        "source_port_start": ""
-      },
-      {
-        "action": "accept",
-        "comment": "Allow SSH from a specific network only",
-        "destination_address_end": "",
-        "destination_address_start": "",
-        "destination_port_end": "22",
-        "destination_port_start": "22",
-        "direction": "in",
-        "family": "IPv4",
-        "icmp_type": "",
-        "position": "2",
-        "protocol": "tcp",
-        "source_address_end": "192.168.1.255",
-        "source_address_start": "192.168.1.1",
-        "source_port_end": "",
-        "source_port_start": ""
-      },
-      {
-        "action": "accept",
-        "comment": "Allow ICMP echo request (ping)",
-        "destination_address_end": "",
-        "destination_address_start": "",
-        "destination_port_end": "",
-        "destination_port_start": "",
-        "direction": "in",
-        "family": "IPv4",
-        "icmp_type": "8",
-        "position": "4",
-        "protocol": "icmp",
-        "source_address_end": "",
-        "source_address_start": "",
-        "source_port_end": "",
-        "source_port_start": ""
-      },
-      {
-        "action": "drop",
-        "comment": "",
-        "destination_address_end": "",
-        "destination_address_start": "",
-        "destination_port_end": "",
-        "destination_port_start": "",
-        "direction": "in",
-        "family": "",
-        "icmp_type": "",
-        "position": "5",
-        "protocol": "",
-        "source_address_end": "",
-        "source_address_start": "",
-        "source_port_end": "",
-        "source_port_start": ""
-      }
-    ]
-  }
-}"#;
+    const LIST_FIREWALL_RULES_JSON: &str = r#"
+    {
+        "firewall_rules": {
+            "firewall_rule": [
+                {
+                    "action": "accept",
+                    "comment": "Allow HTTP from anywhere",
+                    "destination_address_end": "",
+                    "destination_address_start": "",
+                    "destination_port_end": "80",
+                    "destination_port_start": "80",
+                    "direction": "in",
+                    "family": "IPv4",
+                    "icmp_type": "",
+                    "position": "1",
+                    "protocol": "",
+                    "source_address_end": "",
+                    "source_address_start": "",
+                    "source_port_end": "",
+                    "source_port_start": ""
+                },
+                {
+                    "action": "accept",
+                    "comment": "Allow SSH from a specific network only",
+                    "destination_address_end": "",
+                    "destination_address_start": "",
+                    "destination_port_end": "22",
+                    "destination_port_start": "22",
+                    "direction": "in",
+                    "family": "IPv4",
+                    "icmp_type": "",
+                    "position": "2",
+                    "protocol": "tcp",
+                    "source_address_end": "192.168.1.255",
+                    "source_address_start": "192.168.1.1",
+                    "source_port_end": "",
+                    "source_port_start": ""
+                },
+                {
+                    "action": "accept",
+                    "comment": "Allow ICMP echo request (ping)",
+                    "destination_address_end": "",
+                    "destination_address_start": "",
+                    "destination_port_end": "",
+                    "destination_port_start": "",
+                    "direction": "in",
+                    "family": "IPv4",
+                    "icmp_type": "8",
+                    "position": "4",
+                    "protocol": "icmp",
+                    "source_address_end": "",
+                    "source_address_start": "",
+                    "source_port_end": "",
+                    "source_port_start": ""
+                },
+                {
+                    "action": "drop",
+                    "comment": "",
+                    "destination_address_end": "",
+                    "destination_address_start": "",
+                    "destination_port_end": "",
+                    "destination_port_start": "",
+                    "direction": "in",
+                    "family": "",
+                    "icmp_type": "",
+                    "position": "5",
+                    "protocol": "",
+                    "source_address_end": "",
+                    "source_address_start": "",
+                    "source_port_end": "",
+                    "source_port_start": ""
+                }
+            ]
+        }
+    }
+"#;
 
-    const GET_FIREWALL_RULE_JSON: &str = r#"{
-  "firewall_rule": {
-    "action": "accept",
-    "comment": "Allow HTTP from anywhere",
-    "destination_address_end": "",
-    "destination_address_start": "",
-    "destination_port_end": "80",
-    "destination_port_start": "80",
-    "direction": "in",
-    "family": "IPv4",
-    "icmp_type": "",
-    "position": "1",
-    "protocol": "",
-    "source_address_end": "",
-    "source_address_start": "",
-    "source_port_end": "",
-    "source_port_start": ""
-  }
-}"#;
+    const GET_FIREWALL_RULE_JSON: &str = r#"
+    {
+        "firewall_rule": {
+            "action": "accept",
+            "comment": "Allow HTTP from anywhere",
+            "destination_address_end": "",
+            "destination_address_start": "",
+            "destination_port_end": "80",
+            "destination_port_start": "80",
+            "direction": "in",
+            "family": "IPv4",
+            "icmp_type": "",
+            "position": "1",
+            "protocol": "",
+            "source_address_end": "",
+            "source_address_start": "",
+            "source_port_end": "",
+            "source_port_start": ""
+        }
+    }
+"#;
 
     #[test]
     fn deserialize_firewall_rule_list() {
@@ -353,45 +357,49 @@ mod tests {
 
     // ── Create firewall rule (docs: POST /1.3/server/{uuid}/firewall_rule) ──
 
-    const CREATE_FIREWALL_RULE_REQUEST_JSON: &str = r#"{
-  "firewall_rule": {
-    "position": "1",
-    "direction": "in",
-    "family": "IPv4",
-    "protocol": "tcp",
-    "source_address_start": "192.168.1.1",
-    "source_address_end": "192.168.1.255",
-    "source_port_end": "",
-    "source_port_start": "",
-    "destination_address_start": "",
-    "destination_address_end": "",
-    "destination_port_start": "22",
-    "destination_port_end": "22",
-    "icmp_type": "",
-    "action": "accept",
-    "comment": "Allow SSH from this network"
-  }
-}"#;
+    const CREATE_FIREWALL_RULE_REQUEST_JSON: &str = r#"
+    {
+        "firewall_rule": {
+            "position": "1",
+            "direction": "in",
+            "family": "IPv4",
+            "protocol": "tcp",
+            "source_address_start": "192.168.1.1",
+            "source_address_end": "192.168.1.255",
+            "source_port_end": "",
+            "source_port_start": "",
+            "destination_address_start": "",
+            "destination_address_end": "",
+            "destination_port_start": "22",
+            "destination_port_end": "22",
+            "icmp_type": "",
+            "action": "accept",
+            "comment": "Allow SSH from this network"
+        }
+    }
+"#;
 
-    const CREATE_FIREWALL_RULE_RESPONSE_JSON: &str = r#"{
-  "firewall_rule": {
-    "action": "accept",
-    "comment": "Allow SSH from this network",
-    "destination_address_end": "",
-    "destination_address_start": "",
-    "destination_port_end": "80",
-    "destination_port_start": "80",
-    "direction": "in",
-    "family": "IPv4",
-    "icmp_type": "",
-    "position": "1",
-    "protocol": "",
-    "source_address_end": "",
-    "source_address_start": "",
-    "source_port_end": "",
-    "source_port_start": ""
-  }
-}"#;
+    const CREATE_FIREWALL_RULE_RESPONSE_JSON: &str = r#"
+    {
+        "firewall_rule": {
+            "action": "accept",
+            "comment": "Allow SSH from this network",
+            "destination_address_end": "",
+            "destination_address_start": "",
+            "destination_port_end": "80",
+            "destination_port_start": "80",
+            "direction": "in",
+            "family": "IPv4",
+            "icmp_type": "",
+            "position": "1",
+            "protocol": "",
+            "source_address_end": "",
+            "source_address_start": "",
+            "source_port_end": "",
+            "source_port_start": ""
+        }
+    }
+"#;
 
     #[test]
     fn deserialize_create_firewall_rule_request() {
@@ -474,30 +482,32 @@ mod tests {
 
     // ── Create multiple firewall rules (docs: PUT /1.3/server/{uuid}/firewall_rule) ──
 
-    const CREATE_MULTIPLE_FIREWALL_RULES_REQUEST_JSON: &str = r#"{
-  "firewall_rules": {
-    "firewall_rule": [
-      {
-        "direction": "in",
-        "family": "IPv4",
-        "protocol": "tcp",
-        "destination_port_start": "22",
-        "destination_port_end": "22",
-        "action": "accept",
-        "comment": "Allow SSH to this network"
-      },
-      {
-        "direction": "in",
-        "family": "IPv4",
-        "protocol": "tcp",
-        "destination_port_start": "80",
-        "destination_port_end": "80",
-        "action": "accept",
-        "comment": "Allow HTTP to this network"
-      }
-    ]
-  }
-}"#;
+    const CREATE_MULTIPLE_FIREWALL_RULES_REQUEST_JSON: &str = r#"
+    {
+        "firewall_rules": {
+            "firewall_rule": [
+                {
+                    "direction": "in",
+                    "family": "IPv4",
+                    "protocol": "tcp",
+                    "destination_port_start": "22",
+                    "destination_port_end": "22",
+                    "action": "accept",
+                    "comment": "Allow SSH to this network"
+                },
+                {
+                    "direction": "in",
+                    "family": "IPv4",
+                    "protocol": "tcp",
+                    "destination_port_start": "80",
+                    "destination_port_end": "80",
+                    "action": "accept",
+                    "comment": "Allow HTTP to this network"
+                }
+            ]
+        }
+    }
+"#;
 
     #[test]
     fn deserialize_create_multiple_firewall_rules_request() {

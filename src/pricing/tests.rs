@@ -1,78 +1,80 @@
 use super::*;
 
-const PRICE_LIST_JSON: &str = r#"{
-  "prices": {
-"zone": [
-  {
-    "name": "fi-hel1",
-    "firewall": {
-      "amount": 1,
-      "price": 0.5
-    },
-    "io_request_backup": {
-      "amount": 1000000,
-      "price": 10.0
-    },
-    "io_request_hdd": {
-      "amount": 1000000,
-      "price": 0.0
-    },
-    "io_request_maxiops": {
-      "amount": 1000000,
-      "price": 0.0
-    },
-    "ipv4_address": {
-      "amount": 1,
-      "price": 0.3
-    },
-    "ipv6_address": {
-      "amount": 1,
-      "price": 0.0
-    },
-    "public_ipv4_bandwidth_in": {
-      "amount": 1,
-      "price": 0.0
-    },
-    "public_ipv4_bandwidth_out": {
-      "amount": 1,
-      "price": 5.0
-    },
-    "public_ipv6_bandwidth_in": {
-      "amount": 1,
-      "price": 0.0
-    },
-    "public_ipv6_bandwidth_out": {
-      "amount": 1,
-      "price": 5.0
-    },
-    "server_core": {
-      "amount": 1,
-      "price": 1.3
-    },
-    "server_memory": {
-      "amount": 256,
-      "price": 0.45
-    },
-    "storage_backup": {
-      "amount": 1,
-      "price": 0.007
-    },
-    "storage_hdd": {
-      "amount": 1,
-      "price": 0.013
-    },
-    "storage_maxiops": {
-      "amount": 1,
-      "price": 0.028
-    },
-    "server_plan_1xCPU-2GB": {
-      "amount": 1,
-      "price": 2.2321
+const PRICE_LIST_JSON: &str = r#"
+    {
+        "prices": {
+            "zone": [
+                {
+                    "name": "fi-hel1",
+                    "firewall": {
+                        "amount": 1,
+                        "price": 0.5
+                    },
+                    "io_request_backup": {
+                        "amount": 1000000,
+                        "price": 10.0
+                    },
+                    "io_request_hdd": {
+                        "amount": 1000000,
+                        "price": 0.0
+                    },
+                    "io_request_maxiops": {
+                        "amount": 1000000,
+                        "price": 0.0
+                    },
+                    "ipv4_address": {
+                        "amount": 1,
+                        "price": 0.3
+                    },
+                    "ipv6_address": {
+                        "amount": 1,
+                        "price": 0.0
+                    },
+                    "public_ipv4_bandwidth_in": {
+                        "amount": 1,
+                        "price": 0.0
+                    },
+                    "public_ipv4_bandwidth_out": {
+                        "amount": 1,
+                        "price": 5.0
+                    },
+                    "public_ipv6_bandwidth_in": {
+                        "amount": 1,
+                        "price": 0.0
+                    },
+                    "public_ipv6_bandwidth_out": {
+                        "amount": 1,
+                        "price": 5.0
+                    },
+                    "server_core": {
+                        "amount": 1,
+                        "price": 1.3
+                    },
+                    "server_memory": {
+                        "amount": 256,
+                        "price": 0.45
+                    },
+                    "storage_backup": {
+                        "amount": 1,
+                        "price": 0.007
+                    },
+                    "storage_hdd": {
+                        "amount": 1,
+                        "price": 0.013
+                    },
+                    "storage_maxiops": {
+                        "amount": 1,
+                        "price": 0.028
+                    },
+                    "server_plan_1xCPU-2GB": {
+                        "amount": 1,
+                        "price": 2.2321
+                    }
+                }
+            ]
+        }
     }
-  }
-]
-  }
-}"#;
+"#;
 
 #[test]
 fn deserialize_price_list() {

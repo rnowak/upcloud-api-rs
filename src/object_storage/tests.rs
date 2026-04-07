@@ -1,45 +1,57 @@
 use super::*;
 
-const MOS_SERVICE_LIST_JSON: &str = r#"[
-  {
-"configured_status": "started",
-"created_at": "2025-08-22T06:46:24.483024Z",
-"custom_domains": [],
-"endpoints": [
-  {
-    "domain_name": "h7fao.upcloudobjects.com",
-    "iam_url": "https://h7fao.upcloudobjects.com:4443/iam",
-    "mode": "api",
-    "sts_url": "https://h7fao.upcloudobjects.com:4443/sts",
-    "type": "public"
-  }
-],
-"labels": [],
-"name": "SE-OBJ1",
-"networks": [
-  {
-    "family": "IPv4",
-    "name": "my-public-network",
-    "type": "public"
-  }
-],
-"operational_state": "running",
-"region": "europe-3",
-"state_messages": [],
-"termination_protection": false,
-"updated_at": "2026-04-04T01:25:47.939667Z",
-"usage": {
-  "total_objects": 0,
-  "total_size_bytes": 0
-},
-"uuid": "1289deac-1cd1-459d-a467-a6fc420d4502"
-  }
-]"#;
+const MOS_SERVICE_LIST_JSON: &str = r#"
+    [
+        {
+            "configured_status": "started",
+            "created_at": "2025-08-22T06:46:24.483024Z",
+            "custom_domains": [],
+            "endpoints": [
+                {
+                    "domain_name": "h7fao.upcloudobjects.com",
+                    "iam_url": "https://h7fao.upcloudobjects.com:4443/iam",
+                    "mode": "api",
+                    "sts_url": "https://h7fao.upcloudobjects.com:4443/sts",
+                    "type": "public"
+                }
+            ],
+            "labels": [],
+            "name": "SE-OBJ1",
+            "networks": [
+                {
+                    "family": "IPv4",
+                    "name": "my-public-network",
+                    "type": "public"
+                }
+            ],
+            "operational_state": "running",
+            "region": "europe-3",
+            "state_messages": [],
+            "termination_protection": false,
+            "updated_at": "2026-04-04T01:25:47.939667Z",
+            "usage": {
+                "total_objects": 0,
+                "total_size_bytes": 0
+            },
+            "uuid": "1289deac-1cd1-459d-a467-a6fc420d4502"
+        }
+    ]
+"#;
 
-const MOS_BUCKET_LIST_JSON: &str = r#"[
-  {"name": "example-bucket-1", "total_objects": 157, "total_size_bytes": 5293771},
-  {"name": "example-bucket-2", "total_objects": 12, "total_size_bytes": 832226}
-]"#;
+const MOS_BUCKET_LIST_JSON: &str = r#"
+    [
+        {
+            "name": "example-bucket-1",
+            "total_objects": 157,
+            "total_size_bytes": 5293771
+        },
+        {
+            "name": "example-bucket-2",
+            "total_objects": 12,
+            "total_size_bytes": 832226
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_mos_service_list() {
@@ -111,238 +123,284 @@ fn deserialize_mos_bucket_list() {
 
 // ─── New test data (official docs, page 21) ──────────────────────────────
 
-const MOS_REGION_LIST_JSON: &str = r#"[
-{
-    "name": "europe-1",
-    "primary_zone": "fi-hel1",
-    "zones": [
-        { "name": "fi-hel1" },
-        { "name": "de-fra1" }
+const MOS_REGION_LIST_JSON: &str = r#"
+    [
+        {
+            "name": "europe-1",
+            "primary_zone": "fi-hel1",
+            "zones": [
+                {
+                    "name": "fi-hel1"
+                },
+                {
+                    "name": "de-fra1"
+                }
+            ]
+        }
     ]
-}
-]"#;
+"#;
 
-const MOS_REGION_DETAIL_JSON: &str = r#"{
-"name": "europe-1",
-"primary_zone": "fi-hel1",
-"zones": [
-    { "name": "fi-hel1" },
-    { "name": "de-fra1" }
-]
-}"#;
-
-const MOS_CREATE_SERVICE_REQUEST_JSON: &str = r#"{
-"name": "example-service",
-"region": "example",
-"configured_status": "started",
-"termination_protection": false,
-"networks": [
+const MOS_REGION_DETAIL_JSON: &str = r#"
     {
-        "name": "example-public-network",
-        "type": "public",
-        "family": "IPv4"
-    },
-    {
-        "name": "example-private-network",
-        "uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4",
-        "type": "private",
-        "family": "IPv4"
-    }
-]
-}"#;
-
-const MOS_SERVICE_DETAIL_JSON: &str = r#"{
-"configured_status": "started",
-"created_at": "2023-05-07T15:55:24.655776Z",
-"custom_domains": [],
-"endpoints": [
-    {
-        "domain_name": "7mf5k.upcloudobjects.com",
-        "iam_url": "https://7mf5k.upcloudobjects.com:4443/iam",
-        "mode": "api",
-        "sts_url": "https://7mf5k.upcloudobjects.com:4443/sts",
-        "type": "public"
-    },
-    {
-        "domain_name": "7mf5k-private.upcloudobjects.com",
-        "iam_url": "https://7mf5k-private.upcloudobjects.com:4443/iam",
-        "mode": "api",
-        "sts_url": "https://7mf5k-private.upcloudobjects.com:4443/sts",
-        "type": "private"
-    },
-    {
-        "domain_name": "7mf5k-static.upcloudobjects.com",
-        "mode": "static-website",
-        "type": "public"
-    }
-],
-"labels": [
-  { "key": "example-key", "value": "example-value" }
-],
-"name": "example-service",
-"networks": [
-    {
-        "family": "IPv4",
-        "name": "example-public-network",
-        "type": "public"
-    },
-    {
-        "family": "IPv4",
-        "name": "example-private-network",
-        "type": "private",
-        "uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4"
-    }
-],
-"operational_state": "setup-checkup",
-"region": "europe-1",
-"state_messages": [
-  {
-    "code": "waiting_certificate_issuing",
-    "created_at": "2025-01-16T11:20:40.372611Z",
-    "message": "Certificate issuing is in progress for domains: 7mf5k-private.upbucket.com, *.7mf5k-private.upbucket.com.",
-    "operational_state": "setup-checkup",
-    "updated_at": "2025-01-16T11:20:40.372611Z"
-  }
-],
-"static_websites": [
-  {
-    "bucket_name": "my-website",
-    "bucket_prefix": "",
-    "created_at": "2023-05-07T16:00:00.000000Z",
-    "domain_name": "7mf5k-static.upcloudobjects.com",
-    "enabled": true,
-    "error_pages": [],
-    "index_document": "index.html",
-    "spa_mode": false,
-    "updated_at": "2023-05-07T16:00:00.000000Z"
-  }
-],
-"termination_protection": false,
-"updated_at": "2023-05-07T21:38:15.757405Z",
-"usage": {
-  "total_objects": 310499,
-  "total_size_bytes": 32414921734
-},
-"users": [
-    {
-        "access_keys": [
+        "name": "europe-1",
+        "primary_zone": "fi-hel1",
+        "zones": [
             {
-                "access_key_id": "AKIA63F41D01345BB477",
-                "created_at": "2023-05-07T20:52:19.705405Z",
-                "last_used_at": "2023-05-07T20:52:17Z",
-                "status": "Active"
+                "name": "fi-hel1"
+            },
+            {
+                "name": "de-fra1"
+            }
+        ]
+    }
+"#;
+
+const MOS_CREATE_SERVICE_REQUEST_JSON: &str = r#"
+    {
+        "name": "example-service",
+        "region": "example",
+        "configured_status": "started",
+        "termination_protection": false,
+        "networks": [
+            {
+                "name": "example-public-network",
+                "type": "public",
+                "family": "IPv4"
+            },
+            {
+                "name": "example-private-network",
+                "uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4",
+                "type": "private",
+                "family": "IPv4"
+            }
+        ]
+    }
+"#;
+
+const MOS_SERVICE_DETAIL_JSON: &str = r#"
+    {
+        "configured_status": "started",
+        "created_at": "2023-05-07T15:55:24.655776Z",
+        "custom_domains": [],
+        "endpoints": [
+            {
+                "domain_name": "7mf5k.upcloudobjects.com",
+                "iam_url": "https://7mf5k.upcloudobjects.com:4443/iam",
+                "mode": "api",
+                "sts_url": "https://7mf5k.upcloudobjects.com:4443/sts",
+                "type": "public"
+            },
+            {
+                "domain_name": "7mf5k-private.upcloudobjects.com",
+                "iam_url": "https://7mf5k-private.upcloudobjects.com:4443/iam",
+                "mode": "api",
+                "sts_url": "https://7mf5k-private.upcloudobjects.com:4443/sts",
+                "type": "private"
+            },
+            {
+                "domain_name": "7mf5k-static.upcloudobjects.com",
+                "mode": "static-website",
+                "type": "public"
             }
         ],
-        "arn": "urn:ecs:iam::123bbb5c6a4240409e07f7d89fe28891:user/example_user",
-        "created_at": "2023-05-07T15:55:24.655776Z",
-        "policies": [
-          { "arn": "urn:ecs:iam:::policy/ECSS3FullAccess", "name": "ECSS3FullAccess" },
-          { "arn": "urn:ecs:iam:::policy/IAMFullAccess", "name": "IAMFullAccess" }
+        "labels": [
+            {
+                "key": "example-key",
+                "value": "example-value"
+            }
         ],
-        "username": "example_user"
+        "name": "example-service",
+        "networks": [
+            {
+                "family": "IPv4",
+                "name": "example-public-network",
+                "type": "public"
+            },
+            {
+                "family": "IPv4",
+                "name": "example-private-network",
+                "type": "private",
+                "uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4"
+            }
+        ],
+        "operational_state": "setup-checkup",
+        "region": "europe-1",
+        "state_messages": [
+            {
+                "code": "waiting_certificate_issuing",
+                "created_at": "2025-01-16T11:20:40.372611Z",
+                "message": "Certificate issuing is in progress for domains: 7mf5k-private.upbucket.com, *.7mf5k-private.upbucket.com.",
+                "operational_state": "setup-checkup",
+                "updated_at": "2025-01-16T11:20:40.372611Z"
+            }
+        ],
+        "static_websites": [
+            {
+                "bucket_name": "my-website",
+                "bucket_prefix": "",
+                "created_at": "2023-05-07T16:00:00.000000Z",
+                "domain_name": "7mf5k-static.upcloudobjects.com",
+                "enabled": true,
+                "error_pages": [],
+                "index_document": "index.html",
+                "spa_mode": false,
+                "updated_at": "2023-05-07T16:00:00.000000Z"
+            }
+        ],
+        "termination_protection": false,
+        "updated_at": "2023-05-07T21:38:15.757405Z",
+        "usage": {
+            "total_objects": 310499,
+            "total_size_bytes": 32414921734
+        },
+        "users": [
+            {
+                "access_keys": [
+                    {
+                        "access_key_id": "AKIA63F41D01345BB477",
+                        "created_at": "2023-05-07T20:52:19.705405Z",
+                        "last_used_at": "2023-05-07T20:52:17Z",
+                        "status": "Active"
+                    }
+                ],
+                "arn": "urn:ecs:iam::123bbb5c6a4240409e07f7d89fe28891:user/example_user",
+                "created_at": "2023-05-07T15:55:24.655776Z",
+                "policies": [
+                    {
+                        "arn": "urn:ecs:iam:::policy/ECSS3FullAccess",
+                        "name": "ECSS3FullAccess"
+                    },
+                    {
+                        "arn": "urn:ecs:iam:::policy/IAMFullAccess",
+                        "name": "IAMFullAccess"
+                    }
+                ],
+                "username": "example_user"
+            }
+        ],
+        "uuid": "1200ecde-db95-4d1c-9133-6508f3232567"
     }
-],
-"uuid": "1200ecde-db95-4d1c-9133-6508f3232567"
-}"#;
+"#;
 
-const MOS_REPLACE_SERVICE_REQUEST_JSON: &str = r#"{
-"name": "example-service",
-"configured_status": "started",
-"termination_protection": false,
-"networks": [
+const MOS_REPLACE_SERVICE_REQUEST_JSON: &str = r#"
+    {
+        "name": "example-service",
+        "configured_status": "started",
+        "termination_protection": false,
+        "networks": [
+            {
+                "name": "example-public-network",
+                "type": "public",
+                "family": "IPv4"
+            },
+            {
+                "name": "example-private-network",
+                "uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4",
+                "type": "private",
+                "family": "IPv4"
+            }
+        ],
+        "labels": [
+            {
+                "key": "example-label-key",
+                "value": "example-label-value"
+            }
+        ]
+    }
+"#;
+
+const MOS_MODIFY_SERVICE_REQUEST_JSON: &str = r#"
+    {
+        "name": "example-service",
+        "configured_status": "started",
+        "termination_protection": false,
+        "networks": [
+            {
+                "name": "example-private-network",
+                "uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4",
+                "type": "private",
+                "family": "IPv4"
+            }
+        ],
+        "labels": null
+    }
+"#;
+
+const MOS_USAGE_JSON: &str = r#"
+    {
+        "total_objects": 1287,
+        "total_size_bytes": 48277239
+    }
+"#;
+
+const MOS_CREATE_BUCKET_RESPONSE_JSON: &str = r#"
+    {
+        "name": "my-bucket-1",
+        "total_objects": 0,
+        "total_size_bytes": 0
+    }
+"#;
+
+const MOS_NETWORK_LIST_JSON: &str = r#"
+    [
+        {
+            "family": "IPv4",
+            "name": "example-public-network",
+            "type": "public"
+        },
+        {
+            "family": "IPv4",
+            "name": "example-private-network",
+            "type": "private",
+            "uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4"
+        }
+    ]
+"#;
+
+const MOS_NETWORK_DETAIL_JSON: &str = r#"
+    {
+        "family": "IPv4",
+        "name": "example-private-network",
+        "type": "private",
+        "uuid": "03bec0ad-85c3-459e-824d-710f8f24f740"
+    }
+"#;
+
+const MOS_PUBLIC_NETWORK_JSON: &str = r#"
     {
         "name": "example-public-network",
         "type": "public",
         "family": "IPv4"
-    },
+    }
+"#;
+
+const MOS_PRIVATE_NETWORK_INPUT_JSON: &str = r#"
     {
         "name": "example-private-network",
-        "uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4",
+        "uuid": "03bec0ad-85c3-459e-824d-710f8f24f740",
         "type": "private",
         "family": "IPv4"
     }
-],
-"labels": [
-    { "key": "example-label-key", "value": "example-label-value" }
-]
-}"#;
-
-const MOS_MODIFY_SERVICE_REQUEST_JSON: &str = r#"{
-"name": "example-service",
-"configured_status": "started",
-"termination_protection": false,
-"networks": [
-    {
-        "name": "example-private-network",
-        "uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4",
-        "type": "private",
-        "family": "IPv4"
-    }
-],
-"labels": null
-}"#;
-
-const MOS_USAGE_JSON: &str = r#"{
-"total_objects": 1287,
-"total_size_bytes": 48277239
-}"#;
-
-const MOS_CREATE_BUCKET_RESPONSE_JSON: &str = r#"{
-"name": "my-bucket-1",
-"total_objects": 0,
-"total_size_bytes": 0
-}"#;
-
-const MOS_NETWORK_LIST_JSON: &str = r#"[
-{
-    "family": "IPv4",
-    "name": "example-public-network",
-    "type": "public"
-},
-{
-    "family": "IPv4",
-    "name": "example-private-network",
-    "type": "private",
-    "uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4"
-}
-]"#;
-
-const MOS_NETWORK_DETAIL_JSON: &str = r#"{
-"family": "IPv4",
-"name": "example-private-network",
-"type": "private",
-"uuid": "03bec0ad-85c3-459e-824d-710f8f24f740"
-}"#;
-
-const MOS_PUBLIC_NETWORK_JSON: &str = r#"{
-"name": "example-public-network",
-"type": "public",
-"family": "IPv4"
-}"#;
-
-const MOS_PRIVATE_NETWORK_INPUT_JSON: &str = r#"{
-"name": "example-private-network",
-"uuid": "03bec0ad-85c3-459e-824d-710f8f24f740",
-"type": "private",
-"family": "IPv4"
-}"#;
+"#;
 
 // ─── New tests ───────────────────────────────────────────────────────────
 
-const MOS_METRICS_SERIES_JSON: &str = r#"[
-{
-    "bytes_created": 530000,
-    "bytes_deleted": 244000,
-    "bytes_received": 530000,
-    "bytes_total": 7502000,
-    "bytes_transmitted": 0,
-    "end_at": "2023-10-31T12:00:00Z",
-    "objects_created": 79,
-    "objects_deleted": 40,
-    "objects_total": 1237,
-    "start_at": "2023-10-31T11:00:00Z"
-}
-]"#;
+const MOS_METRICS_SERIES_JSON: &str = r#"
+    [
+        {
+            "bytes_created": 530000,
+            "bytes_deleted": 244000,
+            "bytes_received": 530000,
+            "bytes_total": 7502000,
+            "bytes_transmitted": 0,
+            "end_at": "2023-10-31T12:00:00Z",
+            "objects_created": 79,
+            "objects_deleted": 40,
+            "objects_total": 1237,
+            "start_at": "2023-10-31T11:00:00Z"
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_mos_region_list() {
@@ -608,70 +666,74 @@ fn deserialize_mos_metrics_series() {
 
 // ─── MOS policy tests (official docs, page 21) ───────────────────────────
 
-const MOS_POLICY_LIST_JSON: &str = r#"[
-  {
-"arn": "urn:ecs:iam:::policy/ECSDenyAll",
-"attachment_count": 0,
-"created_at": "2024-02-05T11:06:17Z",
-"default_version_id": "v1",
-"description": "Deny all access.",
-"name": "ECSDenyAll",
-"system": true,
-"updated_at": "2024-02-05T11:06:17Z"
-  },
-  {
-"arn": "urn:ecs:iam:::policy/ECSS3FullAccess",
-"attachment_count": 1,
-"created_at": "2024-02-05T11:06:16Z",
-"default_version_id": "v1",
-"description": "Provides full access to all buckets.",
-"name": "ECSS3FullAccess",
-"system": true,
-"updated_at": "2024-02-05T11:06:16Z"
-  },
-  {
-"arn": "urn:ecs:iam:::policy/ECSS3ReadOnlyAccess",
-"attachment_count": 0,
-"created_at": "2024-02-05T11:06:16Z",
-"default_version_id": "v1",
-"description": "Provides read only access to all buckets.",
-"name": "ECSS3ReadOnlyAccess",
-"system": true,
-"updated_at": "2024-02-05T11:06:16Z"
-  },
-  {
-"arn": "urn:ecs:iam:::policy/IAMFullAccess",
-"attachment_count": 1,
-"created_at": "2024-02-05T11:06:16Z",
-"default_version_id": "v1",
-"description": "Provides full access to IAM.",
-"name": "IAMFullAccess",
-"system": true,
-"updated_at": "2024-02-05T11:06:16Z"
-  },
-  {
-"arn": "urn:ecs:iam:::policy/IAMReadOnlyAccess",
-"attachment_count": 0,
-"created_at": "2024-02-05T11:06:16Z",
-"default_version_id": "v1",
-"description": "Provides read only access to IAM.",
-"name": "IAMReadOnlyAccess",
-"system": true,
-"updated_at": "2024-02-05T11:06:16Z"
-  }
-]"#;
+const MOS_POLICY_LIST_JSON: &str = r#"
+    [
+        {
+            "arn": "urn:ecs:iam:::policy/ECSDenyAll",
+            "attachment_count": 0,
+            "created_at": "2024-02-05T11:06:17Z",
+            "default_version_id": "v1",
+            "description": "Deny all access.",
+            "name": "ECSDenyAll",
+            "system": true,
+            "updated_at": "2024-02-05T11:06:17Z"
+        },
+        {
+            "arn": "urn:ecs:iam:::policy/ECSS3FullAccess",
+            "attachment_count": 1,
+            "created_at": "2024-02-05T11:06:16Z",
+            "default_version_id": "v1",
+            "description": "Provides full access to all buckets.",
+            "name": "ECSS3FullAccess",
+            "system": true,
+            "updated_at": "2024-02-05T11:06:16Z"
+        },
+        {
+            "arn": "urn:ecs:iam:::policy/ECSS3ReadOnlyAccess",
+            "attachment_count": 0,
+            "created_at": "2024-02-05T11:06:16Z",
+            "default_version_id": "v1",
+            "description": "Provides read only access to all buckets.",
+            "name": "ECSS3ReadOnlyAccess",
+            "system": true,
+            "updated_at": "2024-02-05T11:06:16Z"
+        },
+        {
+            "arn": "urn:ecs:iam:::policy/IAMFullAccess",
+            "attachment_count": 1,
+            "created_at": "2024-02-05T11:06:16Z",
+            "default_version_id": "v1",
+            "description": "Provides full access to IAM.",
+            "name": "IAMFullAccess",
+            "system": true,
+            "updated_at": "2024-02-05T11:06:16Z"
+        },
+        {
+            "arn": "urn:ecs:iam:::policy/IAMReadOnlyAccess",
+            "attachment_count": 0,
+            "created_at": "2024-02-05T11:06:16Z",
+            "default_version_id": "v1",
+            "description": "Provides read only access to IAM.",
+            "name": "IAMReadOnlyAccess",
+            "system": true,
+            "updated_at": "2024-02-05T11:06:16Z"
+        }
+    ]
+"#;
 
-const MOS_POLICY_DETAIL_JSON: &str = r#"{
-  "arn": "urn:ecs:iam:::policy/ECSS3FullAccess",
-  "attachment_count": 0,
-  "created_at": "2024-02-05T11:06:16Z",
-  "default_version_id": "v1",
-  "description": "Provides full access to all buckets.",
-  "document": "%7B%0A++++%22Version%22%3A+%222012-10-17%22%2C%0A++++%22Statement%22%3A+%5B%0A++++++++%7B%0A++++++++++++%22Effect%22%3A+%22Allow%22%2C%0A++++++++++++%22Action%22%3A+%22s3%3A*%22%2C%0A++++++++++++%22Resource%22%3A+%22*%22%0A++++++++%7D%0A++++%5D%0A%7D",
-  "name": "ECSS3FullAccess",
-  "system": true,
-  "updated_at": "2024-02-05T11:06:16Z"
-}"#;
+const MOS_POLICY_DETAIL_JSON: &str = r#"
+    {
+        "arn": "urn:ecs:iam:::policy/ECSS3FullAccess",
+        "attachment_count": 0,
+        "created_at": "2024-02-05T11:06:16Z",
+        "default_version_id": "v1",
+        "description": "Provides full access to all buckets.",
+        "document": "%7B%0A++++%22Version%22%3A+%222012-10-17%22%2C%0A++++%22Statement%22%3A+%5B%0A++++++++%7B%0A++++++++++++%22Effect%22%3A+%22Allow%22%2C%0A++++++++++++%22Action%22%3A+%22s3%3A*%22%2C%0A++++++++++++%22Resource%22%3A+%22*%22%0A++++++++%7D%0A++++%5D%0A%7D",
+        "name": "ECSS3FullAccess",
+        "system": true,
+        "updated_at": "2024-02-05T11:06:16Z"
+    }
+"#;
 
 #[test]
 fn deserialize_mos_policy_list() {
@@ -750,62 +812,68 @@ fn deserialize_mos_policy_detail() {
 
 // ─── MOS user tests (official docs, page 21) ─────────────────────────────
 
-const MOS_USER_LIST_JSON: &str = r#"[
-{
-    "access_keys": [
+const MOS_USER_LIST_JSON: &str = r#"
+    [
         {
-            "access_key_id": "AKIA63F41D01345BB477",
-            "created_at": "2023-05-07T20:52:19.705405Z",
-            "last_used_at": "2023-05-07T20:52:17Z",
-            "status": "Active"
+            "access_keys": [
+                {
+                    "access_key_id": "AKIA63F41D01345BB477",
+                    "created_at": "2023-05-07T20:52:19.705405Z",
+                    "last_used_at": "2023-05-07T20:52:17Z",
+                    "status": "Active"
+                }
+            ],
+            "arn": "urn:ecs:iam::123bbb5c6a4240409e07f7d89fe28891:user/example_user",
+            "created_at": "2023-05-07T15:55:24.655776Z",
+            "policies": [
+                {
+                    "arn": "urn:ecs:iam:::policy/ECSS3FullAccess",
+                    "name": "ECSS3FullAccess"
+                },
+                {
+                    "arn": "urn:ecs:iam:::policy/IAMFullAccess",
+                    "name": "IAMFullAccess"
+                }
+            ],
+            "username": "example_user"
         }
-    ],
-    "arn": "urn:ecs:iam::123bbb5c6a4240409e07f7d89fe28891:user/example_user",
-    "created_at": "2023-05-07T15:55:24.655776Z",
-    "policies": [
-        {
-            "arn": "urn:ecs:iam:::policy/ECSS3FullAccess",
-            "name": "ECSS3FullAccess"
-        },
-        {
-            "arn": "urn:ecs:iam:::policy/IAMFullAccess",
-            "name": "IAMFullAccess"
-        }
-    ],
-    "username": "example_user"
-}
-]"#;
+    ]
+"#;
 
-const MOS_USER_DETAIL_JSON: &str = r#"{
-"access_keys": [
+const MOS_USER_DETAIL_JSON: &str = r#"
     {
-        "access_key_id": "AKIA63F41D01345BB477",
-        "created_at": "2023-05-07T20:52:19.705405Z",
-        "last_used_at": "2023-05-07T20:52:17Z",
-        "status": "Active"
+        "access_keys": [
+            {
+                "access_key_id": "AKIA63F41D01345BB477",
+                "created_at": "2023-05-07T20:52:19.705405Z",
+                "last_used_at": "2023-05-07T20:52:17Z",
+                "status": "Active"
+            }
+        ],
+        "arn": "urn:ecs:iam::123bbb5c6a4240409e07f7d89fe28891:user/example_user",
+        "created_at": "2023-05-07T15:55:24.655776Z",
+        "policies": [
+            {
+                "arn": "urn:ecs:iam:::policy/ECSS3FullAccess",
+                "name": "ECSS3FullAccess"
+            },
+            {
+                "arn": "urn:ecs:iam:::policy/IAMFullAccess",
+                "name": "IAMFullAccess"
+            }
+        ],
+        "username": "example_user"
     }
-],
-"arn": "urn:ecs:iam::123bbb5c6a4240409e07f7d89fe28891:user/example_user",
-"created_at": "2023-05-07T15:55:24.655776Z",
-"policies": [
-    {
-        "arn": "urn:ecs:iam:::policy/ECSS3FullAccess",
-        "name": "ECSS3FullAccess"
-    },
-    {
-        "arn": "urn:ecs:iam:::policy/IAMFullAccess",
-        "name": "IAMFullAccess"
-    }
-],
-"username": "example_user"
-}"#;
+"#;
 
-const MOS_USER_CREATE_RESPONSE_JSON: &str = r#"{
-"access_keys": [],
-"created_at": "2023-05-07T18:19:16.507681Z",
-"policies": [],
-"username": "example_user"
-}"#;
+const MOS_USER_CREATE_RESPONSE_JSON: &str = r#"
+    {
+        "access_keys": [],
+        "created_at": "2023-05-07T18:19:16.507681Z",
+        "policies": [],
+        "username": "example_user"
+    }
+"#;
 
 #[test]
 fn deserialize_mos_user_list() {
@@ -899,29 +967,35 @@ fn deserialize_mos_user_create_response() {
 
 // ─── MOS access key tests (official docs, page 21) ───────────────────────
 
-const MOS_ACCESS_KEY_LIST_JSON: &str = r#"[
-{
-    "access_key_id": "AKIA63F41D01345BB477",
-    "created_at": "2023-05-07T20:52:19.705405Z",
-    "last_used_at": "2023-05-07T20:52:17Z",
-    "status": "Active"
-}
-]"#;
+const MOS_ACCESS_KEY_LIST_JSON: &str = r#"
+    [
+        {
+            "access_key_id": "AKIA63F41D01345BB477",
+            "created_at": "2023-05-07T20:52:19.705405Z",
+            "last_used_at": "2023-05-07T20:52:17Z",
+            "status": "Active"
+        }
+    ]
+"#;
 
-const MOS_ACCESS_KEY_CREATE_RESPONSE_JSON: &str = r#"{
-"access_key_id": "AKIA589142A152F5E423",
-"created_at": "2023-05-07T22:58:26.239729Z",
-"last_used_at": "2023-05-07T22:58:26.239729Z",
-"secret_access_key": "xbINHFALkXjFjmxhAYL8mJnODRDX91OM7cCd2+1Y",
-"status": "Active"
-}"#;
+const MOS_ACCESS_KEY_CREATE_RESPONSE_JSON: &str = r#"
+    {
+        "access_key_id": "AKIA589142A152F5E423",
+        "created_at": "2023-05-07T22:58:26.239729Z",
+        "last_used_at": "2023-05-07T22:58:26.239729Z",
+        "secret_access_key": "xbINHFALkXjFjmxhAYL8mJnODRDX91OM7cCd2+1Y",
+        "status": "Active"
+    }
+"#;
 
-const MOS_ACCESS_KEY_DETAIL_JSON: &str = r#"{
-"access_key_id": "AKIA63F41D01345BB477",
-"created_at": "2023-05-07T20:52:19.705405Z",
-"last_used_at": "2023-05-07T20:52:17Z",
-"status": "Active"
-}"#;
+const MOS_ACCESS_KEY_DETAIL_JSON: &str = r#"
+    {
+        "access_key_id": "AKIA63F41D01345BB477",
+        "created_at": "2023-05-07T20:52:19.705405Z",
+        "last_used_at": "2023-05-07T20:52:17Z",
+        "status": "Active"
+    }
+"#;
 
 #[test]
 fn deserialize_mos_access_key_list() {
@@ -978,27 +1052,31 @@ fn deserialize_mos_access_key_detail() {
 // The CustomDomain struct uses name, domain_name, status, created_at for the CRUD endpoint.
 // No specific CRUD endpoint JSON is in the public docs, so this uses a realistic shape
 // consistent with the struct definition and UpCloud naming conventions.
-const MOS_CUSTOM_DOMAIN_JSON: &str = r#"{
-    "name": "objects-cdn",
-    "domain_name": "objects.example-company.com",
-    "status": "active",
-    "created_at": "2023-05-07T16:00:00.000000Z"
-}"#;
-
-const MOS_CUSTOM_DOMAIN_LIST_JSON: &str = r#"[
+const MOS_CUSTOM_DOMAIN_JSON: &str = r#"
     {
         "name": "objects-cdn",
         "domain_name": "objects.example-company.com",
         "status": "active",
         "created_at": "2023-05-07T16:00:00.000000Z"
-    },
-    {
-        "name": "static-cdn",
-        "domain_name": "static.example-company.com",
-        "status": "pending",
-        "created_at": "2023-05-07T16:30:00.000000Z"
     }
-]"#;
+"#;
+
+const MOS_CUSTOM_DOMAIN_LIST_JSON: &str = r#"
+    [
+        {
+            "name": "objects-cdn",
+            "domain_name": "objects.example-company.com",
+            "status": "active",
+            "created_at": "2023-05-07T16:00:00.000000Z"
+        },
+        {
+            "name": "static-cdn",
+            "domain_name": "static.example-company.com",
+            "status": "pending",
+            "created_at": "2023-05-07T16:30:00.000000Z"
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_custom_domain() {
@@ -1027,27 +1105,31 @@ fn deserialize_custom_domain_list() {
 // ─── Policy version tests (docs "List policy versions" / "Get policy version") ─
 
 // From docs: "List policy versions" and "Create policy version" responses
-const MOS_POLICY_VERSION_JSON: &str = r#"{
-    "version_id": "v2",
-    "document": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Action%22%3A%5B%22%2A%22%5D%2C%22Effect%22%3A%22Deny%22%2C%22Resource%22%3A%22%2A%22%7D%5D%7D",
-    "is_default_version": true,
-    "created_at": "2024-03-27T17:24:38.000071+02:00"
-}"#;
-
-const MOS_POLICY_VERSION_LIST_JSON: &str = r#"[
+const MOS_POLICY_VERSION_JSON: &str = r#"
     {
-        "version_id": "v4",
-        "document": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Action%22%3A%5B%22*%22%5D%2C%22Resource%22%3A%22*%22%2C%22Effect%22%3A%22Deny%22%7D%5D%7D",
-        "is_default_version": false,
-        "created_at": "2024-03-25T12:47:40Z"
-    },
-    {
-        "version_id": "v3",
-        "document": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Action%22%3A%5B%22*%22%5D%2C%22Resource%22%3A%22*%22%2C%22Effect%22%3A%22Deny%22%7D%5D%7D",
-        "is_default_version": false,
-        "created_at": "2024-03-25T12:47:38Z"
+        "version_id": "v2",
+        "document": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Action%22%3A%5B%22%2A%22%5D%2C%22Effect%22%3A%22Deny%22%2C%22Resource%22%3A%22%2A%22%7D%5D%7D",
+        "is_default_version": true,
+        "created_at": "2024-03-27T17:24:38.000071+02:00"
     }
-]"#;
+"#;
+
+const MOS_POLICY_VERSION_LIST_JSON: &str = r#"
+    [
+        {
+            "version_id": "v4",
+            "document": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Action%22%3A%5B%22*%22%5D%2C%22Resource%22%3A%22*%22%2C%22Effect%22%3A%22Deny%22%7D%5D%7D",
+            "is_default_version": false,
+            "created_at": "2024-03-25T12:47:40Z"
+        },
+        {
+            "version_id": "v3",
+            "document": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Action%22%3A%5B%22*%22%5D%2C%22Resource%22%3A%22*%22%2C%22Effect%22%3A%22Deny%22%7D%5D%7D",
+            "is_default_version": false,
+            "created_at": "2024-03-25T12:47:38Z"
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_policy_version() {

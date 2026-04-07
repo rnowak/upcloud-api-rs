@@ -1,49 +1,51 @@
 use super::*;
 
-const PERMISSION_LIST_JSON: &str = r#"{
-  "permissions": {
-"permission": [
-  {
-    "target_identifier": "0ad9408c-8563-4abf-b862-dbde5b581123",
-    "target_type": "managed_loadbalancer",
-    "user": "sub_account_user1"
-  },
-  {
-    "target_identifier": "0973a187-3ede-4jze-133e-85ea3e61b5bc",
-    "target_type": "managed_database",
-    "user": "sub_account_user1"
-  },
-  {
-    "target_identifier": "1203a187-3ede-4aae-883e-85ea3e69babc",
-    "target_type": "managed_object_storage",
-    "user": "sub_account_user1"
-  },
-  {
-    "options": {
-      "storage": "yes"
-    },
-    "target_identifier": "tag1",
-    "target_type": "tag_access",
-    "user": "sub_account_user1"
-  },
-  {
-    "target_identifier": "*",
-    "target_type": "server",
-    "user": "main_account_user1"
-  },
-  {
-    "target_identifier": "*",
-    "target_type": "storage",
-    "user": "main_account_user1"
-  },
-  {
-    "target_identifier": "*",
-    "target_type": "network",
-    "user": "main_account_user1"
-  }
-]
-  }
-}"#;
+const PERMISSION_LIST_JSON: &str = r#"
+    {
+        "permissions": {
+            "permission": [
+                {
+                    "target_identifier": "0ad9408c-8563-4abf-b862-dbde5b581123",
+                    "target_type": "managed_loadbalancer",
+                    "user": "sub_account_user1"
+                },
+                {
+                    "target_identifier": "0973a187-3ede-4jze-133e-85ea3e61b5bc",
+                    "target_type": "managed_database",
+                    "user": "sub_account_user1"
+                },
+                {
+                    "target_identifier": "1203a187-3ede-4aae-883e-85ea3e69babc",
+                    "target_type": "managed_object_storage",
+                    "user": "sub_account_user1"
+                },
+                {
+                    "options": {
+                        "storage": "yes"
+                    },
+                    "target_identifier": "tag1",
+                    "target_type": "tag_access",
+                    "user": "sub_account_user1"
+                },
+                {
+                    "target_identifier": "*",
+                    "target_type": "server",
+                    "user": "main_account_user1"
+                },
+                {
+                    "target_identifier": "*",
+                    "target_type": "storage",
+                    "user": "main_account_user1"
+                },
+                {
+                    "target_identifier": "*",
+                    "target_type": "network",
+                    "user": "main_account_user1"
+                }
+            ]
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_permission_list() {
@@ -123,24 +125,77 @@ struct RevokePermissionBody {
 
 // ─── Additional deserialization tests ──────────────────────────────────
 
-const PERMISSION_LIST_FULL_JSON: &str = r#"{
-  "permissions": {
-"permission": [
-  {"target_identifier": "0ad9408c-8563-4abf-b862-dbde5b581123", "target_type": "managed_loadbalancer", "user": "sub_account_user1"},
-  {"target_identifier": "0973a187-3ede-4jze-133e-85ea3e61b5bc", "target_type": "managed_database", "user": "sub_account_user1"},
-  {"target_identifier": "1203a187-3ede-4aae-883e-85ea3e69babc", "target_type": "managed_object_storage", "user": "sub_account_user1"},
-  {"options": {"storage": "yes"}, "target_identifier": "tag1", "target_type": "tag_access", "user": "sub_account_user1"},
-  {"target_identifier": "*", "target_type": "router", "user": "main_account_user1"},
-  {"target_identifier": "*", "target_type": "server", "user": "main_account_user1"},
-  {"target_identifier": "*", "target_type": "storage", "user": "main_account_user1"},
-  {"target_identifier": "*", "target_type": "managed_database", "user": "main_account_user1"},
-  {"target_identifier": "*", "target_type": "managed_loadbalancer", "user": "main_account_user1"},
-  {"target_identifier": "*", "target_type": "tag_access", "user": "main_account_user1"},
-  {"target_identifier": "*", "target_type": "managed_object_storage", "user": "main_account_user1"},
-  {"target_identifier": "*", "target_type": "network", "user": "main_account_user1"}
-]
-  }
-}"#;
+const PERMISSION_LIST_FULL_JSON: &str = r#"
+    {
+        "permissions": {
+            "permission": [
+                {
+                    "target_identifier": "0ad9408c-8563-4abf-b862-dbde5b581123",
+                    "target_type": "managed_loadbalancer",
+                    "user": "sub_account_user1"
+                },
+                {
+                    "target_identifier": "0973a187-3ede-4jze-133e-85ea3e61b5bc",
+                    "target_type": "managed_database",
+                    "user": "sub_account_user1"
+                },
+                {
+                    "target_identifier": "1203a187-3ede-4aae-883e-85ea3e69babc",
+                    "target_type": "managed_object_storage",
+                    "user": "sub_account_user1"
+                },
+                {
+                    "options": {
+                        "storage": "yes"
+                    },
+                    "target_identifier": "tag1",
+                    "target_type": "tag_access",
+                    "user": "sub_account_user1"
+                },
+                {
+                    "target_identifier": "*",
+                    "target_type": "router",
+                    "user": "main_account_user1"
+                },
+                {
+                    "target_identifier": "*",
+                    "target_type": "server",
+                    "user": "main_account_user1"
+                },
+                {
+                    "target_identifier": "*",
+                    "target_type": "storage",
+                    "user": "main_account_user1"
+                },
+                {
+                    "target_identifier": "*",
+                    "target_type": "managed_database",
+                    "user": "main_account_user1"
+                },
+                {
+                    "target_identifier": "*",
+                    "target_type": "managed_loadbalancer",
+                    "user": "main_account_user1"
+                },
+                {
+                    "target_identifier": "*",
+                    "target_type": "tag_access",
+                    "user": "main_account_user1"
+                },
+                {
+                    "target_identifier": "*",
+                    "target_type": "managed_object_storage",
+                    "user": "main_account_user1"
+                },
+                {
+                    "target_identifier": "*",
+                    "target_type": "network",
+                    "user": "main_account_user1"
+                }
+            ]
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_permission_list_full() {
@@ -210,15 +265,32 @@ fn deserialize_permission_list_full() {
     assert_eq!(perms[11].user, "main_account_user1");
 }
 
-const PERMISSION_LIST_SUBACCOUNT_JSON: &str = r#"{
-  "permissions": {
-"permission": [
-  {"target_identifier": "0ad9408c-8563-4abf-b862-dbde5b581123", "target_type": "managed_loadbalancer", "user": "sub_account_user1"},
-  {"target_identifier": "1203a187-3ede-4lwe-884v-25ea3e69babc", "target_type": "managed_object_storage", "user": "sub_account_user1"},
-  {"options": {"storage": "yes"}, "target_identifier": "tag1", "target_type": "tag_access", "user": "sub_account_user1"}
-]
-  }
-}"#;
+const PERMISSION_LIST_SUBACCOUNT_JSON: &str = r#"
+    {
+        "permissions": {
+            "permission": [
+                {
+                    "target_identifier": "0ad9408c-8563-4abf-b862-dbde5b581123",
+                    "target_type": "managed_loadbalancer",
+                    "user": "sub_account_user1"
+                },
+                {
+                    "target_identifier": "1203a187-3ede-4lwe-884v-25ea3e69babc",
+                    "target_type": "managed_object_storage",
+                    "user": "sub_account_user1"
+                },
+                {
+                    "options": {
+                        "storage": "yes"
+                    },
+                    "target_identifier": "tag1",
+                    "target_type": "tag_access",
+                    "user": "sub_account_user1"
+                }
+            ]
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_permission_list_subaccount() {
@@ -250,14 +322,16 @@ fn deserialize_permission_list_subaccount() {
     assert_eq!(perms[2].options.as_ref().unwrap()["storage"], "yes");
 }
 
-const GRANT_PERMISSION_REQUEST_JSON: &str = r#"{
-  "permission": {
-"options": {},
-"target_identifier": "0ad9408c-8563-4abf-b862-dbde5b581123",
-"target_type": "managed_loadbalancer",
-"user": "sub_account_user1"
-  }
-}"#;
+const GRANT_PERMISSION_REQUEST_JSON: &str = r#"
+    {
+        "permission": {
+            "options": {},
+            "target_identifier": "0ad9408c-8563-4abf-b862-dbde5b581123",
+            "target_type": "managed_loadbalancer",
+            "user": "sub_account_user1"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_grant_permission_request() {
@@ -272,14 +346,16 @@ fn deserialize_grant_permission_request() {
     assert!(perm.options.is_some());
 }
 
-const GRANT_PERMISSION_RESPONSE_JSON: &str = r#"{
-  "permission": {
-"options": {},
-"target_identifier": "0ad9408c-8563-4abf-b862-dbde5b581123",
-"target_type": "managed_loadbalancer",
-"user": "sub_account_user1"
-  }
-}"#;
+const GRANT_PERMISSION_RESPONSE_JSON: &str = r#"
+    {
+        "permission": {
+            "options": {},
+            "target_identifier": "0ad9408c-8563-4abf-b862-dbde5b581123",
+            "target_type": "managed_loadbalancer",
+            "user": "sub_account_user1"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_grant_permission_response() {
@@ -294,13 +370,15 @@ fn deserialize_grant_permission_response() {
     assert!(perm.options.is_some());
 }
 
-const REVOKE_PERMISSION_REQUEST_JSON: &str = r#"{
-  "permission": {
-"target_identifier": "0ad9408c-8563-4abf-b862-dbde5b581123",
-"target_type": "managed_loadbalancer",
-"user": "sub_account_user1"
-  }
-}"#;
+const REVOKE_PERMISSION_REQUEST_JSON: &str = r#"
+    {
+        "permission": {
+            "target_identifier": "0ad9408c-8563-4abf-b862-dbde5b581123",
+            "target_type": "managed_loadbalancer",
+            "user": "sub_account_user1"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_revoke_permission_request() {
@@ -314,7 +392,13 @@ fn deserialize_revoke_permission_request() {
     assert_eq!(perm.user, "sub_account_user1");
 }
 
-const EMPTY_PERMISSION_LIST_JSON: &str = r#"{"permissions": {"permission": []}}"#;
+const EMPTY_PERMISSION_LIST_JSON: &str = r#"
+    {
+        "permissions": {
+            "permission": []
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_empty_permission_list() {

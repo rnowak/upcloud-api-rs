@@ -1,52 +1,56 @@
 use super::*;
 
-const PLAN_LIST_JSON: &str = r#"{
-  "plans": {
-"plan": [
-  {
-    "core_number": "1",
-    "memory_amount": "2048",
-    "name": "1xCPU-2GB",
-    "public_traffic_out": "2048",
-    "storage_size": "50",
-    "storage_tier": "maxiops"
-  },
-  {
-    "core_number": "2",
-    "memory_amount": "4096",
-    "name": "2xCPU-4GB",
-    "public_traffic_out": "4096",
-    "storage_size": "80",
-    "storage_tier": "maxiops"
-  },
-  {
-    "core_number": "32",
-    "memory_amount": "393216",
-    "name": "GPU-32xCPU-384GB-2xL40S",
-    "public_traffic_out": "44",
-    "gpu_amount": 2,
-    "storage_size": "0",
-    "storage_tier": null,
-    "gpu_model": "NVIDIA L40S"
-  }
-]
-  }
-}"#;
+const PLAN_LIST_JSON: &str = r#"
+    {
+        "plans": {
+            "plan": [
+                {
+                    "core_number": "1",
+                    "memory_amount": "2048",
+                    "name": "1xCPU-2GB",
+                    "public_traffic_out": "2048",
+                    "storage_size": "50",
+                    "storage_tier": "maxiops"
+                },
+                {
+                    "core_number": "2",
+                    "memory_amount": "4096",
+                    "name": "2xCPU-4GB",
+                    "public_traffic_out": "4096",
+                    "storage_size": "80",
+                    "storage_tier": "maxiops"
+                },
+                {
+                    "core_number": "32",
+                    "memory_amount": "393216",
+                    "name": "GPU-32xCPU-384GB-2xL40S",
+                    "public_traffic_out": "44",
+                    "gpu_amount": 2,
+                    "storage_size": "0",
+                    "storage_tier": null,
+                    "gpu_model": "NVIDIA L40S"
+                }
+            ]
+        }
+    }
+"#;
 
-const SERVER_SIZE_LIST_JSON: &str = r#"{
-  "server_sizes": {
-"server_size": [
-  {
-    "core_number": "1",
-    "memory_amount": "1024"
-  },
-  {
-    "core_number": "2",
-    "memory_amount": "2048"
-  }
-]
-  }
-}"#;
+const SERVER_SIZE_LIST_JSON: &str = r#"
+    {
+        "server_sizes": {
+            "server_size": [
+                {
+                    "core_number": "1",
+                    "memory_amount": "1024"
+                },
+                {
+                    "core_number": "2",
+                    "memory_amount": "2048"
+                }
+            ]
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_plan_list() {

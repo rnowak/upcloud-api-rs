@@ -1,17 +1,19 @@
 use super::*;
 
-const TIMEZONE_LIST_JSON: &str = r#"{
-  "timezones": {
-"timezone": [
-  "Africa/Abidjan",
-  "Africa/Accra",
-  "Africa/Addis_Ababa",
-  "Pacific/Wake",
-  "Pacific/Wallis",
-  "UTC"
-]
-  }
-}"#;
+const TIMEZONE_LIST_JSON: &str = r#"
+    {
+        "timezones": {
+            "timezone": [
+                "Africa/Abidjan",
+                "Africa/Accra",
+                "Africa/Addis_Ababa",
+                "Pacific/Wake",
+                "Pacific/Wallis",
+                "UTC"
+            ]
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_timezone_list() {

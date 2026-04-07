@@ -1,86 +1,122 @@
 use super::*;
 
-const DB_LIST_JSON: &str = r#"[
-  {
-"uuid": "09d9d824-8b3e-4a57-a9b3-77ec51fd5c84",
-"name": "pg-2x2xcpu-4gb-50gb-de-fra1",
-"title": "pg-2x2xcpu-4gb-50gb-de-fra1",
-"plan": "2x2xCPU-4GB-50GB",
-"zone": "de-fra1",
-"type": "pg",
-"state": "running",
-"powered": true,
-"components": [
-  {
-    "component": "pg",
-    "host": "example.db.upclouddatabases.com",
-    "port": 11550,
-    "route": "dynamic",
-    "usage": "primary"
-  },
-  {
-    "component": "pgbouncer",
-    "host": "example.db.upclouddatabases.com",
-    "port": 11551,
-    "route": "dynamic",
-    "usage": "primary"
-  }
-],
-"node_states": [
-  {
-    "name": "pg-2x2xcpu-4gb-50gb-de-fra1-1",
-    "role": "master",
-    "state": "running"
-  },
-  {
-    "name": "pg-2x2xcpu-4gb-50gb-de-fra1-2",
-    "role": "standby",
-    "state": "syncing_data"
-  }
-],
-"properties": {
-  "automatic_utility_network_ip_filter": false,
-  "ip_filter": ["0.0.0.0/0"],
-  "public_access": true,
-  "version": "13"
-},
-"service_uri": "postgres://upadmin:pass@host:11550/defaultdb?sslmode=require",
-"service_uri_params": {
-  "host": "example.db.upclouddatabases.com",
-  "port": "11550"
-},
-"labels": [
-  {"key": "env", "value": "production"}
-]
-  }
-]"#;
+const DB_LIST_JSON: &str = r#"
+    [
+        {
+            "uuid": "09d9d824-8b3e-4a57-a9b3-77ec51fd5c84",
+            "name": "pg-2x2xcpu-4gb-50gb-de-fra1",
+            "title": "pg-2x2xcpu-4gb-50gb-de-fra1",
+            "plan": "2x2xCPU-4GB-50GB",
+            "zone": "de-fra1",
+            "type": "pg",
+            "state": "running",
+            "powered": true,
+            "components": [
+                {
+                    "component": "pg",
+                    "host": "example.db.upclouddatabases.com",
+                    "port": 11550,
+                    "route": "dynamic",
+                    "usage": "primary"
+                },
+                {
+                    "component": "pgbouncer",
+                    "host": "example.db.upclouddatabases.com",
+                    "port": 11551,
+                    "route": "dynamic",
+                    "usage": "primary"
+                }
+            ],
+            "node_states": [
+                {
+                    "name": "pg-2x2xcpu-4gb-50gb-de-fra1-1",
+                    "role": "master",
+                    "state": "running"
+                },
+                {
+                    "name": "pg-2x2xcpu-4gb-50gb-de-fra1-2",
+                    "role": "standby",
+                    "state": "syncing_data"
+                }
+            ],
+            "properties": {
+                "automatic_utility_network_ip_filter": false,
+                "ip_filter": [
+                    "0.0.0.0/0"
+                ],
+                "public_access": true,
+                "version": "13"
+            },
+            "service_uri": "postgres://upadmin:pass@host:11550/defaultdb?sslmode=require",
+            "service_uri_params": {
+                "host": "example.db.upclouddatabases.com",
+                "port": "11550"
+            },
+            "labels": [
+                {
+                    "key": "env",
+                    "value": "production"
+                }
+            ]
+        }
+    ]
+"#;
 
-const DB_USER_LIST_JSON: &str = r#"[
-  {"username": "upadmin", "type": "primary"},
-  {"username": "reader", "type": "readonly", "pg_allow_replication": false}
-]"#;
+const DB_USER_LIST_JSON: &str = r#"
+    [
+        {
+            "username": "upadmin",
+            "type": "primary"
+        },
+        {
+            "username": "reader",
+            "type": "readonly",
+            "pg_allow_replication": false
+        }
+    ]
+"#;
 
-const DB_LOGICAL_DB_LIST_JSON: &str = r#"[
-  {"name": "defaultdb", "lc_collate": "en_US.UTF-8", "lc_ctype": "en_US.UTF-8"},
-  {"name": "testdb"}
-]"#;
+const DB_LOGICAL_DB_LIST_JSON: &str = r#"
+    [
+        {
+            "name": "defaultdb",
+            "lc_collate": "en_US.UTF-8",
+            "lc_ctype": "en_US.UTF-8"
+        },
+        {
+            "name": "testdb"
+        }
+    ]
+"#;
 
-const DB_PLAN_JSON: &str = r#"[
-  {"name": "1x1xCPU-2GB-25GB", "node_count": 1, "storage_size": 25600},
-  {"name": "2x2xCPU-4GB-50GB", "node_count": 2, "storage_size": 51200}
-]"#;
+const DB_PLAN_JSON: &str = r#"
+    [
+        {
+            "name": "1x1xCPU-2GB-25GB",
+            "node_count": 1,
+            "storage_size": 25600
+        },
+        {
+            "name": "2x2xCPU-4GB-50GB",
+            "node_count": 2,
+            "storage_size": 51200
+        }
+    ]
+"#;
 
-const DB_SESSION_JSON: &str = r#"[
-  {
-"pid": 12345,
-"query": "SELECT 1",
-"query_duration": "00:00:01",
-"state": "active",
-"client_addr": "192.168.1.1",
-"datname": "defaultdb",
-"usename": "upadmin"
-  }
-]"#;
+const DB_SESSION_JSON: &str = r#"
+    [
+        {
+            "pid": 12345,
+            "query": "SELECT 1",
+            "query_duration": "00:00:01",
+            "state": "active",
+            "client_addr": "192.168.1.1",
+            "datname": "defaultdb",
+            "usename": "upadmin"
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_managed_database_list() {
@@ -206,24 +242,69 @@ fn deserialize_db_session_list() {
 
 // ─── New deserialization tests ───────────────────────────────────────────
 
-const PG_AVAILABLE_EXTENSIONS_JSON: &str = r#"[
-  {
-"extensions": [
-  {"default_version": "1.0", "name": "bloom", "versions": ["1.0"]},
-  {"default_version": "1.0", "name": "bool_plperl", "versions": ["1.0"]},
-  {"default_version": "1.3", "name": "btree_gin", "versions": ["1.0", "1.1", "1.2", "1.3"]}
-],
-"version": "13"
-  },
-  {
-"extensions": [
-  {"default_version": "7", "name": "unit", "versions": ["3", "4", "5", "6", "7"]},
-  {"default_version": "1.1", "name": "uuid-ossp", "versions": ["1.1"]},
-  {"default_version": "0.8.1", "name": "vector", "versions": ["0.8.1"]}
-],
-"version": "14"
-  }
-]"#;
+const PG_AVAILABLE_EXTENSIONS_JSON: &str = r#"
+    [
+        {
+            "extensions": [
+                {
+                    "default_version": "1.0",
+                    "name": "bloom",
+                    "versions": [
+                        "1.0"
+                    ]
+                },
+                {
+                    "default_version": "1.0",
+                    "name": "bool_plperl",
+                    "versions": [
+                        "1.0"
+                    ]
+                },
+                {
+                    "default_version": "1.3",
+                    "name": "btree_gin",
+                    "versions": [
+                        "1.0",
+                        "1.1",
+                        "1.2",
+                        "1.3"
+                    ]
+                }
+            ],
+            "version": "13"
+        },
+        {
+            "extensions": [
+                {
+                    "default_version": "7",
+                    "name": "unit",
+                    "versions": [
+                        "3",
+                        "4",
+                        "5",
+                        "6",
+                        "7"
+                    ]
+                },
+                {
+                    "default_version": "1.1",
+                    "name": "uuid-ossp",
+                    "versions": [
+                        "1.1"
+                    ]
+                },
+                {
+                    "default_version": "0.8.1",
+                    "name": "vector",
+                    "versions": [
+                        "0.8.1"
+                    ]
+                }
+            ],
+            "version": "14"
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_pg_available_extensions() {
@@ -260,11 +341,42 @@ fn deserialize_pg_available_extensions() {
     assert_eq!(versions[1].extensions[2].versions, vec!["0.8.1"]);
 }
 
-const INSTANCE_AVAILABLE_EXTENSIONS_JSON: &str = r#"[
-  {"default_version": "1.6", "name": "pg_buffercache", "versions": ["1.2", "1.3", "1.4", "1.5", "1.6"]},
-  {"default_version": "1.6", "name": "pg_cron", "versions": ["1.0", "1.1", "1.2", "1.3", "1.4", "1.4-1", "1.5", "1.6"]},
-  {"default_version": "5.2.4", "name": "pg_partman", "versions": ["5.2.4"]}
-]"#;
+const INSTANCE_AVAILABLE_EXTENSIONS_JSON: &str = r#"
+    [
+        {
+            "default_version": "1.6",
+            "name": "pg_buffercache",
+            "versions": [
+                "1.2",
+                "1.3",
+                "1.4",
+                "1.5",
+                "1.6"
+            ]
+        },
+        {
+            "default_version": "1.6",
+            "name": "pg_cron",
+            "versions": [
+                "1.0",
+                "1.1",
+                "1.2",
+                "1.3",
+                "1.4",
+                "1.4-1",
+                "1.5",
+                "1.6"
+            ]
+        },
+        {
+            "default_version": "5.2.4",
+            "name": "pg_partman",
+            "versions": [
+                "5.2.4"
+            ]
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_instance_available_extensions() {
@@ -282,36 +394,38 @@ fn deserialize_instance_available_extensions() {
     assert_eq!(exts[2].versions, vec!["5.2.4"]);
 }
 
-const DB_SERVICE_TYPES_JSON: &str = r#"{
-  "mysql": {
-"name": "mysql",
-"description": "MySQL - Relational Database Management System",
-"latest_available_version": "8.0.26",
-"service_plans": [
-  {
-    "node_count": 1,
-    "plan": "1x1xCPU-2GB-25GB",
-    "core_number": 1,
-    "storage_size": 25600,
-    "memory_amount": 2048
-  }
-],
-"properties": {
-  "public_access": {
-    "default": false,
-    "title": "Public Access",
-    "type": "boolean"
-  }
-}
-  },
-  "pg": {
-"name": "pg",
-"description": "PostgreSQL - Object-Relational Database Management System",
-"latest_available_version": "13.5",
-"service_plans": [],
-"properties": {}
-  }
-}"#;
+const DB_SERVICE_TYPES_JSON: &str = r#"
+    {
+        "mysql": {
+            "name": "mysql",
+            "description": "MySQL - Relational Database Management System",
+            "latest_available_version": "8.0.26",
+            "service_plans": [
+                {
+                    "node_count": 1,
+                    "plan": "1x1xCPU-2GB-25GB",
+                    "core_number": 1,
+                    "storage_size": 25600,
+                    "memory_amount": 2048
+                }
+            ],
+            "properties": {
+                "public_access": {
+                    "default": false,
+                    "title": "Public Access",
+                    "type": "boolean"
+                }
+            }
+        },
+        "pg": {
+            "name": "pg",
+            "description": "PostgreSQL - Object-Relational Database Management System",
+            "latest_available_version": "13.5",
+            "service_plans": [],
+            "properties": {}
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_db_service_types() {
@@ -355,27 +469,43 @@ fn deserialize_db_service_types() {
     assert!(pg["properties"].as_object().unwrap().is_empty());
 }
 
-const CREATE_DB_REQUEST_JSON: &str = r#"{
-  "hostname_prefix": "doc-api-unique-prefix",
-  "plan": "1x1xCPU-2GB-25GB",
-  "title": "my-managed-database",
-  "type": "mysql",
-  "zone": "de-fra1",
-  "maintenance": {"dow": "sunday", "time": "05:00:00"},
-  "termination_protection": false,
-  "properties": {
-"automatic_utility_network_ip_filter": true,
-"version": "8",
-"ip_filter": []
-  },
-  "networks": [
-{"name": "example-network-1", "type": "private", "family": "IPv4", "uuid": "03631160-d57a-4926-ad48-a2f828229dcb"}
-  ],
-  "labels": [
-{"key": "env", "value": "staging"},
-{"key": "foo", "value": "bar"}
-  ]
-}"#;
+const CREATE_DB_REQUEST_JSON: &str = r#"
+    {
+        "hostname_prefix": "doc-api-unique-prefix",
+        "plan": "1x1xCPU-2GB-25GB",
+        "title": "my-managed-database",
+        "type": "mysql",
+        "zone": "de-fra1",
+        "maintenance": {
+            "dow": "sunday",
+            "time": "05:00:00"
+        },
+        "termination_protection": false,
+        "properties": {
+            "automatic_utility_network_ip_filter": true,
+            "version": "8",
+            "ip_filter": []
+        },
+        "networks": [
+            {
+                "name": "example-network-1",
+                "type": "private",
+                "family": "IPv4",
+                "uuid": "03631160-d57a-4926-ad48-a2f828229dcb"
+            }
+        ],
+        "labels": [
+            {
+                "key": "env",
+                "value": "staging"
+            },
+            {
+                "key": "foo",
+                "value": "bar"
+            }
+        ]
+    }
+"#;
 
 #[test]
 fn deserialize_create_db_request() {
@@ -416,25 +546,43 @@ fn deserialize_create_db_request() {
     assert_eq!(labels[1]["value"], "bar");
 }
 
-const DB_DETAILS_JSON: &str = r#"{
-  "uuid": "09d9d824-8b3e-4a57-a9b3-77ec51fd5c84",
-  "name": "pg-2x2xcpu-4gb-50gb-de-fra1",
-  "title": "pg-2x2xcpu-4gb-50gb-de-fra1",
-  "plan": "2x2xCPU-4GB-50GB",
-  "zone": "de-fra1",
-  "type": "pg",
-  "state": "running",
-  "powered": true,
-  "components": [
-{"component": "pg", "host": "example.db.upclouddatabases.com", "port": 11550, "route": "dynamic", "usage": "primary"}
-  ],
-  "node_states": [
-{"name": "pg-1", "role": "master", "state": "running"}
-  ],
-  "properties": {"public_access": true, "version": "13"},
-  "service_uri": "postgres://upadmin:pass@host:11550/defaultdb?sslmode=require",
-  "service_uri_params": {"host": "example.db.upclouddatabases.com", "port": "11550"}
-}"#;
+const DB_DETAILS_JSON: &str = r#"
+    {
+        "uuid": "09d9d824-8b3e-4a57-a9b3-77ec51fd5c84",
+        "name": "pg-2x2xcpu-4gb-50gb-de-fra1",
+        "title": "pg-2x2xcpu-4gb-50gb-de-fra1",
+        "plan": "2x2xCPU-4GB-50GB",
+        "zone": "de-fra1",
+        "type": "pg",
+        "state": "running",
+        "powered": true,
+        "components": [
+            {
+                "component": "pg",
+                "host": "example.db.upclouddatabases.com",
+                "port": 11550,
+                "route": "dynamic",
+                "usage": "primary"
+            }
+        ],
+        "node_states": [
+            {
+                "name": "pg-1",
+                "role": "master",
+                "state": "running"
+            }
+        ],
+        "properties": {
+            "public_access": true,
+            "version": "13"
+        },
+        "service_uri": "postgres://upadmin:pass@host:11550/defaultdb?sslmode=require",
+        "service_uri_params": {
+            "host": "example.db.upclouddatabases.com",
+            "port": "11550"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_db_details() {
@@ -489,12 +637,16 @@ fn deserialize_db_details() {
     assert_eq!(props["version"], "13");
 }
 
-const MODIFY_DB_REQUEST_JSON: &str = r#"{
-  "title": "my-managed-database",
-  "powered": true,
-  "plan": "1x1xCPU-2GB-25GB",
-  "properties": {"automatic_utility_network_ip_filter": true}
-}"#;
+const MODIFY_DB_REQUEST_JSON: &str = r#"
+    {
+        "title": "my-managed-database",
+        "powered": true,
+        "plan": "1x1xCPU-2GB-25GB",
+        "properties": {
+            "automatic_utility_network_ip_filter": true
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_modify_db_request() {
@@ -507,7 +659,13 @@ fn deserialize_modify_db_request() {
     assert!(req.labels.is_none());
 }
 
-const CREATE_DB_USER_MYSQL_JSON: &str = r#"{"username": "api-doc-user", "authentication": "caching_sha2_password", "password": "new-password"}"#;
+const CREATE_DB_USER_MYSQL_JSON: &str = r#"
+    {
+        "username": "api-doc-user",
+        "authentication": "caching_sha2_password",
+        "password": "new-password"
+    }
+"#;
 
 #[test]
 fn deserialize_create_db_user_mysql() {
@@ -519,7 +677,14 @@ fn deserialize_create_db_user_mysql() {
     assert!(req.pg_allow_replication.is_none());
 }
 
-const DB_USER_DETAIL_MYSQL_JSON: &str = r#"{"username": "api-doc-user", "password": "my-password", "authentication": "caching_sha2_password", "type": "normal"}"#;
+const DB_USER_DETAIL_MYSQL_JSON: &str = r#"
+    {
+        "username": "api-doc-user",
+        "password": "my-password",
+        "authentication": "caching_sha2_password",
+        "type": "normal"
+    }
+"#;
 
 #[test]
 fn deserialize_db_user_detail_mysql() {
@@ -534,7 +699,16 @@ fn deserialize_db_user_detail_mysql() {
     assert!(user.pg_allow_replication.is_none());
 }
 
-const DB_USER_DETAIL_PG_JSON: &str = r#"{"username": "api-doc-user", "password": "new-password", "type": "normal", "pg_access_control": {"allow_replication": true}}"#;
+const DB_USER_DETAIL_PG_JSON: &str = r#"
+    {
+        "username": "api-doc-user",
+        "password": "new-password",
+        "type": "normal",
+        "pg_access_control": {
+            "allow_replication": true
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_db_user_detail_pg() {
@@ -547,7 +721,12 @@ fn deserialize_db_user_detail_pg() {
 }
 
 const MODIFY_DB_USER_REQUEST_JSON: &str =
-    r#"{"authentication": "caching_sha2_password", "password": "new-password"}"#;
+    r#"
+    {
+        "authentication": "caching_sha2_password",
+        "password": "new-password"
+    }
+"#;
 
 #[test]
 fn deserialize_modify_db_user_request() {
@@ -558,7 +737,13 @@ fn deserialize_modify_db_user_request() {
 }
 
 const CREATE_LOGICAL_DB_JSON: &str =
-    r#"{"name": "database-doc-api", "lc_collate": "en_US.UTF8", "lc_ctype": "en_US.UTF8"}"#;
+    r#"
+    {
+        "name": "database-doc-api",
+        "lc_collate": "en_US.UTF8",
+        "lc_ctype": "en_US.UTF8"
+    }
+"#;
 
 #[test]
 fn deserialize_create_logical_db() {
@@ -568,7 +753,11 @@ fn deserialize_create_logical_db() {
     assert_eq!(req.lc_ctype.as_deref(), Some("en_US.UTF8"));
 }
 
-const SESSION_TERMINATE_JSON: &str = r#"{"success": true}"#;
+const SESSION_TERMINATE_JSON: &str = r#"
+    {
+        "success": true
+    }
+"#;
 
 #[test]
 fn deserialize_session_terminate() {
@@ -576,24 +765,26 @@ fn deserialize_session_terminate() {
     assert_eq!(val["success"], true);
 }
 
-const PG_SESSIONS_DETAILED_JSON: &str = r#"{
-  "pg": [
-{
-  "application_name": "client 1.5.14",
-  "backend_start": "2022-01-21T13:26:26.682858Z",
-  "backend_type": "client backend",
-  "client_addr": "111.111.111.111",
-  "client_port": 61264,
-  "datid": 16401,
-  "datname": "defaultdb",
-  "id": "pid_2065031",
-  "query": "SELECT 1",
-  "query_duration": 12225858000,
-  "state": "idle",
-  "usename": "upadmin"
-}
-  ]
-}"#;
+const PG_SESSIONS_DETAILED_JSON: &str = r#"
+    {
+        "pg": [
+            {
+                "application_name": "client 1.5.14",
+                "backend_start": "2022-01-21T13:26:26.682858Z",
+                "backend_type": "client backend",
+                "client_addr": "111.111.111.111",
+                "client_port": 61264,
+                "datid": 16401,
+                "datname": "defaultdb",
+                "id": "pid_2065031",
+                "query": "SELECT 1",
+                "query_duration": 12225858000,
+                "state": "idle",
+                "usename": "upadmin"
+            }
+        ]
+    }
+"#;
 
 #[test]
 fn deserialize_pg_sessions_detailed() {
@@ -615,23 +806,25 @@ fn deserialize_pg_sessions_detailed() {
     assert_eq!(s["usename"], "upadmin");
 }
 
-const QUERY_STATISTICS_JSON: &str = r#"{
-  "pg": [
-{
-  "blk_read_time": 0,
-  "blk_write_time": 0,
-  "calls": 57425,
-  "database_name": "defaultdb",
-  "max_time": 133387,
-  "mean_time": 1060,
-  "min_time": 151,
-  "query": "COMMIT",
-  "rows": 0,
-  "total_time": 60879904,
-  "user_name": "upadmin"
-}
-  ]
-}"#;
+const QUERY_STATISTICS_JSON: &str = r#"
+    {
+        "pg": [
+            {
+                "blk_read_time": 0,
+                "blk_write_time": 0,
+                "calls": 57425,
+                "database_name": "defaultdb",
+                "max_time": 133387,
+                "mean_time": 1060,
+                "min_time": 151,
+                "query": "COMMIT",
+                "rows": 0,
+                "total_time": 60879904,
+                "user_name": "upadmin"
+            }
+        ]
+    }
+"#;
 
 #[test]
 fn deserialize_query_statistics() {
@@ -652,20 +845,33 @@ fn deserialize_query_statistics() {
     assert_eq!(s["user_name"], "upadmin");
 }
 
-const DB_METRICS_JSON: &str = r#"{
-  "cpu_usage": {
-"data": {
-  "cols": [
-    {"label": "time", "type": "date"},
-    {"label": "test-1 (master)", "type": "number"}
-  ],
-  "rows": [
-    ["2022-01-21T13:10:30Z", 2.744]
-  ]
-},
-"hints": {"title": "CPU usage %"}
-  }
-}"#;
+const DB_METRICS_JSON: &str = r#"
+    {
+        "cpu_usage": {
+            "data": {
+                "cols": [
+                    {
+                        "label": "time",
+                        "type": "date"
+                    },
+                    {
+                        "label": "test-1 (master)",
+                        "type": "number"
+                    }
+                ],
+                "rows": [
+                    [
+                        "2022-01-21T13:10:30Z",
+                        2.744
+                    ]
+                ]
+            },
+            "hints": {
+                "title": "CPU usage %"
+            }
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_db_metrics() {
@@ -684,18 +890,20 @@ fn deserialize_db_metrics() {
     assert_eq!(cpu["hints"]["title"], "CPU usage %");
 }
 
-const DB_LOGS_JSON: &str = r#"{
-  "first_log_offset": "1642770443687",
-  "offset": "1642770443687",
-  "logs": [
-{
-  "hostname": "api-doc-hostname",
-  "msg": "LOG: connection authorized",
-  "time": "2022-01-21T13:07:23.687241Z",
-  "service": "postgresql-13.service"
-}
-  ]
-}"#;
+const DB_LOGS_JSON: &str = r#"
+    {
+        "first_log_offset": "1642770443687",
+        "offset": "1642770443687",
+        "logs": [
+            {
+                "hostname": "api-doc-hostname",
+                "msg": "LOG: connection authorized",
+                "time": "2022-01-21T13:07:23.687241Z",
+                "service": "postgresql-13.service"
+            }
+        ]
+    }
+"#;
 
 #[test]
 fn deserialize_db_logs() {
@@ -710,7 +918,15 @@ fn deserialize_db_logs() {
     assert_eq!(logs[0]["service"], "postgresql-13.service");
 }
 
-const DB_VERSIONS_JSON: &str = r#"["10", "11", "12", "13", "14"]"#;
+const DB_VERSIONS_JSON: &str = r#"
+    [
+        "10",
+        "11",
+        "12",
+        "13",
+        "14"
+    ]
+"#;
 
 #[test]
 fn deserialize_db_versions() {
@@ -723,9 +939,16 @@ fn deserialize_db_versions() {
     assert_eq!(versions[4], "14");
 }
 
-const DB_NETWORKS_JSON: &str = r#"[
-  {"uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4", "name": "example-private-network", "family": "IPv4", "type": "private"}
-]"#;
+const DB_NETWORKS_JSON: &str = r#"
+    [
+        {
+            "uuid": "03aa7245-2ff9-49c8-9f0e-7ca0270d71a4",
+            "name": "example-private-network",
+            "family": "IPv4",
+            "type": "private"
+        }
+    ]
+"#;
 
 #[test]
 fn deserialize_db_networks() {
@@ -739,66 +962,85 @@ fn deserialize_db_networks() {
 
 // ─── Service type detail (single type, official docs page 16) ─────────────
 
-const DB_SERVICE_TYPE_DETAIL_JSON: &str = r#"{
-  "mysql": {
-"name": "mysql",
-"description": "MySQL - Relational Database Management System",
-"latest_available_version": "8.0.26",
-"service_plans": [
-  {
-    "backup_config_msql": {
-      "interval": 24,
-      "max_count": 2,
-      "recovery_mode": "pitr"
-    },
-    "node_count": 1,
-    "zones": {
-      "zone": [
-        { "name": "es-mad1" },
-        { "name": "pl-waw1" },
-        { "name": "us-sjo1" }
-      ]
-    },
-    "plan": "1x1xCPU-2GB-25GB",
-    "core_number": 1,
-    "storage_size": 25600,
-    "memory_amount": 2048
-  }
-],
-"properties": {
-  "admin_password": {
-    "createOnly": true,
-    "example": "z66o9QXqKM",
-    "maxLength": 256,
-    "minLength": 8,
-    "pattern": "^[a-zA-Z0-9-_]+$",
-    "title": "Custom password for admin user. Defaults to random string. This must be set only when a new service is being created.",
-    "type": ["string", "null"],
-    "user_error": "Must consist of alpha-numeric characters, underscores or dashes"
-  },
-  "admin_username": {
-    "createOnly": true,
-    "example": "upadmin",
-    "maxLength": 64,
-    "pattern": "^[_A-Za-z0-9][-._A-Za-z0-9]{0,63}$",
-    "title": "Custom username for admin user. This must be set only when a new service is being created.",
-    "type": ["string", "null"],
-    "user_error": "Must consist of alpha-numeric characters, dots, underscores or dashes, may not start with dash or dot, max 64 characters"
-  },
-  "public_access": {
-    "default": false,
-    "title": "Public Access",
-    "type": "boolean",
-    "description": "Allow access to the service from the public Internet"
-  },
-  "version": {
-    "title": "MySQL major version",
-    "type": ["string", "null"],
-    "enum": ["8"]
-  }
-}
-  }
-}"#;
+const DB_SERVICE_TYPE_DETAIL_JSON: &str = r#"
+    {
+        "mysql": {
+            "name": "mysql",
+            "description": "MySQL - Relational Database Management System",
+            "latest_available_version": "8.0.26",
+            "service_plans": [
+                {
+                    "backup_config_msql": {
+                        "interval": 24,
+                        "max_count": 2,
+                        "recovery_mode": "pitr"
+                    },
+                    "node_count": 1,
+                    "zones": {
+                        "zone": [
+                            {
+                                "name": "es-mad1"
+                            },
+                            {
+                                "name": "pl-waw1"
+                            },
+                            {
+                                "name": "us-sjo1"
+                            }
+                        ]
+                    },
+                    "plan": "1x1xCPU-2GB-25GB",
+                    "core_number": 1,
+                    "storage_size": 25600,
+                    "memory_amount": 2048
+                }
+            ],
+            "properties": {
+                "admin_password": {
+                    "createOnly": true,
+                    "example": "z66o9QXqKM",
+                    "maxLength": 256,
+                    "minLength": 8,
+                    "pattern": "^[a-zA-Z0-9-_]+$",
+                    "title": "Custom password for admin user. Defaults to random string. This must be set only when a new service is being created.",
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "user_error": "Must consist of alpha-numeric characters, underscores or dashes"
+                },
+                "admin_username": {
+                    "createOnly": true,
+                    "example": "upadmin",
+                    "maxLength": 64,
+                    "pattern": "^[_A-Za-z0-9][-._A-Za-z0-9]{0,63}$",
+                    "title": "Custom username for admin user. This must be set only when a new service is being created.",
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "user_error": "Must consist of alpha-numeric characters, dots, underscores or dashes, may not start with dash or dot, max 64 characters"
+                },
+                "public_access": {
+                    "default": false,
+                    "title": "Public Access",
+                    "type": "boolean",
+                    "description": "Allow access to the service from the public Internet"
+                },
+                "version": {
+                    "title": "MySQL major version",
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "enum": [
+                        "8"
+                    ]
+                }
+            }
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_db_service_type_detail() {
@@ -889,76 +1131,80 @@ fn deserialize_state_kebab_case() {
 // ─── Database detail with backups and maintenance from docs ───────────────
 // Real JSON from UpCloud API 1.3 docs: "Get Managed Database details"
 
-const DATABASE_DETAIL_FROM_DOCS_JSON: &str = r#"{
-  "backups": [
+const DATABASE_DETAIL_FROM_DOCS_JSON: &str = r#"
     {
-      "backup_name": "backup-2022-01-06T12:36:06.739000Z",
-      "backup_time": "2022-01-06T12:36:06.739000Z",
-      "data_size": 36464640
-    },
-    {
-      "backup_name": "backup-2022-01-07T12:36:06.261000Z",
-      "backup_time": "2022-01-07T12:36:06.261000Z",
-      "data_size": 36413440
+        "backups": [
+            {
+                "backup_name": "backup-2022-01-06T12:36:06.739000Z",
+                "backup_time": "2022-01-06T12:36:06.739000Z",
+                "data_size": 36464640
+            },
+            {
+                "backup_name": "backup-2022-01-07T12:36:06.261000Z",
+                "backup_time": "2022-01-07T12:36:06.261000Z",
+                "data_size": 36413440
+            }
+        ],
+        "components": [
+            {
+                "component": "pg",
+                "host": "pg-2x2xcpu-4gb-50gb-de-fra1-example-prefix-project.db.upclouddatabases.com",
+                "port": 11550,
+                "route": "dynamic",
+                "usage": "primary"
+            },
+            {
+                "component": "pgbouncer",
+                "host": "pg-2x2xcpu-4gb-50gb-de-fra1-example-prefix-project.db.upclouddatabases.com",
+                "port": 11551,
+                "route": "dynamic",
+                "usage": "primary"
+            }
+        ],
+        "maintenance": {
+            "dow": "sunday",
+            "time": "05:00:00"
+        },
+        "name": "pg-2x2xcpu-4gb-50gb-de-fra1",
+        "node_states": [
+            {
+                "name": "pg-2x2xcpu-4gb-50gb-de-fra1-1",
+                "role": "master",
+                "state": "running"
+            },
+            {
+                "name": "pg-2x2xcpu-4gb-50gb-de-fra1-2",
+                "role": "standby",
+                "state": "syncing_data"
+            }
+        ],
+        "plan": "2x2xCPU-4GB-50GB",
+        "powered": true,
+        "properties": {
+            "automatic_utility_network_ip_filter": false,
+            "ip_filter": [
+                "0.0.0.0/0"
+            ],
+            "public_access": true,
+            "version": "13"
+        },
+        "uuid": "09d9d824-8b3e-4a57-a9b3-77ec51fd5c84",
+        "state": "running",
+        "title": "pg-2x2xcpu-4gb-50gb-de-fra1",
+        "type": "pg",
+        "service_uri": "postgres://upadmin:example-prefix-project@pg-2x2xcpu-4gb-50gb-de-fra1-example-prefix-project.db.upclouddatabases.com:11550/defaultdb?sslmode=require",
+        "service_uri_params": {
+            "dbname": "defaultdb",
+            "host": "pg-2x2xcpu-4gb-50gb-de-fra1-example-prefix-project.db.upclouddatabases.com",
+            "password": "example-prefix-project",
+            "port": "11550",
+            "ssl_mode": "require",
+            "user": "upadmin"
+        },
+        "termination_protection": false,
+        "zone": "de-fra1"
     }
-  ],
-  "components": [
-    {
-      "component": "pg",
-      "host": "pg-2x2xcpu-4gb-50gb-de-fra1-example-prefix-project.db.upclouddatabases.com",
-      "port": 11550,
-      "route": "dynamic",
-      "usage": "primary"
-    },
-    {
-      "component": "pgbouncer",
-      "host": "pg-2x2xcpu-4gb-50gb-de-fra1-example-prefix-project.db.upclouddatabases.com",
-      "port": 11551,
-      "route": "dynamic",
-      "usage": "primary"
-    }
-  ],
-  "maintenance": {
-    "dow": "sunday",
-    "time": "05:00:00"
-  },
-  "name": "pg-2x2xcpu-4gb-50gb-de-fra1",
-  "node_states": [
-    {
-      "name": "pg-2x2xcpu-4gb-50gb-de-fra1-1",
-      "role": "master",
-      "state": "running"
-    },
-    {
-      "name": "pg-2x2xcpu-4gb-50gb-de-fra1-2",
-      "role": "standby",
-      "state": "syncing_data"
-    }
-  ],
-  "plan": "2x2xCPU-4GB-50GB",
-  "powered": true,
-  "properties": {
-    "automatic_utility_network_ip_filter": false,
-    "ip_filter": ["0.0.0.0/0"],
-    "public_access": true,
-    "version": "13"
-  },
-  "uuid": "09d9d824-8b3e-4a57-a9b3-77ec51fd5c84",
-  "state": "running",
-  "title": "pg-2x2xcpu-4gb-50gb-de-fra1",
-  "type": "pg",
-  "service_uri": "postgres://upadmin:example-prefix-project@pg-2x2xcpu-4gb-50gb-de-fra1-example-prefix-project.db.upclouddatabases.com:11550/defaultdb?sslmode=require",
-  "service_uri_params": {
-    "dbname": "defaultdb",
-    "host": "pg-2x2xcpu-4gb-50gb-de-fra1-example-prefix-project.db.upclouddatabases.com",
-    "password": "example-prefix-project",
-    "port": "11550",
-    "ssl_mode": "require",
-    "user": "upadmin"
-  },
-  "termination_protection": false,
-  "zone": "de-fra1"
-}"#;
+"#;
 
 #[test]
 fn deserialize_database_detail_from_docs() {
@@ -1012,7 +1258,12 @@ fn deserialize_database_detail_from_docs() {
 // ─── OpenSearch access control types ──────────────────────────────────────
 
 const OPENSEARCH_ACCESS_CONTROL_JSON: &str =
-    r#"{"access_control": true, "extended_access_control": false}"#;
+    r#"
+    {
+        "access_control": true,
+        "extended_access_control": false
+    }
+"#;
 
 #[test]
 fn deserialize_opensearch_access_control() {
@@ -1023,7 +1274,12 @@ fn deserialize_opensearch_access_control() {
 }
 
 const OPENSEARCH_ACCESS_CONTROL_RULE_JSON: &str =
-    r#"{"index": "my-index-*", "permission": "readwrite"}"#;
+    r#"
+    {
+        "index": "my-index-*",
+        "permission": "readwrite"
+    }
+"#;
 
 #[test]
 fn deserialize_opensearch_access_control_rule() {
@@ -1033,17 +1289,19 @@ fn deserialize_opensearch_access_control_rule() {
     assert_eq!(rule.permission, "readwrite");
 }
 
-const OPENSEARCH_INDEX_JSON: &str = r#"{
-  "create_time": "2022-06-01T00:00:00Z",
-  "docs": 500,
-  "health": "green",
-  "index_name": "test-index",
-  "number_of_replicas": 1,
-  "number_of_shards": 5,
-  "read_only_allow_delete": false,
-  "size": 1048576,
-  "status": "open"
-}"#;
+const OPENSEARCH_INDEX_JSON: &str = r#"
+    {
+        "create_time": "2022-06-01T00:00:00Z",
+        "docs": 500,
+        "health": "green",
+        "index_name": "test-index",
+        "number_of_replicas": 1,
+        "number_of_shards": 5,
+        "read_only_allow_delete": false,
+        "size": 1048576,
+        "status": "open"
+    }
+"#;
 
 #[test]
 fn deserialize_opensearch_index() {
@@ -1061,7 +1319,12 @@ fn deserialize_opensearch_index() {
 // ─── ModifyAccessControlRequest ───────────────────────────────────────────
 
 const MODIFY_ACCESS_CONTROL_REQUEST_JSON: &str =
-    r#"{"access_control": true, "extended_access_control": false}"#;
+    r#"
+    {
+        "access_control": true,
+        "extended_access_control": false
+    }
+"#;
 
 #[test]
 fn deserialize_modify_access_control_request() {
@@ -1071,14 +1334,22 @@ fn deserialize_modify_access_control_request() {
     assert_eq!(req.extended_access_control, Some(false));
 }
 
-const USER_OPENSEARCH_ACCESS_CONTROL_JSON: &str = r#"{
-  "opensearch_access_control": {
-    "rules": [
-      {"index": "logs-*", "permission": "read"},
-      {"index": "events-*", "permission": "readwrite"}
-    ]
-  }
-}"#;
+const USER_OPENSEARCH_ACCESS_CONTROL_JSON: &str = r#"
+    {
+        "opensearch_access_control": {
+            "rules": [
+                {
+                    "index": "logs-*",
+                    "permission": "read"
+                },
+                {
+                    "index": "events-*",
+                    "permission": "readwrite"
+                }
+            ]
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_user_opensearch_access_control() {

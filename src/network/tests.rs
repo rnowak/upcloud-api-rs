@@ -2,39 +2,44 @@ use super::*;
 
 // ─── List all networks ──────────────────────────────────────────────────
 
-const LIST_NETWORKS_JSON: &str = r#"{
-  "networks": {
-"network": [
-  {
-    "ip_networks": {
-      "ip_network": [
-        {
-          "address": "80.69.172.0/22",
-          "dhcp": "yes",
-          "dhcp_default_route": "yes",
-          "dhcp_dns": [
-            "94.237.127.9",
-            "94.237.40.9"
-          ],
-          "family": "IPv4",
-          "gateway": "80.69.172.1"
+const LIST_NETWORKS_JSON: &str = r#"
+    {
+        "networks": {
+            "network": [
+                {
+                    "ip_networks": {
+                        "ip_network": [
+                            {
+                                "address": "80.69.172.0/22",
+                                "dhcp": "yes",
+                                "dhcp_default_route": "yes",
+                                "dhcp_dns": [
+                                    "94.237.127.9",
+                                    "94.237.40.9"
+                                ],
+                                "family": "IPv4",
+                                "gateway": "80.69.172.1"
+                            }
+                        ]
+                    },
+                    "labels": [],
+                    "name": "Public 80.69.172.0/22",
+                    "type": "public",
+                    "uuid": "03000000-0000-4000-8001-000000000000",
+                    "zone": "fi-hel1",
+                    "servers": {
+                        "server": [
+                            {
+                                "uuid": "007e3200-268f-4848-8b45-bd88c44555d2",
+                                "title": "Helsinki server #1"
+                            }
+                        ]
+                    }
+                }
+            ]
         }
-      ]
-    },
-    "labels": [],
-    "name": "Public 80.69.172.0/22",
-    "type": "public",
-    "uuid": "03000000-0000-4000-8001-000000000000",
-    "zone": "fi-hel1",
-    "servers": {
-      "server": [
-        {"uuid": "007e3200-268f-4848-8b45-bd88c44555d2", "title": "Helsinki server #1"}
-      ]
     }
-  }
-]
-  }
-}"#;
+"#;
 
 #[test]
 fn deserialize_network_list() {
@@ -87,56 +92,62 @@ fn deserialize_network_list() {
 
 // ─── List networks within zone ──────────────────────────────────────────
 
-const LIST_NETWORKS_ZONE_JSON: &str = r#"{
-  "networks": {
-"network": [
-  {
-    "ip_networks": {
-      "ip_network": [
-        {
-          "address": "80.69.172.0/22",
-          "dhcp": "yes",
-          "dhcp_default_route": "yes",
-          "dhcp_dns": [
-            "94.237.127.9",
-            "94.237.40.9"
-          ],
-          "dhcp_routes_configuration": {
-            "effective_routes_auto_population": {
-              "enabled": "yes",
-              "exclude_by_source": ["router-connected-network"],
-              "filter_by_route_type": ["user"]
-            }
-          },
-          "dhcp_effective_routes": [
-           {
-            "auto_populated": "yes",
-            "route": "192.168.0.1/24",
-            "nexthop": "80.69.172.1"
-           }
-          ],
-          "family": "IPv4",
-          "gateway": "80.69.172.1"
+const LIST_NETWORKS_ZONE_JSON: &str = r#"
+    {
+        "networks": {
+            "network": [
+                {
+                    "ip_networks": {
+                        "ip_network": [
+                            {
+                                "address": "80.69.172.0/22",
+                                "dhcp": "yes",
+                                "dhcp_default_route": "yes",
+                                "dhcp_dns": [
+                                    "94.237.127.9",
+                                    "94.237.40.9"
+                                ],
+                                "dhcp_routes_configuration": {
+                                    "effective_routes_auto_population": {
+                                        "enabled": "yes",
+                                        "exclude_by_source": [
+                                            "router-connected-network"
+                                        ],
+                                        "filter_by_route_type": [
+                                            "user"
+                                        ]
+                                    }
+                                },
+                                "dhcp_effective_routes": [
+                                    {
+                                        "auto_populated": "yes",
+                                        "route": "192.168.0.1/24",
+                                        "nexthop": "80.69.172.1"
+                                    }
+                                ],
+                                "family": "IPv4",
+                                "gateway": "80.69.172.1"
+                            }
+                        ]
+                    },
+                    "effective_routes": [
+                        {
+                            "source": "static-route",
+                            "route": "192.168.0.1/24",
+                            "nexthop": "80.69.172.1",
+                            "type": "user"
+                        }
+                    ],
+                    "labels": [],
+                    "name": "Public 80.69.172.0/22",
+                    "type": "public",
+                    "uuid": "03000000-0000-4000-8001-000000000000",
+                    "zone": "fi-hel1"
+                }
+            ]
         }
-      ]
-    },
-    "effective_routes": [
-      {
-        "source": "static-route",
-        "route": "192.168.0.1/24",
-        "nexthop": "80.69.172.1",
-        "type": "user"
-      }
-    ],
-    "labels": [],
-    "name": "Public 80.69.172.0/22",
-    "type": "public",
-    "uuid": "03000000-0000-4000-8001-000000000000",
-    "zone": "fi-hel1"
-  }
-]
-  }
-}"#;
+    }
+"#;
 
 #[test]
 fn deserialize_network_list_within_zone() {
@@ -179,35 +190,37 @@ fn deserialize_network_list_within_zone() {
 
 // ─── Get network details ────────────────────────────────────────────────
 
-const GET_NETWORK_JSON: &str = r#"{
-  "network": {
-"name": "Test private net",
-"type": "private",
-"uuid": "034c12bc-cf15-4b19-97b2-0ab4e51bb98d",
-"zone": "uk-lon1",
-"ip_networks": {
-  "ip_network": [
+const GET_NETWORK_JSON: &str = r#"
     {
-      "address": "172.16.0.0/22",
-      "dhcp": "yes",
-      "dhcp_default_route": "no",
-      "dhcp_dns": [
-        "172.16.0.10",
-        "172.16.1.10"
-      ],
-      "family": "IPv4",
-      "gateway": "172.16.0.1"
+        "network": {
+            "name": "Test private net",
+            "type": "private",
+            "uuid": "034c12bc-cf15-4b19-97b2-0ab4e51bb98d",
+            "zone": "uk-lon1",
+            "ip_networks": {
+                "ip_network": [
+                    {
+                        "address": "172.16.0.0/22",
+                        "dhcp": "yes",
+                        "dhcp_default_route": "no",
+                        "dhcp_dns": [
+                            "172.16.0.10",
+                            "172.16.1.10"
+                        ],
+                        "family": "IPv4",
+                        "gateway": "172.16.0.1"
+                    }
+                ]
+            },
+            "labels": [
+                {
+                    "key": "test",
+                    "value": ""
+                }
+            ]
+        }
     }
-  ]
-},
-"labels": [
-  {
-    "key": "test",
-    "value": ""
-  }
-]
-  }
-}"#;
+"#;
 
 #[test]
 fn deserialize_network_detail() {
@@ -242,44 +255,48 @@ fn deserialize_network_detail() {
 
 // ─── Create SDN private network request ─────────────────────────────────
 
-const CREATE_NETWORK_REQUEST_JSON: &str = r#"{
-  "network": {
-"name": "Test private net",
-"zone": "uk-lon1",
-"router": "04c0df35-2658-4b0c-8ac7-962090f4e92a",
-"ip_networks": {
-  "ip_network": [
+const CREATE_NETWORK_REQUEST_JSON: &str = r#"
     {
-      "address": "172.16.0.0/22",
-      "dhcp": "yes",
-      "dhcp_default_route": "no",
-      "dhcp_dns": [
-        "172.16.0.10",
-        "172.16.1.10"
-      ],
-      "dhcp_routes_configuration": {
-        "effective_routes_auto_population": {
-          "enabled": "yes",
-          "exclude_by_source": ["static-route"]
+        "network": {
+            "name": "Test private net",
+            "zone": "uk-lon1",
+            "router": "04c0df35-2658-4b0c-8ac7-962090f4e92a",
+            "ip_networks": {
+                "ip_network": [
+                    {
+                        "address": "172.16.0.0/22",
+                        "dhcp": "yes",
+                        "dhcp_default_route": "no",
+                        "dhcp_dns": [
+                            "172.16.0.10",
+                            "172.16.1.10"
+                        ],
+                        "dhcp_routes_configuration": {
+                            "effective_routes_auto_population": {
+                                "enabled": "yes",
+                                "exclude_by_source": [
+                                    "static-route"
+                                ]
+                            }
+                        },
+                        "dhcp_routes": [
+                            "192.168.0.0/24-nexthop=10.0.1.100",
+                            "192.168.100.100/32"
+                        ],
+                        "family": "IPv4",
+                        "gateway": "172.16.0.1"
+                    }
+                ]
+            },
+            "labels": [
+                {
+                    "key": "test",
+                    "value": ""
+                }
+            ]
         }
-      },
-      "dhcp_routes": [
-        "192.168.0.0/24-nexthop=10.0.1.100",
-        "192.168.100.100/32"
-      ],
-      "family": "IPv4",
-      "gateway": "172.16.0.1"
     }
-  ]
-},
-"labels": [
-  {
-    "key": "test",
-    "value": ""
-  }
-]
-  }
-}"#;
+"#;
 
 #[test]
 fn deserialize_create_network_request() {
@@ -320,70 +337,74 @@ fn deserialize_create_network_request() {
 
 // ─── Create SDN private network response ────────────────────────────────
 
-const CREATE_NETWORK_RESPONSE_JSON: &str = r#"{
-  "network": {
-"name": "Test private net",
-"type": "private",
-"uuid": "034c12bc-cf15-4b19-97b2-0ab4e51bb98d",
-"zone": "uk-lon1",
-"router": "04c0df35-2658-4b0c-8ac7-962090f4e92a",
-"ip_networks": {
-  "ip_network": [
+const CREATE_NETWORK_RESPONSE_JSON: &str = r#"
     {
-      "address": "172.16.0.0/22",
-      "dhcp": "yes",
-      "dhcp_default_route": "no",
-      "dhcp_dns": [
-        "172.16.0.10",
-        "172.16.1.10"
-      ],
-      "dhcp_routes": [
-        "192.168.0.0/24-nexthop=10.0.1.100",
-        "192.168.100.100/32"
-      ],
-      "dhcp_routes_configuration": {
-        "effective_routes_auto_population": {
-          "enabled": "yes",
-          "exclude_by_source": ["static-route"]
+        "network": {
+            "name": "Test private net",
+            "type": "private",
+            "uuid": "034c12bc-cf15-4b19-97b2-0ab4e51bb98d",
+            "zone": "uk-lon1",
+            "router": "04c0df35-2658-4b0c-8ac7-962090f4e92a",
+            "ip_networks": {
+                "ip_network": [
+                    {
+                        "address": "172.16.0.0/22",
+                        "dhcp": "yes",
+                        "dhcp_default_route": "no",
+                        "dhcp_dns": [
+                            "172.16.0.10",
+                            "172.16.1.10"
+                        ],
+                        "dhcp_routes": [
+                            "192.168.0.0/24-nexthop=10.0.1.100",
+                            "192.168.100.100/32"
+                        ],
+                        "dhcp_routes_configuration": {
+                            "effective_routes_auto_population": {
+                                "enabled": "yes",
+                                "exclude_by_source": [
+                                    "static-route"
+                                ]
+                            }
+                        },
+                        "dhcp_effective_routes": [
+                            {
+                                "auto_populated": "no",
+                                "route": "192.168.0.0/24",
+                                "nexthop": "10.0.1.100"
+                            },
+                            {
+                                "auto_populated": "no",
+                                "route": "192.168.100.100/32",
+                                "nexthop": "172.16.0.1"
+                            },
+                            {
+                                "auto_populated": "yes",
+                                "route": "10.0.0.0/24",
+                                "nexthop": "172.16.0.1"
+                            }
+                        ],
+                        "family": "IPv4",
+                        "gateway": "172.16.0.1"
+                    }
+                ]
+            },
+            "effective_routes": [
+                {
+                    "source": "router-connected-network",
+                    "route": "10.0.0.0/24",
+                    "source_resource_id": "034c12bc-cf15-4b19-97b2-0ab4e51bb98d"
+                }
+            ],
+            "labels": [
+                {
+                    "key": "test",
+                    "value": ""
+                }
+            ]
         }
-      },
-      "dhcp_effective_routes": [
-        {
-          "auto_populated": "no",
-          "route": "192.168.0.0/24",
-          "nexthop": "10.0.1.100"
-        },
-        {
-          "auto_populated": "no",
-          "route": "192.168.100.100/32",
-          "nexthop": "172.16.0.1"
-        },
-        {
-          "auto_populated": "yes",
-          "route": "10.0.0.0/24",
-          "nexthop": "172.16.0.1"
-        }
-      ],
-      "family": "IPv4",
-      "gateway": "172.16.0.1"
     }
-  ]
-},
-"effective_routes": [
-  {
-    "source": "router-connected-network",
-    "route": "10.0.0.0/24",
-    "source_resource_id": "034c12bc-cf15-4b19-97b2-0ab4e51bb98d"
-  }
-],
-"labels": [
-  {
-    "key": "test",
-    "value": ""
-  }
-]
-  }
-}"#;
+"#;
 
 #[test]
 fn deserialize_create_network_response() {
@@ -431,41 +452,43 @@ fn deserialize_create_network_response() {
 
 // ─── Modify network request ─────────────────────────────────────────────
 
-const MODIFY_NETWORK_REQUEST_JSON: &str = r#"{
-  "network": {
-"name": "My private network",
-"ip_networks": {
-  "ip_network": [
+const MODIFY_NETWORK_REQUEST_JSON: &str = r#"
     {
-      "address": "172.16.0.0/22",
-      "dhcp": "yes",
-      "dhcp_default_route": "no",
-      "dhcp_dns": [
-        "172.16.0.10",
-        "172.16.1.10"
-      ],
-      "dhcp_routes": [
-        "192.168.0.0/24",
-        "192.168.100.100/32"
-      ],
-      "dhcp_routes_configuration": {
-          "effective_routes_auto_population": {
-          "enabled": "no"
+        "network": {
+            "name": "My private network",
+            "ip_networks": {
+                "ip_network": [
+                    {
+                        "address": "172.16.0.0/22",
+                        "dhcp": "yes",
+                        "dhcp_default_route": "no",
+                        "dhcp_dns": [
+                            "172.16.0.10",
+                            "172.16.1.10"
+                        ],
+                        "dhcp_routes": [
+                            "192.168.0.0/24",
+                            "192.168.100.100/32"
+                        ],
+                        "dhcp_routes_configuration": {
+                            "effective_routes_auto_population": {
+                                "enabled": "no"
+                            }
+                        },
+                        "family": "IPv4",
+                        "gateway": "172.16.0.1"
+                    }
+                ]
+            },
+            "labels": [
+                {
+                    "key": "purpose",
+                    "value": "databases"
+                }
+            ]
         }
-      },
-      "family": "IPv4",
-      "gateway": "172.16.0.1"
     }
-  ]
-},
-"labels": [
- {
-   "key": "purpose",
-   "value": "databases"
- }
-]
-  }
-}"#;
+"#;
 
 #[test]
 fn deserialize_modify_network_request() {
@@ -503,11 +526,13 @@ fn deserialize_modify_network_request() {
 
 // ─── Modify network — attach to router ──────────────────────────────────
 
-const MODIFY_NETWORK_ROUTER_JSON: &str = r#"{
-  "network": {
-"router": "04c0df35-2658-4b0c-8ac7-962090f4e92a"
-  }
-}"#;
+const MODIFY_NETWORK_ROUTER_JSON: &str = r#"
+    {
+        "network": {
+            "router": "04c0df35-2658-4b0c-8ac7-962090f4e92a"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_modify_network_attach_router() {
@@ -527,52 +552,54 @@ fn deserialize_modify_network_attach_router() {
 
 // ─── Modify network response ────────────────────────────────────────────
 
-const MODIFY_NETWORK_RESPONSE_JSON: &str = r#"{
-  "network": {
-"name": "My private network",
-"type": "private",
-"uuid": "034c12bc-cf15-4b19-97b2-0ab4e51bb98d",
-"zone": "uk-lon1",
-"ip_networks": {
-  "ip_network": [
+const MODIFY_NETWORK_RESPONSE_JSON: &str = r#"
     {
-      "address": "172.16.0.0/22",
-      "dhcp": "yes",
-      "dhcp_default_route": "no",
-      "dhcp_dns": [
-        "172.16.0.10",
-        "172.16.1.10"
-      ],
-      "dhcp_routes": [
-        "192.168.0.0/24",
-        "192.168.100.100/32"
-      ],
-      "dhcp_routes_configuration": {
-       "effective_routes_auto_population": {
-        "enabled": "no"
-       }
-      },
-      "dhcp_effective_routes": [],
-      "family": "IPv4",
-      "gateway": "172.16.0.1"
+        "network": {
+            "name": "My private network",
+            "type": "private",
+            "uuid": "034c12bc-cf15-4b19-97b2-0ab4e51bb98d",
+            "zone": "uk-lon1",
+            "ip_networks": {
+                "ip_network": [
+                    {
+                        "address": "172.16.0.0/22",
+                        "dhcp": "yes",
+                        "dhcp_default_route": "no",
+                        "dhcp_dns": [
+                            "172.16.0.10",
+                            "172.16.1.10"
+                        ],
+                        "dhcp_routes": [
+                            "192.168.0.0/24",
+                            "192.168.100.100/32"
+                        ],
+                        "dhcp_routes_configuration": {
+                            "effective_routes_auto_population": {
+                                "enabled": "no"
+                            }
+                        },
+                        "dhcp_effective_routes": [],
+                        "family": "IPv4",
+                        "gateway": "172.16.0.1"
+                    }
+                ]
+            },
+            "effective_routes": [
+                {
+                    "source": "network-peering",
+                    "route": "172.16.10.0/24",
+                    "source_resource_id": "03126dc1-a69f-4bc2-8b24-e31c22d64712"
+                }
+            ],
+            "labels": [
+                {
+                    "key": "purpose",
+                    "value": "databases"
+                }
+            ]
+        }
     }
-  ]
-},
-"effective_routes": [
- {
-  "source": "network-peering",
-  "route": "172.16.10.0/24",
-  "source_resource_id": "03126dc1-a69f-4bc2-8b24-e31c22d64712"
- }
-],
-"labels": [
-  {
-    "key": "purpose",
-    "value": "databases"
-  }
-]
-  }
-}"#;
+"#;
 
 #[test]
 fn deserialize_modify_network_response() {
@@ -619,22 +646,24 @@ fn deserialize_modify_network_response() {
 
 // ─── List routers ───────────────────────────────────────────────────────
 
-const LIST_ROUTERS_JSON: &str = r#"{
-  "routers": {
-"router": [
-  {
-    "attached_networks": {
-      "network": []
-    },
-    "labels": [],
-    "name": "Example router",
-    "static_routes": [],
-    "type": "normal",
-    "uuid": "04c0df35-2658-4b0c-8ac7-962090f4e92a"
-  }
-]
-  }
-}"#;
+const LIST_ROUTERS_JSON: &str = r#"
+    {
+        "routers": {
+            "router": [
+                {
+                    "attached_networks": {
+                        "network": []
+                    },
+                    "labels": [],
+                    "name": "Example router",
+                    "static_routes": [],
+                    "type": "normal",
+                    "uuid": "04c0df35-2658-4b0c-8ac7-962090f4e92a"
+                }
+            ]
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_router_list() {
@@ -658,18 +687,20 @@ fn deserialize_router_list() {
 
 // ─── Get router details ─────────────────────────────────────────────────
 
-const GET_ROUTER_JSON: &str = r#"{
-  "router": {
-"attached_networks": {
-  "network": []
-},
-"labels": [],
-"name": "Example router",
-"static_routes": [],
-"type": "normal",
-"uuid": "04c0df35-2658-4b0c-8ac7-962090f4e92a"
-  }
-}"#;
+const GET_ROUTER_JSON: &str = r#"
+    {
+        "router": {
+            "attached_networks": {
+                "network": []
+            },
+            "labels": [],
+            "name": "Example router",
+            "static_routes": [],
+            "type": "normal",
+            "uuid": "04c0df35-2658-4b0c-8ac7-962090f4e92a"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_router_detail() {
@@ -692,18 +723,20 @@ fn deserialize_router_detail() {
 
 // ─── Create router request ──────────────────────────────────────────────
 
-const CREATE_ROUTER_REQUEST_JSON: &str = r#"{
-  "router": {
-"name": "Example router",
-"static_routes": [
-  {
-    "route": "0.0.0.0/0",
-    "nexthop": "10.0.0.100",
-    "name": "static_route_0"
-  }
-]
-  }
-}"#;
+const CREATE_ROUTER_REQUEST_JSON: &str = r#"
+    {
+        "router": {
+            "name": "Example router",
+            "static_routes": [
+                {
+                    "route": "0.0.0.0/0",
+                    "nexthop": "10.0.0.100",
+                    "name": "static_route_0"
+                }
+            ]
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_create_router_request() {
@@ -726,25 +759,27 @@ fn deserialize_create_router_request() {
 
 // ─── Create router response ─────────────────────────────────────────────
 
-const CREATE_ROUTER_RESPONSE_JSON: &str = r#"{
-  "router": {
-"attached_networks": {
-  "network": []
-},
-"labels": [],
-"name": "Example router",
-"static_routes": [
- {
-  "name": "static_route_0",
-  "route": "0.0.0.0/0",
-  "nexthop": "10.0.0.100",
-  "type": "user"
- }
-],
-"type": "normal",
-"uuid": "04c0df35-2658-4b0c-8ac7-962090f4e92a"
-  }
-}"#;
+const CREATE_ROUTER_RESPONSE_JSON: &str = r#"
+    {
+        "router": {
+            "attached_networks": {
+                "network": []
+            },
+            "labels": [],
+            "name": "Example router",
+            "static_routes": [
+                {
+                    "name": "static_route_0",
+                    "route": "0.0.0.0/0",
+                    "nexthop": "10.0.0.100",
+                    "type": "user"
+                }
+            ],
+            "type": "normal",
+            "uuid": "04c0df35-2658-4b0c-8ac7-962090f4e92a"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_create_router_response() {
@@ -777,18 +812,20 @@ fn deserialize_create_router_response() {
 
 // ─── Modify router request ──────────────────────────────────────────────
 
-const MODIFY_ROUTER_REQUEST_JSON: &str = r#"{
-  "router": {
-"name": "Example router",
-"labels": [
-  {
-    "key": "service",
-    "value": "postgres cluster connectivity"
-  }
-],
-"static_routes": []
-  }
-}"#;
+const MODIFY_ROUTER_REQUEST_JSON: &str = r#"
+    {
+        "router": {
+            "name": "Example router",
+            "labels": [
+                {
+                    "key": "service",
+                    "value": "postgres cluster connectivity"
+                }
+            ],
+            "static_routes": []
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_modify_router_request() {
@@ -807,23 +844,25 @@ fn deserialize_modify_router_request() {
 
 // ─── Modify router response ─────────────────────────────────────────────
 
-const MODIFY_ROUTER_RESPONSE_JSON: &str = r#"{
-  "router": {
-"attached_networks": {
-  "network": []
-},
-"labels": [
-  {
-    "key": "service",
-    "value": "postgres cluster connectivity"
-  }
-],
-"name": "Example router",
-"static_routes": [],
-"type": "normal",
-"uuid": "04c0df35-2658-4b0c-8ac7-962090f4e92a"
-  }
-}"#;
+const MODIFY_ROUTER_RESPONSE_JSON: &str = r#"
+    {
+        "router": {
+            "attached_networks": {
+                "network": []
+            },
+            "labels": [
+                {
+                    "key": "service",
+                    "value": "postgres cluster connectivity"
+                }
+            ],
+            "name": "Example router",
+            "static_routes": [],
+            "type": "normal",
+            "uuid": "04c0df35-2658-4b0c-8ac7-962090f4e92a"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_modify_router_response() {
@@ -849,23 +888,25 @@ fn deserialize_modify_router_response() {
 
 // ─── List network peerings ──────────────────────────────────────────────
 
-const LIST_PEERINGS_JSON: &str = r#"{
-  "network_peerings": [
-{
-  "uuid": "0f5ab9c7-959a-4bbf-9994-8322517fc359",
-  "name": "my-peering-1",
-  "configured_status": "active",
-  "state": "active",
-  "network": {
-    "uuid": "034c12bc-cf15-4b19-97b2-0ab4e51bb98d"
-  },
-  "peer_network": {
-    "uuid": "03e3d3ab-ac72-4e39-8264-2bc0f2e4e872"
-  },
-  "labels": []
-}
-  ]
-}"#;
+const LIST_PEERINGS_JSON: &str = r#"
+    {
+        "network_peerings": [
+            {
+                "uuid": "0f5ab9c7-959a-4bbf-9994-8322517fc359",
+                "name": "my-peering-1",
+                "configured_status": "active",
+                "state": "active",
+                "network": {
+                    "uuid": "034c12bc-cf15-4b19-97b2-0ab4e51bb98d"
+                },
+                "peer_network": {
+                    "uuid": "03e3d3ab-ac72-4e39-8264-2bc0f2e4e872"
+                },
+                "labels": []
+            }
+        ]
+    }
+"#;
 
 #[test]
 fn deserialize_peering_list() {
@@ -893,54 +934,56 @@ fn deserialize_peering_list() {
 
 // ─── List peerings (docs wrapper format) ────────────────────────────────
 
-const LIST_PEERINGS_DOCS_JSON: &str = r#"{
-  "network_peerings": {
-"network_peering": [
-  {
-    "configured_status": "active",
-    "labels": [
-      {
-        "key": "env",
-        "value": "prod"
-      }
-    ],
-    "name": "Peering A->B",
-    "network": {
-      "ip_networks": {
-        "ip_network": [
-          {
-            "address": "192.168.0.0/24",
-            "family": "IPv4"
-          },
-          {
-            "address": "fc02:c4f3::/64",
-            "family": "IPv6"
-          }
-        ]
-      },
-      "uuid": "03126dc1-a69f-4bc2-8b24-e31c22d64712"
-    },
-    "peer_network": {
-      "ip_networks": {
-        "ip_network": [
-          {
-            "address": "192.168.99.0/24",
-            "family": "IPv4"
-          },
-          {
-            "address": "fc02:c4f3:99::/64",
-            "family": "IPv6"
-          }
-        ]
-      },
-      "uuid": "03585987-bf7d-4544-8e9b-5a1b4d74a333"
-    },
-    "state": "active",
-    "uuid": "0f7984bc-5d72-4aaf-b587-90e6a8f32efc"
-  }
-]
-  }
-}"#;
+const LIST_PEERINGS_DOCS_JSON: &str = r#"
+    {
+        "network_peerings": {
+            "network_peering": [
+                {
+                    "configured_status": "active",
+                    "labels": [
+                        {
+                            "key": "env",
+                            "value": "prod"
+                        }
+                    ],
+                    "name": "Peering A->B",
+                    "network": {
+                        "ip_networks": {
+                            "ip_network": [
+                                {
+                                    "address": "192.168.0.0/24",
+                                    "family": "IPv4"
+                                },
+                                {
+                                    "address": "fc02:c4f3::/64",
+                                    "family": "IPv6"
+                                }
+                            ]
+                        },
+                        "uuid": "03126dc1-a69f-4bc2-8b24-e31c22d64712"
+                    },
+                    "peer_network": {
+                        "ip_networks": {
+                            "ip_network": [
+                                {
+                                    "address": "192.168.99.0/24",
+                                    "family": "IPv4"
+                                },
+                                {
+                                    "address": "fc02:c4f3:99::/64",
+                                    "family": "IPv6"
+                                }
+                            ]
+                        },
+                        "uuid": "03585987-bf7d-4544-8e9b-5a1b4d74a333"
+                    },
+                    "state": "active",
+                    "uuid": "0f7984bc-5d72-4aaf-b587-90e6a8f32efc"
+                }
+            ]
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_peering_list_docs_format() {
@@ -989,50 +1032,52 @@ fn deserialize_peering_list_docs_format() {
 
 // ─── Get network peering details ────────────────────────────────────────
 
-const GET_PEERING_DETAILS_JSON: &str = r#"{
-  "network_peering": {
-"configured_status": "active",
-"labels": [
-  {
-    "key": "env",
-    "value": "prod"
-  }
-],
-"name": "Peering A->B",
-"network": {
-  "ip_networks": {
-    "ip_network": [
-      {
-        "address": "192.168.0.0/24",
-        "family": "IPv4"
-      },
-      {
-        "address": "fc02:c4f3::/64",
-        "family": "IPv6"
-      }
-    ]
-  },
-  "uuid": "03126dc1-a69f-4bc2-8b24-e31c22d64712"
-},
-"peer_network": {
-  "ip_networks": {
-    "ip_network": [
-      {
-        "address": "192.168.99.0/24",
-        "family": "IPv4"
-      },
-      {
-        "address": "fc02:c4f3:99::/64",
-        "family": "IPv6"
-      }
-    ]
-  },
-  "uuid": "03585987-bf7d-4544-8e9b-5a1b4d74a333"
-},
-"state": "active",
-"uuid": "0f7984bc-5d72-4aaf-b587-90e6a8f32efc"
-  }
-}"#;
+const GET_PEERING_DETAILS_JSON: &str = r#"
+    {
+        "network_peering": {
+            "configured_status": "active",
+            "labels": [
+                {
+                    "key": "env",
+                    "value": "prod"
+                }
+            ],
+            "name": "Peering A->B",
+            "network": {
+                "ip_networks": {
+                    "ip_network": [
+                        {
+                            "address": "192.168.0.0/24",
+                            "family": "IPv4"
+                        },
+                        {
+                            "address": "fc02:c4f3::/64",
+                            "family": "IPv6"
+                        }
+                    ]
+                },
+                "uuid": "03126dc1-a69f-4bc2-8b24-e31c22d64712"
+            },
+            "peer_network": {
+                "ip_networks": {
+                    "ip_network": [
+                        {
+                            "address": "192.168.99.0/24",
+                            "family": "IPv4"
+                        },
+                        {
+                            "address": "fc02:c4f3:99::/64",
+                            "family": "IPv6"
+                        }
+                    ]
+                },
+                "uuid": "03585987-bf7d-4544-8e9b-5a1b4d74a333"
+            },
+            "state": "active",
+            "uuid": "0f7984bc-5d72-4aaf-b587-90e6a8f32efc"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_peering_details() {
@@ -1069,28 +1114,30 @@ fn deserialize_peering_details() {
 
 // ─── Create peering request ─────────────────────────────────────────────
 
-const CREATE_PEERING_REQUEST_JSON: &str = r#"{
-  "network_peering": {
-"configured_status": "active",
-"name": "Peering A->B",
-"network": {
-  "uuid": "03126dc1-a69f-4bc2-8b24-e31c22d64712"
-},
-"peer_network": {
-  "uuid": "03585987-bf7d-4544-8e9b-5a1b4d74a333"
-},
-"labels": [
-  {
-    "key": "env",
-    "value": "staging"
-  },
-  {
-    "key": "foo",
-    "value": "bar"
-  }
-]
-  }
-}"#;
+const CREATE_PEERING_REQUEST_JSON: &str = r#"
+    {
+        "network_peering": {
+            "configured_status": "active",
+            "name": "Peering A->B",
+            "network": {
+                "uuid": "03126dc1-a69f-4bc2-8b24-e31c22d64712"
+            },
+            "peer_network": {
+                "uuid": "03585987-bf7d-4544-8e9b-5a1b4d74a333"
+            },
+            "labels": [
+                {
+                    "key": "env",
+                    "value": "staging"
+                },
+                {
+                    "key": "foo",
+                    "value": "bar"
+                }
+            ]
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_create_peering_request() {
@@ -1123,38 +1170,40 @@ fn deserialize_create_peering_request() {
 
 // ─── Create peering response ────────────────────────────────────────────
 
-const CREATE_PEERING_RESPONSE_JSON: &str = r#"{
-  "network_peering": {
-"configured_status": "active",
-"labels": [
-  {
-    "key": "env",
-    "value": "prod"
-  }
-],
-"name": "Peering A->B",
-"network": {
-  "ip_networks": {
-    "ip_network": [
-      {
-        "address": "192.168.0.0/24",
-        "family": "IPv4"
-      },
-      {
-        "address": "fc02:c4f3::/64",
-        "family": "IPv6"
-      }
-    ]
-  },
-  "uuid": "03126dc1-a69f-4bc2-8b24-e31c22d64712"
-},
-"peer_network": {
-  "uuid": "03585987-bf7d-4544-8e9b-5a1b4d74a333"
-},
-"state": "pending-peer",
-"uuid": "0f7984bc-5d72-4aaf-b587-90e6a8f32efc"
-  }
-}"#;
+const CREATE_PEERING_RESPONSE_JSON: &str = r#"
+    {
+        "network_peering": {
+            "configured_status": "active",
+            "labels": [
+                {
+                    "key": "env",
+                    "value": "prod"
+                }
+            ],
+            "name": "Peering A->B",
+            "network": {
+                "ip_networks": {
+                    "ip_network": [
+                        {
+                            "address": "192.168.0.0/24",
+                            "family": "IPv4"
+                        },
+                        {
+                            "address": "fc02:c4f3::/64",
+                            "family": "IPv6"
+                        }
+                    ]
+                },
+                "uuid": "03126dc1-a69f-4bc2-8b24-e31c22d64712"
+            },
+            "peer_network": {
+                "uuid": "03585987-bf7d-4544-8e9b-5a1b4d74a333"
+            },
+            "state": "pending-peer",
+            "uuid": "0f7984bc-5d72-4aaf-b587-90e6a8f32efc"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_create_peering_response() {
@@ -1187,22 +1236,24 @@ fn deserialize_create_peering_response() {
 
 // ─── Modify peering request ─────────────────────────────────────────────
 
-const MODIFY_PEERING_REQUEST_JSON: &str = r#"{
-  "network_peering": {
-"configured_status": "disabled",
-"name": "Peering A->B modified",
-"labels": [
-  {
-   "key": "env",
-   "value": "staging"
-  },
-  {
-   "key": "foo",
-   "value": "bar"
-  }
- ]
-  }
-}"#;
+const MODIFY_PEERING_REQUEST_JSON: &str = r#"
+    {
+        "network_peering": {
+            "configured_status": "disabled",
+            "name": "Peering A->B modified",
+            "labels": [
+                {
+                    "key": "env",
+                    "value": "staging"
+                },
+                {
+                    "key": "foo",
+                    "value": "bar"
+                }
+            ]
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_modify_peering_request() {
@@ -1229,50 +1280,52 @@ fn deserialize_modify_peering_request() {
 
 // ─── Modify peering response ────────────────────────────────────────────
 
-const MODIFY_PEERING_RESPONSE_JSON: &str = r#"{
-  "network_peering": {
-"configured_status": "disabled",
-"labels": [
-  {
-    "key": "env",
-    "value": "prod"
-  }
-],
-"name": "Peering A->B modified",
-"network": {
-  "ip_networks": {
-    "ip_network": [
-      {
-        "address": "192.168.0.0/24",
-        "family": "IPv4"
-      },
-      {
-        "address": "fc02:c4f3::/64",
-        "family": "IPv6"
-      }
-    ]
-  },
-  "uuid": "03126dc1-a69f-4bc2-8b24-e31c22d64712"
-},
-"peer_network": {
-  "ip_networks": {
-    "ip_network": [
-      {
-        "address": "192.168.99.0/24",
-        "family": "IPv4"
-      },
-      {
-        "address": "fc02:c4f3:99::/64",
-        "family": "IPv6"
-      }
-    ]
-  },
-  "uuid": "03585987-bf7d-4544-8e9b-5a1b4d74a333"
-},
-"state": "provisioning",
-"uuid": "0f7984bc-5d72-4aaf-b587-90e6a8f32efc"
-  }
-}"#;
+const MODIFY_PEERING_RESPONSE_JSON: &str = r#"
+    {
+        "network_peering": {
+            "configured_status": "disabled",
+            "labels": [
+                {
+                    "key": "env",
+                    "value": "prod"
+                }
+            ],
+            "name": "Peering A->B modified",
+            "network": {
+                "ip_networks": {
+                    "ip_network": [
+                        {
+                            "address": "192.168.0.0/24",
+                            "family": "IPv4"
+                        },
+                        {
+                            "address": "fc02:c4f3::/64",
+                            "family": "IPv6"
+                        }
+                    ]
+                },
+                "uuid": "03126dc1-a69f-4bc2-8b24-e31c22d64712"
+            },
+            "peer_network": {
+                "ip_networks": {
+                    "ip_network": [
+                        {
+                            "address": "192.168.99.0/24",
+                            "family": "IPv4"
+                        },
+                        {
+                            "address": "fc02:c4f3:99::/64",
+                            "family": "IPv6"
+                        }
+                    ]
+                },
+                "uuid": "03585987-bf7d-4544-8e9b-5a1b4d74a333"
+            },
+            "state": "provisioning",
+            "uuid": "0f7984bc-5d72-4aaf-b587-90e6a8f32efc"
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_modify_peering_response() {

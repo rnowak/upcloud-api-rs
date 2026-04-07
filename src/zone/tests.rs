@@ -1,27 +1,29 @@
 use super::*;
 
-const ZONE_LIST_JSON: &str = r#"{
-  "zones": {
-"zone": [
-  {
-    "description": "Frankfurt #1",
-    "id": "de-fra1",
-    "public": "yes"
-  },
-  {
-    "description": "Helsinki #1",
-    "id": "fi-hel1",
-    "public": "yes"
-  },
-  {
-    "description": "Fake private cloud",
-    "id": "fi-fake-priv-cloud",
-    "parent_zone": "fi-hel1",
-    "public": "no"
-  }
-]
-  }
-}"#;
+const ZONE_LIST_JSON: &str = r#"
+    {
+        "zones": {
+            "zone": [
+                {
+                    "description": "Frankfurt #1",
+                    "id": "de-fra1",
+                    "public": "yes"
+                },
+                {
+                    "description": "Helsinki #1",
+                    "id": "fi-hel1",
+                    "public": "yes"
+                },
+                {
+                    "description": "Fake private cloud",
+                    "id": "fi-fake-priv-cloud",
+                    "parent_zone": "fi-hel1",
+                    "public": "no"
+                }
+            ]
+        }
+    }
+"#;
 
 #[test]
 fn deserialize_zone_list() {

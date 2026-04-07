@@ -1,49 +1,57 @@
 use super::*;
 
-const AUDIT_LOG_LIST_JSON: &str = r#"{
-  "audit_logs": [
-{
-  "time": "2024-04-02T11:52:25.719619Z",
-  "auth_type": "gui",
-  "upcloud_correlation_id": "01HTFAEGT48JP7M5YFHC7W21MG",
-  "resource_type": "auth",
-  "action": "login",
-  "origin": "gui",
-  "account_username": "mrmagoo",
-  "ip_address": "1.2.3.4",
-  "resource_id": null
-},
-{
-  "time": "2024-03-13T17:50:26.647075Z",
-  "auth_type": "daemon",
-  "upcloud_correlation_id": "",
-  "resource_type": "storage",
-  "action": "delete",
-  "origin": "upcloud_internal",
-  "account_username": "mrmagoo",
-  "ip_address": "",
-  "resource_id": "00000000-0000-0000-0000-000000000000"
-}
-  ]
-}"#;
+const AUDIT_LOG_LIST_JSON: &str = r#"
+    {
+        "audit_logs": [
+            {
+                "time": "2024-04-02T11:52:25.719619Z",
+                "auth_type": "gui",
+                "upcloud_correlation_id": "01HTFAEGT48JP7M5YFHC7W21MG",
+                "resource_type": "auth",
+                "action": "login",
+                "origin": "gui",
+                "account_username": "mrmagoo",
+                "ip_address": "1.2.3.4",
+                "resource_id": null
+            },
+            {
+                "time": "2024-03-13T17:50:26.647075Z",
+                "auth_type": "daemon",
+                "upcloud_correlation_id": "",
+                "resource_type": "storage",
+                "action": "delete",
+                "origin": "upcloud_internal",
+                "account_username": "mrmagoo",
+                "ip_address": "",
+                "resource_id": "00000000-0000-0000-0000-000000000000"
+            }
+        ]
+    }
+"#;
 
-const AUDIT_FILTER_OPTIONS_JSON: &str = r#"{
-  "resource_types": [
-"account",
-"auth",
-"server",
-"storage"
-  ],
-  "actions": [
-"create",
-"read",
-"update",
-"delete",
-"login",
-"logout"
-  ],
-  "origins": ["api", "gui", "upcloud_internal"]
-}"#;
+const AUDIT_FILTER_OPTIONS_JSON: &str = r#"
+    {
+        "resource_types": [
+            "account",
+            "auth",
+            "server",
+            "storage"
+        ],
+        "actions": [
+            "create",
+            "read",
+            "update",
+            "delete",
+            "login",
+            "logout"
+        ],
+        "origins": [
+            "api",
+            "gui",
+            "upcloud_internal"
+        ]
+    }
+"#;
 
 #[test]
 fn deserialize_audit_log_list() {
