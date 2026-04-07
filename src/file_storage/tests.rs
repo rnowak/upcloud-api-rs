@@ -362,7 +362,7 @@ fn deserialize_create_file_storage_request() {
     assert_eq!(labels[0].value, "production");
 }
 
-// Source: https://developers.upcloud.com/1.3/25-file-storage/#modify-service
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#replace-service
 const REPLACE_FS_REQUEST_JSON: &str = r#"
     {
         "name": "test-name",
@@ -389,25 +389,19 @@ const REPLACE_FS_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_replace_file_storage_request() {
-    // JSON includes `networks` which is not in ModifyRequest, and lacks required
-    // fields (`zone`, `shares`) for CreateRequest, so it cannot be parsed as either.
-    let val: serde_json::Value = serde_json::from_str(REPLACE_FS_REQUEST_JSON).unwrap();
-    assert_eq!(val["name"], "test-name");
-    assert_eq!(val["configured_status"], "started");
-    assert_eq!(val["size_gib"], 250);
-    assert!(val["networks"].is_array());
-    assert_eq!(val["networks"].as_array().unwrap().len(), 1);
-    assert_eq!(
-        val["networks"][0]["uuid"],
-        "03720d07-80a9-41ac-90b0-68a932109339"
-    );
-    assert_eq!(val["networks"][0]["name"], "net");
-    assert_eq!(val["networks"][0]["family"], "IPv4");
-    assert_eq!(val["networks"][0]["ip_address"], "192.168.147.120");
-    assert!(val["labels"].is_array());
-    assert_eq!(val["labels"].as_array().unwrap().len(), 1);
-    assert_eq!(val["labels"][0]["key"], "environment");
-    assert_eq!(val["labels"][0]["value"], "production");
+    let req: ReplaceRequest = serde_json::from_str(REPLACE_FS_REQUEST_JSON).unwrap();
+    assert_eq!(req.name, "test-name");
+    assert_eq!(req.configured_status, "started");
+    assert_eq!(req.size_gib, 250);
+    assert_eq!(req.networks.len(), 1);
+    assert_eq!(req.networks[0].uuid, "03720d07-80a9-41ac-90b0-68a932109339");
+    assert_eq!(req.networks[0].name, "net");
+    assert_eq!(req.networks[0].family, "IPv4");
+    assert_eq!(req.networks[0].ip_address.as_deref(), Some("192.168.147.120"));
+    let labels = req.labels.expect("labels present");
+    assert_eq!(labels.len(), 1);
+    assert_eq!(labels[0].key, "environment");
+    assert_eq!(labels[0].value, "production");
 }
 
 // Source: https://developers.upcloud.com/1.3/25-file-storage/#modify-service
@@ -435,6 +429,9 @@ fn deserialize_modify_file_storage_request() {
     assert_eq!(req.name.as_deref(), Some("test-name"));
     assert_eq!(req.configured_status.as_deref(), Some("started"));
     assert_eq!(req.size_gib, Some(250));
+    let networks = req.networks.expect("networks present");
+    assert_eq!(networks.len(), 1);
+    assert_eq!(networks[0].uuid, "03720d07-80a9-41ac-90b0-68a932109339");
     assert!(req.labels.is_none());
 }
 

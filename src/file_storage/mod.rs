@@ -69,6 +69,17 @@ impl<'a> FileStorageHandler<'a> {
             .await
     }
 
+    /// Replaces an existing file storage service configuration.
+    ///
+    /// `PUT /1.3/file-storage/{uuid}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/25-file-storage/#replace-service)
+    pub async fn replace(&self, uuid: &str, req: ReplaceRequest) -> Result<Service, Error> {
+        self.client
+            .put(&format!("/1.3/file-storage/{uuid}"), &req)
+            .await
+    }
+
     /// Deletes a file storage service.
     ///
     /// `DELETE /1.3/file-storage/{uuid}`

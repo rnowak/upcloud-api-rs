@@ -160,7 +160,7 @@ pub struct NetworkInput {
     pub ip_address: Option<String>,
 }
 
-/// Request body for modifying a file storage service.
+/// Request body for modifying a file storage service (PATCH).
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModifyRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -170,6 +170,23 @@ pub struct ModifyRequest {
     pub size_gib: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configured_status: Option<String>,
+    /// Networks to attach.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub networks: Option<Vec<NetworkInput>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub labels: Option<Vec<crate::types::common::Label>>,
+}
+
+/// Request body for replacing a file storage service (PUT).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ReplaceRequest {
+    pub name: String,
+    pub configured_status: String,
+    /// Storage size in GiB.
+    pub size_gib: u64,
+    /// Networks to attach.
+    #[serde(skip_serializing_if = "Vec::is_empty", default)]
+    pub networks: Vec<NetworkInput>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
 }
