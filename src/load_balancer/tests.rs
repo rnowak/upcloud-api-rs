@@ -1,5 +1,6 @@
 use super::*;
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#create-service
 const LB_PLAN_LIST_JSON: &str = r#"
     [
         {
@@ -15,6 +16,7 @@ const LB_PLAN_LIST_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#list-services
 const LB_LIST_JSON: &str = r#"
     [
         {
@@ -377,6 +379,7 @@ fn deserialize_lb_list() {
 
 // ─── Test 1: Plan detail ──────────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#create-service
 const LB_PLAN_DETAIL_JSON: &str =
     r#"
     {
@@ -402,6 +405,7 @@ fn deserialize_lb_plan_detail() {
 
 // ─── Test 2: Create LB request ────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#create-service
 const CREATE_LB_REQUEST_JSON: &str = r#"
     {
         "name": "example-service",
@@ -467,6 +471,7 @@ fn deserialize_create_lb_request() {
 
 // ─── Test 3: LB service details ───────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#get-service-details
 const LB_SERVICE_DETAIL_JSON: &str = r#"
     {
         "backends": [
@@ -769,6 +774,7 @@ fn deserialize_lb_service_details() {
 
 // ─── Test 4: Modify LB request ────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#modify-service
 const MODIFY_LB_REQUEST_JSON: &str =
     r#"
     {
@@ -794,6 +800,7 @@ fn deserialize_modify_lb_request() {
 
 // ─── Test 5: List backends ────────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#list-backends
 const LB_BACKEND_LIST_JSON: &str = r#"
     [
         {
@@ -868,6 +875,7 @@ fn deserialize_lb_backend_list() {
 
 // ─── Test 6: Backend detail ───────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#get-backend-details
 const LB_BACKEND_DETAIL_JSON: &str = r#"
     {
         "created_at": "2021-12-07T13:58:30.817272Z",
@@ -963,6 +971,7 @@ fn deserialize_lb_backend_detail() {
 
 // ─── Test 7: List backend members ─────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#list-members
 const LB_MEMBER_LIST_JSON: &str = r#"
     [
         {
@@ -1032,6 +1041,7 @@ fn deserialize_lb_member_list() {
 
 // ─── Test 8: Member detail ────────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#get-member-details
 const LB_MEMBER_DETAIL_JSON: &str = r#"
     {
         "backup": false,
@@ -1064,6 +1074,7 @@ fn deserialize_lb_member_detail() {
 
 // ─── Test 9: List frontends ───────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#list-frontends
 const LB_FRONTEND_LIST_JSON: &str = r#"
     [
         {
@@ -1186,6 +1197,7 @@ fn deserialize_lb_frontend_list() {
 
 // ─── Test 10: Frontend detail ─────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#get-frontend-details
 const LB_FRONTEND_DETAIL_JSON: &str = r#"
     {
         "created_at": "2021-12-07T13:58:30.817272Z",
@@ -1300,6 +1312,7 @@ fn deserialize_lb_frontend_detail() {
 
 // ─── Test 11: Frontend TLS config list ────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#list-frontend-tls-configs
 const LB_FRONTEND_TLS_CONFIG_LIST_JSON: &str = r#"
     [
         {
@@ -1355,6 +1368,7 @@ fn deserialize_lb_frontend_tls_config_list() {
 
 // ─── Test 12: Frontend TLS config detail ──────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#get-frontend-tls-config-details
 const LB_FRONTEND_TLS_CONFIG_DETAIL_JSON: &str = r#"
     {
         "certificate_bundle_uuid": "0aded5c1-c7a3-498a-b9c8-a871611c47a2",
@@ -1386,6 +1400,7 @@ fn deserialize_lb_frontend_tls_config_detail() {
 
 // ─── Test 13: Frontend rule list ──────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#list-rules
 const LB_RULE_LIST_JSON: &str = r#"
     [
         {
@@ -1444,6 +1459,7 @@ fn deserialize_lb_rule_list() {
 
 // ─── Test 14: Rule detail ─────────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#get-rule-details
 const LB_RULE_DETAIL_JSON: &str = r#"
     {
         "actions": [
@@ -1499,6 +1515,7 @@ fn deserialize_lb_rule_detail() {
 
 // ─── Test 15: List resolvers ──────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#list-resolvers
 const LB_RESOLVER_LIST_JSON: &str = r#"
     [
         {
@@ -1535,6 +1552,7 @@ fn deserialize_lb_resolver_list() {
 
 // ─── Test 16: Resolver detail ─────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#get-resolver-details
 const LB_RESOLVER_DETAIL_JSON: &str = r#"
     {
         "cache_invalid": 30,
@@ -1567,6 +1585,7 @@ fn deserialize_lb_resolver_detail() {
 
 // ─── Test 17: Create resolver request ─────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#create-resolver
 const CREATE_RESOLVER_REQUEST_JSON: &str = r#"
     {
         "name": "example-resolver",
@@ -1595,6 +1614,7 @@ fn deserialize_create_resolver_request() {
 
 // ─── Test 18: Create backend request ──────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#create-backend
 const CREATE_BACKEND_REQUEST_JSON: &str = r#"
     {
         "name": "example-backend-2",
@@ -1634,6 +1654,7 @@ fn deserialize_create_backend_request() {
 
 // ─── Test 19: Create frontend request ─────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#create-frontend
 const CREATE_FRONTEND_REQUEST_JSON: &str = r#"
     {
         "name": "example-frontend",
@@ -1666,6 +1687,7 @@ fn deserialize_create_frontend_request() {
 
 // ─── Test 20: Create frontend rule request ────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#create-rule
 const CREATE_FRONTEND_RULE_REQUEST_JSON: &str = r#"
     {
         "name": "example-rule-1",
@@ -1710,6 +1732,7 @@ fn deserialize_create_frontend_rule_request() {
 
 // ─── Test 21: Backend TLS config list ─────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#list-backend-tls-configs
 const LB_BACKEND_TLS_CONFIG_LIST_JSON: &str = r#"
     [
         {
@@ -1765,6 +1788,7 @@ fn deserialize_lb_backend_tls_config_list() {
 
 // ─── Test 22: Create TLS config request ───────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#create-backend-tls-config
 const CREATE_TLS_CONFIG_REQUEST_JSON: &str = r#"
     {
         "name": "example-tls-config",
@@ -1791,6 +1815,7 @@ fn deserialize_create_tls_config_request() {
 // ─── Test 23: Certificate bundle detail from docs ─────────────────────────
 // Real JSON from UpCloud API 1.3 docs: "Get certificate bundle details"
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#get-certificate-bundle-details
 const CERTIFICATE_BUNDLE_DETAIL_JSON: &str = r#"
     {
         "certificate": "LStLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0t",
@@ -1841,6 +1866,7 @@ fn deserialize_certificate_bundle_detail() {
 // ─── Test 24: Certificate bundle list from docs ──────────────────────────
 // Real JSON from UpCloud API 1.3 docs: "List certificate bundles"
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#list-certificate-bundles
 const CERTIFICATE_BUNDLE_LIST_JSON: &str = r#"
     [
         {
@@ -1902,6 +1928,7 @@ fn deserialize_certificate_bundle_list() {
 // ─── Test 25: Frontend detail from docs (with rules + tls_configs) ───────
 // Real JSON from UpCloud API 1.3 docs: "Get frontend details"
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/#get-frontend-details
 const FRONTEND_DETAIL_FROM_DOCS_JSON: &str = r#"
     {
         "created_at": "2021-12-07T13:58:30.817272Z",
@@ -2142,6 +2169,7 @@ fn serialize_modify_network_request() {
 // ─── Test 33: Node deserialization from docs ──────────────────────────────
 // Real JSON from the "List services" response `nodes` array.
 
+// Source: https://developers.upcloud.com/1.3/35-load-balancers/
 const NODE_DETAIL_JSON: &str = r#"
     {
         "networks": [

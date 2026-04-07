@@ -1,5 +1,6 @@
 use super::*;
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-services
 const FS_LIST_JSON: &str = r#"
     [
         {
@@ -54,6 +55,7 @@ const FS_LIST_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#get-service-details
 const FS_DETAIL_JSON: &str = r#"
     {
         "configured_status": "started",
@@ -95,6 +97,7 @@ const FS_DETAIL_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-networks
 const FS_NETWORK_LIST_JSON: &str = r#"
     [
         {
@@ -106,6 +109,7 @@ const FS_NETWORK_LIST_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-shares
 const FS_SHARE_LIST_JSON: &str = r#"
     [
         {
@@ -272,6 +276,7 @@ fn deserialize_file_storage_share_list() {
 
 // ─── JSON constants from official docs (page 25) ─────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#create-service
 const CREATE_FS_REQUEST_JSON: &str = r#"
     {
         "name": "test-name",
@@ -320,6 +325,7 @@ const CREATE_FS_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#modify-service
 const REPLACE_FS_REQUEST_JSON: &str = r#"
     {
         "name": "test-name",
@@ -342,6 +348,7 @@ const REPLACE_FS_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#modify-service
 const MODIFY_FS_REQUEST_JSON: &str = r#"
     {
         "name": "test-name",
@@ -358,6 +365,7 @@ const MODIFY_FS_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#create-network
 const NETWORK_INPUT_JSON: &str = r#"
     {
         "uuid": "03720d07-80a9-41ac-90b0-68a932109339",
@@ -367,6 +375,7 @@ const NETWORK_INPUT_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-networks
 const NETWORK_DETAIL_SINGLE_JSON: &str = r#"
     {
         "family": "IPv4",
@@ -376,6 +385,7 @@ const NETWORK_DETAIL_SINGLE_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-shares
 const SHARE_ACL_NESTED_JSON: &str = r#"
     [
         {
@@ -403,6 +413,7 @@ const SHARE_ACL_NESTED_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-shares
 const SHARE_ACL_HOST_JSON: &str = r#"
     [
         {
@@ -430,6 +441,7 @@ const SHARE_ACL_HOST_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-shares
 const SHARE_ACL_EMPTY_JSON: &str = r#"
     [
         {
@@ -451,6 +463,7 @@ const SHARE_ACL_EMPTY_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#create-share
 const CREATE_SHARE_REQUEST_JSON: &str = r#"
     {
         "name": "data",
@@ -465,6 +478,7 @@ const CREATE_SHARE_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#list-shares
 const SHARE_LIST_DELETING_JSON: &str = r#"
     [
         {
@@ -493,6 +507,7 @@ const SHARE_LIST_DELETING_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#get-share-details
 const SHARE_DETAIL_JSON: &str = r#"
     {
         "acl": [
@@ -507,6 +522,7 @@ const SHARE_DETAIL_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/#modify-share
 const MODIFY_SHARE_REQUEST_JSON: &str = r#"
     {
         "name": "test-name",
@@ -520,6 +536,7 @@ const MODIFY_SHARE_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/
 const ACL_LIST_JSON: &str = r#"
     [
         {
@@ -535,6 +552,7 @@ const ACL_LIST_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/
 const ACL_DETAIL_JSON: &str = r#"
     {
         "name": "read-only",
@@ -543,6 +561,7 @@ const ACL_DETAIL_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/
 const CREATE_ACL_JSON: &str = r#"
     {
         "name": "read-only",
@@ -551,6 +570,7 @@ const CREATE_ACL_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/
 const LABEL_LIST_JSON: &str = r#"
     [
         {
@@ -566,6 +586,7 @@ const LABEL_LIST_JSON: &str = r#"
 
 // ─── Test: Create FS service request (#1) ────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/25-file-storage/
 const LABEL_DETAIL_JSON: &str = r#"
     {
         "key": "env",

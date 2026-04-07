@@ -1,5 +1,6 @@
 use super::*;
 
+// Source: https://developers.upcloud.com/1.3/5-zones/#list-available-zones
 const ZONE_LIST_JSON: &str = r#"
     {
         "zones": {

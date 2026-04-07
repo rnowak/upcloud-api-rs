@@ -1,5 +1,6 @@
 use super::*;
 
+// Source: https://developers.upcloud.com/1.3/12-tags/#list-existing-tags
 const LIST_TAGS_JSON: &str = r#"
     {
         "tags": {
@@ -32,6 +33,7 @@ const LIST_TAGS_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/12-tags/#create-a-new-tag
 const CREATE_TAG_RESPONSE_JSON: &str = r#"
     {
         "tag": {
@@ -84,6 +86,7 @@ fn deserialize_tag_detail() {
 
 // ─── Create tag request ─────────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/12-tags/#create-a-new-tag
 const CREATE_TAG_REQUEST_JSON: &str = r#"
     {
         "tag": {
@@ -113,6 +116,7 @@ fn deserialize_create_tag_request() {
 
 // ─── Create tag response ────────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/12-tags/#create-a-new-tag
 const CREATE_TAG_RESP_JSON: &str = r#"
     {
         "tag": {
@@ -141,6 +145,7 @@ fn deserialize_create_tag_response() {
 
 // ─── Modify tag request ─────────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/12-tags/#modify-existing-tag
 const MODIFY_TAG_REQUEST_JSON: &str = r#"
     {
         "tag": {
@@ -169,6 +174,7 @@ fn deserialize_modify_tag_request() {
 
 // ─── Modify tag response ────────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/12-tags/#modify-existing-tag
 const MODIFY_TAG_RESP_JSON: &str = r#"
     {
         "tag": {
@@ -197,6 +203,7 @@ fn deserialize_modify_tag_response() {
 
 // ─── Assign tag to server response ──────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/12-tags/#assign-tag-to-a-server
 const ASSIGN_TAG_SERVER_JSON: &str = r#"
     {
         "server": {
@@ -318,6 +325,7 @@ fn deserialize_assign_tag_server_response() {
 
 // ─── Remove tag from server response ────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/12-tags/#remove-tag-from-server
 const REMOVE_TAG_SERVER_JSON: &str = r#"
     {
         "server": {

@@ -1,5 +1,6 @@
 use super::*;
 
+// Source: https://developers.upcloud.com/1.3/23-partner-api/#get-account-list
 const PARTNER_ACCOUNT_LIST_JSON: &str = r#"
     [
         {
@@ -33,6 +34,7 @@ const PARTNER_ACCOUNT_LIST_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/23-partner-api/#create-new-account
 const PARTNER_ACCOUNT_CREATE_JSON: &str = r#"
     {
         "address": "",
@@ -102,6 +104,7 @@ fn deserialize_partner_account_create_response() {
     assert_eq!(account.vat_number.as_deref(), Some(""));
 }
 
+// Source: https://developers.upcloud.com/1.3/23-partner-api/#create-new-account
 const CREATE_REQUEST_WITH_CONTACT_JSON: &str = r#"
     {
         "username": "newuser",
@@ -153,6 +156,7 @@ fn deserialize_create_request_with_contact_details() {
     assert!(cd.vat_number.is_none());
 }
 
+// Source: https://developers.upcloud.com/1.3/23-partner-api/#create-new-account
 const CREATE_REQUEST_WITHOUT_CONTACT_JSON: &str = r#"
     {
         "username": "newuser",
@@ -186,6 +190,7 @@ fn deserialize_create_request_without_contact_details() {
 
 // ─── Partner account detail / modify tests (official docs, page 23) ──────
 
+// Source: https://developers.upcloud.com/1.3/23-partner-api/#get-account-list
 const PARTNER_ACCOUNT_DETAIL_JSON: &str = r#"
     {
         "address": "Some street",
@@ -203,6 +208,7 @@ const PARTNER_ACCOUNT_DETAIL_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/23-partner-api/#create-new-account
 const MODIFY_PARTNER_ACCOUNT_REQUEST_JSON: &str = r#"
     {
         "first_name": "Updated",
@@ -212,6 +218,7 @@ const MODIFY_PARTNER_ACCOUNT_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/23-partner-api/#create-new-account
 const MODIFY_PARTNER_ACCOUNT_RESPONSE_JSON: &str = r#"
     {
         "address": "Some street",

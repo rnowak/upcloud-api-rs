@@ -1,5 +1,6 @@
 use super::*;
 
+// Source: https://developers.upcloud.com/1.3/7-plans/#list-available-plans
 const PLAN_LIST_JSON: &str = r#"
     {
         "plans": {
@@ -35,6 +36,7 @@ const PLAN_LIST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#list-server-configurations
 const SERVER_SIZE_LIST_JSON: &str = r#"
     {
         "server_sizes": {

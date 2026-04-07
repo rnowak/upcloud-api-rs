@@ -1,5 +1,6 @@
 use super::*;
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
 const MOS_SERVICE_LIST_JSON: &str = r#"
     [
         {
@@ -38,6 +39,7 @@ const MOS_SERVICE_LIST_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-bucket
 const MOS_BUCKET_LIST_JSON: &str = r#"
     [
         {
@@ -123,6 +125,7 @@ fn deserialize_mos_bucket_list() {
 
 // ─── New test data (official docs, page 21) ──────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
 const MOS_REGION_LIST_JSON: &str = r#"
     [
         {
@@ -140,6 +143,7 @@ const MOS_REGION_LIST_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
 const MOS_REGION_DETAIL_JSON: &str = r#"
     {
         "name": "europe-1",
@@ -155,6 +159,7 @@ const MOS_REGION_DETAIL_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-service
 const MOS_CREATE_SERVICE_REQUEST_JSON: &str = r#"
     {
         "name": "example-service",
@@ -177,6 +182,7 @@ const MOS_CREATE_SERVICE_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#get-service-details
 const MOS_SERVICE_DETAIL_JSON: &str = r#"
     {
         "configured_status": "started",
@@ -282,6 +288,7 @@ const MOS_SERVICE_DETAIL_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#modify-service
 const MOS_REPLACE_SERVICE_REQUEST_JSON: &str = r#"
     {
         "name": "example-service",
@@ -309,6 +316,7 @@ const MOS_REPLACE_SERVICE_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#modify-service
 const MOS_MODIFY_SERVICE_REQUEST_JSON: &str = r#"
     {
         "name": "example-service",
@@ -326,6 +334,7 @@ const MOS_MODIFY_SERVICE_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
 const MOS_USAGE_JSON: &str = r#"
     {
         "total_objects": 1287,
@@ -333,6 +342,7 @@ const MOS_USAGE_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-bucket
 const MOS_CREATE_BUCKET_RESPONSE_JSON: &str = r#"
     {
         "name": "my-bucket-1",
@@ -341,6 +351,7 @@ const MOS_CREATE_BUCKET_RESPONSE_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
 const MOS_NETWORK_LIST_JSON: &str = r#"
     [
         {
@@ -357,6 +368,7 @@ const MOS_NETWORK_LIST_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
 const MOS_NETWORK_DETAIL_JSON: &str = r#"
     {
         "family": "IPv4",
@@ -366,6 +378,7 @@ const MOS_NETWORK_DETAIL_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
 const MOS_PUBLIC_NETWORK_JSON: &str = r#"
     {
         "name": "example-public-network",
@@ -374,6 +387,7 @@ const MOS_PUBLIC_NETWORK_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
 const MOS_PRIVATE_NETWORK_INPUT_JSON: &str = r#"
     {
         "name": "example-private-network",
@@ -385,6 +399,7 @@ const MOS_PRIVATE_NETWORK_INPUT_JSON: &str = r#"
 
 // ─── New tests ───────────────────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/
 const MOS_METRICS_SERIES_JSON: &str = r#"
     [
         {
@@ -666,6 +681,7 @@ fn deserialize_mos_metrics_series() {
 
 // ─── MOS policy tests (official docs, page 21) ───────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-policy
 const MOS_POLICY_LIST_JSON: &str = r#"
     [
         {
@@ -721,6 +737,7 @@ const MOS_POLICY_LIST_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-policy
 const MOS_POLICY_DETAIL_JSON: &str = r#"
     {
         "arn": "urn:ecs:iam:::policy/ECSS3FullAccess",
@@ -812,6 +829,7 @@ fn deserialize_mos_policy_detail() {
 
 // ─── MOS user tests (official docs, page 21) ─────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-user
 const MOS_USER_LIST_JSON: &str = r#"
     [
         {
@@ -840,6 +858,7 @@ const MOS_USER_LIST_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-user
 const MOS_USER_DETAIL_JSON: &str = r#"
     {
         "access_keys": [
@@ -866,6 +885,7 @@ const MOS_USER_DETAIL_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-user
 const MOS_USER_CREATE_RESPONSE_JSON: &str = r#"
     {
         "access_keys": [],
@@ -967,6 +987,7 @@ fn deserialize_mos_user_create_response() {
 
 // ─── MOS access key tests (official docs, page 21) ───────────────────────
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-access-key
 const MOS_ACCESS_KEY_LIST_JSON: &str = r#"
     [
         {
@@ -978,6 +999,7 @@ const MOS_ACCESS_KEY_LIST_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#create-access-key
 const MOS_ACCESS_KEY_CREATE_RESPONSE_JSON: &str = r#"
     {
         "access_key_id": "AKIA589142A152F5E423",
@@ -988,6 +1010,7 @@ const MOS_ACCESS_KEY_CREATE_RESPONSE_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#get-access-key-details
 const MOS_ACCESS_KEY_DETAIL_JSON: &str = r#"
     {
         "access_key_id": "AKIA63F41D01345BB477",
@@ -1052,6 +1075,7 @@ fn deserialize_mos_access_key_detail() {
 // The CustomDomain struct uses name, domain_name, status, created_at for the CRUD endpoint.
 // No specific CRUD endpoint JSON is in the public docs, so this uses a realistic shape
 // consistent with the struct definition and UpCloud naming conventions.
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#get-custom-domain-details
 const MOS_CUSTOM_DOMAIN_JSON: &str = r#"
     {
         "name": "objects-cdn",
@@ -1061,6 +1085,7 @@ const MOS_CUSTOM_DOMAIN_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#list-custom-domains
 const MOS_CUSTOM_DOMAIN_LIST_JSON: &str = r#"
     [
         {
@@ -1105,6 +1130,7 @@ fn deserialize_custom_domain_list() {
 // ─── Policy version tests (docs "List policy versions" / "Get policy version") ─
 
 // From docs: "List policy versions" and "Create policy version" responses
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#get-policy-version-details
 const MOS_POLICY_VERSION_JSON: &str = r#"
     {
         "version_id": "v2",
@@ -1114,6 +1140,7 @@ const MOS_POLICY_VERSION_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/21-managed-object-storage/#list-policy-versions
 const MOS_POLICY_VERSION_LIST_JSON: &str = r#"
     [
         {

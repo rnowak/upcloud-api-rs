@@ -50,6 +50,7 @@ struct CreateRequestBody {
     server: CreateRequest,
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#get-server-details
 const GET_SERVER_DETAILS_JSON: &str = r#"
     {
         "server": {
@@ -235,6 +236,7 @@ fn deserialize_get_server_details() {
     assert_eq!(labels.label[0].key, "env");
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#list-servers
 const LIST_SERVERS_JSON: &str = r#"
     {
         "servers": {
@@ -329,6 +331,7 @@ fn deserialize_list_servers() {
     assert_eq!(tags1[1], "Ubuntu");
 }
 
+// Fixture: hand-crafted test data
 const MINIMAL_SERVER_JSON: &str = r#"
     {
         "server": {
@@ -358,6 +361,7 @@ fn deserialize_minimal_server() {
     assert!(s.storage_devices.is_none());
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#list-all-server-groups
 const SERVER_GROUP_LIST_JSON: &str = r#"
     {
         "server_groups": {
@@ -405,6 +409,7 @@ fn deserialize_server_group_list() {
 
 // ─── NEW TESTS: every JSON example from the UpCloud 1.3 Servers docs ──────
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#get-server-gpus
 const GET_SERVER_GPUS_JSON: &str = r#"
     {
         "gpus": [
@@ -440,6 +445,7 @@ fn deserialize_get_server_gpus() {
     assert_eq!(resp.gpus[1].serial, "1723382930206");
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#create-server
 const CREATE_SERVER_FROM_TEMPLATE_REQUEST_JSON: &str = r#"
     {
         "server": {
@@ -607,6 +613,7 @@ fn deserialize_create_server_from_template_request() {
     assert_eq!(ssh[1], "ssh-dss AAAAB3NzaC1kc3MAA user@example.com");
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#create-server
 const CREATE_SERVER_BY_CLONING_REQUEST_JSON: &str = r#"
     {
         "server": {
@@ -728,6 +735,7 @@ fn deserialize_create_server_by_cloning_request() {
     assert_eq!(priv_ips[0].address.as_deref(), Some("10.0.0.50"));
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#create-server
 const CREATE_SERVER_FROM_SCRATCH_REQUEST_JSON: &str = r#"
     {
         "server": {
@@ -860,6 +868,7 @@ fn deserialize_create_server_from_scratch_request() {
     assert_eq!(priv_ips[0].address.as_deref(), Some("10.0.0.50"));
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#create-server
 const CREATE_SERVER_RESPONSE_JSON: &str = r#"
     {
         "server": {
@@ -979,6 +988,7 @@ fn deserialize_create_server_response() {
     assert!(s.tags.as_ref().unwrap().tag.is_empty());
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#rebuild-server
 const REBUILD_SERVER_REQUEST_JSON: &str = r#"
     {
         "server_rebuild": {
@@ -1016,6 +1026,7 @@ fn deserialize_rebuild_server_request() {
     assert_eq!(lu.ssh_keys.unwrap().ssh_key.len(), 1);
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#rebuild-server
 const REBUILD_SERVER_RESPONSE_JSON: &str = r#"
     {
         "server": {
@@ -1243,6 +1254,7 @@ fn deserialize_rebuild_server_response() {
     assert!(s.labels.as_ref().unwrap().label.is_empty());
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#start-server
 const START_SERVER_REQUEST_JSON: &str = r#"
     {
         "server": {
@@ -1258,6 +1270,7 @@ fn deserialize_start_server_request() {
     assert_eq!(v["server"]["host"], 8055964291_i64);
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#start-server
 const START_SERVER_RESPONSE_JSON: &str = r#"
     {
         "server": {
@@ -1382,6 +1395,7 @@ fn deserialize_start_server_response() {
     assert!(s.labels.as_ref().unwrap().label.is_empty());
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#stop-server
 const STOP_SERVER_REQUEST_JSON: &str = r#"
     {
         "stop_server": {
@@ -1400,6 +1414,7 @@ fn deserialize_stop_server_request() {
     assert_eq!(body.stop_server.timeout.as_deref(), Some("60"));
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#stop-server
 const STOP_SERVER_RESPONSE_JSON: &str = r#"
     {
         "server": {
@@ -1510,6 +1525,7 @@ fn deserialize_stop_server_response() {
     assert!(sv["labels"]["label"].as_array().unwrap().is_empty());
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#restart-server
 const RESTART_SERVER_REQUEST_JSON: &str = r#"
     {
         "restart_server": {
@@ -1533,6 +1549,7 @@ fn deserialize_restart_server_request() {
     );
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#restart-server
 const RESTART_SERVER_RESPONSE_JSON: &str = r#"
     {
         "server": {
@@ -1655,6 +1672,7 @@ fn deserialize_restart_server_response() {
     assert!(s.labels.as_ref().unwrap().label.is_empty());
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#modify-server
 const MODIFY_SERVER_REQUEST_JSON: &str = r#"
     {
         "server": {
@@ -1676,6 +1694,7 @@ fn deserialize_modify_server_request() {
     assert_eq!(s.plan.as_deref(), Some("custom"));
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#modify-server
 const MODIFY_SERVER_RESPONSE_JSON: &str = r#"
     {
         "server": {
@@ -1802,6 +1821,7 @@ fn deserialize_modify_server_response() {
     assert!(s.labels.as_ref().unwrap().label.is_empty());
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#show-server-group-details
 const SERVER_GROUP_DETAILS_JSON: &str = r#"
     {
         "server_group": {
@@ -1852,6 +1872,7 @@ fn deserialize_server_group_details() {
     assert_eq!(servers.len(), 2);
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#list-all-server-groups
 const SERVER_GROUP_LIST_FULL_JSON: &str = r#"
     {
         "server_groups": {
@@ -1949,6 +1970,7 @@ fn deserialize_server_group_list_full() {
     assert_eq!(servers1[0], "001789da-3aa4-4431-bd34-b4ad841f23e2");
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/
 const LIST_SERVERS_IN_GROUP_JSON: &str = r#"
     {
         "servers": {
@@ -1972,6 +1994,7 @@ fn deserialize_list_servers_in_group() {
     );
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#create-a-new-server-group
 const CREATE_SERVER_GROUP_REQUEST_JSON: &str = r#"
     {
         "server_group": {
@@ -2011,6 +2034,7 @@ fn deserialize_create_server_group_request() {
     assert_eq!(servers[0], "00e2dc05-379d-6b90-a354-e5c3f9293918");
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#modify-server-group
 const MODIFY_SERVER_GROUP_REQUEST_JSON: &str = r#"
     {
         "server_group": {
@@ -2040,6 +2064,7 @@ fn deserialize_modify_server_group_request() {
     assert_eq!(servers.len(), 2);
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/
 const ADD_SERVER_TO_GROUP_REQUEST_JSON: &str = r#"
     {
         "server": {
@@ -2056,6 +2081,7 @@ fn deserialize_add_server_to_group_request() {
     assert_eq!(v["server"]["uuid"], "00235adf-add4-66f1-ef34-e331516bb6a1");
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#relocate-server
 const RELOCATE_SERVER_REQUEST_JSON: &str = r#"
     {
         "zone": "fi-priv-example"
@@ -2070,6 +2096,7 @@ fn deserialize_relocate_server_request() {
     assert_eq!(v["zone"], "fi-priv-example");
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/#relocate-server
 const RELOCATE_SERVER_RESPONSE_JSON: &str = r#"
     {
         "server": {
@@ -2191,6 +2218,7 @@ fn deserialize_relocate_server_response() {
     assert!(s.labels.as_ref().unwrap().label.is_empty());
 }
 
+// Source: https://developers.upcloud.com/1.3/8-servers/
 const METADATA_SERVICE_RESPONSE_JSON: &str = r#"
     {
         "cloud_name": "upcloud",
@@ -2479,6 +2507,7 @@ fn list_params_full_combination() {
 // Uses realistic zone IDs and GPU model names from the UpCloud API docs
 // (server details show devices with model "NVIDIA L40S").
 
+// Fixture: hand-crafted test data
 const DEVICE_AVAILABILITY_JSON: &str = r#"
     {
         "fi-hel1": {

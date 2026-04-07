@@ -1,5 +1,6 @@
 use super::*;
 
+// Source: https://developers.upcloud.com/1.3/22-audit-logs/#list-audit-logs
 const AUDIT_LOG_LIST_JSON: &str = r#"
     {
         "audit_logs": [
@@ -29,6 +30,7 @@ const AUDIT_LOG_LIST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/22-audit-logs/#list-options-to-filter-by
 const AUDIT_FILTER_OPTIONS_JSON: &str = r#"
     {
         "resource_types": [

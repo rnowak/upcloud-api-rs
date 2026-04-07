@@ -1,5 +1,6 @@
 use super::*;
 
+// Source: https://developers.upcloud.com/1.3/19-network-gateways/#list-services
 const GATEWAY_LIST_JSON: &str = r#"
     [
         {
@@ -128,6 +129,7 @@ const GATEWAY_LIST_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/19-network-gateways/#list-plans
 const GATEWAY_PLAN_LIST_JSON: &str = r#"
     [
         {
@@ -347,6 +349,7 @@ fn deserialize_gateway_plan_list() {
     assert_eq!(features_1[0], Feature::Nat);
 }
 
+// Source: https://developers.upcloud.com/1.3/19-network-gateways/#get-plan-details
 const GATEWAY_PLAN_DETAIL_JSON: &str = r#"
     {
         "name": "advanced",
@@ -361,6 +364,7 @@ const GATEWAY_PLAN_DETAIL_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/19-network-gateways/#get-service-details
 const GATEWAY_DETAIL_JSON: &str = r#"
     {
         "addresses": [
@@ -487,6 +491,7 @@ const GATEWAY_DETAIL_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/19-network-gateways/#create-service
 const GATEWAY_CREATE_REQ_JSON: &str = r#"
     {
         "name": "example-gateway",
@@ -556,6 +561,7 @@ const GATEWAY_CREATE_REQ_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/19-network-gateways/#modify-service
 const GATEWAY_MODIFY_REQ_JSON: &str = r#"
     {
         "name": "example-gateway",
@@ -569,6 +575,7 @@ const GATEWAY_MODIFY_REQ_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/19-network-gateways/#create-connection
 const CONNECTION_CREATE_REQ_JSON: &str = r#"
     {
         "name": "example-connection",
@@ -609,6 +616,7 @@ const CONNECTION_CREATE_REQ_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/19-network-gateways/#get-connection-details
 const CONNECTION_DETAIL_JSON: &str = r#"
     {
         "name": "example-connection",
@@ -700,6 +708,7 @@ const CONNECTION_DETAIL_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/19-network-gateways/#modify-connection
 const CONNECTION_MODIFY_REQ_JSON: &str = r#"
     {
         "local_routes": [
@@ -712,6 +721,7 @@ const CONNECTION_MODIFY_REQ_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/19-network-gateways/#list-tunnels
 const TUNNEL_LIST_JSON: &str = r#"
     [
         {
@@ -782,6 +792,7 @@ const TUNNEL_LIST_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/19-network-gateways/#create-tunnel
 const TUNNEL_CREATE_REQ_JSON: &str = r#"
     {
         "name": "example-tunnel-2",
@@ -802,6 +813,7 @@ const TUNNEL_CREATE_REQ_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/19-network-gateways/#modify-tunnel
 const TUNNEL_MODIFY_REQ_JSON: &str = r#"
     {
         "remote_address": {
@@ -810,6 +822,7 @@ const TUNNEL_MODIFY_REQ_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/19-network-gateways/#modify-service
 const GATEWAY_REPLACE_REQ_JSON: &str = r#"
     {
         "name": "example-gateway",
@@ -817,6 +830,7 @@ const GATEWAY_REPLACE_REQ_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/19-network-gateways/
 const GATEWAY_LABEL_LIST_JSON: &str = r#"
     [
         {
@@ -830,6 +844,7 @@ const GATEWAY_LABEL_LIST_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/19-network-gateways/
 const GATEWAY_LABEL_DETAIL_JSON: &str = r#"
     {
         "key": "env",
@@ -837,6 +852,7 @@ const GATEWAY_LABEL_DETAIL_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/19-network-gateways/
 const GATEWAY_LABEL_CREATE_JSON: &str = r#"
     {
         "key": "env",
@@ -844,6 +860,7 @@ const GATEWAY_LABEL_CREATE_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/19-network-gateways/#list-connections
 const CONNECTION_LIST_JSON: &str = r#"
     [
         {

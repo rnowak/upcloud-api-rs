@@ -2,6 +2,7 @@ use super::*;
 
 use serde::Deserialize;
 
+// Source: https://developers.upcloud.com/1.3/24-api-tokens/#list-tokens
 const TOKEN_LIST_JSON: &str = r#"
     [
         {
@@ -30,6 +31,7 @@ const TOKEN_LIST_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/24-api-tokens/#create-token
 const TOKEN_CREATE_JSON: &str = r#"
     {
         "token": "ucat_01DQE3AJDEBFEKECFM558TGH2F",
@@ -66,6 +68,7 @@ fn deserialize_token_create() {
     assert_eq!(resp.allowed_ip_ranges.len(), 2);
 }
 
+// Source: https://developers.upcloud.com/1.3/24-api-tokens/#get-token-details
 const TOKEN_DETAIL_JSON: &str = r#"
     {
         "id": "0c0f1d0e-ccba-48bf-a2c2-b267e8a58597",
@@ -95,6 +98,7 @@ fn deserialize_token_detail() {
     assert_eq!(token.allowed_ip_ranges.len(), 2);
 }
 
+// Source: https://developers.upcloud.com/1.3/24-api-tokens/#create-token
 const CREATE_TOKEN_REQUEST_JSON: &str = r#"
     {
         "name": "token",
@@ -119,6 +123,7 @@ fn deserialize_create_token_request() {
 
 // ─── Account info (GET /1.3/account) ─────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/3-accounts/#get-account-information
 const GET_ACCOUNT_INFO_JSON: &str = r#"
     {
         "account": {
@@ -165,6 +170,7 @@ fn deserialize_get_account_info() {
 
 // ─── Account list (GET /1.3/account/list) ────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/3-accounts/#get-account-list
 const GET_ACCOUNT_LIST_JSON: &str = r#"
     {
         "accounts": {
@@ -237,6 +243,7 @@ fn deserialize_get_account_list() {
 
 // ─── Account details (GET /1.3/account/details/{username}) ───────────────
 
+// Source: https://developers.upcloud.com/1.3/3-accounts/#get-account-details
 const GET_ACCOUNT_DETAILS_JSON: &str = r#"
     {
         "account": {
@@ -322,6 +329,7 @@ fn deserialize_get_account_details() {
 
 // ─── Modify account details (PUT request body) ───────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/3-accounts/#modify-account-details
 const MODIFY_ACCOUNT_JSON: &str = r#"
     {
         "account": {
@@ -416,6 +424,7 @@ fn deserialize_modify_account_request() {
 
 // ─── Add subaccount (POST request body) ──────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/3-accounts/#add-subaccount
 const ADD_SUBACCOUNT_JSON: &str = r#"
     {
         "sub_account": {
@@ -495,6 +504,7 @@ fn deserialize_add_subaccount_request() {
 
 // ─── Monthly billing summary (new endpoint) ─────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/3-accounts/#billing-summary
 const BILLING_SUMMARY_JSON: &str = r#"
     {
         "currency": "EUR",
@@ -655,6 +665,7 @@ fn deserialize_billing_summary() {
 
 // ─── Monthly billing summary deprecated ─────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/3-accounts/#billing-summary
 const DEPRECATED_BILLING_JSON: &str = r#"
     {
         "billing": {
@@ -724,6 +735,7 @@ fn deserialize_deprecated_billing_summary() {
 
 // ─── Detailed monthly billing summary deprecated ────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/3-accounts/#billing-summary
 const DETAILED_BILLING_JSON: &str = r#"
     {
         "billing": {
@@ -917,6 +929,7 @@ fn deserialize_detailed_billing_summary() {
 
 // ─── Resource billing summary ───────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/3-accounts/#billing-summary
 const RESOURCE_BILLING_JSON: &str = r#"
     {
         "billing": {
@@ -971,6 +984,7 @@ fn deserialize_resource_billing_summary() {
 
 // ─── Network transfer statistics ────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/23-account/
 const NETWORK_TRANSFER_STATS_JSON: &str = r#"
     {
         "stats": {
@@ -1038,6 +1052,7 @@ fn deserialize_network_transfer_stats() {
 
 // ─── Resource transfer statistics ───────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/23-account/
 const RESOURCE_TRANSFER_STATS_JSON: &str = r#"
     {
         "stats": {
@@ -1123,6 +1138,7 @@ fn deserialize_resource_transfer_stats() {
 
 // ─── Current network usage ──────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/23-account/
 const CURRENT_NETWORK_USAGE_JSON: &str = r#"
     {
         "stats": {

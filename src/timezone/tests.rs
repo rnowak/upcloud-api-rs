@@ -1,5 +1,6 @@
 use super::*;
 
+// Source: https://developers.upcloud.com/1.3/6-timezones/#list-timezones
 const TIMEZONE_LIST_JSON: &str = r#"
     {
         "timezones": {

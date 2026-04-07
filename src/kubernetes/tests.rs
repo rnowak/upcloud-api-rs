@@ -1,5 +1,6 @@
 use super::*;
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#list-plans
 const K8S_PLAN_LIST_JSON: &str = r#"
     [
         {
@@ -15,6 +16,7 @@ const K8S_PLAN_LIST_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#list-clusters
 const K8S_CLUSTER_LIST_JSON: &str = r#"
     [
         {
@@ -77,6 +79,7 @@ const K8S_CLUSTER_LIST_JSON: &str = r#"
     ]
 "#;
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#get-cluster-details
 const K8S_CLUSTER_DETAIL_JSON: &str = r#"
     {
         "control_plane_ip_filter": [
@@ -125,6 +128,7 @@ const K8S_CLUSTER_DETAIL_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#list-node-groups
 const NODE_GROUP_LIST_JSON: &str = r#"
     [
         {
@@ -384,6 +388,7 @@ fn deserialize_node_group_list() {
 
 // ─── New test JSON payloads (official docs, page 20) ──────────────────────
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#create-cluster
 const CREATE_CLUSTER_REQUEST_JSON: &str = r#"
     {
         "control_plane_ip_filter": [],
@@ -422,6 +427,7 @@ const CREATE_CLUSTER_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#create-cluster
 const CREATE_CLUSTER_RESPONSE_JSON: &str = r#"
     {
         "control_plane_ip_filter": [],
@@ -468,6 +474,7 @@ const CREATE_CLUSTER_RESPONSE_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#modify-cluster
 const MODIFY_CLUSTER_REQUEST_JSON: &str = r#"
     {
         "control_plane_ip_filter": [
@@ -486,6 +493,7 @@ const MODIFY_CLUSTER_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#modify-cluster
 const MODIFY_CLUSTER_RESPONSE_JSON: &str = r#"
     {
         "control_plane_ip_filter": [
@@ -534,6 +542,7 @@ const MODIFY_CLUSTER_RESPONSE_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/
 const AVAILABLE_UPGRADES_JSON: &str = r#"
     {
         "versions": [
@@ -542,6 +551,7 @@ const AVAILABLE_UPGRADES_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/
 const UPGRADE_CLUSTER_REQUEST_JSON: &str = r#"
     {
         "version": "1.31",
@@ -551,12 +561,14 @@ const UPGRADE_CLUSTER_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#get-kubeconfig
 const KUBECONFIG_RESPONSE_JSON: &str = r#"
     {
         "kubeconfig": "apiVersion: v1\nclusters:\n  - cluster:\n      certificate-authority-data: BASE64\n      server: https://server:6443\n    name: example-cluster-1\ncontexts:\n  - context:\n      cluster: example-cluster-1\n      user: example-cluster-1-admin\n    name: example-cluster-1-admin@example-cluster-1\ncurrent-context: example-cluster-1-admin@example-cluster-1\nkind: Config\npreferences: {}\nusers:\n  - name: example-cluster-1-admin\n    user:\n      client-certificate-data: BASE64\n      client-key-data: BASE64\n"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#create-node-group
 const CREATE_NODE_GROUP_REQUEST_JSON: &str = r#"
     {
         "anti_affinity": true,
@@ -590,6 +602,7 @@ const CREATE_NODE_GROUP_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#create-node-group
 const CREATE_NODE_GROUP_RESPONSE_JSON: &str = r#"
     {
         "anti_affinity": true,
@@ -624,6 +637,7 @@ const CREATE_NODE_GROUP_RESPONSE_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#get-node-group-details
 const NODE_GROUP_DETAIL_JSON: &str = r#"
     {
         "anti_affinity_status": true,
@@ -674,12 +688,14 @@ const NODE_GROUP_DETAIL_JSON: &str = r#"
 
 // ─── New test functions ───────────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#modify-node-group
 const MODIFY_NODE_GROUP_REQUEST_JSON: &str = r#"
     {
         "count": 15
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#modify-node-group
 const MODIFY_NODE_GROUP_RESPONSE_JSON: &str = r#"
     {
         "anti_affinity": true,
@@ -887,6 +903,7 @@ fn deserialize_upgrade_cluster_request() {
 
 // ─── Upgrade cluster response (official docs, page 20) ───────────────────
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/
 const UPGRADE_CLUSTER_RESPONSE_JSON: &str = r#"
     {
         "version": "1.31",
@@ -1099,6 +1116,7 @@ fn deserialize_modify_cluster_request_typed() {
     assert!(req.plan.is_none());
 }
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#list-versions
 const KUBERNETES_VERSIONS_JSON: &str = r#"
     [
         {
@@ -1124,6 +1142,7 @@ fn deserialize_kubernetes_versions() {
 
 // ─── Node group with custom_plan (docs section "Custom plan") ─────────────
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#get-node-group-details
 const NODE_GROUP_WITH_CUSTOM_PLAN_JSON: &str = r#"
     {
         "count": 3,
@@ -1177,6 +1196,7 @@ fn deserialize_node_group_with_custom_plan() {
 
 // ─── Node group with cloud_native_plan (docs section "Cloud native plan") ────
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#get-node-group-details
 const NODE_GROUP_WITH_CLOUD_NATIVE_PLAN_JSON: &str = r#"
     {
         "count": 2,
@@ -1215,6 +1235,7 @@ fn deserialize_node_group_with_cloud_native_plan() {
 
 // ─── Node group with gpu_plan (docs section "GPU plan") ──────────────────────
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#get-node-group-details
 const NODE_GROUP_WITH_GPU_PLAN_JSON: &str = r#"
     {
         "count": 1,
@@ -1265,6 +1286,7 @@ fn deserialize_node_group_with_gpu_plan() {
 
 // ─── Full cluster response with storage_encryption (docs, page 20) ───────────
 
+// Source: https://developers.upcloud.com/1.3/36-managed-kubernetes/#get-cluster-details
 const K8S_CLUSTER_WITH_ENCRYPTION_JSON: &str = r#"
     {
         "control_plane_ip_filter": [

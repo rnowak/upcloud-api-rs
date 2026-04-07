@@ -1,5 +1,6 @@
 use super::*;
 
+// Source: https://developers.upcloud.com/1.3/18-permissions/#get-permissions
 const PERMISSION_LIST_JSON: &str = r#"
     {
         "permissions": {
@@ -125,6 +126,7 @@ struct RevokePermissionBody {
 
 // ─── Additional deserialization tests ──────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/18-permissions/#get-permissions
 const PERMISSION_LIST_FULL_JSON: &str = r#"
     {
         "permissions": {
@@ -265,6 +267,7 @@ fn deserialize_permission_list_full() {
     assert_eq!(perms[11].user, "main_account_user1");
 }
 
+// Source: https://developers.upcloud.com/1.3/18-permissions/#get-permissions
 const PERMISSION_LIST_SUBACCOUNT_JSON: &str = r#"
     {
         "permissions": {
@@ -322,6 +325,7 @@ fn deserialize_permission_list_subaccount() {
     assert_eq!(perms[2].options.as_ref().unwrap()["storage"], "yes");
 }
 
+// Source: https://developers.upcloud.com/1.3/18-permissions/#grant-permission
 const GRANT_PERMISSION_REQUEST_JSON: &str = r#"
     {
         "permission": {
@@ -346,6 +350,7 @@ fn deserialize_grant_permission_request() {
     assert!(perm.options.is_some());
 }
 
+// Source: https://developers.upcloud.com/1.3/18-permissions/#grant-permission
 const GRANT_PERMISSION_RESPONSE_JSON: &str = r#"
     {
         "permission": {
@@ -370,6 +375,7 @@ fn deserialize_grant_permission_response() {
     assert!(perm.options.is_some());
 }
 
+// Source: https://developers.upcloud.com/1.3/18-permissions/#revoke-permission
 const REVOKE_PERMISSION_REQUEST_JSON: &str = r#"
     {
         "permission": {
@@ -392,6 +398,7 @@ fn deserialize_revoke_permission_request() {
     assert_eq!(perm.user, "sub_account_user1");
 }
 
+// Source: https://developers.upcloud.com/1.3/18-permissions/#get-permissions
 const EMPTY_PERMISSION_LIST_JSON: &str = r#"
     {
         "permissions": {

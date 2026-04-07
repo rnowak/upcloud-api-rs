@@ -145,6 +145,7 @@ struct RuleResponse {
 mod tests {
     use super::*;
 
+    // Source: https://developers.upcloud.com/1.3/11-firewall/#list-firewall-rules
     const LIST_FIREWALL_RULES_JSON: &str = r#"
     {
         "firewall_rules": {
@@ -222,6 +223,7 @@ mod tests {
     }
 "#;
 
+    // Source: https://developers.upcloud.com/1.3/11-firewall/#get-firewall-rule-details
     const GET_FIREWALL_RULE_JSON: &str = r#"
     {
         "firewall_rule": {
@@ -357,6 +359,7 @@ mod tests {
 
     // ── Create firewall rule (docs: POST /1.3/server/{uuid}/firewall_rule) ──
 
+    // Source: https://developers.upcloud.com/1.3/11-firewall/#create-firewall-rule
     const CREATE_FIREWALL_RULE_REQUEST_JSON: &str = r#"
     {
         "firewall_rule": {
@@ -379,6 +382,7 @@ mod tests {
     }
 "#;
 
+    // Source: https://developers.upcloud.com/1.3/11-firewall/#create-firewall-rule
     const CREATE_FIREWALL_RULE_RESPONSE_JSON: &str = r#"
     {
         "firewall_rule": {
@@ -482,6 +486,7 @@ mod tests {
 
     // ── Create multiple firewall rules (docs: PUT /1.3/server/{uuid}/firewall_rule) ──
 
+    // Source: https://developers.upcloud.com/1.3/11-firewall/#create-multiple-firewall-rules
     const CREATE_MULTIPLE_FIREWALL_RULES_REQUEST_JSON: &str = r#"
     {
         "firewall_rules": {

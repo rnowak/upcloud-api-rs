@@ -1,5 +1,6 @@
 use super::*;
 
+// Source: https://developers.upcloud.com/1.3/14-hosts/#list-available-hosts
 const LIST_HOSTS_JSON: &str = r#"
     {
         "hosts": {
@@ -49,6 +50,7 @@ const LIST_HOSTS_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/14-hosts/#get-host-details
 const GET_HOST_JSON: &str = r#"
     {
         "host": {
@@ -144,6 +146,7 @@ fn deserialize_host_detail() {
 
 // ─── Modify host request ────────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/14-hosts/#modify-host-details
 const MODIFY_HOST_REQUEST_JSON: &str = r#"
     {
         "host": {
@@ -164,6 +167,7 @@ fn deserialize_modify_host_request() {
 
 // ─── Modify host response ───────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/14-hosts/#modify-host-details
 const MODIFY_HOST_RESPONSE_JSON: &str = r#"
     {
         "host": {

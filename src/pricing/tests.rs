@@ -1,5 +1,6 @@
 use super::*;
 
+// Source: https://developers.upcloud.com/1.3/4-pricing/#list-prices
 const PRICE_LIST_JSON: &str = r#"
     {
         "prices": {

@@ -1,5 +1,6 @@
 use super::*;
 
+// Source: https://developers.upcloud.com/1.3/9-storages/#list-storages
 const LIST_STORAGES_JSON: &str = r#"
     {
         "storages": {
@@ -62,6 +63,7 @@ const LIST_STORAGES_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/9-storages/#get-storage-details
 const GET_STORAGE_JSON: &str = r#"
     {
         "storage": {
@@ -94,6 +96,7 @@ const GET_STORAGE_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/9-storages/#create-storage
 const CREATE_STORAGE_RESPONSE_JSON: &str = r#"
     {
         "storage": {
@@ -274,6 +277,7 @@ struct ResizeBackupTestResponse {
 
 // ── Create storage (docs: POST /1.3/storage) ──
 
+// Source: https://developers.upcloud.com/1.3/9-storages/#create-storage
 const CREATE_STORAGE_REQUEST_JSON: &str = r#"
     {
         "storage": {
@@ -297,6 +301,7 @@ const CREATE_STORAGE_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/9-storages/#create-storage
 const CREATE_STORAGE_RESPONSE_DOCS_JSON: &str = r#"
     {
         "storage": {
@@ -375,6 +380,7 @@ fn deserialize_create_storage_response_docs() {
 
 // ── Modify storage (docs: PUT /1.3/storage/{uuid}) ──
 
+// Source: https://developers.upcloud.com/1.3/9-storages/#modify-storage
 #[allow(dead_code)]
 const MODIFY_STORAGE_REQUEST_JSON: &str = r#"
     {
@@ -385,6 +391,7 @@ const MODIFY_STORAGE_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/9-storages/#modify-storage
 const MODIFY_STORAGE_RESPONSE_JSON: &str = r#"
     {
         "storage": {
@@ -444,6 +451,7 @@ fn deserialize_modify_storage_response() {
 
 // ── Resize storage (docs: POST /1.3/storage/{uuid}/resize) ──
 
+// Source: https://developers.upcloud.com/1.3/9-storages/#resize-storage-partition-filesystem
 const RESIZE_STORAGE_RESPONSE_JSON: &str = r#"
     {
         "resize_backup": {
@@ -495,6 +503,7 @@ fn deserialize_resize_storage_response() {
 
 // ── Attach storage via Server API (docs: POST /1.3/server/{uuid}/storage/attach) ──
 
+// Source: https://developers.upcloud.com/1.3/9-storages/
 const ATTACH_STORAGE_SERVER_API_REQUEST_JSON: &str = r#"
     {
         "storage_device": {
@@ -506,6 +515,7 @@ const ATTACH_STORAGE_SERVER_API_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/9-storages/
 const ATTACH_STORAGE_SERVER_API_RESPONSE_JSON: &str = r#"
     {
         "server": {
@@ -632,6 +642,7 @@ fn deserialize_attach_storage_server_api_response() {
 
 // ── Attach storage via Storage API (docs: POST /1.3/storage/{uuid}/attach) ──
 
+// Source: https://developers.upcloud.com/1.3/9-storages/
 const ATTACH_STORAGE_STORAGE_API_REQUEST_JSON: &str = r#"
     {
         "storage_device": {
@@ -643,6 +654,7 @@ const ATTACH_STORAGE_STORAGE_API_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/9-storages/
 const ATTACH_STORAGE_STORAGE_API_RESPONSE_JSON: &str = r#"
     {
         "storage": {
@@ -706,6 +718,7 @@ fn deserialize_attach_storage_storage_api_response() {
 
 // ── Detach storage (docs: POST /1.3/server/{uuid}/storage/detach) ──
 
+// Source: https://developers.upcloud.com/1.3/9-storages/
 const DETACH_STORAGE_REQUEST_JSON: &str = r#"
     {
         "storage_device": {
@@ -714,6 +727,7 @@ const DETACH_STORAGE_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/9-storages/
 const DETACH_STORAGE_SERVER_API_RESPONSE_JSON: &str = r#"
     {
         "server": {
@@ -765,6 +779,7 @@ const DETACH_STORAGE_SERVER_API_RESPONSE_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/9-storages/
 const DETACH_STORAGE_STORAGE_API_RESPONSE_JSON: &str = r#"
     {
         "storage": {
@@ -859,6 +874,7 @@ fn deserialize_detach_storage_storage_api_response() {
 
 // ── Load CD-ROM (docs: POST /1.3/server/{uuid}/cdrom/load) ──
 
+// Source: https://developers.upcloud.com/1.3/9-storages/
 const LOAD_CDROM_REQUEST_JSON: &str = r#"
     {
         "storage_device": {
@@ -867,6 +883,7 @@ const LOAD_CDROM_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/9-storages/
 const LOAD_CDROM_RESPONSE_JSON: &str = r#"
     {
         "server": {
@@ -982,6 +999,7 @@ fn deserialize_load_cdrom_response() {
 
 // ── Eject CD-ROM (docs: POST /1.3/server/{uuid}/cdrom/eject) ──
 
+// Source: https://developers.upcloud.com/1.3/9-storages/
 const EJECT_CDROM_RESPONSE_JSON: &str = r#"
     {
         "server": {
@@ -1084,6 +1102,7 @@ fn deserialize_eject_cdrom_response() {
 
 // ── Clone storage (docs: POST /1.3/storage/{uuid}/clone) ──
 
+// Source: https://developers.upcloud.com/1.3/9-storages/#clone-storage
 const CLONE_STORAGE_REQUEST_JSON: &str = r#"
     {
         "storage": {
@@ -1095,6 +1114,7 @@ const CLONE_STORAGE_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/9-storages/#clone-storage
 const CLONE_STORAGE_RESPONSE_JSON: &str = r#"
     {
         "storage": {
@@ -1145,6 +1165,7 @@ fn deserialize_clone_storage_response() {
 
 // ── Templatize storage (docs: POST /1.3/storage/{uuid}/templatize) ──
 
+// Source: https://developers.upcloud.com/1.3/9-storages/#list-storages
 #[allow(dead_code)]
 const TEMPLATIZE_STORAGE_REQUEST_JSON: &str = r#"
     {
@@ -1154,6 +1175,7 @@ const TEMPLATIZE_STORAGE_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/9-storages/#list-storages
 const TEMPLATIZE_STORAGE_RESPONSE_JSON: &str = r#"
     {
         "storage": {
@@ -1202,6 +1224,7 @@ fn deserialize_templatize_storage_response() {
 
 // ── Create backup (docs: POST /1.3/storage/{uuid}/backup) ──
 
+// Source: https://developers.upcloud.com/1.3/9-storages/#create-backup
 const CREATE_BACKUP_REQUEST_JSON: &str = r#"
     {
         "storage": {
@@ -1210,6 +1233,7 @@ const CREATE_BACKUP_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/9-storages/#create-backup
 const CREATE_BACKUP_RESPONSE_JSON: &str = r#"
     {
         "storage": {
@@ -1275,6 +1299,7 @@ fn restore_backup_has_no_response_body() {
 
 // ── Create import (docs: POST /1.3/storage/{uuid}/import) ──
 
+// Source: https://developers.upcloud.com/1.3/9-storages/#create-import
 const CREATE_IMPORT_REQUEST_JSON: &str = r#"
     {
         "storage_import": {
@@ -1284,6 +1309,7 @@ const CREATE_IMPORT_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/9-storages/#create-import
 const CREATE_IMPORT_HTTP_RESPONSE_JSON: &str = r#"
     {
         "storage_import": {
@@ -1305,6 +1331,7 @@ const CREATE_IMPORT_HTTP_RESPONSE_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/9-storages/#create-import
 const CREATE_IMPORT_DIRECT_RESPONSE_JSON: &str = r#"
     {
         "storage_import": {
@@ -1400,6 +1427,7 @@ fn deserialize_create_import_direct_response() {
 
 // ── Get import details (docs: GET /1.3/storage/{uuid}/import) ──
 
+// Source: https://developers.upcloud.com/1.3/9-storages/#get-import-details
 const GET_IMPORT_DETAILS_RESPONSE_JSON: &str = r#"
     {
         "storage_import": {
@@ -1452,6 +1480,7 @@ fn deserialize_get_import_details_response() {
 
 // ── Cancel import (docs: POST /1.3/storage/{uuid}/import/cancel) ──
 
+// Source: https://developers.upcloud.com/1.3/9-storages/#cancel-import
 const CANCEL_IMPORT_RESPONSE_JSON: &str = r#"
     {
         "storage_import": {

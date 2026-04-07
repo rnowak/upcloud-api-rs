@@ -1,5 +1,6 @@
 use super::*;
 
+// Source: https://developers.upcloud.com/1.3/10-ip-addresses/#list-ip-addresses
 const LIST_IP_ADDRESSES_JSON: &str = r#"
     {
         "ip_addresses": {
@@ -62,6 +63,7 @@ const LIST_IP_ADDRESSES_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/10-ip-addresses/#get-ip-address-details
 const GET_IP_ADDRESS_JSON: &str = r#"
     {
         "ip_address": {
@@ -195,6 +197,7 @@ fn deserialize_ip_address_detail() {
 
 // ── Assign IP address (docs: POST /1.3/ip_address) ──
 
+// Source: https://developers.upcloud.com/1.3/10-ip-addresses/#assign-ip-address
 const ASSIGN_IP_ADDRESS_REQUEST_JSON: &str = r#"
     {
         "ip_address": {
@@ -214,6 +217,7 @@ fn deserialize_assign_ip_address_request() {
 
 // ── Assign attached floating IP (docs: POST /1.3/ip_address) ──
 
+// Source: https://developers.upcloud.com/1.3/10-ip-addresses/#assign-ip-address
 const ASSIGN_ATTACHED_FLOATING_IP_REQUEST_JSON: &str = r#"
     {
         "ip_address": {
@@ -225,6 +229,7 @@ const ASSIGN_ATTACHED_FLOATING_IP_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/10-ip-addresses/#assign-ip-address
 const ASSIGN_ATTACHED_FLOATING_IP_RESPONSE_JSON: &str = r#"
     {
         "ip_address": {
@@ -278,6 +283,7 @@ fn deserialize_assign_attached_floating_ip_response() {
 
 // ── Assign detached floating IP (docs: POST /1.3/ip_address) ──
 
+// Source: https://developers.upcloud.com/1.3/10-ip-addresses/#assign-ip-address
 const ASSIGN_DETACHED_FLOATING_IP_REQUEST_JSON: &str = r#"
     {
         "ip_address": {
@@ -288,6 +294,7 @@ const ASSIGN_DETACHED_FLOATING_IP_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/10-ip-addresses/#assign-ip-address
 const ASSIGN_DETACHED_FLOATING_IP_RESPONSE_JSON: &str = r#"
     {
         "ip_address": {
@@ -337,6 +344,7 @@ fn deserialize_assign_detached_floating_ip_response() {
 
 // ── Modify IP address (docs: PATCH /1.3/ip_address/{address}) ──
 
+// Source: https://developers.upcloud.com/1.3/10-ip-addresses/#modify-ip-address
 const MODIFY_IP_ADDRESS_REQUEST_JSON: &str = r#"
     {
         "ip_address": {
@@ -347,6 +355,7 @@ const MODIFY_IP_ADDRESS_REQUEST_JSON: &str = r#"
     }
 "#;
 
+// Source: https://developers.upcloud.com/1.3/10-ip-addresses/#modify-ip-address
 const MODIFY_IP_ADDRESS_RESPONSE_JSON: &str = r#"
     {
         "ip_address": {

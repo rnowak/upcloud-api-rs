@@ -2,6 +2,7 @@ use super::*;
 
 // ─── List all networks ──────────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#list-all-networks
 const LIST_NETWORKS_JSON: &str = r#"
     {
         "networks": {
@@ -92,6 +93,7 @@ fn deserialize_network_list() {
 
 // ─── List networks within zone ──────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#list-networks-within-zone
 const LIST_NETWORKS_ZONE_JSON: &str = r#"
     {
         "networks": {
@@ -190,6 +192,7 @@ fn deserialize_network_list_within_zone() {
 
 // ─── Get network details ────────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#get-network-details
 const GET_NETWORK_JSON: &str = r#"
     {
         "network": {
@@ -255,6 +258,7 @@ fn deserialize_network_detail() {
 
 // ─── Create SDN private network request ─────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#create-sdn-private-network
 const CREATE_NETWORK_REQUEST_JSON: &str = r#"
     {
         "network": {
@@ -337,6 +341,7 @@ fn deserialize_create_network_request() {
 
 // ─── Create SDN private network response ────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#create-sdn-private-network
 const CREATE_NETWORK_RESPONSE_JSON: &str = r#"
     {
         "network": {
@@ -452,6 +457,7 @@ fn deserialize_create_network_response() {
 
 // ─── Modify network request ─────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#modify-network-details
 const MODIFY_NETWORK_REQUEST_JSON: &str = r#"
     {
         "network": {
@@ -526,6 +532,7 @@ fn deserialize_modify_network_request() {
 
 // ─── Modify network — attach to router ──────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#modify-network-details
 const MODIFY_NETWORK_ROUTER_JSON: &str = r#"
     {
         "network": {
@@ -552,6 +559,7 @@ fn deserialize_modify_network_attach_router() {
 
 // ─── Modify network response ────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#modify-network-details
 const MODIFY_NETWORK_RESPONSE_JSON: &str = r#"
     {
         "network": {
@@ -646,6 +654,7 @@ fn deserialize_modify_network_response() {
 
 // ─── List routers ───────────────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#list-routers
 const LIST_ROUTERS_JSON: &str = r#"
     {
         "routers": {
@@ -687,6 +696,7 @@ fn deserialize_router_list() {
 
 // ─── Get router details ─────────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#get-router-details
 const GET_ROUTER_JSON: &str = r#"
     {
         "router": {
@@ -723,6 +733,7 @@ fn deserialize_router_detail() {
 
 // ─── Create router request ──────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#create-router
 const CREATE_ROUTER_REQUEST_JSON: &str = r#"
     {
         "router": {
@@ -759,6 +770,7 @@ fn deserialize_create_router_request() {
 
 // ─── Create router response ─────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#create-router
 const CREATE_ROUTER_RESPONSE_JSON: &str = r#"
     {
         "router": {
@@ -812,6 +824,7 @@ fn deserialize_create_router_response() {
 
 // ─── Modify router request ──────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#modify-router
 const MODIFY_ROUTER_REQUEST_JSON: &str = r#"
     {
         "router": {
@@ -844,6 +857,7 @@ fn deserialize_modify_router_request() {
 
 // ─── Modify router response ─────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#modify-router
 const MODIFY_ROUTER_RESPONSE_JSON: &str = r#"
     {
         "router": {
@@ -888,6 +902,7 @@ fn deserialize_modify_router_response() {
 
 // ─── List network peerings ──────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#list-network-peerings
 const LIST_PEERINGS_JSON: &str = r#"
     {
         "network_peerings": [
@@ -934,6 +949,7 @@ fn deserialize_peering_list() {
 
 // ─── List peerings (docs wrapper format) ────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#list-network-peerings
 const LIST_PEERINGS_DOCS_JSON: &str = r#"
     {
         "network_peerings": {
@@ -1032,6 +1048,7 @@ fn deserialize_peering_list_docs_format() {
 
 // ─── Get network peering details ────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#get-network-peering-details
 const GET_PEERING_DETAILS_JSON: &str = r#"
     {
         "network_peering": {
@@ -1114,6 +1131,7 @@ fn deserialize_peering_details() {
 
 // ─── Create peering request ─────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#create-network-peering
 const CREATE_PEERING_REQUEST_JSON: &str = r#"
     {
         "network_peering": {
@@ -1170,6 +1188,7 @@ fn deserialize_create_peering_request() {
 
 // ─── Create peering response ────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#create-network-peering
 const CREATE_PEERING_RESPONSE_JSON: &str = r#"
     {
         "network_peering": {
@@ -1236,6 +1255,7 @@ fn deserialize_create_peering_response() {
 
 // ─── Modify peering request ─────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#modify-network-peering
 const MODIFY_PEERING_REQUEST_JSON: &str = r#"
     {
         "network_peering": {
@@ -1280,6 +1300,7 @@ fn deserialize_modify_peering_request() {
 
 // ─── Modify peering response ────────────────────────────────────────────
 
+// Source: https://developers.upcloud.com/1.3/13-networks/#modify-network-peering
 const MODIFY_PEERING_RESPONSE_JSON: &str = r#"
     {
         "network_peering": {
