@@ -363,15 +363,6 @@ pub struct Session {
     pub usename: Option<String>,
 }
 
-/// A database extension.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[non_exhaustive]
-pub struct Extension {
-    pub name: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub version: Option<String>,
-}
-
 /// A supported database engine type.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]

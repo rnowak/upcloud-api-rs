@@ -29,12 +29,12 @@ impl<'a> DatabaseHandler<'a> {
         self.client.get("/1.3/database/service-types").await
     }
 
-    /// Returns available PostgreSQL extensions (global list).
+    /// Returns available PostgreSQL extensions grouped by version.
     ///
     /// `GET /1.3/database/pg/available-extensions`
     ///
-    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-service-types)
-    pub async fn list_pg_extensions(&self) -> Result<Vec<Extension>, Error> {
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#list-all-available-postgresql-extensions-by-version)
+    pub async fn list_pg_extensions(&self) -> Result<Vec<PgVersionExtensions>, Error> {
         self.client
             .get("/1.3/database/pg/available-extensions")
             .await
@@ -202,8 +202,11 @@ impl<'a> DatabaseHandler<'a> {
     ///
     /// `GET /1.3/database/{uuid}/available-extensions`
     ///
-    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#get-managed-database-service-types)
-    pub async fn list_available_extensions(&self, uuid: &str) -> Result<Vec<Extension>, Error> {
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#list-available-extensions-for-a-database-instance)
+    pub async fn list_available_extensions(
+        &self,
+        uuid: &str,
+    ) -> Result<Vec<PgExtensionDetail>, Error> {
         self.client
             .get(&format!("/1.3/database/{uuid}/available-extensions"))
             .await
