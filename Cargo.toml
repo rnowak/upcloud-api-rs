@@ -26,3 +26,7 @@ base64 = "0.22"
 [[example]]
 name = "storage_overview"
 path = "examples/advanced/storage_overview.rs"
+
+[[example]]
+name = "load_balancer_overview"
+path = "examples/advanced/load_balancer_overview.rs"
