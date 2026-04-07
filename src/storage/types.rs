@@ -181,12 +181,14 @@ pub struct StorageBackups {
 #[non_exhaustive]
 pub struct BackupRule {
     /// Backup interval (`"daily"`, `"mon"`, `"tue"`, etc.).
-    pub interval: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval: Option<String>,
     /// Time of day for the backup in `HHMM` format (UTC).
-    #[serde(alias = "hour")]
-    pub time: String,
+    #[serde(alias = "hour", skip_serializing_if = "Option::is_none")]
+    pub time: Option<String>,
     /// Number of backups to retain.
-    pub retention: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub retention: Option<String>,
 }
 
 /// Details of a storage import operation.

@@ -254,9 +254,9 @@ fn deserialize_storage_with_backup_rule() {
     assert_eq!(s.zone.as_deref(), Some("fi-hel1"));
     assert!(s.backups.as_ref().unwrap().backup.is_empty());
     let rule = s.backup_rule.unwrap();
-    assert_eq!(rule.interval, "daily");
-    assert_eq!(rule.time, "0430");
-    assert_eq!(rule.retention, "365");
+    assert_eq!(rule.interval.as_deref(), Some("daily"));
+    assert_eq!(rule.time.as_deref(), Some("0430"));
+    assert_eq!(rule.retention.as_deref(), Some("365"));
 }
 
 // ── Test-only wrapper types ──
@@ -348,9 +348,9 @@ fn deserialize_create_storage_response_docs() {
     assert_eq!(s.labels.as_ref().unwrap()[0].key, "env");
     assert_eq!(s.labels.as_ref().unwrap()[0].value, "prod");
     let rule = s.backup_rule.unwrap();
-    assert_eq!(rule.time, "0430"); // deserialized from "hour" via alias
-    assert_eq!(rule.interval, "daily");
-    assert_eq!(rule.retention, "365");
+    assert_eq!(rule.time.as_deref(), Some("0430")); // deserialized from "hour" via alias
+    assert_eq!(rule.interval.as_deref(), Some("daily"));
+    assert_eq!(rule.retention.as_deref(), Some("365"));
 }
 
 // ── Modify storage (docs: PUT /1.3/storage/{uuid}) ──
