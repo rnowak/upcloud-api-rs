@@ -81,10 +81,13 @@ pub struct IpAddress {
 }
 
 /// Request body for assigning an IP address.
+#[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AssignRequest {
-    pub access: Access,
-    pub family: Family,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub access: Option<Access>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub family: Option<Family>,
     /// Server UUID to assign to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub server: Option<String>,
@@ -93,8 +96,12 @@ pub struct AssignRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mac: Option<String>,
     /// Assign as a floating IP.
+    #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub floating: Option<bool>,
+    /// Behavior on server deletion.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub release_policy: Option<ReleasePolicy>,
 }
 
 /// Request body for modifying an IP address.
