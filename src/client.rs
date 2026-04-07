@@ -398,3 +398,9 @@ impl ClientBuilder {
         Ok(Client { http, config })
     }
 }
+
+// Compile-time assertion: Client must be Send + Sync for use across tasks.
+const _: () = {
+    const fn assert_send_sync<T: Send + Sync>() {}
+    let _ = assert_send_sync::<Client>;
+};

@@ -358,6 +358,9 @@ impl std::fmt::Display for ApiError {
 
 impl std::error::Error for ApiError {}
 
+/// Convenience alias for results returned by this crate.
+pub type Result<T> = std::result::Result<T, Error>;
+
 /// The UpCloud error response envelope: `{ "error": { "error_code": ..., "error_message": ... } }`.
 #[derive(serde::Deserialize, Debug)]
 pub(crate) struct ErrorEnvelope {
