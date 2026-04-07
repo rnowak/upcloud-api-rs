@@ -8,7 +8,7 @@ resource, request, and response.
 Inspiration for the design was taken from the official [UpCloud Go API client](https://github.com/UpCloudLtd/upcloud-go-api)
 and the great unofficial Rust GitHub API client [Octocrab](https://github.com/XAMPPRocky/octocrab)
 
-AI disclosure: built with Claude.
+AI disclosure: built with Claude and Copilot.
 
 ## Features
 
