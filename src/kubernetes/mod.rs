@@ -191,6 +191,33 @@ impl<'a> KubernetesHandler<'a> {
             .await
     }
 
+    // ─── Cluster upgrades ──────────────────────────────────────────────────────
+
+    /// Returns the available upgrade versions for a cluster.
+    ///
+    /// `GET /1.3/kubernetes/{uuid}/available-upgrades`
+    pub async fn get_cluster_available_upgrades(
+        &self,
+        uuid: &str,
+    ) -> Result<ClusterAvailableUpgrades, Error> {
+        self.client
+            .get(&format!("/1.3/kubernetes/{uuid}/available-upgrades"))
+            .await
+    }
+
+    /// Upgrades a cluster to a new Kubernetes version.
+    ///
+    /// `POST /1.3/kubernetes/{uuid}/upgrade`
+    pub async fn upgrade_cluster(
+        &self,
+        uuid: &str,
+        req: UpgradeClusterRequest,
+    ) -> Result<Cluster, Error> {
+        self.client
+            .post(&format!("/1.3/kubernetes/{uuid}/upgrade"), &req)
+            .await
+    }
+
     // ─── Wait helpers ─────────────────────────────────────────────────────────
 
     /// Polls until the cluster reaches the desired state or the timeout expires.

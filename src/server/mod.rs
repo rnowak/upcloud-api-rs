@@ -125,10 +125,14 @@ impl<'a> ServerHandler<'a> {
     /// `POST /1.3/server/{uuid}/start`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/8-servers/#start-server)
-    pub async fn start(&self, uuid: &str) -> Result<ServerDetails, Error> {
+    pub async fn start(&self, uuid: &str, req: StartRequest) -> Result<ServerDetails, Error> {
+        #[derive(Serialize)]
+        struct Body {
+            server: StartRequest,
+        }
         let resp: ServerResponse = self
             .client
-            .post_empty(&format!("/1.3/server/{uuid}/start"))
+            .post(&format!("/1.3/server/{uuid}/start"), &Body { server: req })
             .await?;
         Ok(resp.server)
     }

@@ -250,12 +250,14 @@ pub struct CreateRequest {
     /// Size in GiB.
     #[serde_as(as = "DisplayFromStr")]
     pub size: u64,
-    pub tier: Tier,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tier: Option<Tier>,
     pub title: String,
     /// Data center zone (e.g. `"de-fra1"`).
     pub zone: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub backup_rule: Option<BackupRule>,
+    #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub encrypted: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -279,6 +281,7 @@ pub struct ModifyRequest {
 }
 
 /// Request to clone an existing storage.
+#[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CloneRequest {
     pub title: String,
@@ -286,6 +289,7 @@ pub struct CloneRequest {
     pub zone: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tier: Option<Tier>,
+    #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub encrypted: Option<bool>,
 }
@@ -344,6 +348,28 @@ pub struct ResizeFilesystemBackup {
 }
 
 // ─── List / filter parameters ─────────────────────────────────────────────────
+
+/// Behaviour for associated backups when deleting a storage.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum DeleteStorageBackupsMode {
+    /// Keep all backups.
+    Keep,
+    /// Keep only the latest backup.
+    KeepLatest,
+    /// Delete all backups.
+    Delete,
+}
+
+impl std::fmt::Display for DeleteStorageBackupsMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Keep => write!(f, "keep"),
+            Self::KeepLatest => write!(f, "keep_latest"),
+            Self::Delete => write!(f, "delete"),
+        }
+    }
+}
 
 /// Query parameters for filtering the storage list.
 ///

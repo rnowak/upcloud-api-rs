@@ -272,7 +272,7 @@ fn deserialize_storage_with_backup_rule() {
 const CREATE_STORAGE_REQUEST_JSON: &str = r#"
     {
         "storage": {
-            "encrypted": true,
+            "encrypted": "yes",
             "size": "10",
             "tier": "maxiops",
             "title": "My data collection",
@@ -302,7 +302,7 @@ fn deserialize_create_storage_request() {
     let s = w.storage;
     assert_eq!(s.encrypted, Some(true));
     assert_eq!(s.size, 10);
-    assert_eq!(s.tier, Tier::Maxiops);
+    assert_eq!(s.tier, Some(Tier::Maxiops));
     assert_eq!(s.title, "My data collection");
     assert_eq!(s.zone, "fi-hel1");
     let rule = s.backup_rule.unwrap();
@@ -514,13 +514,17 @@ const ATTACH_STORAGE_SERVER_API_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_attach_storage_server_api_request() {
-    let v: serde_json::Value =
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        storage_device: crate::server::AttachStorageRequest,
+    }
+    let w: Wrapper =
         serde_json::from_str(ATTACH_STORAGE_SERVER_API_REQUEST_JSON).unwrap();
-    let sd = &v["storage_device"];
-    assert_eq!(sd["type"], "disk");
-    assert_eq!(sd["address"], "scsi");
-    assert_eq!(sd["storage"], "00798b85-efdc-41ca-8021-f6ef457b8531");
-    assert_eq!(sd["boot_disk"], "0");
+    let sd = w.storage_device;
+    assert_eq!(sd.device_type.as_deref(), Some("disk"));
+    assert_eq!(sd.address.as_deref(), Some("scsi"));
+    assert_eq!(sd.storage, "00798b85-efdc-41ca-8021-f6ef457b8531");
+    assert_eq!(sd.boot_disk.as_deref(), Some("0"));
 }
 
 // Source: https://developers.upcloud.com/1.3/9-storages/
@@ -1085,7 +1089,7 @@ const CLONE_STORAGE_REQUEST_JSON: &str = r#"
             "zone": "fi-hel1",
             "tier": "maxiops",
             "title": "Clone of operating system disk",
-            "encrypted": true
+            "encrypted": "yes"
         }
     }
 "#;
@@ -1532,4 +1536,116 @@ fn list_params_label_filters() {
             ("label", "team=backend".to_string()),
         ]
     );
+}
+
+// ─── CreateRequest with optional tier ─────────────────────────────────────────
+
+#[test]
+fn deserialize_create_request_without_tier() {
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        storage: CreateRequest,
+    }
+    let json = r#"
+        {
+            "storage": {
+                "size": "10",
+                "title": "No tier",
+                "zone": "fi-hel1"
+            }
+        }
+    "#;
+    let w: Wrapper = serde_json::from_str(json).unwrap();
+    assert!(w.storage.tier.is_none());
+    assert_eq!(w.storage.size, 10);
+}
+
+#[test]
+fn serialize_create_request_without_tier() {
+    let req = CreateRequest {
+        size: 10,
+        tier: None,
+        title: "No tier".into(),
+        zone: "fi-hel1".into(),
+        backup_rule: None,
+        encrypted: None,
+        labels: None,
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert!(json.get("tier").is_none());
+}
+
+// ─── CreateRequest / CloneRequest encrypted round-trip with YesNo ─────────────
+
+#[test]
+fn serialize_create_request_encrypted_yes_no() {
+    let req = CreateRequest {
+        size: 10,
+        tier: Some(Tier::Maxiops),
+        title: "Encrypted".into(),
+        zone: "fi-hel1".into(),
+        backup_rule: None,
+        encrypted: Some(true),
+        labels: None,
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["encrypted"], "yes");
+}
+
+#[test]
+fn serialize_clone_request_encrypted_yes_no() {
+    let req = CloneRequest {
+        title: "Clone".into(),
+        zone: "fi-hel1".into(),
+        tier: None,
+        encrypted: Some(false),
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["encrypted"], "no");
+}
+
+// ─── DeleteStorageBackupsMode ─────────────────────────────────────────────────
+
+#[test]
+fn delete_storage_backups_mode_display() {
+    assert_eq!(DeleteStorageBackupsMode::Keep.to_string(), "keep");
+    assert_eq!(DeleteStorageBackupsMode::KeepLatest.to_string(), "keep_latest");
+    assert_eq!(DeleteStorageBackupsMode::Delete.to_string(), "delete");
+}
+
+#[test]
+fn delete_storage_backups_mode_serde_round_trip() {
+    let json = serde_json::to_string(&DeleteStorageBackupsMode::KeepLatest).unwrap();
+    assert_eq!(json, r#""keep_latest""#);
+    let mode: DeleteStorageBackupsMode = serde_json::from_str(&json).unwrap();
+    assert_eq!(mode, DeleteStorageBackupsMode::KeepLatest);
+}
+
+// ─── AttachStorageRequest with boot_disk ──────────────────────────────────────
+
+#[test]
+fn serialize_attach_storage_request_with_boot_disk() {
+    let req = crate::server::AttachStorageRequest {
+        storage: "00798b85-efdc-41ca-8021-f6ef457b8531".into(),
+        device_type: Some("disk".into()),
+        address: None,
+        boot_disk: Some("0".into()),
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["boot_disk"], "0");
+    assert_eq!(json["storage"], "00798b85-efdc-41ca-8021-f6ef457b8531");
+    assert_eq!(json["type"], "disk");
+    assert!(json.get("address").is_none());
+}
+
+#[test]
+fn serialize_attach_storage_request_without_boot_disk() {
+    let req = crate::server::AttachStorageRequest {
+        storage: "some-uuid".into(),
+        device_type: None,
+        address: None,
+        boot_disk: None,
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert!(json.get("boot_disk").is_none());
 }

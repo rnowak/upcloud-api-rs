@@ -1236,8 +1236,14 @@ const START_SERVER_REQUEST_JSON: &str = r#"
 
 #[test]
 fn deserialize_start_server_request() {
-    let v: serde_json::Value = serde_json::from_str(START_SERVER_REQUEST_JSON).expect("valid JSON");
-    assert_eq!(v["server"]["host"], 8055964291_i64);
+    #[derive(Debug, Deserialize)]
+    struct Wrapper {
+        server: StartRequest,
+    }
+    let body: Wrapper =
+        serde_json::from_str(START_SERVER_REQUEST_JSON).expect("deserialize start request");
+    assert_eq!(body.server.host, Some(8055964291));
+    assert_eq!(body.server.avoid_host, None);
 }
 
 /// Start server response (POST /1.3/server/{uuid}/start — 200 OK).

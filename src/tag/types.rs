@@ -29,9 +29,9 @@ pub struct CreateTagRequest {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// Server UUIDs to associate.
-    #[serde(skip_serializing_if = "Vec::is_empty", default)]
-    pub servers: Vec<String>,
+    /// Servers associated with this tag.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub servers: Option<TagServers>,
 }
 
 /// Request body for modifying a tag.
@@ -41,4 +41,7 @@ pub struct ModifyTagRequest {
     pub name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    /// Servers associated with this tag.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub servers: Option<TagServers>,
 }

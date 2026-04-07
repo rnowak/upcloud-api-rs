@@ -400,6 +400,29 @@ pub struct CreateTokenResponse {
 
 // ─── Billing / Statistics types ───────────────────────────────────────────────
 
+/// Optional query parameters for `GET /1.3/account/billing/summary/{yearmonth}`.
+#[derive(Debug, Clone, Default)]
+pub struct BillingSummaryParams {
+    /// Filter by resource ID.
+    pub resource_id: Option<String>,
+    /// Filter by username.
+    pub username: Option<String>,
+}
+
+impl BillingSummaryParams {
+    /// Build a URL-encoded query string from the non-`None` fields.
+    pub fn to_query_string(&self) -> String {
+        let mut pairs = url::form_urlencoded::Serializer::new(String::new());
+        if let Some(ref v) = self.resource_id {
+            pairs.append_pair("resource_id", v);
+        }
+        if let Some(ref v) = self.username {
+            pairs.append_pair("username", v);
+        }
+        pairs.finish()
+    }
+}
+
 /// Response for `GET /1.3/account/billing/summary/{yearmonth}`.
 #[derive(Debug, Clone, Deserialize)]
 #[non_exhaustive]

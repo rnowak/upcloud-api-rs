@@ -473,6 +473,18 @@ pub struct ModifyRequest {
     /// Termination protection.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub termination_protection: Option<bool>,
+    /// Target zone for migration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zone: Option<String>,
+    /// Networks to attach.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub networks: Option<Vec<NetworkInput>>,
+    /// Additional disk space in GiB.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_disk_space_gib: Option<u64>,
+    /// Preferred maintenance window.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maintenance: Option<MaintenanceTime>,
 }
 
 /// Request body for creating a database user.

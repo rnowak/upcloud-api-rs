@@ -1163,3 +1163,74 @@ fn deserialize_current_network_usage() {
     assert_eq!(usage.total_sent_bytes, Some(13682943146));
     assert_eq!(usage.updated.as_deref(), Some("2020-10-15T07:00:00Z"));
 }
+
+// ─── create_subaccount envelope key ──────────────────────────────────────
+
+#[test]
+fn create_subaccount_serializes_with_sub_account_key() {
+    // The Body struct used by create_subaccount must wrap the request under
+    // the "sub_account" key, matching the Go SDK / UpCloud API.
+    #[derive(serde::Serialize)]
+    struct Body {
+        sub_account: CreateSubaccountRequest,
+    }
+    let req = CreateSubaccountRequest {
+        username: "testuser".into(),
+        password: "testpass".into(),
+        ..Default::default()
+    };
+    let body = Body { sub_account: req };
+    let json: serde_json::Value = serde_json::to_value(&body).unwrap();
+    assert!(
+        json.get("sub_account").is_some(),
+        "envelope key must be \"sub_account\", got: {json}"
+    );
+    assert!(
+        json.get("account").is_none(),
+        "envelope must NOT use \"account\" key"
+    );
+    assert_eq!(json["sub_account"]["username"], "testuser");
+}
+
+// ─── BillingSummaryParams query string ───────────────────────────────────
+
+#[test]
+fn billing_summary_params_empty() {
+    let params = BillingSummaryParams::default();
+    assert_eq!(params.to_query_string(), "");
+}
+
+#[test]
+fn billing_summary_params_resource_id_only() {
+    let params = BillingSummaryParams {
+        resource_id: Some("abc-123".into()),
+        ..Default::default()
+    };
+    assert_eq!(params.to_query_string(), "resource_id=abc-123");
+}
+
+#[test]
+fn billing_summary_params_both() {
+    let params = BillingSummaryParams {
+        resource_id: Some("abc-123".into()),
+        username: Some("myuser".into()),
+    };
+    assert_eq!(
+        params.to_query_string(),
+        "resource_id=abc-123&username=myuser"
+    );
+}
+
+#[test]
+fn billing_summary_params_encodes_special_chars() {
+    let params = BillingSummaryParams {
+        resource_id: None,
+        username: Some("user name&special=yes".into()),
+    };
+    let qs = params.to_query_string();
+    assert!(qs.contains("username="));
+    assert!(!qs.contains(' '));
+    assert!(!qs.contains('&') || qs.starts_with("username="));
+    // url::form_urlencoded encodes spaces as '+' and & as %26
+    assert_eq!(qs, "username=user+name%26special%3Dyes");
+}

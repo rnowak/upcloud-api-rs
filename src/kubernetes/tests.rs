@@ -1363,3 +1363,69 @@ fn deserialize_cluster_with_storage_encryption() {
         Some("data-at-rest")
     );
 }
+
+// ─── CreateClusterRequest with storage_encryption ────────────────────────
+
+#[test]
+fn serialize_create_cluster_request_with_storage_encryption() {
+    let req = CreateClusterRequest {
+        name: "enc-cluster".into(),
+        zone: "fi-hel2".into(),
+        network: "03a85f64-5717-4562-b3fc-2c963f66afa6".into(),
+        network_cidr: "172.16.0.0/24".into(),
+        version: None,
+        node_groups: vec![],
+        labels: None,
+        private_node_groups: None,
+        plan: None,
+        control_plane_ip_filter: None,
+        storage_encryption: Some("data-at-rest".into()),
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["storage_encryption"].as_str().unwrap(), "data-at-rest");
+}
+
+#[test]
+fn serialize_create_cluster_request_without_storage_encryption() {
+    let req = CreateClusterRequest {
+        name: "plain-cluster".into(),
+        zone: "fi-hel2".into(),
+        network: "03a85f64-5717-4562-b3fc-2c963f66afa6".into(),
+        network_cidr: "172.16.0.0/24".into(),
+        version: None,
+        node_groups: vec![],
+        labels: None,
+        private_node_groups: None,
+        plan: None,
+        control_plane_ip_filter: None,
+        storage_encryption: None,
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert!(json.get("storage_encryption").is_none());
+}
+
+// ─── Serialize UpgradeClusterRequest ─────────────────────────────────────
+
+#[test]
+fn serialize_upgrade_cluster_request() {
+    let req = UpgradeClusterRequest {
+        version: "1.31".into(),
+        strategy: Some(UpgradeStrategy {
+            strategy_type: "manual".into(),
+        }),
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["version"].as_str().unwrap(), "1.31");
+    assert_eq!(json["strategy"]["type"].as_str().unwrap(), "manual");
+}
+
+#[test]
+fn serialize_upgrade_cluster_request_without_strategy() {
+    let req = UpgradeClusterRequest {
+        version: "1.31".into(),
+        strategy: None,
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["version"].as_str().unwrap(), "1.31");
+    assert!(json.get("strategy").is_none());
+}

@@ -155,6 +155,9 @@ pub struct CreateNetworkRequest {
 pub struct ModifyNetworkRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Zone where the network exists (e.g. `"fi-hel1"`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zone: Option<String>,
     /// Updated IP networks (subnets).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_networks: Option<NetworkIpNetworks>,

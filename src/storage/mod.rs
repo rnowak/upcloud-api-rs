@@ -166,6 +166,21 @@ impl<'a> StorageHandler<'a> {
         self.client.delete(&format!("/1.3/storage/{uuid}")).await
     }
 
+    /// Deletes a storage with a specific backup handling mode.
+    ///
+    /// `DELETE /1.3/storage/{uuid}?backups={mode}`
+    ///
+    /// [UpCloud API docs](https://developers.upcloud.com/1.3/9-storages/#delete-storage)
+    pub async fn delete_with_backups(
+        &self,
+        uuid: &str,
+        backups: DeleteStorageBackupsMode,
+    ) -> Result<(), Error> {
+        self.client
+            .delete(&format!("/1.3/storage/{uuid}?backups={backups}"))
+            .await
+    }
+
     /// Clones a storage.
     ///
     /// `POST /1.3/storage/{uuid}/clone`

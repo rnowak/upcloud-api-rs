@@ -516,9 +516,10 @@ pub struct CreateRequest {
     /// Firewall state (`"on"` or `"off"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub firewall: Option<String>,
-    /// Enable the metadata service (`"yes"` or `"no"`).
+    /// Whether the metadata service is enabled.
+    #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<String>,
+    pub metadata: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nic_model: Option<NicModel>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -673,9 +674,10 @@ pub struct ModifyRequest {
     /// Firewall state (`"on"` or `"off"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub firewall: Option<String>,
-    /// Whether the metadata service is enabled (`"yes"` or `"no"`).
+    /// Whether the metadata service is enabled.
+    #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<String>,
+    pub metadata: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nic_model: Option<NicModel>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -685,11 +687,25 @@ pub struct ModifyRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub simple_backup: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub remote_access_enabled: Option<String>,
+    pub labels: Option<crate::types::common::Labels>,
+    #[serde_as(as = "Option<YesNo>")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub remote_access_enabled: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_access_type: Option<RemoteAccessType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_access_password: Option<String>,
+}
+
+/// Request to start a stopped server.
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct StartRequest {
+    /// Host ID to avoid for scheduling (private cloud).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub avoid_host: Option<i64>,
+    /// Preferred host ID for scheduling (private cloud).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub host: Option<i64>,
 }
 
 /// Request to stop a server.
@@ -726,6 +742,9 @@ pub struct AttachStorageRequest {
     /// Target device address (e.g. `"virtio:1"`); auto-assigned if omitted.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
+    /// `"0"` or `"1"` — set to `"1"` to mark this as the boot disk.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub boot_disk: Option<String>,
 }
 
 /// Request to detach a storage device from a server.

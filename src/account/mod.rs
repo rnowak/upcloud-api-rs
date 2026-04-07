@@ -107,18 +107,18 @@ impl<'a> AccountHandler<'a> {
     pub async fn create_subaccount(&self, req: CreateSubaccountRequest) -> Result<Account, Error> {
         #[derive(Serialize)]
         struct Body {
-            account: CreateSubaccountRequest,
+            sub_account: CreateSubaccountRequest,
         }
         let resp: AccountResponse = self
             .client
-            .post("/1.3/account/sub", &Body { account: req })
+            .post("/1.3/account/sub", &Body { sub_account: req })
             .await?;
         Ok(resp.account)
     }
 
     /// Modifies an existing subaccount.
     ///
-    /// `PUT /1.3/account/sub/{username}`
+    /// `PATCH /1.3/account/sub/{username}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/3-accounts/#modify-account-details)
     pub async fn modify_subaccount(
@@ -132,7 +132,7 @@ impl<'a> AccountHandler<'a> {
         }
         let resp: AccountResponse = self
             .client
-            .put(
+            .patch(
                 &format!("/1.3/account/sub/{username}"),
                 &Body { account: req },
             )
@@ -206,10 +206,17 @@ impl<'a> AccountHandler<'a> {
     pub async fn get_billing_summary(
         &self,
         year_month: &str,
+        params: Option<&BillingSummaryParams>,
     ) -> Result<BillingSummaryResponse, Error> {
-        self.client
-            .get(&format!("/1.3/account/billing/summary/{year_month}"))
-            .await
+        let mut url = format!("/1.3/account/billing/summary/{year_month}");
+        if let Some(p) = params {
+            let qs = p.to_query_string();
+            if !qs.is_empty() {
+                url.push('?');
+                url.push_str(&qs);
+            }
+        }
+        self.client.get(&url).await
     }
 }
 

@@ -101,7 +101,7 @@ impl<'a> NetworkHandler<'a> {
 
     /// Attaches a router to a network.
     ///
-    /// `PUT /1.3/network/{network_uuid}/router`
+    /// `PUT /1.3/network/{network_uuid}` with `{"network": {"router": "<router_uuid>"}}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/13-networks/#modify-network-details)
     pub async fn attach_router(
@@ -110,15 +110,21 @@ impl<'a> NetworkHandler<'a> {
         router_uuid: &str,
     ) -> Result<Network, Error> {
         #[derive(Serialize)]
-        struct Body<'a> {
+        struct Inner<'a> {
             router: &'a str,
+        }
+        #[derive(Serialize)]
+        struct Body<'a> {
+            network: Inner<'a>,
         }
         let resp: NetworkResponse = self
             .client
             .put(
-                &format!("/1.3/network/{network_uuid}/router"),
+                &format!("/1.3/network/{network_uuid}"),
                 &Body {
-                    router: router_uuid,
+                    network: Inner {
+                        router: router_uuid,
+                    },
                 },
             )
             .await?;
@@ -127,13 +133,16 @@ impl<'a> NetworkHandler<'a> {
 
     /// Detaches the router from a network.
     ///
-    /// `DELETE /1.3/network/{network_uuid}/router`
+    /// `PUT /1.3/network/{network_uuid}` with `{"network": {"router": null}}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/13-networks/#modify-network-details)
-    pub async fn detach_router(&self, network_uuid: &str) -> Result<(), Error> {
-        self.client
-            .delete(&format!("/1.3/network/{network_uuid}/router"))
-            .await
+    pub async fn detach_router(&self, network_uuid: &str) -> Result<Network, Error> {
+        let body = serde_json::json!({"network": {"router": null}});
+        let resp: NetworkResponse = self
+            .client
+            .put(&format!("/1.3/network/{network_uuid}"), &body)
+            .await?;
+        Ok(resp.network)
     }
 
     // ─── Server interfaces ────────────────────────────────────────────────────
@@ -217,22 +226,28 @@ impl<'a> NetworkHandler<'a> {
     ///
     /// `POST /1.3/server/{server_uuid}/networking/interface/{index}/ip-address`
     ///
+    /// When `force` is `true`, appends `?force=yes` to the request URL.
+    ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/13-networks/#list-server-networks)
     pub async fn assign_interface_ip(
         &self,
         server_uuid: &str,
         index: u32,
         req: AssignInterfaceIpRequest,
+        force: bool,
     ) -> Result<(), Error> {
         #[derive(Serialize)]
         struct Body {
             ip_address: AssignInterfaceIpRequest,
         }
+        let mut url = format!(
+            "/1.3/server/{server_uuid}/networking/interface/{index}/ip-address"
+        );
+        if force {
+            url.push_str("?force=yes");
+        }
         self.client
-            .post_no_response(
-                &format!("/1.3/server/{server_uuid}/networking/interface/{index}/ip-address"),
-                &Body { ip_address: req },
-            )
+            .post_no_response(&url, &Body { ip_address: req })
             .await
     }
 

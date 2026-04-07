@@ -636,6 +636,20 @@ const MODIFY_DB_REQUEST_JSON: &str = r#"
         "plan": "1x1xCPU-2GB-25GB",
         "properties": {
             "automatic_utility_network_ip_filter": true
+        },
+        "zone": "de-fra1",
+        "networks": [
+            {
+                "family": "IPv4",
+                "name": "my-network",
+                "type": "private",
+                "uuid": "03000000-0000-4000-8000-000000000001"
+            }
+        ],
+        "additional_disk_space_gib": 50,
+        "maintenance": {
+            "dow": "monday",
+            "time": "03:00:00"
         }
     }
 "#;
@@ -649,6 +663,16 @@ fn deserialize_modify_db_request() {
     let props = req.properties.as_ref().unwrap();
     assert_eq!(props["automatic_utility_network_ip_filter"], true);
     assert!(req.labels.is_none());
+    assert_eq!(req.zone.as_deref(), Some("de-fra1"));
+    let networks = req.networks.as_ref().unwrap();
+    assert_eq!(networks.len(), 1);
+    assert_eq!(networks[0].family, "IPv4");
+    assert_eq!(networks[0].name, "my-network");
+    assert_eq!(networks[0].network_type, "private");
+    assert_eq!(req.additional_disk_space_gib, Some(50));
+    let maint = req.maintenance.as_ref().unwrap();
+    assert_eq!(maint.dow, "monday");
+    assert_eq!(maint.time, "03:00:00");
 }
 
 // Source: https://developers.upcloud.com/1.3/16-managed-database/#create-user

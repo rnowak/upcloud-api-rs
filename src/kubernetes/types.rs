@@ -281,6 +281,9 @@ pub struct CreateClusterRequest {
     /// Allowed CIDRs for control plane access.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub control_plane_ip_filter: Option<Vec<String>>,
+    /// Storage encryption setting.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub storage_encryption: Option<String>,
 }
 
 /// Request body for modifying a Kubernetes cluster.

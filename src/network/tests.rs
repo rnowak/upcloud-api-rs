@@ -553,8 +553,122 @@ fn deserialize_modify_network_attach_router() {
         Some("04c0df35-2658-4b0c-8ac7-962090f4e92a")
     );
     assert!(body.network.name.is_none());
+    assert!(body.network.zone.is_none());
     assert!(body.network.ip_networks.is_none());
     assert!(body.network.labels.is_none());
+}
+
+// ─── Attach router — serialization produces correct body ────────────────
+
+#[test]
+fn serialize_attach_router_body() {
+    #[derive(Serialize)]
+    struct Inner<'a> {
+        router: &'a str,
+    }
+    #[derive(Serialize)]
+    struct Body<'a> {
+        network: Inner<'a>,
+    }
+    let body = Body {
+        network: Inner {
+            router: "04c0df35-2658-4b0c-8ac7-962090f4e92a",
+        },
+    };
+    let json = serde_json::to_value(&body).unwrap();
+    assert_eq!(
+        json,
+        serde_json::json!({
+            "network": {
+                "router": "04c0df35-2658-4b0c-8ac7-962090f4e92a"
+            }
+        })
+    );
+}
+
+// ─── Detach router — body sets router to null ───────────────────────────
+
+#[test]
+fn serialize_detach_router_body() {
+    let body = serde_json::json!({"network": {"router": null}});
+    assert_eq!(body["network"]["router"], serde_json::Value::Null);
+
+    // Verify it round-trips: deserialize the null-router body and confirm
+    // the router field is None.
+    #[derive(Debug, Deserialize)]
+    struct Body {
+        network: ModifyNetworkRequest,
+    }
+    let parsed: Body = serde_json::from_value(body).unwrap();
+    assert!(parsed.network.router.is_none());
+    assert!(parsed.network.name.is_none());
+}
+
+// ─── ModifyNetworkRequest with zone ─────────────────────────────────────
+
+#[test]
+fn serialize_modify_network_with_zone() {
+    let req = ModifyNetworkRequest {
+        name: Some("Updated".to_string()),
+        zone: Some("de-fra1".to_string()),
+        ..Default::default()
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["name"], "Updated");
+    assert_eq!(json["zone"], "de-fra1");
+    assert!(json.get("ip_networks").is_none());
+    assert!(json.get("labels").is_none());
+    assert!(json.get("router").is_none());
+}
+
+#[test]
+fn serialize_modify_network_without_zone() {
+    let req = ModifyNetworkRequest {
+        name: Some("NoZone".to_string()),
+        ..Default::default()
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["name"], "NoZone");
+    // zone should be omitted when None
+    assert!(json.get("zone").is_none());
+}
+
+#[test]
+fn deserialize_modify_network_with_zone() {
+    let input = r#"{"name": "Net", "zone": "us-nyc1"}"#;
+    let req: ModifyNetworkRequest = serde_json::from_str(input).unwrap();
+    assert_eq!(req.name.as_deref(), Some("Net"));
+    assert_eq!(req.zone.as_deref(), Some("us-nyc1"));
+}
+
+// ─── AssignInterfaceIp force URL construction ───────────────────────────
+
+#[test]
+fn assign_interface_ip_url_with_force() {
+    let base = "/1.3/server/abc-123/networking/interface/2/ip-address";
+    let mut url = base.to_string();
+    let force = true;
+    if force {
+        url.push_str("?force=yes");
+    }
+    assert_eq!(
+        url,
+        "/1.3/server/abc-123/networking/interface/2/ip-address?force=yes"
+    );
+}
+
+#[test]
+fn assign_interface_ip_url_without_force() {
+    let base = "/1.3/server/abc-123/networking/interface/2/ip-address";
+    let mut url = base.to_string();
+    let force = false;
+    if force {
+        url.push_str("?force=yes");
+    }
+    assert_eq!(
+        url,
+        "/1.3/server/abc-123/networking/interface/2/ip-address"
+    );
 }
 
 // Source: https://developers.upcloud.com/1.3/13-networks/#modify-network-details

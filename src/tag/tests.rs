@@ -200,6 +200,72 @@ fn deserialize_modify_tag_response() {
     );
 }
 
+// ─── Serialize create tag request ────────────────────────────────────────
+
+#[test]
+fn serialize_create_tag_request_with_servers() {
+    let req = CreateTagRequest {
+        name: "DEV".to_string(),
+        description: Some("Development servers".to_string()),
+        servers: Some(TagServers {
+            server: vec!["0077fa3d-32db-4b09-9f5f-30d9e9afb565".to_string()],
+        }),
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["name"], "DEV");
+    assert_eq!(json["description"], "Development servers");
+    assert_eq!(
+        json["servers"]["server"][0],
+        "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
+    );
+}
+
+#[test]
+fn serialize_create_tag_request_without_servers() {
+    let req = CreateTagRequest {
+        name: "DEV".to_string(),
+        description: None,
+        servers: None,
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["name"], "DEV");
+    assert!(json.get("servers").is_none());
+    assert!(json.get("description").is_none());
+}
+
+// ─── Serialize modify tag request ───────────────────────────────────────
+
+#[test]
+fn serialize_modify_tag_request_with_servers() {
+    let req = ModifyTagRequest {
+        name: Some("PROD".to_string()),
+        description: Some("Production servers".to_string()),
+        servers: Some(TagServers {
+            server: vec!["0077fa3d-32db-4b09-9f5f-30d9e9afb565".to_string()],
+        }),
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["name"], "PROD");
+    assert_eq!(json["description"], "Production servers");
+    assert_eq!(
+        json["servers"]["server"][0],
+        "0077fa3d-32db-4b09-9f5f-30d9e9afb565"
+    );
+}
+
+#[test]
+fn serialize_modify_tag_request_without_servers() {
+    let req = ModifyTagRequest {
+        name: Some("PROD".to_string()),
+        description: None,
+        servers: None,
+    };
+    let json = serde_json::to_value(&req).unwrap();
+    assert_eq!(json["name"], "PROD");
+    assert!(json.get("servers").is_none());
+    assert!(json.get("description").is_none());
+}
+
 // Source: https://developers.upcloud.com/1.3/12-tags/#assign-tag-to-a-server
 const ASSIGN_TAG_SERVER_JSON: &str = r#"
     {
