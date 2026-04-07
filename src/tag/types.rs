@@ -6,7 +6,9 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Tag {
+    /// The tag name.
     pub name: String,
+    /// Description of the tag.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// Servers associated with this tag.
@@ -26,7 +28,9 @@ pub struct TagServers {
 /// Request body for creating a tag.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateTagRequest {
+    /// The tag name.
     pub name: String,
+    /// Description of the tag.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// Servers associated with this tag.
@@ -37,8 +41,10 @@ pub struct CreateTagRequest {
 /// Request body for modifying a tag.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ModifyTagRequest {
+    /// New tag name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Description of the tag.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// Servers associated with this tag.

@@ -72,6 +72,7 @@ pub struct NetworkServer {
     /// Server title (display name).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
+    /// Unique identifier for the server.
     pub uuid: String,
 }
 
@@ -88,7 +89,9 @@ pub struct NetworkServers {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct NetworkPeeringSummary {
+    /// Unique identifier for the peering.
     pub uuid: String,
+    /// Peering name.
     pub name: String,
     /// Current peering state.
     #[serde(default)]
@@ -108,7 +111,9 @@ pub struct NetworkPeerings {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Network {
+    /// Unique identifier for the network.
     pub uuid: String,
+    /// Network name.
     pub name: String,
     /// Network type (public, utility, or private).
     #[serde(rename = "type")]
@@ -121,6 +126,7 @@ pub struct Network {
     /// Servers attached to this network.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub servers: Option<NetworkServers>,
+    /// Key-value labels on the network.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
     /// UUID of the router attached to this network.
@@ -137,6 +143,7 @@ pub struct Network {
 /// Request to create a new SDN network.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateNetworkRequest {
+    /// Network name.
     pub name: String,
     /// Zone to create the network in (e.g. `"fi-hel1"`).
     pub zone: String,
@@ -146,6 +153,7 @@ pub struct CreateNetworkRequest {
     /// UUID of a router to attach to the network.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub router: Option<String>,
+    /// Key-value labels on the network.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
 }
@@ -153,6 +161,7 @@ pub struct CreateNetworkRequest {
 /// Request to modify an existing SDN network.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModifyNetworkRequest {
+    /// Network name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Zone where the network exists (e.g. `"fi-hel1"`).
@@ -161,6 +170,7 @@ pub struct ModifyNetworkRequest {
     /// Updated IP networks (subnets).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_networks: Option<NetworkIpNetworks>,
+    /// Key-value labels on the network.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
     /// UUID of a router to attach (or detach by omitting).
@@ -255,6 +265,7 @@ pub enum RouterStaticRouteType {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct StaticRoute {
+    /// Route name.
     pub name: Option<String>,
     /// Destination CIDR (e.g. `"10.0.0.0/24"`).
     pub route: String,
@@ -269,6 +280,7 @@ pub struct StaticRoute {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct RouterNetwork {
+    /// Network UUID.
     pub uuid: String,
 }
 
@@ -285,7 +297,9 @@ pub struct RouterNetworkSlice {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Router {
+    /// Unique identifier for the router.
     pub uuid: String,
+    /// Router name.
     pub name: String,
     /// Router type.
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
@@ -296,6 +310,7 @@ pub struct Router {
     /// Static routes configured on this router.
     #[serde(default)]
     pub static_routes: Vec<StaticRoute>,
+    /// Key-value labels on the router.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
 }
@@ -303,10 +318,12 @@ pub struct Router {
 /// Request to create a new router.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateRouterRequest {
+    /// Router name.
     pub name: String,
     /// Static routes to configure on the router.
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub static_routes: Vec<StaticRoute>,
+    /// Key-value labels on the router.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
 }
@@ -314,11 +331,13 @@ pub struct CreateRouterRequest {
 /// Request to modify an existing router.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModifyRouterRequest {
+    /// Router name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Updated static routes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub static_routes: Option<Vec<StaticRoute>>,
+    /// Key-value labels on the router.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
 }
@@ -365,6 +384,7 @@ pub enum PeeringConfiguredStatus {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct PeeringNetwork {
+    /// Network UUID.
     pub uuid: String,
     /// IP networks (subnets) exposed through the peering.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -375,7 +395,9 @@ pub struct PeeringNetwork {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct NetworkPeering {
+    /// Unique identifier for the peering.
     pub uuid: String,
+    /// Peering name.
     pub name: String,
     /// Desired status of the peering.
     pub configured_status: PeeringConfiguredStatus,
@@ -387,6 +409,7 @@ pub struct NetworkPeering {
     /// Remote (peer) network in the peering.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub peer_network: Option<PeeringNetwork>,
+    /// Key-value labels on the peering.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
 }
@@ -394,6 +417,7 @@ pub struct NetworkPeering {
 /// Request to create a new network peering.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreatePeeringRequest {
+    /// Peering name.
     pub name: String,
     /// Desired initial status of the peering.
     pub configured_status: Option<PeeringConfiguredStatus>,
@@ -401,6 +425,7 @@ pub struct CreatePeeringRequest {
     pub network: PeeringNetworkInput,
     /// Remote (peer) network for the peering.
     pub peer_network: PeeringNetworkInput,
+    /// Key-value labels on the peering.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
 }
@@ -409,12 +434,14 @@ pub struct CreatePeeringRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct PeeringNetworkInput {
+    /// Network UUID.
     pub uuid: String,
 }
 
 /// Request to modify an existing network peering.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModifyPeeringRequest {
+    /// Peering name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Desired status of the peering.

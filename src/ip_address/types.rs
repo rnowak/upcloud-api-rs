@@ -45,8 +45,11 @@ pub enum ReleasePolicy {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct IpAddress {
+    /// Network access type (`utility`, `public`, or `private`).
     pub access: Access,
+    /// The IP address string.
     pub address: String,
+    /// Address family (`IPv4` or `IPv6`).
     pub family: Family,
     /// Reverse DNS PTR record.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -76,6 +79,7 @@ pub struct IpAddress {
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub part_of_plan: Option<bool>,
+    /// Availability zone identifier (e.g. `fi-hel2`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub zone: Option<String>,
 }
@@ -84,15 +88,19 @@ pub struct IpAddress {
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AssignRequest {
+    /// Network access type (`utility` or `public`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub access: Option<Access>,
+    /// Address family (`IPv4` or `IPv6`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub family: Option<Family>,
     /// Server UUID to assign to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub server: Option<String>,
+    /// Zone identifier (required for detached floating IPs).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub zone: Option<String>,
+    /// MAC address of the server interface to attach to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mac: Option<String>,
     /// Assign as a floating IP.

@@ -94,6 +94,7 @@ pub struct Service {
     /// Service users.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub users: Option<Vec<UserSummary>>,
+    /// Key-value labels assigned to the service.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
     /// Storage usage statistics.
@@ -111,8 +112,10 @@ pub struct Service {
     /// Static website configurations.
     #[serde(default)]
     pub static_websites: Vec<serde_json::Value>,
+    /// ISO 8601 creation timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
+    /// ISO 8601 last update timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
 }
@@ -159,6 +162,7 @@ pub struct Network {
     /// Network type.
     #[serde(rename = "type")]
     pub network_type: String,
+    /// UUID of the private network (only for private networks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub uuid: Option<String>,
 }
@@ -175,6 +179,7 @@ pub struct UserSummary {
 #[non_exhaustive]
 pub struct User {
     pub username: String,
+    /// ISO 8601 creation timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
     /// Amazon Resource Name.
@@ -206,8 +211,10 @@ pub struct UserAccessKey {
     /// Secret key (only returned at creation).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub secret_access_key: Option<String>,
+    /// Key status (`Active` or `Inactive`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
+    /// ISO 8601 creation timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
     /// Last usage timestamp.
@@ -229,10 +236,13 @@ pub struct Policy {
     /// Policy ARN.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
+    /// Human-readable policy description.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    /// ISO 8601 creation timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
+    /// ISO 8601 last update timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
     /// Number of users this policy is attached to.
@@ -254,6 +264,7 @@ pub struct Bucket {
     /// Total size in bytes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_size_bytes: Option<u64>,
+    /// ISO 8601 creation timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
 }
@@ -268,6 +279,7 @@ pub struct CustomDomain {
     /// Domain verification status.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
+    /// ISO 8601 creation timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
 }
@@ -283,6 +295,7 @@ pub struct PolicyVersion {
     /// Whether this is the default version.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_default_version: Option<bool>,
+    /// ISO 8601 creation timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
 }
@@ -327,6 +340,7 @@ pub struct NetworkInput {
     /// Network type.
     #[serde(rename = "type")]
     pub network_type: String,
+    /// UUID of the private network to attach.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub uuid: Option<String>,
 }
@@ -342,6 +356,7 @@ pub struct CreateRequest {
     /// Desired initial status.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configured_status: Option<String>,
+    /// Key-value labels.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
     /// Enable termination protection.
@@ -352,11 +367,13 @@ pub struct CreateRequest {
 /// Request body for modifying an object storage service.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModifyRequest {
+    /// New service name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Desired status.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configured_status: Option<String>,
+    /// Key-value labels.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
     /// Termination protection.
@@ -372,10 +389,13 @@ pub struct ModifyRequest {
 pub struct ReplaceRequest {
     /// Desired status (required).
     pub configured_status: String,
+    /// New service name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Whether termination protection is enabled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub termination_protection: Option<bool>,
+    /// Key-value labels.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
     /// Networks to attach.
@@ -394,6 +414,7 @@ pub struct CreatePolicyRequest {
     pub name: String,
     /// JSON policy document.
     pub document: String,
+    /// Human-readable policy description.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 }
@@ -411,6 +432,7 @@ pub struct CreateCustomDomainRequest {
 /// Request body for modifying a custom domain.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModifyCustomDomainRequest {
+    /// New custom domain name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub domain_name: Option<String>,
     /// Domain type (e.g. "public").

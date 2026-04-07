@@ -114,6 +114,7 @@ pub struct OpenSearchAccessControlRule {
 #[non_exhaustive]
 pub struct OpenSearchIndex {
     pub index_name: String,
+    /// ISO 8601 creation timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub create_time: Option<String>,
     /// Document count.
@@ -122,15 +123,19 @@ pub struct OpenSearchIndex {
     /// Index health (e.g. `"green"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub health: Option<String>,
+    /// Number of replica shards.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub number_of_replicas: Option<u64>,
+    /// Number of primary shards.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub number_of_shards: Option<u64>,
     /// Whether index is read-only.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub read_only_allow_delete: Option<bool>,
+    /// Index size in bytes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub size: Option<u64>,
+    /// Index status (e.g. `"open"`, `"closed"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
@@ -139,6 +144,7 @@ pub struct OpenSearchIndex {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct UserOpenSearchAccessControl {
+    /// Index-level access control rules.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rules: Option<Vec<OpenSearchAccessControlRule>>,
 }
@@ -146,6 +152,7 @@ pub struct UserOpenSearchAccessControl {
 /// Per-user PostgreSQL access control settings.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct PgAccessControl {
+    /// Whether to allow replication connections.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_replication: Option<bool>,
 }
@@ -153,12 +160,16 @@ pub struct PgAccessControl {
 /// Per-user Redis access control settings.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct RedisAccessControl {
+    /// Allowed command categories.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub categories: Option<Vec<String>>,
+    /// Allowed pub/sub channels.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub channels: Option<Vec<String>>,
+    /// Allowed commands.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub commands: Option<Vec<String>>,
+    /// Allowed key patterns.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub keys: Option<Vec<String>>,
 }
@@ -166,12 +177,16 @@ pub struct RedisAccessControl {
 /// Per-user Valkey access control settings.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ValkeyAccessControl {
+    /// Allowed command categories.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub categories: Option<Vec<String>>,
+    /// Allowed pub/sub channels.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub channels: Option<Vec<String>>,
+    /// Allowed commands.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub commands: Option<Vec<String>>,
+    /// Allowed key patterns.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub keys: Option<Vec<String>>,
 }
@@ -180,14 +195,20 @@ pub struct ValkeyAccessControl {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Database {
+    /// Unique identifier of the service.
     pub uuid: String,
+    /// Auto-generated service name.
     pub name: String,
+    /// Service display name.
     pub title: String,
+    /// Current plan identifier.
     pub plan: String,
+    /// Zone where the service is hosted.
     pub zone: String,
     /// Database engine type (e.g. `"pg"`, `"mysql"`).
     #[serde(rename = "type")]
     pub db_type: String,
+    /// Current service lifecycle state.
     pub state: State,
     /// UUID of the primary if this is a read replica.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -198,6 +219,7 @@ pub struct Database {
     /// Whether extended access control is enabled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub extended_access_control: Option<bool>,
+    /// Database engine version.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
     /// Connection URI.
@@ -218,20 +240,25 @@ pub struct Database {
     /// Whether the database is powered on.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub powered: Option<bool>,
+    /// ISO 8601 creation timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
+    /// ISO 8601 last update timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
     /// Attached networks.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<Vec<Network>>,
+    /// Key-value labels attached to the service.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
     /// Whether termination protection is enabled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub termination_protection: Option<bool>,
+    /// Available backups.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub backups: Option<Vec<Backup>>,
+    /// Preferred maintenance window.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maintenance: Option<MaintenanceTime>,
 }
@@ -259,6 +286,7 @@ pub struct NodeState {
     pub name: String,
     /// Node role (e.g. `"master"`, `"standby"`).
     pub role: String,
+    /// Current node state (e.g. `"running"`).
     pub state: String,
 }
 
@@ -272,6 +300,7 @@ pub struct Network {
     /// Network type (e.g. `"private"`).
     #[serde(rename = "type")]
     pub network_type: String,
+    /// Private network UUID.
     pub uuid: String,
 }
 
@@ -305,6 +334,7 @@ pub struct User {
     /// Privilege level.
     #[serde(rename = "type")]
     pub user_type: UserType,
+    /// User password.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
     /// Authentication method.
@@ -350,6 +380,7 @@ pub struct Session {
     /// Time the current query has been running.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub query_duration: Option<String>,
+    /// Session state (e.g. `"idle"`, `"active"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
     /// Client IP address.
@@ -368,11 +399,13 @@ pub struct Session {
 #[non_exhaustive]
 pub struct DatabaseType {
     pub name: String,
+    /// Human-readable display title.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
     /// Latest available engine version.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub latest_available_version: Option<String>,
+    /// Human-readable description.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 }
@@ -417,14 +450,19 @@ pub struct NetworkInput {
 pub struct CreateRequest {
     /// Hostname prefix for the database service.
     pub hostname_prefix: String,
+    /// Service display name.
     pub title: String,
+    /// Plan identifier.
     pub plan: String,
+    /// Zone where the service will be hosted.
     pub zone: String,
     /// Database engine type.
     #[serde(rename = "type")]
     pub db_type: String,
+    /// Database engine version.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
+    /// Whether to power on the service immediately.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub powered: Option<bool>,
     /// Engine-specific properties.
@@ -433,6 +471,7 @@ pub struct CreateRequest {
     /// Networks to attach.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<Vec<NetworkInput>>,
+    /// Key-value labels for service filtering.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
     /// Enable termination protection.
@@ -449,8 +488,10 @@ pub struct CreateRequest {
 /// Request body for modifying a managed database.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModifyRequest {
+    /// Service display name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
+    /// Upgrade to a new plan.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<String>,
     /// Engine-specific properties.
@@ -459,6 +500,7 @@ pub struct ModifyRequest {
     /// Power state.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub powered: Option<bool>,
+    /// Key-value labels for service filtering.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
     /// Termination protection.
@@ -506,6 +548,7 @@ pub struct CreateUserRequest {
 /// Request body for modifying a database user.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModifyUserRequest {
+    /// New password.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
     /// Authentication method.
@@ -548,10 +591,13 @@ pub struct GetLogsRequest {
 /// Query parameters for listing database sessions.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct GetSessionsRequest {
+    /// Maximum number of entries.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<u32>,
+    /// Offset for pagination.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub offset: Option<u32>,
+    /// Sort order (e.g. `"query_duration:desc"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub order_by: Option<String>,
 }
@@ -585,8 +631,10 @@ pub struct CloneRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hostname_prefix: Option<String>,
     pub plan: String,
+    /// Service display name for the clone.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
+    /// Zone for the cloned service.
     pub zone: String,
     /// Maintenance window for the clone.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -607,8 +655,10 @@ pub struct UpgradeVersionRequest {
 /// Request body for modifying service-level access control.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModifyAccessControlRequest {
+    /// Whether to enable basic access control.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub access_control: Option<bool>,
+    /// Whether to enable extended access control.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub extended_access_control: Option<bool>,
 }

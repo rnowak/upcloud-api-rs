@@ -90,9 +90,13 @@ pub enum StorageImportState {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Storage {
+    /// Unique identifier for the storage.
     pub uuid: String,
+    /// Short description.
     pub title: String,
+    /// Storage access level (`public` or `private`).
     pub access: Access,
+    /// Current storage state.
     pub state: State,
     /// Storage type (serialised as `"type"` in JSON).
     #[serde(rename = "type")]
@@ -100,6 +104,7 @@ pub struct Storage {
     /// Size in GiB.
     #[serde_as(as = "PickFirst<(DisplayFromStr, _)>")]
     pub size: u64,
+    /// Storage performance tier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tier: Option<Tier>,
     /// Data center zone (e.g. `"de-fra1"`).
@@ -112,6 +117,7 @@ pub struct Storage {
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub part_of_plan: Option<bool>,
+    /// Whether storage is encrypted at rest.
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub encrypted: Option<bool>,
@@ -121,6 +127,7 @@ pub struct Storage {
     /// Per-hour license cost.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub license: Option<f64>,
+    /// Key-value labels on the storage.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
     /// Template type (e.g. `"linux"`, `"windows"`); set for templates.
@@ -164,6 +171,7 @@ impl std::ops::Deref for StorageDetails {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct StorageServers {
+    /// Server UUIDs this storage is attached to.
     #[serde(default)]
     pub server: Vec<String>,
 }
@@ -172,6 +180,7 @@ pub struct StorageServers {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct StorageBackups {
+    /// Backup UUIDs.
     #[serde(default)]
     pub backup: Vec<String>,
 }
@@ -195,6 +204,7 @@ pub struct BackupRule {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct ImportDetails {
+    /// Completion timestamp (ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub completed_at: Option<String>,
     /// MD5 checksum of the imported data.
@@ -212,11 +222,13 @@ pub struct ImportDetails {
     /// URL of the source for HTTP imports.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_location: Option<String>,
+    /// Current import state.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<StorageImportState>,
     /// Number of bytes written to the storage.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub written_bytes: Option<u64>,
+    /// Error code if the import failed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub error_code: Option<String>,
     /// Content length reported by the client (direct uploads).
@@ -231,6 +243,7 @@ pub struct ImportDetails {
     /// Creation timestamp (ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<String>,
+    /// Error message if the import failed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub error_message: Option<String>,
     /// UUID of the import operation.
@@ -250,16 +263,21 @@ pub struct CreateRequest {
     /// Size in GiB.
     #[serde_as(as = "DisplayFromStr")]
     pub size: u64,
+    /// Storage performance tier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tier: Option<Tier>,
+    /// Short description.
     pub title: String,
     /// Data center zone (e.g. `"de-fra1"`).
     pub zone: String,
+    /// Automatic backup schedule.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub backup_rule: Option<BackupRule>,
+    /// Encrypt storage at rest.
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub encrypted: Option<bool>,
+    /// Key-value labels on the storage.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
 }
@@ -268,15 +286,16 @@ pub struct CreateRequest {
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModifyRequest {
+    /// Short description.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
     /// New size in GiB (can only be increased).
     #[serde_as(as = "Option<DisplayFromStr>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub size: Option<u64>,
+    /// Automatic backup schedule.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub backup_rule: Option<BackupRule>,
-    /// Storage labels.
     ///
     /// - `None`          → field omitted (don't modify labels)
     /// - `Some(vec![])`  → serializes as `"labels": []` (clear all labels)
@@ -289,11 +308,14 @@ pub struct ModifyRequest {
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CloneRequest {
+    /// Short description for the clone.
     pub title: String,
     /// Target data center zone.
     pub zone: String,
+    /// Storage performance tier for the clone.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tier: Option<Tier>,
+    /// Encrypt the clone at rest.
     #[serde_as(as = "Option<YesNo>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub encrypted: Option<bool>,
@@ -302,12 +324,14 @@ pub struct CloneRequest {
 /// Request to templatize a storage (create a template from it).
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TemplatizeRequest {
+    /// Short description for the template.
     pub title: String,
 }
 
 /// Request to create a backup of a storage.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct CreateBackupRequest {
+    /// Short description for the backup.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
 }

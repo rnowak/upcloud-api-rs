@@ -26,6 +26,7 @@ pub enum ShareACLPermission {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Plan {
+    /// Plan name identifier.
     pub name: String,
     /// Monthly price in EUR.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -42,9 +43,11 @@ pub struct Plan {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Acl {
+    /// ACL entry name.
     pub name: String,
     /// The IP address or CIDR block allowed to access this share.
     pub target: String,
+    /// Access permission (`ro` or `rw`).
     pub permission: ShareACLPermission,
 }
 
@@ -52,10 +55,14 @@ pub struct Acl {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Share {
+    /// Share name.
     pub name: String,
+    /// Share path (e.g. `/data`).
     pub path: String,
+    /// Access control list entries.
     #[serde(default)]
     pub acl: Vec<Acl>,
+    /// Whether the share is being deleted.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub deleting: Option<bool>,
 }
@@ -66,10 +73,12 @@ pub struct Share {
 pub struct Network {
     /// Address family.
     pub family: String,
+    /// Network name.
     pub name: String,
     /// Network type.
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
     pub network_type: Option<String>,
+    /// Network UUID.
     pub uuid: String,
     /// DNS hostname for the mount target.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -83,9 +92,13 @@ pub struct Network {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Service {
+    /// Unique identifier for the file storage service.
     pub uuid: String,
+    /// Service name (unique within account).
     pub name: String,
+    /// Zone in which the service is hosted.
     pub zone: String,
+    /// Service plan name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<String>,
     /// Desired status.
@@ -106,10 +119,13 @@ pub struct Service {
     /// Attached networks.
     #[serde(default)]
     pub networks: Vec<Network>,
+    /// Key-value labels for service filtering.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
+    /// Creation timestamp (ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
+    /// Last update timestamp (ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
     /// Status messages.
@@ -122,8 +138,11 @@ pub struct Service {
 /// Request body for creating a file storage service.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateRequest {
+    /// Service name (unique within account).
     pub name: String,
+    /// Zone in which the service will be hosted.
     pub zone: String,
+    /// Service plan name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<String>,
     /// Storage size in GiB.
@@ -135,8 +154,10 @@ pub struct CreateRequest {
     /// Networks to attach.
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub networks: Vec<NetworkInput>,
+    /// Key-value labels for service filtering.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
+    /// Desired service status (`started` / `stopped`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configured_status: Option<String>,
     /// Initial NFS shares.
@@ -150,10 +171,12 @@ pub struct CreateRequest {
 pub struct NetworkInput {
     /// Address family.
     pub family: String,
+    /// Network name.
     pub name: String,
     /// Network type.
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
     pub network_type: Option<String>,
+    /// Network UUID.
     pub uuid: String,
     /// Desired IP address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -163,16 +186,19 @@ pub struct NetworkInput {
 /// Request body for modifying a file storage service (PATCH).
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModifyRequest {
+    /// Service name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// New storage size in GiB.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub size_gib: Option<u64>,
+    /// Desired service status (`started` / `stopped`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configured_status: Option<String>,
     /// Networks to attach.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<Vec<NetworkInput>>,
+    /// Key-value labels for service filtering.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
 }
@@ -180,13 +206,16 @@ pub struct ModifyRequest {
 /// Request body for replacing a file storage service (PUT).
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ReplaceRequest {
+    /// Service name.
     pub name: String,
+    /// Desired service status (`started` / `stopped`).
     pub configured_status: String,
     /// Storage size in GiB.
     pub size_gib: u64,
     /// Networks to attach.
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub networks: Vec<NetworkInput>,
+    /// Key-value labels for service filtering.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
 }
@@ -194,7 +223,9 @@ pub struct ReplaceRequest {
 /// Request body for creating an NFS share.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateShareRequest {
+    /// Share name.
     pub name: String,
+    /// Share path (e.g. `/data`).
     pub path: String,
     /// Access control list entries.
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
@@ -205,6 +236,7 @@ pub struct CreateShareRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct CreateShareAcl {
+    /// ACL entry name.
     pub name: String,
     /// Allowed IP/CIDR.
     pub target: String,
@@ -215,6 +247,7 @@ pub struct CreateShareAcl {
 /// Request body for modifying an NFS share.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModifyShareRequest {
+    /// Share name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Updated access control list.

@@ -9,6 +9,7 @@ use crate::types::common::YesNo;
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct HostStat {
+    /// Name of the statistic (e.g. `cpu_idle`, `memory_free`).
     pub name: String,
     /// Statistic value.
     pub value: serde_json::Value,
@@ -34,9 +35,11 @@ pub struct HostStats {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Host {
-    /// Host identifier.
+    /// Unique host identifier.
     pub id: i64,
+    /// Freeform description of the host.
     pub description: String,
+    /// The private cloud zone the host belongs to.
     pub zone: String,
     /// Whether Windows servers are supported.
     #[serde_as(as = "YesNo")]
@@ -50,6 +53,7 @@ pub struct Host {
 /// Request body for modifying a host.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModifyHostRequest {
+    /// New freeform description for the host.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 }

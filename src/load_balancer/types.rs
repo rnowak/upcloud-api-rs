@@ -75,8 +75,10 @@ pub struct IPAddress {
     /// The name of the network where the IP address is attached.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub network_name: Option<String>,
+    /// ISO 8601 creation timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
+    /// ISO 8601 last update timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
 }
@@ -92,6 +94,7 @@ pub struct Network {
     /// Address family (`"IPv4"` or `"IPv6"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub family: Option<String>,
+    /// UUID of the SDN private network (required when type is `"private"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub uuid: Option<String>,
     /// Auto-generated DNS name for this network attachment.
@@ -124,10 +127,13 @@ pub struct LoadBalancer {
     /// Networks attached to the load balancer.
     #[serde(default)]
     pub networks: Vec<Network>,
+    /// Key-value labels attached to the service.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
+    /// ISO 8601 creation timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
+    /// ISO 8601 last update timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
     /// Desired service status (`"started"` or `"stopped"`).
@@ -206,8 +212,10 @@ pub struct CertificateBundle {
     /// Bundle type (e.g. `"manual"`, `"dynamic"`, `"authority"`).
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
     pub bundle_type: Option<String>,
+    /// ISO 8601 creation timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
+    /// ISO 8601 last update timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
 }
@@ -258,8 +266,10 @@ pub struct BackendMember {
     /// Whether this member is a backup (only receives traffic when primary members are down).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub backup: Option<bool>,
+    /// ISO 8601 creation timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
+    /// ISO 8601 last update timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
 }
@@ -278,8 +288,10 @@ pub struct TLSConfig {
     /// UUID of the certificate bundle to use.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub certificate_bundle_uuid: Option<String>,
+    /// ISO 8601 creation timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
+    /// ISO 8601 last update timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
 }
@@ -312,8 +324,10 @@ pub struct Backend {
     /// Additional backend properties as free-form JSON.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub properties: Option<serde_json::Value>,
+    /// ISO 8601 creation timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
+    /// ISO 8601 last update timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
 }
@@ -343,8 +357,10 @@ pub struct FrontendRule {
     /// How multiple matchers combine (`"and"` or `"or"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub matching_condition: Option<String>,
+    /// ISO 8601 creation timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
+    /// ISO 8601 last update timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
 }
@@ -372,8 +388,10 @@ pub struct Frontend {
     /// Networks this frontend is attached to.
     #[serde(default)]
     pub networks: Vec<FrontendNetwork>,
+    /// ISO 8601 creation timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
+    /// ISO 8601 last update timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
 }
@@ -398,8 +416,10 @@ pub struct Resolver {
     pub cache_valid: u32,
     /// TTL in seconds for caching failed DNS responses.
     pub cache_invalid: u32,
+    /// ISO 8601 creation timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
+    /// ISO 8601 last update timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
 }
@@ -420,6 +440,7 @@ pub struct CreateRequest {
     /// Desired service status (`"started"` or `"stopped"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configured_status: Option<String>,
+    /// Key-value labels.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
 }
@@ -451,6 +472,7 @@ pub struct ModifyRequest {
     /// Desired service status (`"started"` or `"stopped"`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configured_status: Option<String>,
+    /// Key-value labels.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
 }

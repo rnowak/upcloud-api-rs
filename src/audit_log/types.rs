@@ -57,18 +57,25 @@ pub struct AuditEvent {
 /// Query parameters for listing audit events.
 #[derive(Debug, Clone, Serialize, Default)]
 pub struct AuditListParams {
+    /// Number of entries to receive at most (0–200).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<u32>,
+    /// Offset for retrieved results.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub offset: Option<u32>,
+    /// List of actions to filter by (e.g. create, read, update, delete).
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub actions: Vec<String>,
+    /// List of origins to filter by (api, gui, upcloud_internal).
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub origins: Vec<String>,
+    /// List of resource types to filter by.
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub resource_types: Vec<String>,
+    /// List audit logs created at or after this timestamp (ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_after: Option<String>,
+    /// List audit logs created at or before this timestamp (ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_before: Option<String>,
     /// Full-text search query.
@@ -80,6 +87,7 @@ pub struct AuditListParams {
 #[derive(Debug, Clone)]
 #[non_exhaustive]
 pub struct AuditEventPage {
+    /// List of audit log events.
     pub events: Vec<AuditEvent>,
     /// Total count from the `Upcloud-Total-Count` response header.
     pub total_count: Option<u64>,
@@ -88,10 +96,13 @@ pub struct AuditEventPage {
 /// Available filter options for audit events.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AuditFilterOptions {
+    /// Available action filter values.
     #[serde(default)]
     pub actions: Vec<String>,
+    /// Available origin filter values.
     #[serde(default)]
     pub origins: Vec<String>,
+    /// Available resource type filter values.
     #[serde(default)]
     pub resource_types: Vec<String>,
 }

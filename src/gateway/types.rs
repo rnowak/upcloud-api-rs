@@ -154,6 +154,7 @@ pub enum IPSecIntegrityAlgorithm {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Plan {
+    /// Plan name identifier.
     pub name: String,
     /// Maximum bandwidth in Mbps.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -176,6 +177,7 @@ pub struct Plan {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Address {
+    /// Address name.
     pub name: String,
     /// IP address string (may be auto-assigned).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -186,9 +188,13 @@ pub struct Address {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Gateway {
+    /// Unique identifier for the gateway.
     pub uuid: String,
+    /// Name of the gateway service (unique within account).
     pub name: String,
+    /// Zone in which the service is hosted.
     pub zone: String,
+    /// Plan name (e.g. `production`).
     pub plan: String,
     /// Current lifecycle state of the gateway.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -214,8 +220,10 @@ pub struct Gateway {
     /// Whether internal tunnel IPs are automatically allocated.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub automatic_tunnel_internal_ip_allocation: Option<bool>,
+    /// Creation timestamp (ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
+    /// Last update timestamp (ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
 }
@@ -224,8 +232,10 @@ pub struct Gateway {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Router {
+    /// Creation timestamp (ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
+    /// Router UUID.
     pub uuid: String,
 }
 
@@ -233,7 +243,9 @@ pub struct Router {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Connection {
+    /// Connection name.
     pub name: String,
+    /// Unique identifier for the connection.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub uuid: Option<String>,
     /// Type of VPN connection.
@@ -248,8 +260,10 @@ pub struct Connection {
     /// VPN tunnels within this connection.
     #[serde(default)]
     pub tunnels: Vec<Tunnel>,
+    /// Creation timestamp (ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
+    /// Last update timestamp (ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
 }
@@ -258,6 +272,7 @@ pub struct Connection {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Route {
+    /// Route name.
     pub name: String,
     /// CIDR network (e.g. `10.0.0.0/24`).
     pub static_network: String,
@@ -281,7 +296,9 @@ pub struct TunnelAddress {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct Tunnel {
+    /// Tunnel name.
     pub name: String,
+    /// Unique identifier for the tunnel.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub uuid: Option<String>,
     /// Local (gateway-side) tunnel endpoint address.
@@ -308,8 +325,10 @@ pub struct Tunnel {
     /// Interval (seconds) between internal peer ping probes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub internal_peer_ping_interval: Option<u32>,
+    /// Creation timestamp (ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
+    /// Last update timestamp (ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
 }
@@ -329,6 +348,7 @@ pub struct IpsecAuthentication {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct IpsecProperties {
+    /// IPSec authentication settings.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub authentication: Option<IpsecAuthentication>,
     /// Child SA rekey time in seconds.
@@ -343,16 +363,22 @@ pub struct IpsecProperties {
     /// IKE SA lifetime in seconds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ike_lifetime: Option<u64>,
+    /// Phase 1 (IKE) encryption algorithms.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phase1_algorithms: Option<Vec<IPSecAlgorithm>>,
+    /// Phase 1 Diffie-Hellman group numbers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phase1_dh_group_numbers: Option<Vec<u32>>,
+    /// Phase 1 integrity/MAC algorithms.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phase1_integrity_algorithms: Option<Vec<IPSecIntegrityAlgorithm>>,
+    /// Phase 2 (ESP) encryption algorithms.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phase2_algorithms: Option<Vec<IPSecAlgorithm>>,
+    /// Phase 2 Diffie-Hellman group numbers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phase2_dh_group_numbers: Option<Vec<u32>>,
+    /// Phase 2 integrity/MAC algorithms.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phase2_integrity_algorithms: Option<Vec<IPSecIntegrityAlgorithm>>,
     /// IKE SA rekey time in seconds.
@@ -365,13 +391,17 @@ pub struct IpsecProperties {
 /// Request body for creating a gateway.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateRequest {
+    /// Gateway name (unique within account).
     pub name: String,
+    /// Zone in which the service will be hosted.
     pub zone: String,
+    /// Enabled feature flags (`nat`, `vpn`).
     pub features: Vec<Feature>,
     /// Routers to attach to the gateway.
     pub routers: Vec<RouterInput>,
     /// Desired initial status.
     pub configured_status: ConfiguredStatus,
+    /// Gateway plan name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<String>,
     /// Initial VPN connections to create.
@@ -392,6 +422,7 @@ pub struct CreateRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct RouterInput {
+    /// Router UUID.
     pub uuid: String,
 }
 
@@ -399,22 +430,29 @@ pub struct RouterInput {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct AddressInput {
+    /// Address name.
     pub name: String,
 }
 
 /// Request body for modifying a gateway.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModifyRequest {
+    /// Gateway name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Desired gateway status.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configured_status: Option<ConfiguredStatus>,
+    /// Key-value labels on the gateway.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<crate::types::common::Label>>,
+    /// Enabled feature flags.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<Feature>>,
+    /// Gateway plan name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<String>,
+    /// VPN connections to configure.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub connections: Option<Vec<CreateConnectionRequest>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -424,6 +462,7 @@ pub struct ModifyRequest {
 /// Request body for creating a VPN connection.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateConnectionRequest {
+    /// Connection name.
     pub name: String,
     /// Type of VPN connection.
     #[serde(rename = "type")]
@@ -443,6 +482,7 @@ pub struct CreateConnectionRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct RouteInput {
+    /// Route name.
     pub name: String,
     /// CIDR network (e.g. `10.0.0.0/24`).
     pub static_network: String,
@@ -454,6 +494,7 @@ pub struct RouteInput {
 /// Request body for creating a VPN tunnel.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateTunnelRequest {
+    /// Tunnel name.
     pub name: String,
     /// Local (gateway-side) tunnel endpoint address.
     pub local_address: TunnelAddress,
@@ -473,10 +514,13 @@ pub struct CreateTunnelRequest {
 /// Request body for modifying a VPN connection.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModifyConnectionRequest {
+    /// Updated local routes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub local_routes: Option<Vec<RouteInput>>,
+    /// Updated remote routes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_routes: Option<Vec<RouteInput>>,
+    /// Updated tunnels.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tunnels: Option<Vec<CreateTunnelRequest>>,
 }
@@ -484,12 +528,16 @@ pub struct ModifyConnectionRequest {
 /// Request body for modifying a VPN tunnel.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModifyTunnelRequest {
+    /// Tunnel name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Local (gateway-side) tunnel endpoint address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub local_address: Option<TunnelAddress>,
+    /// Remote (peer-side) tunnel endpoint address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_address: Option<TunnelAddress>,
+    /// IPSec configuration for this tunnel.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ipsec: Option<IpsecProperties>,
 }
