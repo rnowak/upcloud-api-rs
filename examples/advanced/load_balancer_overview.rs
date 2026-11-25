@@ -52,7 +52,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let family = net.family.map(|f| format!("{:?}", f));
                 let family = family.as_deref().unwrap_or("—");
                 let dns = net.dns_name.as_deref().unwrap_or("—");
-                println!("║    ▸ {} [{:?}] family={} dns={}", net.name, net.network_type, family, dns);
+                println!(
+                    "║    ▸ {} [{:?}] family={} dns={}",
+                    net.name, net.network_type, family, dns
+                );
             }
         }
 
@@ -75,8 +78,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     let state = node.operational_state.as_deref().unwrap_or("—");
                     println!("║    Node {} ({})", i + 1, state);
                     for net in &node.networks {
-                        let ips: Vec<&str> =
-                            net.ip_addresses.iter().map(|ip| ip.address.as_str()).collect();
+                        let ips: Vec<&str> = net
+                            .ip_addresses
+                            .iter()
+                            .map(|ip| ip.address.as_str())
+                            .collect();
                         println!(
                             "║      {} [{:?}]: {}",
                             net.name,
@@ -128,10 +134,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if !fe.tls_configs.is_empty() {
                     println!("║  │  TLS configs:");
                     for tls in &fe.tls_configs {
-                        let cert = tls
-                            .certificate_bundle_uuid
-                            .as_deref()
-                            .unwrap_or("(inline)");
+                        let cert = tls.certificate_bundle_uuid.as_deref().unwrap_or("(inline)");
                         println!("║  │    ▸ {} (cert={})", tls.name, cert);
                     }
                 }
@@ -139,8 +142,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if !fe.rules.is_empty() {
                     println!("║  │  Rules:");
                     for rule in &fe.rules {
-                        let cond = rule.matching_condition
-                            .map(|c| format!("{:?}", c));
+                        let cond = rule.matching_condition.map(|c| format!("{:?}", c));
                         let cond = cond.as_deref().unwrap_or("and");
                         println!(
                             "║  │    ▸ {} (priority={}, match={}, {} matcher(s), {} action(s))",
@@ -188,10 +190,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if !be.tls_configs.is_empty() {
                     println!("║  │  TLS configs:");
                     for tls in &be.tls_configs {
-                        let cert = tls
-                            .certificate_bundle_uuid
-                            .as_deref()
-                            .unwrap_or("(inline)");
+                        let cert = tls.certificate_bundle_uuid.as_deref().unwrap_or("(inline)");
                         println!("║  │    ▸ {} (cert={})", tls.name, cert);
                     }
                 }
@@ -220,8 +219,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                         // Use get_backend_member to show per-member timestamps
                         // (demonstrating the individual GET endpoint).
-                        let detail =
-                            lb.get_backend_member(&svc.uuid, &be.name, &m.name).await?;
+                        let detail = lb.get_backend_member(&svc.uuid, &be.name, &m.name).await?;
                         if let Some(created) = &detail.created_at {
                             println!("║  │      created: {created}");
                         }
@@ -238,8 +236,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         // ── Labels ────────────────────────────────────────────────────────
         if let Some(labels) = &svc.labels {
             if !labels.is_empty() {
-                let formatted: Vec<String> =
-                    labels.iter().map(|l| format!("{}={}", l.key, l.value)).collect();
+                let formatted: Vec<String> = labels
+                    .iter()
+                    .map(|l| format!("{}={}", l.key, l.value))
+                    .collect();
                 println!("║  Labels: {}", formatted.join(", "));
             }
         }

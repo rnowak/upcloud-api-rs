@@ -391,7 +391,10 @@ fn deserialize_assign_tag_server_response() {
         storages[0].storage_title.as_deref(),
         Some("Debian from a template")
     );
-    assert_eq!(storages[0].device_type, Some(crate::server::StorageDeviceType::Disk));
+    assert_eq!(
+        storages[0].device_type,
+        Some(crate::server::StorageDeviceType::Disk)
+    );
 }
 
 // Source: https://developers.upcloud.com/1.3/12-tags/#remove-tag-from-server

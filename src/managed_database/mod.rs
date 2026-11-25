@@ -455,12 +455,7 @@ impl<'a> DatabaseHandler<'a> {
     /// `DELETE /1.3/database/{uuid}/sessions/{pid}?terminate={terminate}`
     ///
     /// [UpCloud API docs](https://developers.upcloud.com/1.3/16-managed-database/#cancel-managed-database-session)
-    pub async fn cancel_session(
-        &self,
-        uuid: &str,
-        pid: i64,
-        terminate: bool,
-    ) -> Result<(), Error> {
+    pub async fn cancel_session(&self, uuid: &str, pid: i64, terminate: bool) -> Result<(), Error> {
         let req = self
             .client
             .request(

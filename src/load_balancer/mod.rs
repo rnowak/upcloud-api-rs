@@ -828,21 +828,14 @@ impl<'a> LoadBalancerHandler<'a> {
         req: AddIPAddressRequest,
     ) -> Result<IPAddress, Error> {
         self.client
-            .post(
-                &format!("/1.3/load-balancer/{lb_uuid}/ip-addresses"),
-                &req,
-            )
+            .post(&format!("/1.3/load-balancer/{lb_uuid}/ip-addresses"), &req)
             .await
     }
 
     /// Removes an IP address from a load balancer.
     ///
     /// `DELETE /1.3/load-balancer/{uuid}/ip-addresses/{address}`
-    pub async fn remove_ip_address(
-        &self,
-        lb_uuid: &str,
-        address: &str,
-    ) -> Result<(), Error> {
+    pub async fn remove_ip_address(&self, lb_uuid: &str, address: &str) -> Result<(), Error> {
         self.client
             .delete(&format!(
                 "/1.3/load-balancer/{lb_uuid}/ip-addresses/{address}"
@@ -856,9 +849,7 @@ impl<'a> LoadBalancerHandler<'a> {
     ///
     /// `GET /1.3/load-balancer/dns-challenge`
     pub async fn get_dns_challenge_domain(&self) -> Result<DnsChallengeDomain, Error> {
-        self.client
-            .get("/1.3/load-balancer/dns-challenge")
-            .await
+        self.client.get("/1.3/load-balancer/dns-challenge").await
     }
 }
 

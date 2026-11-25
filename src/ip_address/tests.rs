@@ -214,7 +214,10 @@ fn deserialize_assign_ip_address_request() {
     let req: Wrapper = serde_json::from_str(ASSIGN_IP_ADDRESS_REQUEST_JSON).unwrap();
     let ip = req.ip_address;
     assert_eq!(ip.family, Some(Family::IPv4));
-    assert_eq!(ip.server.as_deref(), Some("009d64ef-31d1-4684-a26b-c86c955cbf46"));
+    assert_eq!(
+        ip.server.as_deref(),
+        Some("009d64ef-31d1-4684-a26b-c86c955cbf46")
+    );
     assert!(ip.access.is_none());
     assert!(ip.floating.is_none());
 }

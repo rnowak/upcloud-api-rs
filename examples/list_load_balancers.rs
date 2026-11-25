@@ -52,17 +52,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .load_balancer()
                     .list_backend_members(&svc.uuid, &be.name)
                     .await?;
-                println!("│    - {} (resolver={}, {} member(s))", be.name, resolver, members.len());
+                println!(
+                    "│    - {} (resolver={}, {} member(s))",
+                    be.name,
+                    resolver,
+                    members.len()
+                );
                 for m in &members {
                     let ip = if m.ip.is_empty() { "(dynamic)" } else { &m.ip };
                     println!(
                         "│        {} [{:?}] {}:{} weight={} enabled={}",
-                        m.name,
-                        m.member_type,
-                        ip,
-                        m.port,
-                        m.weight,
-                        m.enabled
+                        m.name, m.member_type, ip, m.port, m.weight, m.enabled
                     );
                 }
             }

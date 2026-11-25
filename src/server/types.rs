@@ -3,8 +3,8 @@
 use serde::{Deserialize, Serialize};
 use serde_with::{DisplayFromStr, PickFirst, serde_as};
 
-pub use crate::types::common::{Family, NetworkType, OnOff};
 use crate::types::common::YesNo;
+pub use crate::types::common::{Family, NetworkType, OnOff};
 
 // ─── Enums ────────────────────────────────────────────────────────────────────
 

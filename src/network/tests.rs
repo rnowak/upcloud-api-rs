@@ -665,10 +665,7 @@ fn assign_interface_ip_url_without_force() {
     if force {
         url.push_str("?force=yes");
     }
-    assert_eq!(
-        url,
-        "/1.3/server/abc-123/networking/interface/2/ip-address"
-    );
+    assert_eq!(url, "/1.3/server/abc-123/networking/interface/2/ip-address");
 }
 
 // Source: https://developers.upcloud.com/1.3/13-networks/#modify-network-details

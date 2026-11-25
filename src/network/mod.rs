@@ -240,9 +240,7 @@ impl<'a> NetworkHandler<'a> {
         struct Body {
             ip_address: AssignInterfaceIpRequest,
         }
-        let mut url = format!(
-            "/1.3/server/{server_uuid}/networking/interface/{index}/ip-address"
-        );
+        let mut url = format!("/1.3/server/{server_uuid}/networking/interface/{index}/ip-address");
         if force {
             url.push_str("?force=yes");
         }

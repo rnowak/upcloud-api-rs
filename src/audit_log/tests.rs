@@ -123,6 +123,12 @@ fn export_format_serialization() {
     let json: ExportFormat = serde_json::from_str(r#""json""#).unwrap();
     assert_eq!(json, ExportFormat::Json);
 
-    assert_eq!(serde_json::to_string(&ExportFormat::Csv).unwrap(), r#""csv""#);
-    assert_eq!(serde_json::to_string(&ExportFormat::Json).unwrap(), r#""json""#);
+    assert_eq!(
+        serde_json::to_string(&ExportFormat::Csv).unwrap(),
+        r#""csv""#
+    );
+    assert_eq!(
+        serde_json::to_string(&ExportFormat::Json).unwrap(),
+        r#""json""#
+    );
 }

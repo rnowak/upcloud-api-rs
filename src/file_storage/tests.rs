@@ -397,7 +397,10 @@ fn deserialize_replace_file_storage_request() {
     assert_eq!(req.networks[0].uuid, "03720d07-80a9-41ac-90b0-68a932109339");
     assert_eq!(req.networks[0].name, "net");
     assert_eq!(req.networks[0].family, "IPv4");
-    assert_eq!(req.networks[0].ip_address.as_deref(), Some("192.168.147.120"));
+    assert_eq!(
+        req.networks[0].ip_address.as_deref(),
+        Some("192.168.147.120")
+    );
     let labels = req.labels.expect("labels present");
     assert_eq!(labels.len(), 1);
     assert_eq!(labels[0].key, "environment");

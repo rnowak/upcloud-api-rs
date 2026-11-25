@@ -29,22 +29,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .map(|ip| {
                     ip.ip_network
                         .iter()
-                        .map(|s| {
-                            format!(
-                                "{} ({:?})",
-                                s.address,
-                                s.family,
-                            )
-                        })
+                        .map(|s| format!("{} ({:?})", s.address, s.family,))
                         .collect()
                 })
                 .unwrap_or_default();
 
-            let server_count = n
-                .servers
-                .as_ref()
-                .map(|s| s.server.len())
-                .unwrap_or(0);
+            let server_count = n.servers.as_ref().map(|s| s.server.len()).unwrap_or(0);
 
             println!("┌─ {} ({:?})", n.name, n.network_type);
             println!("│  UUID:    {}", n.uuid);
@@ -82,7 +72,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         for ip in &ips {
             let server = ip.server.as_deref().unwrap_or("(unattached)");
             let ptr = ip.ptr_record.as_deref().unwrap_or("—");
-            let floating = ip.floating.map(|f| if f { "yes" } else { "no" }).unwrap_or("—");
+            let floating = ip
+                .floating
+                .map(|f| if f { "yes" } else { "no" })
+                .unwrap_or("—");
 
             println!(
                 "  {:>15}  {:?}/{:?}  floating={}  server={}  ptr={}",

@@ -1364,7 +1364,10 @@ fn deserialize_start_server_response() {
         sd.storage_device[0].storage_title.as_deref(),
         Some("Debian from a template")
     );
-    assert_eq!(sd.storage_device[0].device_type, Some(StorageDeviceType::Disk));
+    assert_eq!(
+        sd.storage_device[0].device_type,
+        Some(StorageDeviceType::Disk)
+    );
     assert_eq!(sd.storage_device[0].boot_disk.as_deref(), Some("0"));
     // tags & labels
     assert!(s.tags.as_ref().unwrap().tag.is_empty());
@@ -1464,8 +1467,8 @@ const STOP_SERVER_RESPONSE_JSON: &str = r#"
 
 #[test]
 fn deserialize_stop_server_response() {
-    let resp: ServerResponse = serde_json::from_str(STOP_SERVER_RESPONSE_JSON)
-        .expect("deserialize stop server response");
+    let resp: ServerResponse =
+        serde_json::from_str(STOP_SERVER_RESPONSE_JSON).expect("deserialize stop server response");
     let s = resp.server;
     // Top-level scalar fields
     assert_eq!(s.uuid, "00c78863-db86-44ea-af70-d6edc4d162bf");
@@ -1502,12 +1505,18 @@ fn deserialize_stop_server_response() {
         Some("0169b4f8-051c-4a86-9484-f5b798249949")
     );
     assert_eq!(sd.storage_device[0].storage_size, Some(10));
-    assert_eq!(sd.storage_device[0].storage_tier, Some(crate::storage::Tier::Maxiops));
+    assert_eq!(
+        sd.storage_device[0].storage_tier,
+        Some(crate::storage::Tier::Maxiops)
+    );
     assert_eq!(
         sd.storage_device[0].storage_title.as_deref(),
         Some("Debian from a template")
     );
-    assert_eq!(sd.storage_device[0].device_type, Some(StorageDeviceType::Disk));
+    assert_eq!(
+        sd.storage_device[0].device_type,
+        Some(StorageDeviceType::Disk)
+    );
     assert_eq!(sd.storage_device[0].part_of_plan, Some(true));
     // tags & labels
     assert!(s.tags.as_ref().unwrap().tag.is_empty());
@@ -1659,7 +1668,10 @@ fn deserialize_restart_server_response() {
         sd.storage_device[0].storage_title.as_deref(),
         Some("Debian from a template")
     );
-    assert_eq!(sd.storage_device[0].device_type, Some(StorageDeviceType::Disk));
+    assert_eq!(
+        sd.storage_device[0].device_type,
+        Some(StorageDeviceType::Disk)
+    );
     // tags & labels
     assert!(s.tags.as_ref().unwrap().tag.is_empty());
     assert!(s.labels.as_ref().unwrap().label.is_empty());
@@ -1811,7 +1823,10 @@ fn deserialize_modify_server_response() {
         sd.storage_device[0].storage_title.as_deref(),
         Some("Debian from a template")
     );
-    assert_eq!(sd.storage_device[0].device_type, Some(StorageDeviceType::Disk));
+    assert_eq!(
+        sd.storage_device[0].device_type,
+        Some(StorageDeviceType::Disk)
+    );
     assert_eq!(sd.storage_device[0].boot_disk.as_deref(), Some("0"));
     // tags & labels
     assert!(s.tags.as_ref().unwrap().tag.is_empty());
@@ -2042,7 +2057,10 @@ fn deserialize_create_server_group_request() {
         body.server_group.title.as_deref(),
         Some("My brand new server group")
     );
-    assert_eq!(body.server_group.anti_affinity, Some(AntiAffinityPolicy::Yes));
+    assert_eq!(
+        body.server_group.anti_affinity,
+        Some(AntiAffinityPolicy::Yes)
+    );
     let servers = body.server_group.servers.unwrap().server;
     assert_eq!(servers.len(), 3);
     assert_eq!(servers[0], "00e2dc05-379d-6b90-a354-e5c3f9293918");
@@ -2086,7 +2104,10 @@ fn deserialize_modify_server_group_request() {
         body.server_group.title.as_deref(),
         Some("New fancy title for the group")
     );
-    assert_eq!(body.server_group.anti_affinity, Some(AntiAffinityPolicy::No));
+    assert_eq!(
+        body.server_group.anti_affinity,
+        Some(AntiAffinityPolicy::No)
+    );
     let servers = body.server_group.servers.unwrap().server;
     assert_eq!(servers.len(), 2);
 }
@@ -2238,7 +2259,10 @@ fn deserialize_relocate_server_response() {
         sd.storage_device[0].storage_title.as_deref(),
         Some("Debian from a template")
     );
-    assert_eq!(sd.storage_device[0].device_type, Some(StorageDeviceType::Disk));
+    assert_eq!(
+        sd.storage_device[0].device_type,
+        Some(StorageDeviceType::Disk)
+    );
     assert_eq!(sd.storage_device[0].boot_disk.as_deref(), Some("0"));
     // tags & labels
     assert!(s.tags.as_ref().unwrap().tag.is_empty());

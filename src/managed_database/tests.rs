@@ -153,7 +153,10 @@ fn deserialize_db_user_list() {
     assert!(users[0].authentication.is_none());
     assert_eq!(users[1].username, "reader");
     assert_eq!(users[1].user_type, UserType::Readonly);
-    let pg = users[1].pg_access_control.as_ref().expect("pg_access_control");
+    let pg = users[1]
+        .pg_access_control
+        .as_ref()
+        .expect("pg_access_control");
     assert_eq!(pg.allow_replication, Some(false));
     assert!(users[1].password.is_none());
     assert!(users[1].authentication.is_none());

@@ -21,10 +21,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     for z in &zones {
-        let parent = z
-            .parent_zone
-            .as_deref()
-            .unwrap_or("(top-level)");
+        let parent = z.parent_zone.as_deref().unwrap_or("(top-level)");
 
         println!("┌─ {} — {}", z.id, z.description);
         println!("│  Public: {}   Parent: {}", z.public, parent);

@@ -31,10 +31,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut by_server: HashMap<Option<&str>, Vec<&upcloud_api::ip_address::IpAddress>> =
         HashMap::new();
     for ip in &addresses {
-        by_server
-            .entry(ip.server.as_deref())
-            .or_default()
-            .push(ip);
+        by_server.entry(ip.server.as_deref()).or_default().push(ip);
     }
 
     // Print unattached IPs first, then grouped by server.

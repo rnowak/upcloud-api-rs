@@ -441,8 +441,7 @@ mod tests {
         struct Wrapper {
             firewall_rule: CreateRuleRequest,
         }
-        let wrapped: Wrapper =
-            serde_json::from_str(CREATE_FIREWALL_RULE_REQUEST_JSON).unwrap();
+        let wrapped: Wrapper = serde_json::from_str(CREATE_FIREWALL_RULE_REQUEST_JSON).unwrap();
         let fr = wrapped.firewall_rule;
         assert_eq!(fr.position, Some(1));
         assert_eq!(fr.direction, Direction::In);
@@ -541,7 +540,10 @@ mod tests {
         }
 
         // Assert all fields for rule 0
-        assert_eq!(rules[0].comment.as_deref(), Some("Allow SSH to this network"));
+        assert_eq!(
+            rules[0].comment.as_deref(),
+            Some("Allow SSH to this network")
+        );
         assert_eq!(rules[0].destination_port_start.as_deref(), Some("22"));
         assert_eq!(rules[0].destination_port_end.as_deref(), Some("22"));
         assert!(rules[0].destination_address_start.is_none());
@@ -554,7 +556,10 @@ mod tests {
         assert!(rules[0].source_port_end.is_none());
 
         // Assert all fields for rule 1
-        assert_eq!(rules[1].comment.as_deref(), Some("Allow HTTP to this network"));
+        assert_eq!(
+            rules[1].comment.as_deref(),
+            Some("Allow HTTP to this network")
+        );
         assert_eq!(rules[1].destination_port_start.as_deref(), Some("80"));
         assert_eq!(rules[1].destination_port_end.as_deref(), Some("80"));
         assert!(rules[1].destination_address_start.is_none());

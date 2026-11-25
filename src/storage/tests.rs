@@ -518,8 +518,7 @@ fn deserialize_attach_storage_server_api_request() {
     struct Wrapper {
         storage_device: crate::server::AttachStorageRequest,
     }
-    let w: Wrapper =
-        serde_json::from_str(ATTACH_STORAGE_SERVER_API_REQUEST_JSON).unwrap();
+    let w: Wrapper = serde_json::from_str(ATTACH_STORAGE_SERVER_API_REQUEST_JSON).unwrap();
     let sd = w.storage_device;
     assert_eq!(sd.device_type, Some(crate::server::StorageDeviceType::Disk));
     assert_eq!(sd.address.as_deref(), Some("scsi"));
@@ -595,8 +594,7 @@ fn deserialize_attach_storage_server_api_response() {
     struct Wrapper {
         server: crate::server::ServerDetails,
     }
-    let resp: Wrapper =
-        serde_json::from_str(ATTACH_STORAGE_SERVER_API_RESPONSE_JSON).unwrap();
+    let resp: Wrapper = serde_json::from_str(ATTACH_STORAGE_SERVER_API_RESPONSE_JSON).unwrap();
     let server = &resp.server;
     assert_eq!(server.uuid, "00c78863-db86-44ea-af70-d6edc4d162bf");
     assert_eq!(server.state, crate::server::State::Started);
@@ -626,7 +624,10 @@ fn deserialize_attach_storage_server_api_response() {
         Some("00798b85-efdc-41ca-8021-f6ef457b8531")
     );
     assert_eq!(devices[0].storage_encrypted.as_deref(), Some("yes"));
-    assert_eq!(devices[0].device_type, Some(crate::server::StorageDeviceType::Disk));
+    assert_eq!(
+        devices[0].device_type,
+        Some(crate::server::StorageDeviceType::Disk)
+    );
     assert_eq!(devices[0].address, "scsi:0:0");
     assert_eq!(devices[0].storage_size, Some(10));
     assert_eq!(
@@ -789,8 +790,7 @@ fn deserialize_detach_storage_server_api_response() {
     struct Wrapper {
         server: crate::server::ServerDetails,
     }
-    let resp: Wrapper =
-        serde_json::from_str(DETACH_STORAGE_SERVER_API_RESPONSE_JSON).unwrap();
+    let resp: Wrapper = serde_json::from_str(DETACH_STORAGE_SERVER_API_RESPONSE_JSON).unwrap();
     let server = &resp.server;
     assert_eq!(server.uuid, "00c78863-db86-44ea-af70-d6edc4d162bf");
     assert_eq!(server.state, crate::server::State::Stopped);
@@ -879,7 +879,10 @@ fn deserialize_load_cdrom_request() {
         storage_device: crate::server::LoadCdromRequest,
     }
     let req: Wrapper = serde_json::from_str(LOAD_CDROM_REQUEST_JSON).unwrap();
-    assert_eq!(req.storage_device.storage, "01000000-0000-4000-8000-000060010101");
+    assert_eq!(
+        req.storage_device.storage,
+        "01000000-0000-4000-8000-000060010101"
+    );
 }
 
 // Source: https://developers.upcloud.com/1.3/9-storages/
@@ -970,12 +973,18 @@ fn deserialize_load_cdrom_response() {
     assert_eq!(server.zone, "fi-hel1");
     let devices = &server.storage_devices.as_ref().unwrap().storage_device;
     assert_eq!(devices.len(), 2);
-    assert_eq!(devices[0].device_type, Some(crate::server::StorageDeviceType::Cdrom));
+    assert_eq!(
+        devices[0].device_type,
+        Some(crate::server::StorageDeviceType::Cdrom)
+    );
     assert_eq!(
         devices[0].storage.as_deref(),
         Some("01000000-0000-4000-8000-000060010101")
     );
-    assert_eq!(devices[1].device_type, Some(crate::server::StorageDeviceType::Disk));
+    assert_eq!(
+        devices[1].device_type,
+        Some(crate::server::StorageDeviceType::Disk)
+    );
     assert_eq!(devices[1].address, "ide:0:0");
     assert_eq!(
         devices[1].storage.as_deref(),
@@ -1055,7 +1064,10 @@ fn deserialize_eject_cdrom_response() {
     let devices = &server.storage_devices.as_ref().unwrap().storage_device;
     assert_eq!(devices.len(), 2);
     // CD-ROM storage is empty after eject
-    assert_eq!(devices[0].device_type, Some(crate::server::StorageDeviceType::Cdrom));
+    assert_eq!(
+        devices[0].device_type,
+        Some(crate::server::StorageDeviceType::Cdrom)
+    );
     assert_eq!(devices[0].storage.as_deref(), Some(""));
     assert_eq!(server.boot_order, Some(crate::server::BootOrder::CdromDisk));
     assert_eq!(server.core_number, 1);
@@ -1073,7 +1085,10 @@ fn deserialize_eject_cdrom_response() {
     assert_eq!(server.uuid, "00798b85-efdc-41ca-8021-f6ef457b8531");
     assert_eq!(server.video_model, Some(crate::server::VideoModel::Cirrus));
     assert_eq!(server.zone, "fi-hel1");
-    assert_eq!(devices[1].device_type, Some(crate::server::StorageDeviceType::Disk));
+    assert_eq!(
+        devices[1].device_type,
+        Some(crate::server::StorageDeviceType::Disk)
+    );
     assert_eq!(devices[1].address, "ide:0:0");
     assert_eq!(
         devices[1].storage.as_deref(),
@@ -1302,7 +1317,9 @@ fn deserialize_create_import_request() {
     assert!(si.source_location.as_deref().unwrap().contains("debian"));
     assert_eq!(
         si.source_location.as_deref(),
-        Some("https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.4.0-amd64-netinst.iso")
+        Some(
+            "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.4.0-amd64-netinst.iso"
+        )
     );
 }
 
@@ -1609,7 +1626,10 @@ fn serialize_clone_request_encrypted_yes_no() {
 #[test]
 fn delete_storage_backups_mode_display() {
     assert_eq!(DeleteStorageBackupsMode::Keep.to_string(), "keep");
-    assert_eq!(DeleteStorageBackupsMode::KeepLatest.to_string(), "keep_latest");
+    assert_eq!(
+        DeleteStorageBackupsMode::KeepLatest.to_string(),
+        "keep_latest"
+    );
     assert_eq!(DeleteStorageBackupsMode::Delete.to_string(), "delete");
 }
 
