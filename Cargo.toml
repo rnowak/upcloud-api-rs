@@ -6,7 +6,6 @@ rust-version = "1.85"
 description = "Unofficial Rust API client / API bindings for the UpCloud API"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/rnowak/upcloud-api"
-homepage = "https://github.com/rnowak/upcloud-api"
 documentation = "https://docs.rs/upcloud-api"
 keywords = ["upcloud", "cloud", "api", "sdk", "async"]
 categories = ["api-bindings", "web-programming::http-client"]
